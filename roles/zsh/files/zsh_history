@@ -1,0 +1,2362 @@
+echo $LANG
+make -C build check-po-$LANG
+make -C build update-po-ru
+make -C build check-po-ru
+11;rgb:2828/2c2c/3434
+ninja -C build update-po-ru
+ranger-cd
+vim ginit.vim
+vim plugins.vim
+select-editor
+man select-editor
+man 1 showkey
+sudo apt install showkey
+sudo apt-get install showkey
+sudo apt install kbd
+showkey -
+showkey
+showkey -s
+sudo showkey -s
+man showkey
+man dumpkeys
+echo $ZSH_CUSTOM
+xsel
+man xsel
+man xclip
+powershell.exe
+readfile -f win32yank.exe
+man rm
+sudo rm win32yank.exe
+sudo ln -s "/mnt/c/tools/win32yank.exe" "/usr/local/bin/win32yank.exe"
+win32yank.exe
+win32yank.exe -o
+/mnt/c/tools/win32yank.exe
+readlink -f win32yank.exe
+sudo ln -s "/mnt/c/tools/win32yank.exe" "/usr/local/bin/win32yank"
+win32yank
+ls -h
+ls -a
+conda
+apt list --upgradable
+sudo apt upgrade
+apt -c
+apt -s
+apt search rager
+apt search ranger
+apt list --installed
+apt list --installed | grep ranger
+man dpkg
+dpkg -s ranger
+dpkg -s zsh
+dpkg -s zsh | grep status
+dpkg -s zsh | grep Status
+dpkg -s ruby | grep Status
+dpkg -s ruby
+apt search ruby
+dpkg-query --show --showformat='$(Status)' nano
+dpkg-query --show --showformat='$(Status)' ranger
+dpkg-query --show --showformat="$(Status)" ranger
+dpkg-query --show --showformat="${Status}" ranger
+dpkg-queru -s ranger
+dpkg-query -s ranger
+dpkg-query --show --showformat='${Status}' ranger
+man grep
+dpkg-query --show --showformat='${Status}' ranger | grep --count "ok installed"
+man -eq
+man eq
+apt search zsh-autosuggestions
+zsh-autosuggestions
+dpkg-query -W zsh-autosuggestions
+man dpkg-query
+dpkg-query -s zsh-autosuggestions
+atom
+sudo apt remove zsh-autosuggestions
+sudo apt install zsh-autosuggestions
+sudo apt install zsh-syntax-highlighting
+vim setup_environment.sh
+vim zsh_help_file.txt
+google github
+ls -A --color
+google vi-mode
+vi-mode
+xt
+ls -l --color=auto
+google zsh ls onedark dir not visible
+echo "LS_COLORS=$LS_COLORS:'ow=37;42:'" >> ~/.zshrc
+zsh -f
+echo $LS_COLORS
+echo $LS_COLORS >> ~/.zshrc
+man tmux
+man ln
+ln -sv /mnt/d/artyu/OneDrive/Software Software
+ln -sv /mnt/d/artyu artyu
+sudo rm FastCopy.exe
+sudo ln /mnt/c/scoop/apps/fastcopy/current/FastCopy.exe FastCopy.exe
+sudo
+sudo ln -sv /mnt/c/scoop/apps/fastcopy/current/FastCopy.exe FastCopy.exe
+sudo ln -v /mnt/c/scoop/apps/fastcopy/current/FastCopy.exe FastCopy.exe
+sudo rm /mnt/c/Program\ Files/Far\ Manager/FastCopy.exe
+sudo ln -v /mnt/c/scoop/apps/fastcopy/current/FastCopy.exe /mnt/c/Program\ Files/Far\ Manager/FastCopy.exe
+youtube-sl
+youtube-dl
+apt search youtube-dl
+fish
+git clone https://github.com/gpakosz/.tmux.git
+ln -s -f .tmux/.tmux.conf
+cp .tmux/.tmux.conf.local .
+tmux
+vim -d /mnt/c/Users/artyu/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/profiles.json /mnt/c/Users/artyu/AppData/Local/Packages/Mic
+rosoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/old_profiles.json
+exie
+t
+man nvi
+man nvim
+google ranger easy motion
+git clone https://github.com/alexanderjeurissen/ranger_devicons ~/.config/ranger/plugins/ranger_devicons
+ln -sv ~/dotfiles/ranger/ranger-autojump/autojump.py ~/.con
+ln -sv ~/dotfiles/ranger/ranger-autojump/autojump.py ~/.config/ranger/plugins/autojump.py
+apt search autojump
+rm autojump.py
+google zsh man colorer
+google man table of content
+man ranger | grep '^[A-Z]'
+man ranger
+man ranger | grep '^\t*?[A-Z]'
+man ranger | grep '^\t?[A-Z]'
+man ranger | grep '^\t[A-Z]'
+echo $OSTYPE
+echo $SHELL
+zsh /usr/share/zsh/functions/Newuser/zsh-newuser-install -f
+cat
+alias
+cd Downloads
+extract nvim-linux64.tar.gz
+extract neovim-nightly.zip
+cd neovim-nightly
+make CMAKE_BUILD_TYPE=Release
+sudo make install
+setunv
+man set
+set
+history -10
+git clone https://github.com/tpope/vim-markdown/blob/master/syntax/markdown.vim
+git clone https://github.com/tpope/vim-markdown
+vim diexit
+vim diff markdown_in_neovim.vim vim-markdown/syntax/markdown.vim
+vim -diff markdown_in_neovim.vim vim-markdown/syntax/markdown.vim
+Projects/Neovim
+vim -d markdown_in_neovim.vim vim-markdown/syntax/markdown.vim
+exi
+echo -e "\e[3mItalic"
+echo $TERM
+echo -e "\e[3m is this italics? \e[23m"
+echo -e 'Normal, \x1b[1mbold\x1b[22m, \x1b[3mitalic\x1b[23m, \x1b[1;3mbold italic\x1b[22;23m'
+man 2 echo
+man 3 echo
+man 4 echo
+man 5 echo
+man 6  echo
+man 7 echo
+man 8 echo
+man 9 echo
+apt
+ln -sv ~/Software/vimwiki ~/
+nviim
+tzdata
+echo $PARINIT
+autoload -Uz compinstall
+compinstall
+apt search par
+apt-get search par
+apt search par | grep par
+apt search par | grep 'par'
+sudo apt install par
+par
+par help
+nvi
+ls -f
+ld -F
+ls -F
+ls -Ff
+ls -ial
+less
+less --help
+ls --color=tty
+nvin
+dotfiles
+~/.config/nvim/plugged/wiki.vim
+vim ./autoload/wiki/page.vim
+grep -r TOC .
+zstyle
+zstyle -L
+vim -c <plug>(wiki-index)
+vim -c
+vim -c I
+vm
+sudo apt install fzf
+rnger
+less ~/wiki/neovim.wiki
+vim **
+Software
+pwd -p
+pwd -P
+whereis zsh
+whereis zsh | column
+apt search locate
+whereis prompt init
+whereis promptinit
+locate
+locate --help
+updatedb
+locate zsh
+pandoc
+apt search pandoc
+sudo apt remove locate
+crone
+cron
+which cron
+sudo apt remove mlocate
+sudo apt install locate
+sudo updatedb
+etc/cron
+mlocate
+./mlocate
+/etc/cron.daily
+sudo ./mlocate
+locate promptinit
+mlocate promptinit | cd
+cd $(mlocate promptinit)
+/u/s/z/f/P
+/usr/share/zsh/functions/Prompts
+ls | column
+ls -l > ~/dotfiles/zsh/zshthemes
+cd ~/.config/nvim/plugged/vim-man
+mlocate promptinit
+cd ~/.config/ranger/plugins
+prompt -l
+prompt -p
+history | fzf
+history -a
+history -h
+history --help
+/usr/share/man
+man1
+whereis fzf
+man -k password
+man par
+man -H less
+man history
+man echo
+man exec
+man nroff
+man more
+man most
+man tzdata
+man column
+man zshcontrib
+man who
+vim ~/dotfiles/nvim/syntax
+vim ~/dotfiles/nvim/after
+vw
+/usr/share/doc/fzf
+find . | fzf
+echo $LINES
+vim $(find * -type f -not -path '*/.git/*' | fzf --preview="head -$LINES {}")
+man zshoptions
+sudo cron
+git fetch origin
+git log --decorate --all --oneline --graph
+git checkout -b statusline
+git push -u myfork statusline
+mlocate nvimdiff
+echo $LOCAL
+vim ~/.gitconfig
+mlocate vimdiff
+man vimdiff
+cd /usr/lib/git-core/mergetools
+git dif
+git difftool
+locale
+sudo explorer.exe
+explorer.exe
+fc -w
+fc -W
+apt search fzf
+apt search ag | ag
+apt search ag | rg ag
+apt search silver
+sudo apt install silversearcher-ag
+ag man
+rg man
+ag --help
+rg --help
+man ag
+apt search ag | fzf
+cd ~./dotfiles
+apt search lsd | rg lsd
+cd program_files/
+curl https://github.com/Peltoche/lsd/releases/download/0.16.0/lsd_0.16.0_amd64.deb
+wget https://github.com/Peltoche/lsd/releases/download/0.16.0/lsd_0.16.0_amd64.deb
+sudo dpkg -i lsd_0.16.0_amd64.deb
+lsd -h
+lsd -lh
+lsd -1
+lsd --group-dirs=first
+lsd --group-dirs=first -l
+lsd --group-dirs=first -lh
+lsd --group-dirs=first -la
+lsd --group-dirs=first -R
+lsd --group-dirs=first -lR1
+lsd --group-dirs=first --tree
+lsd --group-dirs=first -V
+exa -G
+exa -lG
+lsd --group-dirs=first --blocks=size,date,name
+lsd --group-dirs=first --blocks=size,date,name -l
+lsd --group-dirs=first --blocks=size,date,name --date=relative
+lsd --group-dirs=first --blocks=size,date,name --date=relative --total-size
+lsd --group-dirs=first --blocks=size,date,name --date=relative --total-size -l
+lsd --group-dirs=first --blocks=size,date,name --date=relative -l
+lsd --color=always
+lsd --color=never
+cat .lesshst
+ls --tree
+apt search bat | rg bat
+apt search bat*extras
+apt search 'bat*extras'
+apt search bat extras
+cat install.sh
+cat init.vim
+less init.vim
+bat init.vim
+cd ~/program_files/
+bat nvim
+mv program_files/ programs
+lst
+cd plugins
+lt --depth=3
+git clone https://github.com/eth-p/bat-extras.git
+cd bat-extras/
+bat build.sh
+./build.sh
+./build.sh --install
+sudo ./build.sh --install
+batman exa
+batman git-log
+man git-rebase | bat
+bat backup.sh
+rg unix
+batgrep unix
+batgrep lightline
+batgrep augroup
+git show | bat
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+bat --list-themes | fzf --preview="bat --theme={} --color=always /path/to/file"
+bat --list-themes | fzf --preview="bat --theme={} --color=always ginit.vim"
+apt search broot | batgrep broot
+apt search broot
+wget https://github.com/Canop/broot/releases/download/v0.10.2/broot
+sudo ./broot --install
+sudo ./broot
+ln -sv ~/programs/broot /usr/bin
+sudo ln -sv ~/programs/broot /usr/bin
+sudo broot
+rm win32yank
+sudo rm win32yank
+mlocate broot
+rm broot
+sudo rm broot
+ll | fzf
+sudo -i
+man chmode
+man chmod
+chmod +x broot
+chmod +x broot.bin
+chmod a+x broot
+./broot
+cd ~/.config/broot/launcher/bash
+cd ~/programs
+sudo ln -sv ~/programs/broot /usr/local/bin/
+nm ~/programs//broot /usr/local/bin/broot
+mv ~/programs//broot /usr/local/bin/broot
+sudo mv ~/programs//broot /usr/local/bin/broot
+broot
+vim conf.toml
+showkey -a
+vim ~/.config/broot/conf.toml
+br
+exa -x
+exa -lx
+exa -lhS
+exa -lh
+exa -lhi
+exa -lbF --git
+exa -lbF
+exa *sh
+exa -l *sh
+apt search exa
+apt search exa | rg exa
+apt search exa | rg 'exa && ls'
+apt search exa | rg 'exa | ls'
+apt search exa | rg 'exa & ls'
+apt search exa | rg 'exa*ls'
+apt search exa | rg 'exa.*ls'
+exa -v
+exa --icons
+exa -l --icons
+exa --git
+exa -l --icons --git
+exa --long --git
+exa -l --git
+exa -l --git --head
+exa -l --git -h
+exa -lh --git
+apt search bfs | rg bfs
+apt search bfs | batgrep bfs
+apt search bfs | bat 'bfs'
+apt search bfs | rg 'bfs'
+apt search bfs | batgrep 'bfs'
+bfs ~ -nohidden -type d -printf '~/%P\n'
+bfs --help
+ll -h
+man bfs
+bfs
+git shoq
+apt search antigen
+sudo apt install zsh-antigen
+mlocate aintigen
+mlocate zsh
+bat antigen.zsh
+bat README.Debian
+vim README.Debian
+bat README.mkd.gz
+sudo apt remove oh-my-zsh
+cd .antigen/
+apt search oh-my-zsh
+antigen help
+antigen update
+cd linuxbrew/
+sudo apt-get install build-essential curl file git
+sudo sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
+id
+who am i
+sudo rm -rf linuxbrew
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
+brew install diff-so-fancy
+git config --global core.pager "diff-so-fancy | less --tabs=4 -RFX"
+git config --bool --global diff-so-fancy.stripLeadingSymbols false
+git config --global diff-so-fancy.rulerWidth 47
+git config --global diff-so-fancy.rulerWidth 54
+git config --global diff-so-fancy.rulerWidth 80
+git config --global -e
+export PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
+test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv)
+test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.bash_profile
+echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile
+cd ~/dotfiles/nvim/
+cd /usr/share
+cd ~/dotfile
+spaceship_vi_mode_enable
+vim -d /mnt/c/Users/artyu/AppData/Roaming/alacritty/{alacritty.yml,alacritty_new.yml}
+vim -d /mnt/c/Users/artyu/AppData/Roaming/alacritty/{alacritty.yml,alacritty_old.yml,}
+vim -d /mnt/c/Users/artyu/AppData/Roaming/alacritty/{alacritty.yml,alacritty_old.yml}
+vim /mnt/c/Users/artyu/AppData/Roaming/alacritty/alacritty.yml
+wget -O - https://www.cl.cam.ac.uk/\~mgk25/ucs/examples/UTF-8-demo.txt
+git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+setopt EXTENDED_GLOB
+for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do\
+ ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"\
+done
+echo [-d /home/linuxbrew/]
+echo [[-d /home/linuxbrew/]]
+echo [[ -d "/home/linuxbrew/"]]
+echo [ -d "/home/linuxbrew/"]
+echo [-d "/home/linuxbrew/"]
+echo [ -d "/home/linuxbrew/" ]
+echo $([ -d "/home/linuxbrew/" ])
+[ -d "/home/linuxbrew/" ] && echo 'Yes'
+[[ -a "/home/linuxbrew/" ]]
+if [[ -a "/home/linuxbrew/" ]]; then; echo Yes: fi
+if [[ -d "/home/linuxbrew/" ]]; then; echo Yes; fi
+if [[ -d "/home/linuxbrew/.linuxbrew/bin/brew" ]]; then; echo Yes; fi
+if [[ -d "/home/linuxbrew/.linuxbrew/bin" ]]; then; echo Yes; fi
+if [[ -a "/home/linuxbrew/.linuxbrew/bin/brew" ]]; then; echo Yes; fi
+if [[ -d "/opt/miniconda3/bin" ]]; then; echo Yes; fi
+ll -A preto
+ll -A prezto
+ll -A *prezto*
+ll -A prezto*
+ll -A ".*prezto.*"
+man lsd
+ll -A -- .*prezto.*
+ll -A -- .zprezto*
+apt search pwgen
+apt show pwgen
+apt show pwgen\t
+apt show pwgent
+apt show pwget
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/zdharma/zplugin/master/doc/install.sh)"
+vim -d ~/.zshrc ~/dotfiles/zsh/.zshrc_my_custom
+bat .zhistory
+apt info zsh
+git clone https://github.com/zdharma/zplugin-configs.git
+cd zplugin-configs
+bat ._zplugin
+cd ~/.zplugin/plugins/junegunn---fzf-bin/
+apt info fzf
+cd /usr/share/doc/fzf
+vim ~/dotfiles/nvim/init.vim
+man fzf
+man fzf-tmux
+rg 'fzf\
+'
+rg 'fzf'
+man git-log
+mlocate fzf
+which man
+man git-clone
+cd 00dani
+typeset
+mandb
+man -k typeset
+man --apropos typeset
+man zsh
+man zshcompsys
+typeset -p
+echo $ZPLG_HOME
+echo &xdg_cache_home
+echo $xdg_cache_home
+rg 'self-update'
+echo &xdg_cache_homesr
+ll *ro*
+lsd tree
+cd ._zplugin
+cd .zplugin
+ll --tree
+cd lainiwa
+lt -A --depth=3
+ls -R
+ls -R -A
+which lsd
+locate lsd
+lsd --help
+man ls
+lsd -A
+lsd -A git
+lsd -A *git
+ll -A *git
+ll -A *.git
+ll -A .git
+cd .git
+bat HEAD
+vdir
+man git-ls
+git ls-tree -d
+git ls-tree
+git ls-tree .
+man git-ls-tree
+exa -lbhHigUmuSa@ --time-style=long-iso --git --color-scale
+exa -lbhHigUmuSa@ --git --color-scale
+exa -lbhHigUmuSa --time-style=long-iso --git --color-scale
+exa -lbhHigmuSa --time-style=long-iso --git --color-scale
+exa --help
+exa --group-directories-first -l
+exa --group-directories-first -lA
+exa --group-directories-first -la
+exa --group-directories-first -la --git-ignore
+exa --group-directories-first -la --git-ignore --tree
+exa -a --git-ignore --tree
+which tree
+tree -I .git
+tree -a -I .git
+tree -aC -I .git
+exa -a --git-ignore --tree -I .git
+exa --tree -I .git
+lsd --tree -I .git
+tree -aL2
+tree -aL 2
+tree -a -L 2 -I .git .github
+tree -a -L 2 -I .git -I .github
+tree -a
+locate c.zsh
+cd ~/.zplugin/plugins/trapd00r---LS_COLORS
+exa -A
+exa -a
+ll -AR *.zwc
+ll --help
+ll -AR -- *.zwc
+ll -A -R -- *.zwc
+ll -A -R
+ll -R -- *.zwc
+lsd -l
+lsd -lAR
+lsd -lAR -- &.zwc
+lsd -lAR -- *.zwc
+lsd -lAR -- *zwc
+lsd -lAR -- *.zsh
+lsd -R -- *.zsh
+lsd -AR -- *.zsh
+ll -A *.zwc
+ll -A *.zwc -R
+exa --group-directories-first
+exa -l
+exa -laR -- *.zwc
+exa -laR *.zwc
+exa -laR -p *.zwc
+exa -laR -P *.zwc
+man exa
+ls -lR
+ls -lRa
+ls -lRA
+ls -lRA *.zwc
+ls -lRA -- *.zwc
+ll -AR
+ll -AR | rg '*.zwc'
+ll -AR | rg *.zwc
+ll -AR | rg .*\.zwc
+ll -AR | rg '.*\.zwc'
+man locate
+apt search fd-find
+brew search ds
+brew search fd
+brew info fdclone
+fd *.zwc
+fd -h .*\.zwc
+fd -H .*\.zwc
+fd .*\.zwc
+fd zwc
+fd -H zwc
+fd -H .zwc
+fd -H \.zwc
+fd -H \.zwc$
+fd -H .*\.zwc$
+fd -H \.\*.zwc$
+fd -H \.\*.zwc\$
+fd -H .\*.zwc$
+man fd
+fd -H '.\*.zwc$'
+fd -H '.*.zwc$'
+fd -H '.*zsh.zwc$'
+fd -H '.*zshzwc$'
+fd -H '.*zsh\.zwc$'
+man dir_colors
+man dircolors
+dircolors
+dircolors -b
+dircolors -b LS_COLORS
+brew search fzf
+brew info fzf
+sudo apt remove fzf
+locate fzf
+zplugin zstatus
+zplugin compile --all
+fd -H '.*\.zwc$'
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+cd ~/.fzf
+echo $P
+echo $PATH > path.txt
+vim path.txt
+cd $ZPFX
+git branch -v
+autoload -U colors && colors
+for color in red green yellow blue magenta cyan black white; do\
+ eval $color='%{$fg_no_bold[${color}]%}'\
+ #eval ${color}_bold='%{$fg_bold[${color}]%}'\
+done
+curl -s http://whatthecommit.com/index.txt
+df | rg 'c|d'
+df | rg 'C|D'
+df | rg 'F|C|D'
+df | grep 'F|C|D'
+df | grep -p 'F|C|D'
+df | grep -P 'F|C|D'
+space
+echo -random
+git config --global alias.yolo 'commit -m "$(curl -s whatthecommit.com/index.txt)"'
+git config --global alias.yolo '!git commit -m "$(curl -s whatthecommit.com/index.txt)"'
+man git-restore
+rsync ~/{.zshrc,dotfiles/zsh/zshrc}
+rsync -v ~/{.zshrc,dotfiles/zsh/zshrc}
+cd ~/dotfiles/zsh
+git reset --soft HEAD~
+cd ~/.zplugin
+rg 'git-completion'
+ss
+apt search Subversion
+apt info subversion
+brew info subversion
+brew install subversion
+brew help bundle
+brew bundle
+brew bundle dump
+brew bundle cleanup
+brew bundle --force cleanup
+zplugin clist
+zplugin csearch
+echo $FPATH
+locate git-completion
+locate 'git-completion'
+locate git
+prompt -h pure
+zplugin creinstall fzf
+zplugin --help
+vim ~/.zplugin
+brew info diff-so-fancy
+zplugin status
+zplugin -h
+zplugin self-update && zplugin update
+zplugin list
+zplugin listsr
+rm -rf fzf-completion.zsh
+which fzf
+mkdir ~/.zplugin
+git clone https://github.com/zdharma/zplugin.git ~/.zplugin/bin
+zplugin completions
+zplugin delete fzf-completion.zsh
+zplugin delete fzf
+cd ~/projects/dotfiles_examples/zplugin-configs/
+rg
+rg 'fast'
+compdef _gnu_generic brew
+man pushd
+pushd
+popd
+cd brew --prefix
+type bre
+type brew
+sudo apt upgrade && sudo apt update; brew update && brew upgrade; zplugin self-update && zplugin update --all
+brew search diff-so-fancy
+brew remove diff-so-fancy
+which diff-so-fancy
+cd $(brew --prefix)
+vim shell_scripts/show_terminal_colors.sh artyu/cd
+sp
+run-help gs
+dirs -v
+run-help vim
+which run-help
+whatis artyu/
+whatis run-help
+run-help man
+vim ~/.zshr
+bindkey | rg back-i-search
+bindkey | rg 'back-i-search'
+bindkey | rg 'fzf'
+bindkey
+sr
+sudo apt remove antigen
+sudo apt remove zsh-antigen
+cd $ZPREZTODIR
+git clone --recurse-submodules https://github.com/belak/prezto-contrib contrib
+nvim ~/.zpreztorc
+cd ~/
+cd nvim
+echo eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
+git granch -vv
+man zshmodules
+pwg='pwgen -cnB 8 10 | while read PASS; do echo -n -e "$PASS\t"; echo -n "$PASS" | md5sum | cut -f1 -d" "; done'
+_pwgen -cnB 8 10 | while read PASS; do echo -n -e "$PASS\t"; echo -n "$PASS" | md5sum | cut -f1 -d" "; done
+pwgen
+sudo apt install pwgen
+pwgen -cnB 8 10 | while read PASS; do echo -n -e "$PASS\t"; echo -n "$PASS" | md5sum | cut -f1 -d" "; done
+updatedb.mlocate
+which updatedb.mlocate
+bat /usr/bin/updatedb.mlocate
+cd /usr/bin/
+ll updatedb*
+ll /etc/alternatives/updatedb
+cd /etc/alternatives/updatedb
+cd /etc/alternatives/
+cd /var/lib/mlocate/mlocate.db
+cd /var/lib/mlocate/
+man updatedb
+locate mlocate
+info
+whatis git
+whatis updatebd
+whatis updatedb
+file /var/lib/mlocate/mlocate.db
+file dotfiles
+whatis rename
+free
+cowsay
+apt search cowsay
+info man
+apt search info
+history
+df
+man df
+vim ~/.zpreztorc
+zsh
+cd zsh
+rg zcompile
+echo $0
+cd projects/dotfiles_examples/
+git clone https://github.com/lukesmithxyz/voidrice luke-smith-dotfiles
+cd luke-smith-dotfiles/
+bat .profile
+exa -laR
+exa -LA
+exa -La
+exa -lA
+exa -la
+cd modules/
+bat /etc/zsh/zshenv
+bat /etc/zsh/zprofile
+vim .profile
+touch .zshenv
+vim ~/.zshenv
+git config --list --show-origin
+cp ~/.gitconfig ~/.config/git/config -f
+mkdir ~/.config/git
+cp ~/.gitconfig ~/.config/git/config
+git config --list
+git config help
+git help config
+echo $GIT_CONFIG
+cd .config/git/
+cd .config
+vim ~/.config/git/config
+vi .zshenv
+brew search nvim
+brew info nvim
+apt info nvim
+sudo apt remove nvim
+whereis nvim
+dpkg-query -s
+locate lesspipe
+bat /usr/bin/lesspipe
+cd .zprezto/runcoms/
+which vimdiff
+apt info lfm
+brew search lf
+brew info lf
+brew install lf
+lf
+lfcd
+git clone https://github.com/htr3n/zsh-config.git
+bindkey -l
+bindkey -lL
+vim sections/
+vim ~/dotfiles/zsh/zshrc
+rm -rf ~/.zplugin
+locate zcompdump
+cd …./dir
+cd …./usr
+cd ..../dir
+cd ..../usr
+cd ..../zsh
+sudo apt update && sudo apt upgrade
+sudo apt autoremove
+git clone https://github.com/woefe/dotfiles.git woefe-dotfiles
+git clone https://github.com/woefe/wbase.zsh.git
+print $PATH
+print -l $PATH
+echo $KEYTIMEOUT
+cd .zplugin/plugins/zsh-users---zsh-syntax-highlighting/
+echo $PIPELINE
+echo ${ARRAY[0]}
+echo $ARRAY
+echo $PROJECT
+echo ${ARRAY[1]}
+edit
+echo $path
+zplugin update --all
+disk
+man cp
+cd ll
+man rename
+echo $COLUMNS
+echo $(tput cols)
+locate less
+man lesspipe
+cd /mnt/d/artyu/Downloads
+apt search pdftotext
+brew search pdftotext
+brew search poppler
+brew info poppler
+brew install poppler
+lesspipe zsh_a4.pdf
+less zsh_a4.pdf
+dir bin
+mkdir bin
+touch -R bin/lessindent
+touch bin/lessindent
+ll bin
+vim bin/lessindent
+echo $INDENT
+printf $INDENT_LINE
+export LESSOPEN="| sed \"s/^/${INDENT_LINE}/\""
+export LESSOPEN="|- sed \"s/^/${INDENT_LINE}/\""
+man touch
+export LESSOPEN="|- sed \"s/^/${INDENT_LINE}/\" %s"
+man apropos | fmt -w 70
+man git | sed "s/^/${INDENT_LINE}/" /
+man git | sed "s/^/${INDENT_LINE}/"
+cd bin/lessindent
+cd bin
+bat lessindent
+rename lessindent
+name lessindent
+vim lesscenter
+chmod +x lesscenter
+printf $LESSOPEN
+man gitt
+printf $path
+print -l $path
+vim ~/.zprofile
+whereis lesscenter
+man git
+source ~/.config/zsh/.zprofile
+touch completion.zsh history.zsh vi-mode.zsh
+source $ZDOTDIR/lib/completion.zsh
+uname -s
+[[ -d ~/.bin ]]
+[[ -d ~/.bin ]] && echo Yes
+uname
+[[ ! -d ~/.bin ]] && echo Yes || echo No
+setopt function_argzero
+setopt
+printf $%
+echo ${(%):-%N}
+readlink -f $0
+man 1 readlink
+source install.sh
+echo $file
+basename $file
+echo $(basename -- $file)
+echo $(basename $file)
+vim install.sh
+zrecompile ~/.zshenv
+zrecompile -p ~/.zshenv
+git unstage
+git add bin/**
+git add config/
+git restore --staged **/autoload/plug.vim.old
+cd ../..
+vim .gitignore
+zcompile functions/
+zcompile functions
+ls functions/
+zcompile functions ${ls functions/}
+echo ${ls functions/}
+shellcheck "echo ${ls functions/}"
+vim test
+shellcheck test
+zcompile functions $(ls functions/)
+cd dotfiles/sr
+cd functions/
+zcompile ../functions $(ls functions/)
+ls .
+zcompile ../functions $(ls .)
+find functions/ -type f -maxdepth 1
+find $ZDOTDIR/functions/ -type f -maxdepth 1
+find -maxdepth 1 $ZDOTDIR/functions/ -type f
+find -maxdepth=1 $ZDOTDIR/functions/ -type f
+find $ZDOTDIR/functions/ -maxdepth=1 -type f
+zcompile $ZDOTDIR/functions.zwc $(find $ZDOTDIR/functions/ -maxdepth 1 -type f)
+echo "$(find $ZDOTDIR/functions/ -maxdepth 1 -type f)"
+printf $(find $ZDOTDIR/functions/ -maxdepth 1 -type f)
+echo $(find $ZDOTDIR/functions/ -maxdepth 1 -type f)
+shellcheck $ZDOTDIR/.zlogin
+find $ZDOTDIR/functions/ -maxdepth 1 -type f | sed s/\n$/ /g
+find $ZDOTDIR/functions/ -maxdepth 1 -type f | sed s/\n/ /g
+find $ZDOTDIR/functions/ -maxdepth 1 -type f | sed 's/\n/ /g'
+find $ZDOTDIR/functions/ -maxdepth 1 -type f | sed 's/\n$/ /g'
+find $ZDOTDIR/functions/ -maxdepth 1 -type f | sed 's/\n//g'
+find $ZDOTDIR/functions/ -maxdepth 1 -type f
+echo "find $ZDOTDIR/functions/ -maxdepth 1 -type f"
+for file in "$ZDOTDIR/**/*.zwc.old"; do rm -f $file; done
+for file in "$ZDOTDIR/**/*.zwc.old"; do echo $file; done
+for file in '$ZDOTDIR/**/*.zwc.old'; do echo $file; done
+for file in $($ZDOTDIR/**/*.zwc.old); do echo $file; done
+echo $ZDOTDIR/**/*.zwc.old
+for file in $ZDOTDIR/**/*.zwc.old; do echo $file; done
+tree -C -L 2
+echo $array
+for i in $array; do echo $i; done
+for i in $array; do echo "$ZDOTDIR/.$i"; done
+rm -f **/*.zwc
+rm -f **/.*.zwc
+cd .config/zsh/
+for i in $ZDOTDIR/**/*.zwc.old; do
+for in $ZDOTDIR/**/*.zwc.old; do echo $i; done
+for i in $ZDOTDIR/**/*.zwc.old; do echo $i; done
+autoload -U zrecompile
+zrecompile -pq $ZDOTDIR/**/*.*sh
+source $ZDOTDIR/.zlogin
+cd dotfiles/install.sh
+git add **/cd
+brew search conda
+brew search anaconda
+brew search *conda
+brew info minicond
+brew search miniconda
+brew info miniconda
+brew install miniconda
+brew cask info miniconda
+apt search miniconda
+conda update *
+vim .config/zsh/functions/cd
+brew update ranger
+brew uppgrade ranger
+brew upgrade ranger
+brew uninstall ranger
+sudo apt upgrade && sudo apt update && sudo apt autoremove
+sudo apt search ctags
+brew search ctags
+brew info ctags
+brew search universal
+lsd -lA
+rg 'REPORTTIME'
+ctags
+vim config/zsh/zshrc +38
+[[ -d $HOME/downloads ]] || mkdir -v $HOME/downloads
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/downloads/miniconda.sh
+sudo bash ~/downloads/miniconda.sh -b -p /opt/miniconda3
+sudo conda update conda
+vim ~/dotfiles/nvim/plugins.vim
+vim ~/dotfiles/config/nvim/plugins.vim
+sudo chown -R anuvyklack /opt/miniconda3/
+echo $USER
+vim ~/.config/zsh/.zshrc
+brew search bfs
+apt search bgs
+apt search bfs
+cd /opt/miniconda3
+lsd
+man mkdir
+mktemp -d
+cd /tmp/
+mktemp -d -p $HOME/
+man 1 mktemp
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
+rm miniconda.sh
+vim ~/.config/nvim/init.vim
+ll -l
+[[ -s $ZDOTDIR/lib ]] && echo "Yes" || echo "No"
+[[ $(readlink -f ~/.config/nvim) = "~/dotfiles/config/nvim" ]]
+[[ $(readlink -f ~/.config/nvim) = "~/dotfiles/config/nvim" ]] && echo "Yes" || echo "No"
+[[ $(readlink -f ~/.config/nvim) == "~/dotfiles/config/nvim" ]] && echo "Yes" || echo "No"
+[[ "$(readlink -f ~/.config/nvim)" == "~/dotfiles/config/nvim" ]] && echo "Yes" || echo "No"
+[[ "$(readlink -f ~/.config/nvim)" = "~/dotfiles/config/nvim" ]] && echo "Yes" || echo "No"
+echo "~/dotfiles/config/nvim"
+echo "$HOME/dotfiles/config/nvim"
+[[ "$(readlink -f ~/.config/nvim)" = "$HOME/dotfiles/config/nvim" ]] && echo "Yes" || echo "No"
+[[ "$(readlink -f $HOME/.config/nvim)" = "$HOME/dotfiles/config/nvim" ]] && echo "Yes" || echo "No"
+[[ $(readlink -f $HOME/.config/nvim) = "$HOME/dotfiles/config/nvim" ]] && echo "Yes" || echo "No"
+[[ -s $HOME/.config/nvim ]] && [[ $(readlink -f $HOME/.config/nvim) = "$HOME/dotfiles/config/nvim" ]] && echo "Yes" || echo "No"
+[[ -s "$HOME/.config/nvim" ]] && [[ $(readlink -f $HOME/.config/nvim) = "$HOME/dotfiles/config/nvim" ]] && echo "Yes" || echo "No"
+[[ -L "$HOME/.config/nvim/" ]] && echo 'Yes' || echo 'No'
+[[ -L "$HOME/.config/nvim" ]] && echo 'Yes' || echo 'No'
+[[ -L "$HOME/.config/nvim" ]] && [[ $(readlink -f $HOME/.config/nvim) = "$HOME/dotfiles/config/nvim" ]] && echo "Yes" || echo "No"
+[[ ! -L "$HOME/.config/nvim" ]] && [[ $(readlink -f $HOME/.config/nvim) != "$HOME/dotfiles/config/nvim" ]] && echo "Yes" || echo "No"
+rm ~/.config/nvim
+[[ ! -L "$HOME/.config/nvim" ]] || [[ $(readlink -f $HOME/.config/nvim) != "$HOME/dotfiles/config/nvim" ]] && echo "Yes" || echo "No"
+ln -sv ~/dotfiles/config/nvim ~/.config/nvim
+readlink -f ~/.config/nvim1
+readlink -f ~/.config/nvim
+cd ~/dotfiles/config/zsh
+cd /mnt/d/artyu
+rsync -rvh /mnt/d/artyu/Software/dotfiles_examples ~/
+git clone https://github.com/LukeSmithxyz/LARBS.git
+cd LARBS/
+printf "Optional arguments for custom use:\\n  -r: Dotfiles repository (local file or url)\\n  -p: Dependencies and programs csv (local file or url)\\n  -a: AUR helper (must have pacman-like syntax)\\n  -h: Show this message\\n"
+printf "\r  [ \033[00;34m..\033[0m ] Hello\
+printf "\r  [ \033[00;34m..\033[0m ] Hello\!"
+printf "\r  [ \033[00;34m..\033[0m ] Hello"
+printf "\r  [ \033[00;34m..\033[0m ] Hello\n"
+printf "\r  [ \033[0;33m??\033[0m ] Hello\n"
+man sudo
+sudo -v
+bash _execute_
+echo -en "\e]P0000000" #black
+whatis symlink
+for i in {30..37}; do echo -e "\033[1;$im colorful text\033[0m"; done
+echo -e "\033[1;31m This is red text"
+echo -e
+echo -e "\e[1;31m This is red text"
+echo -e "\e[1;31m This is red text \e[0mNew"
+for i in {1..7}; do echo -e "\033[$i;31""m different style\033[0m"; done
+echo -e "\e[1;30m This is red text"
+echo -e "Normal \e[1mBold"
+echo -e "Normal \e[2mDim"
+echo -e "Normal \e[4mUnderlined"
+echo -e "Normal \e[5mBlink"
+echo -e "Normal \e[7minverted"
+echo -e "Normal \e[8mHidden"
+echo -e "Default \e[37mLight gray"
+echo -e "Default \e[36mLight gray"
+echo -e "Default \e[91mLight red"
+echo -e "Default \e[92mLight green"
+echo -e "Default \e[97mWhite"
+echo -e "\e[38;5;82mHello \e[38;5;198mWorld"
+for i in {16..21} {21..16} ; do echo -en "\e[38;5;${i}m#\e[0m" ; done ; echo
+echo -e "\u001b[32;1m Setting up Dotfiles...\u001b[0m"
+echo -e " \u001b[37;1m\u001b[4mSelect an option:\u001b[0m"
+echo -e "  \u001b[34;1m (1) Install oh-my-zsh \u001b[0m"
+echo -e "  \u001b[34;1m (2) Install zsh plugins \u001b[0m"
+echo -e "  \u001b[34;1m (3) Install vim plugins \u001b[0m"
+echo -e "  \u001b[34;1m (4) Install tmux plugins \u001b[0m"
+echo -e "  \u001b[34;1m (5) Setup symlinks \u001b[0m"
+echo -e "  \u001b[31;1m (0) Exit \u001b[0m"
+echo -en "\u001b[32;1m ==> \u001b[0m"
+echo -e "\e[1;37Link zsh files to $ZDOTDIR"
+echo -e "\e[1;37mLink zsh files to $ZDOTDIR"
+echo -e "\e[1;37mLink zsh files to\e[0m $ZDOTDIR"
+echo -e "\e[1;37mLink zsh files to\e[0m \e[1;34m$ZDOTDIR"
+conda list
+conda list | grep pynvim
+conda list | grep matplotlib
+[[ conda list | grep pynvim ]] && echo 'Yes' || echo 'No'
+conda list | grep pynvim && echo 'Yes' || echo 'No'
+conda list | grep matplotlib && echo 'Yes' || echo 'No'
+conda list | grep pynvim > /dev/null && echo 'Yes' || echo 'No'
+rg '/dev/null'
+vim ~/dotfiles/config/zsh/lib/history.zsh
+conda list | grep pynvim > /dev/null 2>&1 && echo 'Yes' || echo 'No'
+if conda list | grep pynvim; then echo 'Yes'; fi
+if conda list | grep pynvim > /dev/null 2>&1; then echo 'Yes'; fi
+if $(conda list | grep pynvim > /dev/null 2>&1); then echo 'Yes'; fi
+if $(conda list | grep pynvim); then echo 'Yes'; fi
+if $(conda list | grep 'pynvim'); then echo 'Yes'; fi
+if conda list | grep 'pynvim'; then echo 'Yes'; fi
+if conda list | grep pynvim > /dev/null 2>&1; then echo 'Yes'; else echo 'No'; fi
+if conda list | grep man > /dev/null 2>&1; then echo 'Yes'; else echo 'No'; fi
+whatis conda
+whereis conda
+type conda
+man type
+command -v conda
+man command
+command -v par
+command -v man
+command -v ag
+if command -v ag; then echo 'Yes'; fi
+if command -v ag; then echo 'Yes'; else echo 'No'; fi
+if ! command -v ag; then echo 'Yes'; else echo 'No'; fi
+echo -e '\e[31;1mconda not found\e[0m'
+echo -e '\e[31;1m conda not found\e[0m'
+echo -e '\e[31;1m conda \e[37;1mnot found!\e[0m'
+echo -e '\e[37;1m conda \e[31;1mnot found!\e[0m'
+echo -e '\e[37;1m conda\e[0m \e[31;1mnot found!\e[0m'
+echo -e '\e[31;1m conda not found!\e[0m'
+echo -e '\e[37;1m conda\e[0m \e[31;1mcommand not found!\e[0m'
+echo -e '\e[37;1m conda:\e[0m \e[31;1mcommand not found!\e[0m'
+echo -e '\e[32;1m pynvim already installed\e[0m'
+echo -e '\e[32;1m pynvim\e[0m \e[31;1malready installed\e[0m'
+echo -e '\e[37;1m pynvim\e[0m \e[32;1malready installed\e[0m'
+echo -e '\e[37;1m conda\e[0m install \e[32;1mpynvim\e[0m'
+echo -e '\e[32;1m conda install\e[0m \e[37;1mpynvim\e[0m'
+echo -e '\e[32;1m pynvim\e[0m \e[37;1malready installed\e[0m'
+echo -e '\e[37;1m conda install\e[0m \e[32;1mpynvim\e[0m'
+echo -e '\e[31;1m conda:\e[0m \e[37;1mcommand not found!\e[0m'
+echo -e 'Installing \e[32;1mminiconda3\e[0m'
+echo -e '\e[37;1mInstalling \e[32;1mminiconda3\e[0m'
+echo -e '\e[37;1mInstalling \e[35;1mminiconda3\e[0m'
+rm -rf /opt/miniconda3
+echo -e '\n\e[37;1mconda install\e[0m \e[32;1mpynvim\e[0m'
+rm ~/.config/zsh/lib
+echo -e "\e[1;37mDone
+echo -e "\e[1;37mDone\!\e[0m"
+echo -e '\e[1;37mDone!\e[0m'
+whereis exa
+dpkg -s sudo
+dpkg -s exa
+dpkg --info exa
+cd wikicd
+rg 'dpkg'
+man 1 wajig
+apt info ba
+wajig tutorial | bat
+sudo apt install bat
+whatis bat
+batcat ~/dotfiles/install.sh
+whatis locate
+whereis locate
+mlocate bat
+locate batcat
+man batcat
+batcat batcat
+brew search bat
+sudo apt uninstall bat
+sudo apt remove bat
+bat lesscenter
+bat ~/.bin/lesscenter
+locate bat
+locate linuxbrew**bat
+locate linuxbrew*bat
+locate linuxbrew/*bat
+locate linuxbrew/**/bat
+bat --help
+cd ~/wiki/
+rg 'generic'
+rg '_gnu_generic'
+compdef _gnu_generic bat
+cd ~/.config/zsh/functions
+touch bat
+vim bat
+bat
+whereis bat
+whereis mlocate
+whereis -b mlocate
+whereis -s mlocate
+which mlocaet
+which mlocate
+which locate
+whatis /usr/bin/locate
+echo "which bat
+echo "which bat"
+echo "$(which bat)"
+vim .config/zsh/functions/bat1
+ln -sv $(which bat) $HOME/.bin/bat
+vim .config/zsh/functions/bat
+bat /etc/zshrc
+bat /etc/zsh/zshrc
+which bat1
+echo $A
+which $A
+[[ which $A = "$A not found" ]] && echo 'Yes' || echo 'No'
+[[ $(which $A) = "$A not found" ]] && echo 'Yes' || echo 'No'
+zplugin self-update
+compdef _gnu_generic bat &
+man bat
+man bat \[
+zplugin create _local
+zplugin create
+conda init zsh
+bat .zshrc
+rm .zshrc
+echo $$?
+conda config --set changeps1 False
+bat .condarc
+conda activate base
+echo $?
+find 'shell.zsh'
+find -R 'shell.zsh'
+locate shell.zsh
+eval "$('/opt/miniconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+conda create --name newenvironment
+python
+conda info -e
+vim .condarc
+conda activate newenvironment
+conda info
+cd /opt/miniconda3/bin/conda
+vim new
+echo "\uE0A0"
+echo "less $LESS"
+echo "less ${LESS}"
+git show | bat -l rs
+git add condarc
+man man
+[[ $(umask) = '000' ]] && echo 'Yes' || echo 'No'
+umask
+dpkg-query --list bfs
+dpkg-query --list vim
+dpkg-query --list lf
+dpkg-query --list exa
+dpkg --status ex
+dpkg --status exa
+dpkg --status bfs
+dpkg-query -W -f='${Status}' nano 2>/dev/null | grep -c "ok installed"
+which exa
+exa
+installed-by-apt fd
+installed-by-apt nano
+[[ installed-by-apt nano ]] && echo 'Yes' || echo 'No'
+installed-by-apt exa
+[[ $(installed-by-apt nano) ]] && echo 'Yes' || echo 'No'
+[[ $(installed-by-apt exa) ]] && echo 'Yes' || echo 'No'
+[[ $(installed-by-apt fd) ]] && echo 'Yes' || echo 'No'
+installed-by-apt vim
+installed-by-apt nvim
+[[ 0 ]] && echo 'Yes' || echo 'No'
+[[ 1 ]] && echo 'Yes' || echo 'No'
+[[ -1 ]] && echo 'Yes' || echo 'No'
+if installed-by-apt nano; then echo 'Yes'; else echo 'No'
+if installed-by-apt nano; then echo 'Yes'; else echo 'No'; fi
+if installed-by-apt vim; then echo 'Yes'; else echo 'No'; fi
+if installed-by-apt exa; then echo 'Yes'; else echo 'No'; fi
+[ 1 ] && echo 'Yes' || echo 'No'
+[ 0 ] && echo 'Yes' || echo 'No'
+echo -e '\e[37;1mconda install\e[0m \e[32;1mpynvim\e[0m'
+echo -e '\e[37;1mapt install \e[32;1mapp\e[0m'
+echo -e '\e[33;1mapt install \e[32;1mapp\e[0m'
+echo -e '\e[34;1mapt install \e[32;1mapp\e[0m'
+echo -e '\e[35;1mapt install \e[32;1mapp\e[0m'
+echo -e '\e[35;1mapt \e[37;1install \e[32;1mapp\e[0m'
+echo -e '\e[35;1mapt \e[37;1minstall \e[32;1mapp\e[0m'
+for i in {30..37}; do echo -e "\033[1;$i""m colorful text\033[0m"; done
+echo ''
+brew list nvim
+brew list m4
+brew list bat
+brew list rg
+brew list ag
+brew list exa
+brew list exa || echo 'No'
+brew list exa > /dev/null 2>&1 || echo 'No'
+vim config/zsh/themes/spaceship.zsh
+vim .config/zsh/themes/spaceship.zsh
+echo $PROMPT
+echo $PROMPT2
+echo $PROMPT3
+echo $PROMPT4
+vim .zshenv
+which confa
+which conda
+/opt/miniconda3/bin/conda
+/opt/miniconda3/bin/conda shell.zsh
+rg 'shell.zsh'
+apt search fd
+apt search fd | less
+apt search fd | bat
+apt info fd
+apt info fd-find
+brew info bat
+brew list fd
+fd shell.zsh
+fd conda
+fd conda | less
+fd conda | less -R
+fd conda | less -r
+fd conda | bat
+fd conda | less -RX
+fd --help
+zplugin cdlist
+zplugin clean
+zplugin delete --clean
+zplugin creinstall OMZ::plugins/fd/_fd
+zplugin creinstall OMZ::plugins/fd
+rm cd
+rm -r .zplugin/completions/_fd
+rm -r .zplugin/snippets/_fd
+apt search command-not
+apt info command-not-found
+apt info packagekit-command-not-found
+sudo apt install command-not-found
+update-command-not-found
+sudo update-command-not-found
+zplugin times
+command -v bfs
+[[ $(command -v bfs) ]] && echo 'Yes'
+command -v exa
+command -v batgrep
+brew uninstall bat
+command -v bat
+source ~/dotfiles/install.sh
+which bat
+source ~/.config/zsh/.zshrc
+fd _rg
+sudo apt uninstall command-not-found
+sudo apt remove command-not-found
+sudo apt remove
+bat cache
+[[ $(command -v exa) ]] && echo 'Yes' || echo 'No'
+brew shellenv
+echo $__conda_setup
+echo $__conda_setup > temp
+echo "$__conda_setup" > temp
+echo "$__conda_setup" temp
+echo "$__conda_setup" >! temp
+bat temp
+cd .cache/zsh
+ll -A ~/.cache/zsh
+bat conda.zsh
+source ./conda.zsh
+/opt/miniconda3/bin/conda shell.zsh hook > temp.zsh
+source temp.zsh
+echo "$__conda_setup"
+echo ${PATH_TO_CONDA_INSTALL}/bin/conda}
+echo ${PATH_TO_CONDA_INSTALL/bin/conda}
+echo ${PATH_TO_CONDA_INSTALL}/bin/conda
+[ $? -eq 0 ] && echo 'Yes' || echo 'No'
+[ $? -neq 0 ] && echo 'Yes' || echo 'No'
+[ ! $? -eq 0 ] && echo 'Yes' || echo 'No'
+cd ~/.cache/zsh/
+git remote
+git remote -v
+git commit -m 'Continue develop'
+git push origin
+apt search nodejs
+brew search node
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+sudo apt-get instll nodejs
+sudo apt-get install nodejs
+sudo apt remove nodejs
+node -v
+vim .config/nvim/plugins.vim
+git push -f origin
+winhome/AppData/Roaming/alacritty/alacritty.yml
+vim winhome/AppData/Roaming/alacritty/alacritty.yml
+zsh --login -c "vim --version"
+zsh --login -c "nvim --version"
+zsh --login -c "nvim $ZDOTDIR/.zshrc"
+zsh -c "nvim $ZDOTDIR/.zshrc"
+wslpath
+which wslpath
+whatis wslpath
+wslpath C:\Users\artyu\scoop\apps\alacritty\current\alacritty.exe
+wslpath "C:\Users\artyu\scoop\apps\alacritty\current\alacritty.exe"
+zsh --login -c "echo Hello"
+zsh --hel
+zsh --help
+zsh --login "echo Hello"
+zsh -i eval "echo Hello"
+zsh -is eval "echo Hello"
+zsh -is "echo Hello"
+zsh -i "echo Hello"
+zsh -ic "echo Hello"
+zsh -ic 'echo "Hello World"'
+wslpath 'D:\test.txt'
+nvim $(wslpath 'D:\test.txt')
+bash --login -c nvim $(wslpath 'D:\test.txt')
+bash --login -c "nvim $(wslpath 'D:\test.txt')"
+bash --login -c 'nvim $(wslpath "D:\test.txt")'
+nvim '/mnt/d/test.txt'
+bash -c "nvim '/mnt/d/test.txt'"
+ln -sv /mnt/c c
+ln -sv /mnt/d d
+touch vienna_rose_twitter.txt
+vim vienna_rose_twitter.txt
+brew search fr
+brew search far
+apt search far
+apt search far | rg far
+apt search far | less
+cd /etc/wsl.conf
+bat wsl.conf
+man rsync
+rsync /etc/wsl.conf ~/dotfiles/
+git commit -m 'wsl.conf - new file'
+bat ~/.cache/zsh/conda.zsh
+[[ -s ~/.cache/zsh/conda.zsh(#q.md-7) ]] && echo 'Yes' || echo 'No'
+[[ -s ~/.cache/zsh/conda.zsh(#q.md-7N) ]] && echo 'Yes' || echo 'No'
+vim cd
+git commit -a -m 'Fix bug with recompiling conda cache file'
+vim ~/.config/nvim/plugins.vim
+bat install.sh
+/home/linuxbrew/.linuxbrew/bin/brew shellenv
+rm -f ~/.cache/zsh/conda.zsh
+brew --prefix
+/home/linuxbrew/.linuxbrew/bin/brew shellenv >! test.zsh
+eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv) >! test.zsh
+bat test.zsh
+bat brewenv.zsh
+mkdir windows_terminal
+touch profile.json
+vim profile.json
+bat profile.json
+brew --cache
+brew --cache a2ps
+brew cleanup
+brew cleanup -s
+cd ~/.cache/Homebrew/
+conda clean --yes
+conda clean --yes --dry-run
+conda clean --yes --dry-run --alll
+conda clean --yes --dry-run --all
+conda clean --yes --all
+vim --version
+git reset --staged windows_terminal/profiles_default.json
+git restore --staged windows_terminal/profiles_default.json
+echo 'windows_terminal/profiles_default.json' >> .gitignore
+bat .gitignore
+git add .gitignore
+git commit -m 'add windows terminal settings'
+git log --decorate
+cd windows_terminal/
+vim profiles_default.json
+/mnt/c/Users/artyu/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/profiles.json
+bat ~/dotfiles/windows_terminal/profiles.json
+bat exit
+git commit --amend
+locate wsl.conf
+vim wsl.conf
+brew search kitty
+apt search kitty
+sudo apt install kitty
+apt autoclean
+vim .config/zsh/.zshrc
+vim '2 level atom old.py'
+cd dotfiles/config/nvim/plugged/python-mode
+git submodule update --init --recursive
+conda install numpy
+conda install numpy -y
+conda install scipy -y
+conda install matplotlib -y
+vim ll
+vim update
+vim .zshrc
+git digg
+conda install sympy -y
+vim .config/zsh/.zlogin
+vim .config/zsh/.zprofile
+git push --force
+python3 '2 level atom.py'
+kitty
+bat /usr/local/pengwin-setup.d/vcxsrv.sh
+bat /home/anuvyklack/dotfiles/vcxsrv.sh
+bat shortcut.sh
+bat common.sh
+bat gui.sh
+bat guilib.sh
+echo $WSL2
+bat brew
+bat brew.sh
+bat dbus.sh
+bat hidpi.sh
+bat 00-pengwin.sh
+bat ~/dotfiles/vcxsrv.sh
+bat 01-vcxsrv.sh
+sudo vim 01-vcxsrv.sh
+bat /etc/profile
+cd /etc/
+sudo update
+man zshall
+vim zshrc
+cdh
+cd +
+cd /home/linuxbrew
+which dsc
+whatis dsc
+w
+whatis w
+fc -r
+fc -W ~/.cache/zsh/zsh_history
+bat ~/dotfiles/config/zsh/zsh_history
+cd ~/.cache/zsh
+bat ~/.cache/zsh/zsh_history
+dpkg-query patchelf
+cd dotfiles/
+cd ~/etc
+vim newuser.zshrc.recommended
+git
+git --version
+brew update *
+brew update all
+bat ~/.config/zsh/functions/update
+cd /usr/bin
+git stach -A
+git stash drop stash@\{0\}
+sudo apt upgrade && sudo apt update
+vim .config/zsh/functions/update
+vim config/zsh/functions/update
+whatis dialog
+sh -c dialog
+sh -c "dialog --title 'Welcom' --msgbox 'welcom home'"
+cd /etc/zsh/
+mlocate vcxsrv
+pengwin-setup
+whatis pengwin-setup
+whereis pengwin.exe
+whereis pengwin-setup
+whatis /usr/local/bin/pengwin-setup
+pengwin-help
+cd /usr/local/bin
+whatis whiptail
+whiptail
+whiptail --title "Upgrade Available" --yesno "A distribution upgrade is available. In addition to regular package upgrades, this may also install / remove packages. Would you like to continue?\n\nTo run a non-automated distribution upgrade and see package changes, or to perform this in your own time, run 'sudo apt-get dist-upgrade'" 12 90
+whatis confirm
+man confirm
+git idff
+git remote -vv
+source test
+
+vim test.sh
+cd ~/dotfiles/setup/
+source test.sh
+cd /usr/local/pengwin-setup.d
+cd /etc/profile.d
+echo -e "\e[1;37mLink zsh files to\e[0m \e[1;34m$ZDOTDIR\e[0m"
+echo -e "\e[1;37mInstalling \e[1;34mHomebrew \e[1;37mdependencies\e[0m"
+echo -e "\e[1;37mInstalling \e[1;33mHomebrew \e[1;37mdependencies\e[0m"
+echo -e "\e[1;37mInstalling \e[1;32mHomebrew \e[1;37mdependencies\e[0m"
+ll service/
+which ranger
+brew doctor
+mlocate pengwin
+vim exit
+git difff
+git mergetool
+git megre
+git checkout ed33976
+git checkout master ed33976
+git merge --abort
+git stash list
+git stash apply
+bat config/zsh/zprofile.orig
+nvim -d zprofile zprofile.orig
+rm zprofile.orig
+git stash pop
+git stash clear
+git add install.sh
+rg wordchars
+rg "wordchars"
+vim config/git/config
+git diff --cached
+git commit
+brew info node
+wajig show nodejs
+which fd
+sudo apt install fd-find
+fd
+whatis fd
+wajig show ripgrep
+wajig show ripgrep | less
+cd /etc/apt/
+rsync /mnt/c/Users/artyu/AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/profiles.json ~/dotfiles/windows_terminal/profiles.json
+git yolo
+rsync ~/.cache/zsh/zsh_history ~/dotfiles/config/zsh/zsh_history
+zplugin update
+cd ~/.config/nvim
+cd ~/.zplugin/
+cd snippets
+cd fzf.vim
+which curl
+which wget
+sudo apt install curl wget
+sudo apt install file
+wget
+curl
+fzf
+rm -rf ~/.zplugin/
+which perl
+perl
+git --no-pager config --global --list
+vi ~/.config/zsh/.zshrc
+vi ~/.config/zsh/.zprofile
+sudo apt install man
+man less
+git --no-pager show
+vi ~/.config/git/config
+git pull -f
+git pull --force
+rm -rf ~/dotfiles/
+git clone https://github.com/anuvyklack/dotfiles.git
+cd setup/
+source miniconda-setup.sh
+ln -sv ~/dotfiles/condarc ~/.condarc
+ls -A
+source homebrew-setup.sh
+sudo apt install bfs
+sudo apt install anacron
+sudo apt install rsync
+sudo apt install mlocate
+apt search lsd
+apt search bat
+apt info bat
+apt info node
+apt search node
+conda update --all
+conda update conda
+brew install ranger
+sudo rm -rf /opt/miniconda3
+which brew
+rm -rf /home/linuxbrew
+sudo rm -rf /home/linuxbrew
+which python
+which python3
+source ~/dotfiles/setup/homebrew-setup.sh
+brew install neovim
+brew install lsd
+brew install fd
+brew install ripgrep
+brew install bat
+brew install node
+brew
+brew update
+brew upgrade
+sudo apt install ranger
+source ~/dotfiles/setup/miniconda-setup.sh
+conda install pynvim
+nvim
+brew install --HEAD universal-ctags/universal-ctags/universal-ctags
+vim init.vim
+brew list
+whatis vim
+whatis mlocate
+brew uninstall pdate && brew upgrade
+brew uninstall update && brew upgrade
+echo $PAGER
+export $EDITOR='nvim'
+export EDITOR='nvim'
+echo $EDITOR
+brew update && brew upgrade
+command -v nvim
+sudo updatedb.mlocate &
+cd ~/dotfiles/setup
+cd ..
+cd /etc
+bat issue
+cat issue
+echo $LESS
+bat /etc/issue
+apt update less
+dpkg-query less
+dpkg-query info less
+dpkg-query --show less
+dpkg-query -s less
+brew search less
+brew info less
+sudo apt install less/testing
+sudo apt install less/backport
+echo $WORDCHARS
+whatis rsync
+whereis rsync
+rsync /etc/apt/{sources.list,sources.list.orig}
+sudo rsync /etc/apt/{sources.list,sources.list.orig}
+cd /etc/apt
+sudo vim sources.list
+sudo nvim sources.list
+which rsync
+which vim
+apt full-upgrade
+sudo !
+which wajig
+apt search wajig | rg wajig
+apt-get search wajig | rg wajig
+sudo apt install wajig
+wajig distupgrade
+man wajig
+wajig tutorial
+wajig tutorial > wajig-tutorial.md
+wajig describe rsync
+wajig describe apt
+wajig doc
+wajig doc | less
+apt search nvim
+apt search neovim
+apt search neovim | fzf
+wajig search neovim
+wajig search neovim --teaching
+wajig --teaching search neovim
+apt show neovim
+wajig show neovim
+wajig show apttitude
+wajig show aptitude
+wajig install aptitude
+aptitude
+sudo aptitude
+sudo apt clean
+sudo apt autoclean
+sudo apt full-upgrade
+aptitude search neovim
+aptitude show neovim
+cd /usr/share/doc/
+wajig editsources
+ll | less
+brew link neovim
+sudo nvim
+man sources.list
+wajig lastupdate
+wajig search neovim -v
+wajig status neovim
+cat sources.list
+apt-cache policy neovim
+cat /etc/wsl
+cat /etc/wsl.conf
+bat wajig-tutorial.md
+vim wajig-tutorial.md
+wajig policy nwocim
+cat etc/apt/sources.list
+rsync /etc/apt/sources.list ~/
+cat /etc/apt/sources.list
+sudo apt update
+wajig policy less
+wajig install les
+wajig install less
+wajig status less
+wajig contents less
+wajig fixinstall
+wajig fixmissing
+wajig info less
+wajig info neovim
+wajig --teaching fixinstall
+wajig --teaching fixinstall neovim
+wajig searchapt
+wajig
+wajig install -t less
+wajig install --version less
+wajig install --version
+sudo apt -t buster-backports less
+sudo apt -t buster-backports install less
+less --version
+wajig policy neovi
+git config --global --list
+git reset HEAD
+git reset --hard HEAD
+rsync sources.list ~/dotfiles/service/sources.list.buster.yandex
+sudo rsync ~/sources.list /etc/apt/sources.list
+wajig search bfs
+bat ~/dotfiles/install.sh
+git stash
+git pull --rebase
+git merge
+wajig search lsd
+wajig search bat
+wajig search fd
+wajig search fd-find
+git status backup.sh
+git status -s
+vim .config/git/config
+vim sources.list
+wajig show fd-find
+brew info fd
+wajig policy fd-find
+wajig --version
+wajig search node
+wajig search node | rg 'node'
+wajig search node | rg 'node' | less
+wajig show node
+sudo rsync ~/dotfiles/servicesources.list /etc/apt/sources.list
+sudo rsync ~/dotfiles/service/sources.list /etc/apt/sources.list
+bat /etc/apt/sources.list
+wajig upgrade
+wajig autoremove
+wajig autoclean
+brew remove neovim
+wajig policy neovim
+wajig install neovim
+which nvim
+which vi
+whatis vi
+vi
+git pull
+git add -A
+echo ~/.cache/zsh/zsh_history
+echo $(~/.cache/zsh/zsh_history)
+sudo echo $(~/.cache/zsh/zsh_history)
+cat ~/.cache/zsh/zsh_history
+cat ~/.cache/zsh/zsh_history >> ~/dotfiles/config/zsh/zsh_history
+vim ~/.cache/zsh/zsh_history
+rsync -v ~/.cache/zsh/zsh_history ~/dotfiles/config/zsh/zsh_history
+wajig install lua5.3
+pip install howdoi
+howdoi updatealternatives
+update-alternatives --config vim
+sudo update-alternatives --config vim
+git clone -b release https://github.com/dftfeDevelopers/dftfe.git
+git clone -b release https://github.com/dftfeDevelopers/dftfe.git --depth 1
+git clone -b release https://github.com/dftfeDevelopers/dftfe.git dftfe-dev --depth 1
+git checkout -b ubuntu
+git branch
+git branch -vv
+ln -sc /mnt/d/ ~/d
+ln -sv /mnt/d/ ~/d
+ll d
+ll /opt
+whatis pwd
+man pwd
+howdoi sh concat strings
+return "$(pwd)/$ret"
+echo "$(pwd)/$ret"
+echo "$(pwd)/isdfasdfs"
+echo $HOME
+howdoi zsh if else
+howdoi sh if else
+howdoi bash if else
+howdoi zsh string equal
+man test
+echo "${PWD##/home/}"
+echo "${PWD##i${HOME}/}"
+echo "${PWD##${HOME}/}"
+test "${PWD##${HOME}}" != "${PWD}"
+cd ~
+echo "~${PWD##${HOME}}"
+echo "${PWD/${HOME}/~}"
+echo "${PWD/#${HOME}/~}"
+cd proc/5228/cwd/zshrc
+rg '!'
+[ $PWD = '/' ]
+[ $PWD != '/' ]
+[[ $(pwd) != '/' ]] && echo 'Yes' || echo 'No'
+pwd
+echo $PWD
+echo $PREFIX
+echo $full_path
+cd ~/dotfiles/
+git checkout -b master
+git branch master
+cd ~/dotfiles/config/zsh/zshrc
+howdoi zsh local variable
+echo $fzf_full_path
+git reset --hard ubuntu
+echo $libdir
+man hier
+git commit -a --amend
+git push -f
+git checkout ubuntu
+git reset --hard master
+man rg
+vim ~/dotfiles/config/zsh/functions/update
+man apt
+wajig dailyupgrade
+git commit -a
+git checkout master
+git merge ubuntu
+git push
+git show
+wajig show mpi
+wajig search mpi
+wajig search mpi L
+cd projects/dftfe
+mkdir buildReal
+mkdir build-real
+cd build-real
+wajig search build
+wajig show build-essential
+wajig install build-essential
+wajig show cmake
+wajig install cmake
+cmake -DCMAKE_INSTALL_PREFIX=~/projects/dftfe/lib/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON ../deal.II
+wajig search deal L
+cmake -DCMAKE_INSTALL_PREFIX=~/projects/dftfe/lib/deal.II-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON ../deal.II-real
+z dfte
+z df
+cd /usr/local
+wajig search mpich
+wajig show mpich
+wajig show libmpich12
+wajig install libmpich-dev
+cmake -DCMAKE_INSTALL_PREFIX=~/projects/dftfe/lib/deal.II-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON ..
+cmake -DCMAKE_INSTALL_PREFIX=~/projects/dftfe/lib/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON --enable-shared ..
+cmake -DCMAKE_INSTALL_PREFIX=~/projects/dftfe/lib/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR=/usr/lib/petscdir/petsc3.12/x86_64-linux-gnu-real ..
+wajig listfiles libmpich-dev:amd64
+cmake -DCMAKE_INSTALL_PREFIX=~/projects/dftfe/lib/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DPETSC_DIR=/usr/lib/petscdir/petsc3.12/x86_64-linux-gnu-real ..
+cp petsc-real/ petsc-complex
+mv * source/
+mkdir source1
+mv * source1
+mv source1 source
+mkdir 1 && mv * 1 && mv 1 source
+mv 1 source
+mv * ../lib
+man mv
+wajig update
+wajig toupgrade
+ls /usr/bin
+bash
+ls /usr/bin | grep ^su
+whatis ls
+ls /usr/bin | grep su
+ls /usr/bin | rg su
+ls /usr/bin | rg ^su
+ls /usr/bin | rg '^su'
+wajig search grc
+wajig install grc
+wajig show grc
+man grc
+whereis grc
+bat /etc/grc.zsh
+ls
+ls -l
+wajig search mkl
+wajig show libmkl-blacs-intelmpi-lp64
+cd source
+cd -
+git fetch
+git status
+git log
+mv .* source
+mkdir 1 && mv .[^.]* 1 && mv 1 source
+mkdir lib
+z petsc-real petsc-cmplex
+wajig show libmkl-ful-dev
+wajig install libmkl-dev
+cmake -DCMAKE_INSTALL_PREFIX=~/projects/dftfe/lib/dealii-real/lib -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_LAPACK=ON -DLAPACK_FOUND=true ../source
+echo $MKLROOT
+cmake -DCMAKE_INSTALL_PREFIX=~/projects/dftfe/lib/dealii-real/lib -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_LAPACK=ON ../source
+wajig search openmp
+wajig search openmp | grep openmp
+wajig search openmp | rg openmp
+wajig search libgomp
+z de
+vim instuction.md
+wajig listfiles libmkl-dev | rg core
+./configure --prefix=$HOME/projects/dftfe/lib/petsc-real/lib --with-debugging=no --with-64-bit-indices=true --with-cc=c_compiler --with-cxx=c++_compiler --with-fc=fortran_compiler --with-blas-lapack-lib="-L${MKLROOT}/lib/intel64 -Wl,--no-as-needed -lmkl_intel_ilp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm -ldl"
+./configure --prefix=$HOME/projects/dftfe/lib/petsc-real/lib --with-debugging=no --with-64-bit-indices=true --with-blas-lapack-lib="-L${MKLROOT}/lib/intel64 -Wl,--no-as-needed -lmkl_intel_ilp64 -lmkl_gnu_thread -lmkl_core -lgomp -lpthread -lm -ldl"
+wajig listfiles libmkl-dev | sh
+wajig listfiles libmkl-dev | rg sh
+wajig search libmkl
+wajig isntall libmkl-full-dev
+wajig show libmkl-full-dev
+wajig listfiles libmkl-full-dev
+cd /usr/share/intel-mkl/builder/
+cd /u/s/d/libmkl
+cd /usr/share/doc/libmkl-dev
+wajig search intel
+wajig show intel-mkl-doc
+wajig install intel-mkl
+less README.Debian.gz
+wajig show libmkl-rt
+wajig listfiles libmkl-rt
+locate intel-mkl-link
+locate intel-mkl
+wget /usr/share/doc/intel-mkl/common/mkl_link_line_advisor.htm
+cd /usr/share/doc/intel-mkl/common/mkl_link_line_advisor.htm
+pkg-config
+man pkg-config
+pkg-config mkl
+pkg-config intel-mkl
+pkg-config mpich
+pkg-config mpich-c
+pkg-config --libs
+pkg-config --libs mkl
+pkg-config --libs lapack
+git graph
+git diff
+pkg-config --exists lapack64
+pkg-config --exists --print-errors lapack64
+pkg-config --exists --print-errors mkl
+pkg-config --exists --print-errors intel-mkl
+man 1 pkg-config
+vim ~/dotfiles/config/zsh/zprofile
+echo $PKG_CONFIG_PATH
+echo $PATH
+pkg-config --cflags lapack64
+dir
+dir -A
+dir -AD
+dir -ADh
+dir -ADhC
+vim
+wajig search tig
+wajig show tig
+wajig install tig
+tig
+vim ~/dotfiles/install.sh
+wajig search lua
+wajig search lua L
+wajig show lua5.1
+wajig show lua5.2
+wajig show lua5.3
+man tig
+tig show
+tig status
+tig log
+tig stash
+locate pkgconfig
+pkg-config lapack
+pkg-config lapack64
+echo $(pkg-config lapack )
+echo $(pkg-config lapack)
+echo $(pkg-config --lib lapack)
+pkg-config --variable=pc_path
+pkg-config --variable pc_path pkg-config
+pkg-config --variable pkg-config
+pkg-config --libs lapack64
+pkg-config --cflags-only-I lapack64
+update
+z pkg
+z pkgc
+./configure --prefix=$HOME/projects/dftfe/lib/petsc-real/lib --with-debugging=no --with-64-bit-indices=true
+pkg-config --cflags --libs mkl-sdl-lp64
+./configure --prefix=$HOME/projects/dftfe/lib/petsc-real/lib --with-debugging=no --with-64-bit-indices=true --with-blas-lapack-lib=$(pkg-config --libs --cflags mkl-sdl-lp64)
+./configure --prefix=$HOME/projects/dftfe/lib/petsc-real/lib --with-debugging=no --with-64-bit-indices=true --with-blas-lapack-lib=$(pkg-config --cflags --libs mkl-sdl-lp64)
+pkg-config mkl-sdl-lp64
+./configure --prefix=$HOME/projects/dftfe/lib/petsc-real/lib --with-debugging=no --with-64-bit-indices=true --with-blas-lapack-lib=$(pkg-config --cflags --libs mkl-dynamic-lp64-iomp)
+./configure --prefix=$HOME/projects/dftfe/lib/petsc-real/lib --with-debugging=no --with-64-bit-indices=true --with-blas-lapack-lib=pkg-config --cflags --libs mkl-sdl-lp64
+./configure --prefix=$HOME/projects/dftfe/lib/petsc-real/lib --with-debugging=no --with-64-bit-indices=true --with-blas-lapack-lib="pkg-config --cflags --libs mkl-sdl-lp64"
+wajig search valgrind
+wajig show valgrind
+./configure --prefix=$HOME/projects/dftfe/lib/petsc-real/lib --with-debugging=no --with-64-bit-indices=true --with-blas-lapack-lib="$(pkg-config --cflags --libs mkl-dynamic-lp64-iomp)"
+wajig install valgrind
+./configure --prefix=$HOME/projects/dftfe/lib/petsc-real/lib --with-debugging=no --with-64-bit-indices=true --with-blas-lapack-lib="$(pkg-config --cflags --libs mkl-sdl-lp64)"
+make PETSC_DIR=/home/anuvyklack/projects/dftfe2/lib/petsc-real/source PETSC_ARCH=arch-linux-c-opt all
+wajig search checkinstall
+wajig install checkinstall
+sudo checkinstall PETSC_DIR=/home/anuvyklack/projects/dftfe2/lib/petsc-real/source PETSC_ARCH=arch-linux-c-opt install
+sudo checkinstall make PETSC_DIR=/home/anuvyklack/projects/dftfe2/lib/petsc-real/source PETSC_ARCH=arch-linux-c-opt install
+wajig listfiles my-petsc-real
+wajig listinstalled my
+wajig listinstalled ^my
+wajig listinstalled my-
+wajig listinstalled | rg '^my'
+tree
+lsd --tree
+...
+lsd --tree --depth 2
+lsd --tree --depth 2 lib/
+lsd --tree --depth 2 lib
+lsd --tree --depth 2 -- lib
+wajig show tree
+wajig install tree
+tree --dirsfirst
+man tree
+tree --dirsfirst -L 2
+tree --dirsfirst -L 2 -- lib
+make PETSC_DIR=/home/anuvyklack/projects/dftfe/lib/petsc-real/source PETSC_ARCH=arch-linux-c-opt all
+z pe
+sudo ./configure --with-debugging=no --with-64-bit-indices=true --with-blas-lapack-lib="$(pkg-config --cflags --libs mkl-sdl-lp64)"
+sudo make PETSC_DIR=/home/anuvyklack/projects/dftfe/lib/petsc-real/source PETSC_ARCH=arch-linux-c-opt all
+rm -rf .*
+sudo rm -rf *
+./configure --with-debugging=no --with-64-bit-indices=true --with-blas-lapack-lib="$(pkg-config --cflags --libs mkl-sdl-lp64)"
+make PETSC_DIR=/home/anuvyklack/projects/dftfe/lib-sources/petsc-real PETSC_ARCH=arch-linux-c-opt check
+fd .cp
+fd .pc
+make uninstall
+make remove
+make install
+lt
+./configure --prefix=/opt/petsc-real --with-debugging=no --with-64-bit-indices=true --with-blas-lapack-lib="$(pkg-config --cflags --libs mkl-sdl-lp64)"
+wajig show petsc-real
+wajig listfiles petsc-real
+cd -2
+git clone -b maint https://gitlab.com/petsc/petsc.git petsc-complex --depth 1
+git clone -b dealiiStable https://github.com/dftfeDevelopers/dealii.git --depth 1
+cp dealii deal.II-real
+cp dealii dealii-real
+mv dealii dealii-complex
+mkdir build
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_LAPACK=ON -DDEAL_II_WITH_P4EST=ON -DP4EST_DIR=p4est_install_dir_path -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_LAPACK=ON -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR=/opt/petsc-real -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR=/opt/petsc-real -- ..
+z d
+ll -a
+ll -A
+vim ~/projects/dftfe/lib-sources/instuction.md
+pkg-config --libs mkl-sdl-lp64
+z pkgconfig
+vim /usr/lib/x86_64-linux-gnu/pkgconfig/mkl-sdl-lp64.pc
+wajig search alacritty
+add-apt-repository ppa:mmstick76/alacritty
+sudo add-apt-repository ppa:mmstick76/alacritty
+wajig show alacritty
+pkg-config --variable=includedi mkl-sdl-lp64
+echo $(pkg-config --variable=includedi mkl-sdl-lp64)
+pkg-config --variable=pcfiledir mkl-sdl-lp64
+z deal
+pkg-config --variable=includedir mkl-sdl-lp64
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_LAPACK=ON -DLAPACK_FOUND=true -DLAPACK_DIR="$(pkg-config --variable=includedir mkl-sdl-lp64)" -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_LAPACK=ON -DLAPACK_FOUND=true -DLAPACK_DIR="$(pkg-config --variable=includedir mkl-sdl-lp64)" -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-sdl-lp64)" -DLAPACK_LINKER_FLAGS="$(pkg-config --libs mkl-sdl-lp64)" -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_LAPACK=ON -DLAPACK_FOUND=true -DLAPACK_DIR="$(pkg-config --variable=includedir mkl-sdl-lp64)" -DLAPACK_LIBRARIES="$(pkg-config --cflags mkl-sdl-lp64)" -DLAPACK_LINKER_FLAGS="$(pkg-config --libs mkl-sdl-lp64)" -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_LAPACK=ON -DLAPACK_FOUND=true -DLAPACK_DIR="$(pkg-config --variable=includedir mkl-sdl-lp64)" -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-sdl-lp64)" -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_LAPACK=ON -DLAPACK_FOUND=true -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-sdl-lp64)" -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_LAPACK=ON -DLAPACK_FOUND=true -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-sdl-lp64)" -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR=/opt/petsc-real -- ..
+pkg-config --usage
+pkg-config --usage lapack
+pkg-config --list-all
+cd /opt/petsc-real/lib/pkgconfig/
+bat PETSc.pc
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR=/opt/petsc-real/lib -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_PETSC=ON -DPETSC_LIBRARIES="$(pkg-config --cflags --libs PETSc)" -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR=/opt/petsc-real -DPETSC_LIBRARIES="$(pkg-config --cflags --libs PETSc)" -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="/opt/petsc-real" -DPETSC_LIBRARIES="$(pkg-config --cflags --libs PETSc)" -- ..
+man checkinstall
+./configure --prefix=/opt/petsc-real --with-debugging=no --with-64-bit-indices=true --with-blas-lapack-lib="$(pkg-config --cflags --libs mkl-dynamic-lp64-iomp)"
+make PETSC_DIR=/home/anuvyklack/projects/dftfe/lib-sources/petsc-real PETSC_ARCH=arch-linux-c-opt all
+sudo checkinstall -D=no --install=true make PETSC_DIR=/home/anuvyklack/projects/dftfe/lib-sources/petsc-real PETSC_ARCH=arch-linux-c-opt install
+sudo checkinstall -D=no --install=yes make PETSC_DIR=/home/anuvyklack/projects/dftfe/lib-sources/petsc-real PETSC_ARCH=arch-linux-c-opt install
+sudo checkinstall -D=no make PETSC_DIR=/home/anuvyklack/projects/dftfe/lib-sources/petsc-real PETSC_ARCH=arch-linux-c-opt install
+sudo checkinstall make PETSC_DIR=/home/anuvyklack/projects/dftfe/lib-sources/petsc-real PETSC_ARCH=arch-linux-c-opt install
+wajig listfiles my-petsc-real L
+cd /opt/petsc-real
+bat opt/petsc-real/lib/pkgconfig/PETSc.pc
+bat /usr/lib/x86_64-linux-gnu/pkgconfig/mkl-dynamic-lp64-iomp.pc
+rm -rf petsc-real
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="/opt/petsc-real" -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_LAPACK=ON -DLAPACK_FOUND=true -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-lp64-iomp)" -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_LAPACK=ON -DLAPACK_FOUND=true -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-lp64-iomp)" -DDEAL_II_WITH_PETSC=ON -- ..
+wajig remove petsc-real
+./configure --prefix=/opt/petsc-real --with-debugging=yes --with-blas-lapack-lib="$(pkg-config --cflags --libs mkl-dynamic-lp64-iomp)"
+./configure --prefix=/opt/petsc-real --with-debugging=yes --with-64-bit-indices=yes --with-blas-lapack-lib="$(pkg-config --cflags --libs mkl-dynamic-lp64-iomp)"
+rg '--with'
+rg '\--with'
+./configure --prefix=/opt/petsc-real --with-debugging=yes --with-64-bit-indices=1 --with-blas-lapack-lib="$(pkg-config --cflags --libs mkl-dynamic-lp64-iomp)"
+wajig show libpetsc-real3.12-dev
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_LAPACK=ON -DLAPACK_FOUND=true -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-lp64-iomp)" -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="/opt/petsc-real" -DPETSC_LIBRARIES="$(pkg-config --cflags --libs PETSc)" -- ..
+make PETSC_DIR=/home/anuvyklack/projects/dftfe/lib-sources/petsc-real PETSC_ARCH=arch-linux-c-debug all
+sudo checkinstall make PETSC_DIR=/home/anuvyklack/projects/dftfe/lib-sources/petsc-real PETSC_ARCH=arch-linux-c-debug install
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_LAPACK=ON -DLAPACK_FOUND=true -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="/opt/petsc-real" -DPETSC_LIBRARIES="$(pkg-config --cflags --libs PETSc)" -- ..
+wajig search petsc
+wajig listfiles libpetsc-real3.12-dev
+wajig listfiles libpetsc-real3.12-dev L
+wajig listfiles libpetsc-real3.12-dev | rg pc
+pkg-config --cflags --libs PETSc
+cd $(pkg-config --variable=prefix PETSc)
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_LAPACK=ON -DLAPACK_FOUND=true -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DPETSC_LIBRARIES="$(pkg-config --cflags --libs PETSc)" -- ..
+sudo rm -rf petsc-real
+mv ~/d/artyu/Downloads/petsc-3.9.4.tar.gz .
+cd petsc-3.9.4-real
+cd /opt/
+z b
+echo $PETSC_WITH_64BIT_INDICES
+export PETSC_WITH_64BIT_INDICES=1
+wajig search slepc
+wajig install libpetsc-real3.12-dev
+wajig remove libpetsc-real3.12-dev
+git clone -b maint https://gitlab.com/petsc/petsc.git petsc-real --depth 1
+make PETSC_DIR=/home/anuvyklack/projects/dftfe/lib-sources/petsc-3.13-real PETSC_ARCH=arch-linux-c-debug all
+sudo checkinstall make PETSC_DIR=/home/anuvyklack/projects/dftfe/lib-sources/petsc-3.13-real PETSC_ARCH=arch-linux-c-debug install
+wajig listfiles my-petsc3.13-real
+wajig listfiles my-petsc3.13-real L
+wajig listfiles my-petsc3.13-real | rg \.pc
+cd /opt/petsc-real/share/petsc/examples/src/ksp/pc
+wajig listfiles my-petsc3.13-real | rg \.pc$
+bat /opt/petsc-real/lib/pkgconfig/PETSc.pc
+cc
+wajig remove my-petsc3.13-real
+z build
+wajig install my-petsc-real_3.9.4-1_amd64.deb
+wajig show my-petsc3.13-real
+wajig show my-petsc
+wajig show my-petsc-real_3.9.4-1_amd64.deb
+wajig search my-
+sudo rm -rf petsc-3.13-real
+sudo rm -rf petsc-3.9.4-real
+whatis expand
+whatis man
+which
+which gcc
+whereis gcc
+whatis whereis
+whatis whatis
+whatis which
+who
+whoami
+Binary file /home/anuvyklack/.cache/zsh/zsh_history.old matches
+mv petsc-3.9.4 petsc-3.9.4-real
+..
+wajig show my-petsc-real
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DDEAL_II_WITH_LAPACK=ON -DLAPACK_FOUND=true -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -- ..
+mv ~/d/artyu/Downloads/slepc-3.9.2.tar.gz ..
+sudo rm -rf petsc-complex
+extract petsc-3.9.4.tar.gz
+./configure --prefix=slepc-real
+./configure --prefix=/opt/slepc-real
+sudo checkinstall make SLEPC_DIR=/home/anuvyklack/projects/dftfe/lib-sources/slepc-3.9.2-real PETSC_DIR=/opt/petsc-real install0
+wajig show my-slepc-real
+wajig listfiles my-slepc-real
+wajig listfiles my-slepc-real L
+wajig listfiles my-slepc-real | rg \.pc$
+vim ~/.config/zsh/.zprofile
+pkg-config --list-all L
+bat /opt/slepc-real/lib/pkgconfig/SLEPc.pc
+pkg-config --variable=prefix SLEPc
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DDEAL_II_WITH_SLEPC=ON -DSLEPC_DIR="$(pkg-config --variable=prefix SLEPc)" -DDEAL_II_WITH_LAPACK=ON -DLAPACK_FOUND=true -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -- ..
+wajig show intel-mkl-dev
+wajig show intel-mkl-full
+wajig search intel-mkl
+wajig listfiles intel-mkl
+wajig show intel-mkl
+wajig show libmkl-dev
+wajig listfiles x libmkl-dev
+wajig listfiles libmkl-dev
+wajig listinstalled | rg 'mkl'
+bat /usr/include/mkl/mkl_scalapack.h
+z sle
+extract slepc-3.9.2.tar.gz
+./configure --prefix=/opt/slepc-real --with-scalar-type=real
+python2 './configure' '--prefix=/opt/slepc-real' '--with-scalar-type=real'
+cd slep
+z slep
+echo $PETSC_DIR
+make SLEPC_DIR=$PWD PETSC_DIR=/opt/petsc-real
+cd /usr/include/mkl
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DDEAL_II_WITH_SLEPC=ON -DSLEPC_DIR="$(pkg-config --variable=prefix SLEPc)" -DDEAL_II_WITH_LAPACK=ON -DLAPACK_FOUND=true -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -DSCALAPACK_DIR=/usr/include/mkl -DSCALAPACK_LIBRARIES="-L/usr/include/mkl -Wl,--no-as-needed -lmkl_scalapack_ilp64 -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -lmkl_blacs_intelmpi_ilp64 -liomp5 -lpthread -lm -ldl" -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DDEAL_II_WITH_SLEPC=ON -DSLEPC_DIR="$(pkg-config --variable=prefix SLEPc)" -DDEAL_II_WITH_LAPACK=ON -DLAPACK_FOUND=true -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -DSCALAPACK_DIR=/usr/include/mkl -DSCALAPACK_LIBRARIES="-L${MKLROOT}/lib/intel64 -Wl,--no-as-needed -lmkl_scalapack_ilp64 -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -lmkl_blacs_intelmpi_ilp64 -liomp5 -lpthread -lm -ldl" -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DDEAL_II_WITH_SLEPC=ON -DSLEPC_DIR="$(pkg-config --variable=prefix SLEPc)" -DDEAL_II_WITH_LAPACK=ON -DLAPACK_DIR="$(pkg-config --variable=prefix mkl-dynamic-ilp64-iomp)" -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -DLAPACK_FOUND=true -DSCALAPACK_DIR=/usr/include/mkl -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DDEAL_II_WITH_SLEPC=ON -DSLEPC_DIR="$(pkg-config --variable=prefix SLEPc)" -DDEAL_II_WITH_LAPACK=ON -DLAPACK_DIR="$(pkg-config --variable=prefix mkl-dynamic-ilp64-iomp)" -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -DLAPACK_FOUND=true -DSCALAPACK_DIR=/usr/include/mkl -DSCALAPACK_LIBRARIES="-DMKL_ILP64 -m64 -I/usr/include/mkl -Wl,--no-as-needed -lmkl_scalapack_ilp64 -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -lmkl_blacs_intelmpi_ilp64 -liomp5 -lpthread -lm -ldl " -- ..
+locate scalapack
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DDEAL_II_WITH_SLEPC=ON -DSLEPC_DIR="$(pkg-config --variable=prefix SLEPc)" -DDEAL_II_WITH_LAPACK=ON -DLAPACK_DIR="$(pkg-config --variable=prefix mkl-dynamic-ilp64-iomp)" -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -DLAPACK_FOUND=true -DSCALAPACK_DIR=/usr/include/mkl -DSCALAPACK_LIBRARIES="-DMKL_ILP64 -m64 -I/usr/include/mkl -Wl,--no-as-needed -lmkl_scalapack -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -lmkl_blacs_intelmpi_ilp64 -liomp5 -lpthread -lm -ldl " -- ..
+wajig search p4est
+wajig install libp4est-dev
+wajig listfiles libp4est-dev
+cd -1
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_P4EST=ON -DP4EST_DIR=/usr/lib/x86_64-linux-gnu/ -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_P4EST=ON -DP4EST_DIR=/usr/lib/x86_64-linux-gnu/ -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DDEAL_II_WITH_SLEPC=ON -DSLEPC_DIR="$(pkg-config --variable=prefix SLEPc)" -DDEAL_II_WITH_LAPACK=ON -DLAPACK_DIR="$(pkg-config --variable=prefix mkl-dynamic-ilp64-iomp)" -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -DLAPACK_FOUND=true -- ..
+wajig search scalapack
+wajig install libmkl-scalapack-ilp64
+wajig listfiles libmkl-scalapack-ilp64
+wajig show libmkl-scalapack-ilp64
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_P4EST=ON -DP4EST_DIR=p4est_install_dir_path -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DDEAL_II_WITH_SLEPC=ON -DSLEPC_DIR="$(pkg-config --variable=prefix SLEPc)" -DDEAL_II_WITH_LAPACK=ON -DLAPACK_DIR="$(pkg-config --variable=prefix mkl-dynamic-ilp64-iomp)" -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -DLAPACK_FOUND=true -DSCALAPACK_DIR=/usr/include/mkl -DSCALAPACK_LIBRARIES="-DMKL_ILP64 -m64 -I/usr/include/mkl -Wl,--no-as-needed -lmkl_scalapack_ilp64 -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -lmkl_blacs_intelmpi_ilp64 -liomp5 -lpthread -lm -ldl " -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_P4EST=ON -DP4EST_DIR=p4est_install_dir_path -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DDEAL_II_WITH_SLEPC=ON -DSLEPC_DIR="$(pkg-config --variable=prefix SLEPc)" -DDEAL_II_WITH_LAPACK=ON -DLAPACK_DIR="$(pkg-config --variable=prefix mkl-dynamic-ilp64-iomp)" -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -DLAPACK_FOUND=true -DSCALAPACK_DIR=/usr/include/mkl -DSCALAPACK_LIBRARIES="-I/usr/include/mkl -Wl,--no-as-needed -lmkl_scalapack_ilp64 -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -lmkl_blacs_intelmpi_ilp64 -liomp5 -lpthread -lm -ldl " -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_P4EST=ON -DP4EST_DIR=p4est_install_dir_path -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DDEAL_II_WITH_SLEPC=ON -DSLEPC_DIR="$(pkg-config --variable=prefix SLEPc)" -DDEAL_II_WITH_LAPACK=ON -DLAPACK_DIR="$(pkg-config --variable=prefix mkl-dynamic-ilp64-iomp)" -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -DLAPACK_FOUND=true -DSCALAPACK_LIBRARIES="-I/usr/include/mkl -Wl,--no-as-needed -lmkl_scalapack_ilp64 -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -lmkl_blacs_intelmpi_ilp64 -liomp5 -lpthread -lm -ldl " -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_P4EST=ON -DP4EST_DIR=p4est_install_dir_path -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DDEAL_II_WITH_SLEPC=ON -DSLEPC_DIR="$(pkg-config --variable=prefix SLEPc)" -DDEAL_II_WITH_LAPACK=ON -DLAPACK_DIR="$(pkg-config --variable=prefix mkl-dynamic-ilp64-iomp)" -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -DLAPACK_FOUND=true -DSCALAPACK_DIR=scalapack_dir_path -DSCALAPACK_LIBRARIES="-L/usr/lib/x86_64-linux-gnu -Wl,--no-as-needed -lmkl_scalapack_ilp64 -lmkl_intel_ilp64 -lmkl_intel_thread -lmkl_core -lmkl_blacs_intelmpi_ilp64 -liomp5 -lpthread -lm -ldl" -- ..
+cd /usr/lib/x86_64-linux-gnu/
+ll | rg mkl
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_P4EST=ON -DP4EST_DIR=p4est_install_dir_path -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DDEAL_II_WITH_SLEPC=ON -DSLEPC_DIR="$(pkg-config --variable=prefix SLEPc)" -DDEAL_II_WITH_LAPACK=ON -DLAPACK_DIR="$(pkg-config --variable=prefix mkl-dynamic-ilp64-iomp)" -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -DLAPACK_FOUND=true -DSCALAPACK_DIR=/usr/lib/x86_64-linux-gnu -DSCALAPACK_LIBRARIES="/usr/lib/x86_64-linux-gnu/libmkl_scalapack_ilp64.so;/usr/lib/x86_64-linux-gnu/libmkl_intel_ilp64.so;/usr/lib/x86_64-linux-gnu/libmkl_intel_thread.so;/usr/lib/x86_64-linux-gnu/libmkl_core.so;/usr/lib/x86_64-linux-gnu/libmkl_blacs_intelmpi_ilp64.so" -- ..
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_P4EST=ON -DP4EST_DIR=p4est_install_dir_path -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DDEAL_II_WITH_SLEPC=ON -DSLEPC_DIR="$(pkg-config --variable=prefix SLEPc)" -DDEAL_II_WITH_LAPACK=ON -DLAPACK_DIR="$(pkg-config --variable=prefix mkl-dynamic-ilp64-iomp)" -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -DLAPACK_FOUND=true -- ..
+wajig search lapack
+wajig remove libmkl-scalapack-ilp64
+wajig listfiles libp4est-dev L
+pkg-config --variable=prefix PETSc
+wajig listfiles libmpich-dev
+cd /usr/lib/x86_64-linux-gnu/pkgconfig
+pkg-config --cflags mpich
+wajig remove my-slepc-real
+wajig remove my-petsc-real
+./configure --prefix=/opt/petsc-real --with-debugging=yes --with-64-bit-indices=1 --with-64-bit-blas-indices --with-mpi-dir="$(pkg-config --cflags mpich)" --with-blas-lapack-lib="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)"
+wajig listfiles mpich L
+z pet
+./configure --prefix=/opt/petsc-real --with-debugging=yes --with-64-bit-indices=1 --with-64-bit-blas-indices --with-mpi-dir=/usr/bin --with-blas-lapack-lib="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)"
+extract petsc-3.9.4.tar.gz petsc-3.9.4-real
+./configure --prefix=/opt/petsc-real --with-debugging=yes --with-64-bit-indices=1 --with-64-bit-blas-indices --with-mpi-dir=/usr --with-blas-lapack-lib="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)"
+wajig listfiles libmpich12 L
+wajig listfiles libmpich-dev L
+locate mpi.h
+./configure --prefix=/opt/petsc-real --with-cc=mpicc --with-cxx=mpicxx --with-fc=mpif90 --with-debugging=yes --with-64-bit-indices=1 --with-64-bit-blas-indices --with-blas-lapack-lib="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)"
+whereis mpicc
+wajig remove libopenmpi-dev
+wajig remove libopenmpi3
+wajig listinstalled | rg mpi
+wajig remove openmpi-bin
+wajig remove libopenmpi-dev:amd64
+wajig listinstalled
+./configure --prefix=/opt/petsc-real --with-debugging=yes --with-64-bit-indices=1 --with-64-bit-blas-indices --with-blas-lapack-lib="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)"
+make PETSC_DIR=/home/anuvyklack/projects/dftfe/lib-sources/petsc-3.9.4-real PETSC_ARCH=arch-linux2-c-debug all
+sudo checkinstall make PETSC_DIR=/home/anuvyklack/projects/dftfe/lib-sources/petsc-3.9.4-real PETSC_ARCH=arch-linux2-c-debug install
+export PETSC_DIR="$(pkg-config --variable=prefix PETSc)"
+python2 './configure' '--prefix=/opt/slepc-real'
+sudo checkinstall make SLEPC_DIR=/home/anuvyklack/projects/dftfe/lib-sources/slepc-3.9.2-real PETSC_DIR=/opt/petsc-real install
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_P4EST=ON -DP4EST_DIR=/usr/lib/x86_64-linux-gnu -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DDEAL_II_WITH_SLEPC=ON -DSLEPC_DIR="$(pkg-config --variable=prefix SLEPc)" -DDEAL_II_WITH_LAPACK=ON -DLAPACK_DIR="$(pkg-config --variable=prefix mkl-dynamic-ilp64-iomp)" -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -DLAPACK_FOUND=true -- ..
+wajig show libp4est-dev
+wajig show libp4est-2.2
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DDEAL_II_WITH_SLEPC=ON -DSLEPC_DIR="$(pkg-config --variable=prefix SLEPc)" -DDEAL_II_WITH_LAPACK=ON -DLAPACK_DIR="$(pkg-config --variable=prefix mkl-dynamic-ilp64-iomp)" -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -DLAPACK_FOUND=true -- ..
+make -j 7
+rm -rf *
+wajig listcache L
+wajig clean
+mv ~/d/artyu/Downloads/p4est-2.2.tar.gz ..
+extract p4est-2.2.tar.gz
+wget https://dealii.org/developer/external-libs/p4est-setup.sh
+chmod u+x p4est-setup.sh
+wajig search zlib
+wajig install zlib1g-dev
+./p4est-setup.sh p4est-2.2.tar.gz /opt/p4est
+sudo ./p4est-setup.sh p4est-2.2.tar.gz /opt/p4est
+cd /
+fd .pc$
+sudo updatedb.mlocate
+z libs
+z lib
+cd -5
+cmake -DCMAKE_INSTALL_PREFIX=/opt/dealii-real -DDEAL_II_WITH_MPI=ON -DDEAL_II_WITH_64BIT_INDICES=ON -DDEAL_II_WITH_P4EST=ON -DP4EST_DIR=/opt/p4est/FAST -DDEAL_II_WITH_PETSC=ON -DPETSC_DIR="$(pkg-config --variable=prefix PETSc)" -DDEAL_II_WITH_SLEPC=ON -DSLEPC_DIR="$(pkg-config --variable=prefix SLEPc)" -DDEAL_II_WITH_LAPACK=ON -DLAPACK_DIR="$(pkg-config --variable=prefix mkl-dynamic-ilp64-iomp)" -DLAPACK_LIBRARIES="$(pkg-config --cflags --libs mkl-dynamic-ilp64-iomp)" -DLAPACK_FOUND=true -- ..
+make -j 8
+wajig listinstalled | rg my-
+sudo checkinstall
+whatis du
+man du
+man dir
+du
+du -h
+cd dealii-real
+cd bu
+cd build
+ll
+wajig listfiles my-dealii-real
+wajig remove my-dealii-real
+cd /opt
+sudo rm -rf dealii-real
+wajig install my-dealii-real_23.05.2020-1_amd64.deb
+wajig show my-dealii-real
+du -h -d 1
+cd ~/d
+cd ~/dotfiles
+gs
+vim ~/dotfiles/config/zsh/zshrc
+rsync -v ~/.cache/zsh/zsh_history ~/dotfiles/config/zsh/zsh_history

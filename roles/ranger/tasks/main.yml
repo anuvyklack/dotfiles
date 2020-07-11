@@ -1,0 +1,27 @@
+---
+- name: install ranger (apt)
+  become: yes
+  become_user: root
+  become_method: sudo
+  apt:
+    name: ranger
+    state: present
+    update_cache: yes
+
+- name: check if ranger config already exists
+  find:
+    path: "{{ home }}/.config/ranger"
+  register: ranger_config
+
+# - debug: var=ranger_config
+
+- name: symlink ranger config files
+  file:
+    src: "{{ role_path }}/files"
+    dest: "{{ home }}/.config/ranger"
+    state: link
+    force: yes
+  # Haven't found any files in ~/.config/ranger dir or
+  # even haven't found ranger dir itself.
+  when: ranger_config.matched == 0 
+  check_mode: yes

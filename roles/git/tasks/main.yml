@@ -1,0 +1,38 @@
+---
+
+- name: Install git and tig (apt)
+  become: yes
+  apt:
+    force_apt_get: yes  # Force usage of apt-get instead of aptitude
+    update_cache: yes
+    cache_valid_time: 3600  # One hour
+    state: present
+    pkg:
+      - git
+      - tig
+
+- name: Check if previous git configuration exists
+  stat:
+    path: "{{ home }}/.config/git"
+  register: git
+
+# - debug: var=git
+
+- name: Backup original git config
+  command:
+    cmd: mv 'git' 'git.original'
+    chdir: "{{ home }}/.config"
+    creates: 'git.original'
+  when: git.stat.exists and
+        not git.stat.islnk  # When ~/.config/git is not symlink
+
+- name: Ensure ~/.config dir exists
+  file:
+    path: "{{ home }}/.config"
+    state: directory
+
+- name: Symlink git config
+  file:
+    src: "{{ role_path }}/files"
+    dest: "{{ home }}/.config/git"
+    state: link

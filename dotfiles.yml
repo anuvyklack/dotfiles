@@ -1,0 +1,54 @@
+---
+- name: Set up local workstation
+  hosts: local
+  roles:
+
+    # - role: debian-testing
+    #   tags:
+    #     - debian-testing
+    #   when: ansible_distribution == 'Debian'
+    #   check_mode: yes
+
+    - role: wsl
+      tags:
+        - wsl
+
+    - role: apt
+      tags:
+        - apt
+
+    - role: git
+      tags:
+         git
+
+    - role: ripgrep
+      tags:
+        - ripgrep
+
+    - role: bat
+      tags:
+        - bat
+
+    - role: zsh
+      tags:
+        - zsh
+
+    - role: ranger
+      tags:
+        - ranger
+
+    - role: miniconda
+      tags:
+        - miniconda
+
+    # - role: nodejs
+    #   tags:
+    #     - nodejs
+
+    - role: neovim
+      tags:
+        - neovim
+
+    # - role: lf
+    #   tags:
+    #     - lf

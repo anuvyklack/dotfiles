@@ -1,0 +1,48 @@
+#!/usr/bin/env zsh
+
+#             ███                 ██
+#            ░░██                ░░
+#      ██████ ░██  █████   ██████ ██ ██████
+#     ░░░░██  ░██ ██░░░██ ██░░░██░██░██░░░██
+#        ██   ░██░██  ░██░██  ░██░██░██  ░██
+#       ██    ░██░██  ░██░░██████░██░██  ░██
+#  ██  ██████ ░██░░█████  ░░░░░██░██░██  ░██
+# ░░  ░░░░░░  ░░  ░░░░░    █████ ░░ ░░   ░░
+#                         ░░░░░
+
+# Execute code in the background to not affect the current session
+{
+    setopt LOCAL_OPTIONS EXTENDED_GLOB GLOB_DOTS
+    autoload -U zrecompile
+
+    array=(zprofile zshrc zlogin)
+    for i in $array
+    do
+        zrecompile -pq "${ZDOTDIR:-${HOME}}/.$i"
+    done
+
+    # # zcompile .zshrc
+    # zrecompile -pq ${ZDOTDIR:-${HOME}}/.zprofile
+    # zrecompile -pq ${ZDOTDIR:-${HOME}}/.zshrc
+    # zrecompile -pq ${ZDOTDIR:-${HOME}}/.zlogin
+
+    # recompile all zsh or sh
+    for FILE in {$ZDOTDIR/**,$HOME/.cache/zsh/**}/*.*sh(#qN)
+    do
+        zrecompile -pq $FILE
+    done
+
+    # local CACHE="$HOME/.cache/zsh/conda.zsh"
+
+    # Compile all functions in single 'digest' file
+    zrecompile -pq "$ZDOTDIR/functions.zwc" $(echo -n $(find "$ZDOTDIR"/functions/ -maxdepth 1 -type f))
+
+    # Delete all "*.zwc.old" files
+    # (#qN) is glob qualifier which sets the NULL_GLOB option for the current
+    # pattern, so it doesn't show message if no matches found.
+    for FILE in {$ZDOTDIR/**,$HOME/.cache/zsh/**}/*.zwc.old(#qN)
+    do
+        rm -f -- "$FILE"
+    done
+
+} &!

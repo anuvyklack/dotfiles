@@ -1,0 +1,11 @@
+---
+- name: symlink bat config files
+  file:
+    src: "{{ role_path }}/files"
+    dest: "{{ home }}/.config/bat"
+    state: link
+
+- name: build bat cache
+  command: bat cache --build
+  ignore_errors: True
+  changed_when: False  # so as not to distract

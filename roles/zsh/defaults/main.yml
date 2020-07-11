@@ -1,0 +1,4 @@
+---
+# user_name: ""
+zshdir: "{{ home }}/.config/zsh"
+files: "{{ role_path }}/files"

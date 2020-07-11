@@ -1,0 +1,140 @@
+*myhelp.txt*    My notes for Neovim
+
+Type `:helpt %:p:h` to regenerate help-tags.                        *myhelp*
+Help syntaxis: https://devhints.io/vim-help
+
+                                      Type |gO| to see the table of contents.
+
+==============================================================================
+CONTENTS                                                *myhelp-contents*
+
+     Normal Mode...............................|myhelp-normal|
+     Visual Mode...............................|myhelp-visual|
+     Insert Mode...............................|myhelp-insert|
+     Command Mode..............................|myhelp-command|
+     Diff Mode.................................|myhelp-diff|
+
+     Text Manipulations........................|myhelp-text-manipulation|
+
+==============================================================================
+Normal Mode                                                *myhelp-normal*
+
+   - :wall : Save modified buffers
+   - :x : Save buffer only if modified, then exit (better than :wq)
+   - ]] : next section
+   - ]m : next method
+   - [m : back to the start of the method
+   - ) : Next sentence
+   - CTRL-D : Down half a page
+   - CTRL-U : Up half a page
+
+   - ~ Uppercase a letter (works on ranges)
+   - z commands:
+      - z : Current line at the top
+      - z. : current line at the center
+      - z- : current line at the bottom
+
+   - /<C-R><C-W>: Pull word under the cursor into command line (or search)
+   - /<C-R><C-W>: Pull line under the cursor into command line (or search)
+   - :reg : list registers (and show what’s in them)
+
+
+==============================================================================
+Visual Mode                                                *myhelp-visual*
+
+gv                      Reselect previous selected region
+
+   - vab : select a "block" (works differently in different langs)
+   - vat : select a <tag> and its contents (use i instead of a for just
+     contents)
+
+
+===============================================================================
+Insert Mode                                                *myhelp-insert*
+
+   - <C-N>: Complete word
+   - <C-N><C-P>: Complete word (?)
+   - <C-X><C-L>: Complete line (!!)
+   - \cc: <Leader>cc Comment out all selected rows with a single-line comment
+     (//) — part of NERDCommenter
+   - \\w: Navigate to a word with EasyMotion’s help (works with any navigation
+     commands)
+
+==============================================================================
+Command Mode                                              *myhelp-command*
+
+:!{cmd}                 Execute shell command inside vim (example `:!exa ~` )
+
+:r!{cmd}                Выполнить команду shell и вставить результат после
+                        курсора.
+
+:retab                  Заменяет все символы табуляции пробелами в соответствии
+                        с параметром |'tabstop'|.
+
+:spelldump              Create a new buffer containing everything from the spell
+	                file(s) currently in use.
+
+
+==============================================================================
+Diff Mode                                                    *myhelp-diff*
+
+Starting Vim in diff mode: >
+	nvim -d file1 file2 [file3 [file4]]
+<
+         `zo`      развернуть блок
+         `zc`      свернуть блок
+         `]c`      следующая разница
+         `[c`      предыдущая разница
+         `do`      (diff-obtain) получить разницу из другого окна в текущее
+         `dp`      (diff-put) отправить разницу из текущего окна в соседнее
+`:diffupdate`      re-scan the files for differences
+
+
+==============================================================================
+Text Manipulations                              *myhelp-text-manipulation*
+
+------------------------------------------------------------------------------
+Отформатировать строки так, чтобы они не превышали заданной длины~
+------------------------------------------------------------------------------
+
+gq{motion}              Format the lines that {motion} moves over.
+
+gw{motion}              То же что и `gq` но возвращает курсор туда же, где он
+                        и был.
+
+gqq, gqgq,              Отформатировать текущую строку с помощью `gq` или `gw`.
+gww, gwgw
+
+gqap, gwap              Отформатировать текущий параграф.  Данная команда
+                        оставляет курсор в начале следующего параграфа, что
+			позволяет повторить форматироавние с помощью ".".
+
+gwip                    Отформатировать текущий параграф и продолжить с того
+			же места где и остановился.
+
+------------------------------------------------------------------------------
+Выравнивание строк по заданным элементам~
+------------------------------------------------------------------------------
+                                                      Плагин *easy-align*
+
+{selected text}ga       Start interactive EasyAlign in visual mode (e.g. vipga)
+
+ga{motion}              EasyAlign for a motion/text object (e.g. gaip)
+
+Example: type `gaip=` on the paragraph below: >
+
+    apple   =red
+    grass+=green
+    sky-=   blue
+
+------------------------------------------------------------------------------
+Switch between single-line and multiline forms of code~
+------------------------------------------------------------------------------
+                                                      Плагин *splitjoin*
+
+gS                      Split into multiline constraction.
+gJ                      Join into single-line construction.
+
+
+------------------------------------------------------------------------------
+ vim:tw=78:isk=!-~,^*,^\|,^\":ts=8:noet:ft=help:norl:ma:noro

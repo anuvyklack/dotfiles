@@ -1,0 +1,16 @@
+---
+
+# miniconda_environments:
+#   - name: nvim
+#     pkgs: 'pynvim'
+
+
+
+# Sample in case two environments will be needed
+# --------------------------------------------
+
+miniconda_environments:
+  - name: nvim-py2
+    pkgs: 'python=2 pynvim'
+  - name: nvim-py3
+    pkgs: 'python=3 pynvim'

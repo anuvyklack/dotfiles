@@ -1,0 +1,47 @@
+---
+
+- name: install nodejs prerequisites
+  become: yes
+  apt:
+    name:
+      - gpg
+      # - apt-transport-https
+      # - gcc
+      # - g++
+      # - make
+    state: present
+
+- name: add nodejs apt key
+  become: yes
+  apt_key:
+    url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+    state: present
+
+- name: add nodejs v{{ nodejs_version }} repository
+  become: yes
+  apt_repository:
+    repo: deb https://deb.nodesource.com/node_{{ nodejs_version }}.x {{ ansible_lsb.codename }} main
+    state: present
+    update_cache: yes
+  register: add_new_nodejs_repo
+
+# - debug:
+#     # msg: "{{ nodejs_version - 1 }}"
+#     var:  nodejs_version - 1
+
+- name: remove the previous versions nodejs repositories
+  become: yes
+  apt_repository:
+    repo: deb https://deb.nodesource.com/node_{{ nodejs_version|int - item }}.x {{ ansible_lsb.codename }} main
+    state: absent
+  loop: [1, 2, 3, 4]
+  loop_control:
+    label: "{{ nodejs_version - item }}"
+  when: add_new_nodejs_repo is succeeded
+
+- name: install the latest nodejs
+  become: yes
+  apt:
+    name: nodejs
+    state: latest
+    update_cache: yes

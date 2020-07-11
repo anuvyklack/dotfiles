@@ -1,0 +1,270 @@
+#!/usr/bin/env zsh
+
+#                                       ███ ██ ███
+#                                      ██░ ░░ ░░██
+#      ██████ ██████  ██████  █████   ░██   ██ ░██   █████
+#     ░░░░██ ░██░░░██░░██░░█ ██░░░██ ██████░██ ░██  ██░░░██
+#        ██  ░██  ░██ ░██ ░ ░██  ░██░░░██░ ░██ ░██ ░███████
+#       ██   ░██████  ░██   ░██  ░██  ░██  ░██ ░██ ░██░░░░
+#  ██  ██████░██░░░   ███   ░░█████   ░██  ░██ ░██ ░░█████
+# ░░  ░░░░░░ ░██     ░░░     ░░░░░    ░░   ░░  ░░   ░░░░░
+#            ░░
+
+# Executes commands at login pre-zshrc.
+
+
+# WORDCHARS (non-alphanumeric chars treated as part of a word)
+# You can also tweak this if you'd prefer ^w to break on dot, underscore, etc.
+export WORDCHARS='*?[]~=&;!#$%^(){}<>'
+
+
+# WSL
+# ========================================================================
+
+# $IS_WSL env. variable existed in the older version in WSL 1, while
+# $WSL_DISTRO_NAME variable exists in the current version in WSL 2.
+if [[ -n "$IS_WSL" || -n "$WSL_DISTRO_NAME" ]]; then
+  # We are in wsl!
+  export WINDOWS_HOST_IP=$(awk '/nameserver/ {print $2}' /etc/resolv.conf)
+  export WINDOWS_USER="$(cmd.exe /C "echo %USERNAME%" 2>/dev/null | tr -d '\r')"
+else
+  # We are not in wsl!
+fi
+
+
+# Paths
+# ========================================================================
+
+# Broot {{{
+if [[ -s "~/.config/broot/launcher/bash/br" ]]; then
+    source ~/.config/broot/launcher/bash/br
+fi
+# }}}
+
+# Homebrew {{{
+
+local BREWCACHE="$HOME/.cache/Homebrew/brewenv.zsh"
+
+if [[ ! -s $BREWCACHE(#q.md-7N) ]]
+then
+    /home/linuxbrew/.linuxbrew/bin/brew shellenv >! $BREWCACHE 2> /dev/null
+fi
+source $BREWCACHE
+
+# Enable completion for brew and programs installes with brew.
+FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+
+# }}}
+
+# Put Miniconda after Homebrew to make minicondas python be earlier in the $PATH.
+# Miniconda {{{
+
+# if is cache load cache
+# elsif no cache make cache
+# fi
+
+setopt LOCAL_OPTIONS EXTENDED_GLOB GLOB_DOTS
+
+local CONDACACHE="$HOME/.cache/zsh/conda.zsh"
+
+# Существует файл, который был модифицирован в течении 7 последних дней:
+# -----  ---------------------------------------------
+# (#q…)  glob qualifier
+#     .  regular file
+#  md-7  was modified within last 7 days
+#     N  don't raise an error if nothing will be found
+# -----  ---------------------------------------------
+
+# Файл $COONDACACHE существует, был модифицирован не более 7 дней назад
+# и он моложе чем файл .zprofile.
+if [[ -s $CONDACACHE(#q.md-7N) && \
+      $CONDACACHE -nt "$(readlink -- ~/.config/zsh/.zprofile)" ]]
+then
+    source $CONDACACHE
+else
+    # Make ~/.cache/zsh folder if if it doesn't exist.
+    [[ -d ~/.cache/zsh ]] || mkdir -pv ~/.cache/zsh
+
+    local PATH_TO_CONDA_INSTALL="/opt/miniconda3"
+    # local PATH_TO_CONDA_INSTALL="$HOME/.miniconda"
+
+    $PATH_TO_CONDA_INSTALL/bin/conda shell.zsh hook >! $CONDACACHE 2> /dev/null
+
+    if [ ! $? -eq 0 ]
+    then
+        if [ -f "$PATH_TO_CONDA_INSTALL/etc/profile.d/conda.sh" ]
+        then
+            . "$PATH_TO_CONDA_INSTALL/etc/profile.d/conda.sh"
+        else
+            export PATH="$PATH_TO_CONDA_INSTALL/bin:$PATH"
+        fi
+    fi
+
+    source $CONDACACHE
+
+    # # >>> conda initialize >>>
+    # __conda_setup="$($PATH_TO_CONDA_INSTALL/bin/conda 'shell.zsh' 'hook' 2> /dev/null)"
+    # if [ $? -eq 0 ]; then
+    #     eval "$__conda_setup"
+    # else
+    #     if [ -f "$PATH_TO_CONDA_INSTALL/etc/profile.d/conda.sh" ]; then
+    #         . "$PATH_TO_CONDA_INSTALL/etc/profile.d/conda.sh"
+    #     else
+    #         export PATH="$PATH_TO_CONDA_INSTALL/bin:$PATH"
+    #     fi
+    # fi
+    # unset __conda_setup
+    # # <<< conda initialize <<<
+
+fi
+
+# }}}
+
+# Ensure path arrays do not contain duplicates.
+typeset -gU cdpath fpath mailpath path
+
+# Set the list of directories that cd searches.
+# cdpath=(
+#   $cdpath
+# )
+
+# Set the list of directories that Zsh searches for programs.
+path=(
+  /usr/local/{bin,sbin}
+  $HOME/bin
+  $path
+)
+
+
+# Zsh
+# =====================================================================
+
+# Переменная READNULLCMD определяет команду, которая будет вызвана, если
+# перенаправление stdin использовать без ввода команды: `< file.txt`.
+READNULLCMD='less'
+
+
+# Editors
+# ========================================================================
+
+# export EDITOR VISUAL
+if command -v nvim > /dev/null 2>&1; then
+  export EDITOR='nvim'
+else
+  export EDITOR='vim'
+fi
+
+export VISUAL="$EDITOR"
+
+export PAGER='less'
+
+
+# Language
+# ========================================================================
+
+if [[ -z "$LANG" ]]; then
+    export LANG='en_US.UTF-8'
+    export LANGUAGE=en_US.UTF-8
+fi
+
+
+# Man
+# ========================================================================
+
+export MANWIDTH=80  # The width of the text column in the man.
+
+# # Use `bat` as a colorizing pager for `man`
+# export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
+
+# Less
+# ========================================================================
+
+# Set the default Less options.
+# Mouse-wheel scrolling has been disabled  -X and -F (exit if the content fits on one screen) to enable it.
+
+# -F: exit if the content fits on one screen
+# -g: Highlights just the current match of any searched string.
+# -i: Case-insensitive searches.
+# -M: Shows more detailed prompt, including file position.
+# -N: Shows line numbers (useful for source code viewing).
+# -R or --RAW-CONTROL-CHARS
+# -S: Disables line wrap ("chop long lines"). Long lines can be seen by side scrolling.
+# -X: Leave file contents on screen when less exits.
+# -?: Shows help.
+# +F: Follow mode for log.
+# -w or --hilite-unread:
+#     Temporarily highlights the first "new" line after a forward movement of a full page.
+# -z-4: Move page not on the full high of the screen but on high minus 4 lines
+
+# export LESS='-F -i -M -R -S -w -z-4'
+export LESS='-F -i -M -R -S -z-3'
+
+# Set the Less input preprocessor.
+# Try both `lesspipe` and `lesspipe.sh` as either might exist on a system.
+if (( $#commands[(i)lesspipe(|.sh)] )); then
+  export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
+fi
+
+export LESSHISTFILE="$HOME/.cache/lesshst"
+
+# LS_COLORS
+# ========================================================================
+
+# ls colors
+export LSCOLORS="Gxfxcxdxbxegedabagacad"
+
+# GNU ls colors
+export LS_COLORS="di=1;36:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43"
+
+
+# Bat
+# ========================================================================
+
+export BAT_PAGER="less ${LESS}"
+# export BAT_PAGER="less -RF"
+
+
+# Ripgrep
+# ========================================================================
+export RIPGREP_CONFIG_PATH=$HOME/.config/rg/config
+
+# Par (paragraph formating)
+# ========================================================================
+
+# The following string is recommended in par man.
+export PARINIT='rTbgqR B=.,?_A_a Q=_s>|'
+
+
+# XDG
+# ========================================================================
+
+export XDG_RUNTIME_DIR="/tmp/runtime-$USER"
+
+# pkg-config
+# ========================================================================
+
+# # Create parameter and array and tie them together in the manner of $PATH
+# # and $path.
+# typeset -T -gU PKG_CONFIG_PATH pkg_config_path
+# export PKG_CONFIG_PATH
+#
+# pkg_config_path=(
+#     /usr/lib/pkgconfig
+#     /usr/lib/x86_64-linux-gnu/pkgconfig
+#     /usr/share/pkgconfig
+#     /opt/petsc-real/lib/pkgconfig
+#     /opt/slepc-real/lib/pkgconfig
+# )
+#
+
+# Intel-MKL
+# ========================================================================
+
+if [[ -s /opt/intel/mkl/bin/mklvars.sh ]]; then
+    source /opt/intel/mkl/bin/mklvars.sh intel64
+    export MKL_THREADING_LAYER=GNU
+fi
+
+
+# vim: ft=zsh

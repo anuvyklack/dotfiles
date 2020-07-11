@@ -1,0 +1,13 @@
+---
+- name: Install ripgrep
+  become: yes
+  apt:
+    name: ripgrep
+    state: present
+    update_cache: yes
+
+- name: Symlink ripgrep config files
+  file:
+    src: "{{ role_path }}/files"
+    dest: "{{ home }}/.config/rg"
+    state: link

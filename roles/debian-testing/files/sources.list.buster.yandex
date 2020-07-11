@@ -1,0 +1,30 @@
+# Buster
+deb http://security.debian.org/debian-security buster/updates main
+deb-src http://security.debian.org/debian-security buster/updates main
+
+deb http://mirror.yandex.ru/debian buster main
+deb-src http://mirror.yandex.ru/debian buster main
+
+deb http://mirror.yandex.ru/debian buster-updates main
+deb-src http://mirror.yandex.ru/debian buster-updates main
+
+deb http://mirror.yandex.ru/debian/ buster-proposed-updates main non-free contrib
+deb-src http://mirror.yandex.ru/debian/ buster-proposed-updates main non-free contrib
+
+# Backports
+deb http://mirror.yandex.ru/debian buster-backports main contrib non-free
+deb-src http://mirror.yandex.ru/debian buster-backports main contrib non-free
+
+# Multimedia
+#deb http://www.deb-multimedia.org buster main non-free
+
+# WiFi
+#deb http://httpredir.debian.org/debian/ buster main contrib non-free
+
+
+# deb http://ftp.ru.debian.org/debian/ buster main
+# deb http://deb.debian.org/debian buster main
+#
+# deb http://deb.debian.org/debian buster-updates main
+# deb http://security.debian.org/debian-security/ buster/updates main
+# deb http://ftp.debian.org/debian buster-backports main

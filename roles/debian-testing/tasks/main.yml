@@ -1,0 +1,32 @@
+---
+
+# - debug: var=ansible_facts
+# - debug: var=ansible_distribution
+# when: ansible_distribution == 'Debian'
+
+# - name: Backup 'sources.list' file
+#   become: yes
+#   command:
+#     cmd: mv '/etc/apt/sources.list' '/etc/apt/sources.list.original'
+#     creates: /etc/apt/sources.list.original
+#
+# - name:
+#   become: yes
+#   file:
+#     src: "{{ role_path }}/files/sources.list"
+#     dest: "/etc/apt/sources.list"
+#     state: link
+
+- name: Copy 'sources.list' file
+  become: yes
+  copy:
+    src: sources.list
+    dest: "/etc/apt/sources.list"
+    owner: root
+    backup: yes
+
+- name: Upgrade all packages to the latest version
+  become: yes
+  apt:
+    upgrade: dist
+    update_cache: yes

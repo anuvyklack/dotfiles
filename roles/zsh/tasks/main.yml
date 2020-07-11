@@ -1,0 +1,98 @@
+---
+
+# - debug: var=ansible_env
+
+- name: Install zsh and dependencies (apt)
+  become: yes
+  become_user: root
+  become_method: sudo
+  apt:
+    pkg:
+      - git
+      - bfs
+      - lua5.3
+      - zsh
+    state: present
+    update_cache: yes
+
+- name: Setup zsh as default shell for '{{ user_name }}'
+  become: yes
+  user:
+    name: "{{ user_name }}"
+    shell: /usr/bin/zsh
+
+- name: Make sure all required folders are exist
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ home }}/.bin"
+    - "{{ zshdir }}/lib"
+    - "{{ zshdir }}/themes"
+
+- name: Symlink zsh dotfiles
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+  loop:
+    - { src: "{{ files }}/zshenv",    dest: "{{ home }}/.zshenv" }
+    - { src: "{{ files }}/zprofile",  dest: "{{ zshdir }}/.zprofile" }
+    - { src: "{{ files }}/zshrc",     dest: "{{ zshdir }}/.zshrc" }
+    - { src: "{{ files }}/zlogin",    dest: "{{ zshdir }}/.zlogin" }
+    - { src: "{{ files }}/functions", dest: "{{ zshdir }}/functions" }
+
+
+- name: Link files in 'lib' folder
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ zshdir }}/lib/{{ item.path }}"
+    state: link
+  with_filetree: "{{ files }}/lib"
+  loop_control:
+    label: "~/.config/zsh/lib/{{ item.path }}"
+
+- name: Link files in 'themes' folder
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ zshdir }}/themes/{{ item.path }}"
+    state: link
+  with_filetree: "{{ files }}/themes"
+  loop_control:
+    label: "~/.config/zsh/theme/{{ item.path }}"
+
+- name: Link files in 'bin' folder
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ home }}/.bin/{{ item.path }}"
+    state: link
+  with_filetree: "{{ files }}/bin"
+  loop_control:
+    label: "~/.bin/{{ item.path }}"
+
+# - name: Link files in 'lib' folder
+#   file:
+#     src: "{{ item.src }}"
+#     dest: "{{ zshdir }}/lib/{{ item.path }}"
+#     state: link
+#   with_filetree: "{{ files }}/lib"
+#   loop_control:
+#     label: "~/.config/lib/{{ item.path }}"
+#
+# - name: Link files in 'themes' folder
+#   file:
+#     src: "{{ item.src }}"
+#     dest: "{{ zshdir }}/themes/{{ item.path }}"
+#     state: link
+#   with_filetree: "{{ files }}/themes"
+#   loop_control:
+#     label: "~/.config/theme/{{ item.path }}"
+#
+# - name: Link files in 'bin' folder
+#   file:
+#     src: "{{ item.src }}"
+#     dest: "{{ home }}/.bin/{{ item.path }}"
+#     state: link
+#   with_filetree: "{{ files }}/bin"
+#   loop_control:
+#     label: "~/.bin/{{ item.path }}"

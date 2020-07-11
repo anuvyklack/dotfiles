@@ -1,0 +1,30 @@
+---
+- name: Install apt packages
+  become: yes
+  apt:
+    force_apt_get: yes  # Force usage of apt-get instead of aptitude
+    update_cache: yes
+    cache_valid_time: 3600  # One hour
+    state: present
+    pkg:
+      - wajig
+      - man
+      - anacron  # make sure that regular cron task are completed
+      - curl
+      - rsync
+      - mlocate
+      - fd-find
+
+      # - x11-xkb-utils
+      # - bfs      # find(1) c поиском в ширину в первую очередь
+      # - par      # Paragraph formating utility for vim
+      # - ripgrep
+      # - lua5.3
+      # - neovim
+      # - ranger
+      # - tig
+
+      # - htop
+      # - exa      # a modern replacment for ls
+      # - silversearcher-ag
+      # - fzf      # fuzzy finder

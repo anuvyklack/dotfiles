@@ -1,0 +1,71 @@
+#!/bin/sh
+
+update()
+{
+
+  sudo apt update --yes
+  # sudo apt upgrade --yes
+  sudo apt full-upgrade --yes
+  sudo apt autoremove --yes
+
+
+  # Update conda {{{
+  if command -v conda > /dev/null 2>&1
+  then
+
+      # Remember the current conda environment if any.
+      if [[ -n $CONDA_DEFAULT_ENV ]]
+      then
+          local conda_env=$CONDA_DEFAULT_ENV
+      fi
+
+      echo ''
+      echo -e '\e[32;1mconda \e[37;1mupdating \e[33;1mbase \e[0m'
+
+      conda activate base
+      conda update conda --yes
+      conda update --all --yes
+
+      # echo ''
+      # echo -e '\e[32;1mconda \e[37;1mupdating \e[33;1mnvim \e[0m'
+      #
+      # conda activate nvim
+      # conda update --all --yes
+
+      # Очистить кэш
+      conda clean --all --yes
+
+      # # Restore conda environment
+      # if [[ -n conda_env ]]
+      # then
+      #     conda activate $conda_env
+      # else
+      #     conda deactivate
+      # fi
+
+  fi
+  # }}}
+
+  # Update Homebrew {{{
+  if command -v brew > /dev/null 2>&1
+  then
+      echo
+      echo -e '\e[37;1mUpdating \e[33;1mHomebrew \e[0m'
+      brew update
+      brew upgrade
+  fi
+  # }}}
+
+  # Zinit {{{
+  if command -v zinit > /dev/null 2>&1
+  then
+      echo
+      echo -e '\e[37;1mUpdating \e[35;1mZinit \e[0m'
+      zinit self-update
+      zinit update --all
+  fi
+  # }}}
+
+}
+
+# vim: ft=zsh

@@ -1,0 +1,10 @@
+#!/bin/zsh
+
+rg() {
+    if [ -t 1 ]; then
+        command rg -p "$@" | less -RFX
+        # command rg --color=always "$@" | less
+    else
+        command rg "$@"
+    fi
+}

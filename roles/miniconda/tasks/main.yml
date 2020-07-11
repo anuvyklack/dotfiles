@@ -1,0 +1,55 @@
+---
+
+- debug: var=home
+
+# - name: check if already installed
+#   stat:
+#     path: "{{ miniconda_home }}/bin/conda"
+#   register: bin_conda
+#   changed_when: bin_conda.stat.exists == False
+
+- name: check if conda already installed
+  shell: "command -v conda"
+  register: check_conda
+  failed_when: False
+  changed_when: check_conda.rc != 0
+  # ignore_errors: True
+  # changed_when: no
+
+# - debug: var=check_conda
+
+- name: download miniconda installer
+  get_url:
+    url: "{{ miniconda_url }}"
+    dest: /tmp/miniconda.sh
+    mode: 0755
+  register: miniconda_downloaded
+  when: check_conda.rc != 0
+  # when: check_conda is failed
+  # when: bin_conda.stat.exists == False
+  notify:
+    - remove miniconda setup script
+
+# - debug: var=miniconda_downloaded
+
+- name: "install miniconda to {{ miniconda_home }}"
+  become: yes
+  become_user: "{{ user_name }}"
+  shell:
+    cmd: "/tmp/miniconda.sh -b -p {{ miniconda_home }}"
+    creates: "{{ miniconda_home }}"
+    executable: /bin/bash
+  register: miniconda_installed
+  when:
+    # miniconda_downloaded is succeeded and
+    miniconda_downloaded is not skipped
+  notify:
+    - update conda to latest version
+
+# - debug: var=miniconda_installed
+
+- name: symlink condarc
+  file:
+    src: "{{ role_path }}/files/condarc"
+    dest: "{{ home }}/.condarc"
+    state: link

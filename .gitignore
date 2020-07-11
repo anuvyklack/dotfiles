@@ -1,0 +1,7 @@
+tags*
+*.zwc
+**/neovim/files/plugged/*
+!**/neovim/files/plugged/myhelp
+**/neovim/files/autoload/plug.vim*
+__pycache__/
+**/ranger/**/__init__.py
