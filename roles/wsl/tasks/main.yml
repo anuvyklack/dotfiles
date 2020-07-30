@@ -40,7 +40,18 @@
 #   when: item.state == 'file'
 #   with_filetree: "{{ role_path }}/files"
 
-- name: Symlink 'win32yank.exe' required for neovim to interact with Windows clipboard
+- name: Exclude '/mnt' from database created by 'updatedb' and used by 'locate' and 'mlocate'.
+  become: yes
+  lineinfile:
+    path: "/etc/updatedb.conf"
+    backrefs: yes
+    # Starts from 'PRUNEPATH=' and doesn't contain any number of any symbols followed by '/mnt'.
+    # Exclude /"/ symbol at the end of the string from the matching group
+    regexp: '^(PRUNEPATHS=(?!.*/mnt).*)"$'
+    line: '\1 /mnt"'
+    # backup: yes
+
+- name: Symlink 'win32yank.exe' required for neovim to interact with Windows clipboard.
   become: yes
   file:
     src: "/mnt/c/tools/win32yank.exe"
