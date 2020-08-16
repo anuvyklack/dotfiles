@@ -10,6 +10,7 @@
     pkg:
       - git
       - tig
+  when: ansible_pkg_mgr == 'apt'
 
 - name: Check if previous git configuration exists
   stat:

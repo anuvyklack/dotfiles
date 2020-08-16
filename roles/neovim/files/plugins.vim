@@ -513,21 +513,36 @@ Plug 'skywind3000/vim-quickui'
 " Smooth scroll                                    {{{
 " ====================================================
 
+Plug 'psliwka/vim-smoothie'
+
+" Time (in milliseconds) between subseqent screen/cursor postion updates.
+" Lower value produces smoother animation.
+let g:smoothie_update_interval = 20
+
+" Base scrolling speed (in lines per second), to be taken into account by
+" the velocity calculation algorithm.  Can be decreased to achieve slower
+" (and easier to follow) animation.
+let g:smoothie_base_speed = 7
+
 " " Accelerated smooth scroll {{{
 " Plug 'yonchu/accelerated-smooth-scroll'
 " let g:ac_smooth_scroll_enable_accelerating = 0
 " " }}}
 
-Plug 'yuttie/comfortable-motion.vim'
+" Comfortable-Motion {{{
 
-" To prevent the plugin from defining those default key mappings
-let g:comfortable_motion_no_default_key_mappings = 1
+" Plug 'yuttie/comfortable-motion.vim'
+"
+" " To prevent the plugin from defining those default key mappings
+" let g:comfortable_motion_no_default_key_mappings = 1
+"
+" let g:comfortable_motion_interval = 17
+"
+" " mouse wheel to scroll a window by the following mappings:
+" noremap <silent> <ScrollWheelDown> :call comfortable_motion#flick(40)<CR>
+" noremap <silent> <ScrollWheelUp>   :call comfortable_motion#flick(-40)<CR>
 
-let g:comfortable_motion_interval = 17
-
-" mouse wheel to scroll a window by the following mappings:
-noremap <silent> <ScrollWheelDown> :call comfortable_motion#flick(40)<CR>
-noremap <silent> <ScrollWheelUp>   :call comfortable_motion#flick(-40)<CR>
+" }}}
 
 " }}}
 
@@ -810,17 +825,17 @@ nmap ;l <Plug>(easymotion-lineanywhere)
 
 " Windows scrolling options / Comfortable motion key bindings {{{
 
-" Little less then half of the screen
-nnoremap <silent> <C-d> :call comfortable_motion#flick(winheight(0) * 2)<CR>
-nnoremap <silent> <C-u> :call comfortable_motion#flick(winheight(0) * -2)<CR>
-
-" " Half of the screen
-" nnoremap <silent> <C-d> :call comfortable_motion#flick(winheight(0) * 2.2)<CR>
-" nnoremap <silent> <C-u> :call comfortable_motion#flick(winheight(0) * -2.2)<CR>
-
-" Full screen
-nnoremap <silent> <C-f> :call comfortable_motion#flick(winheight(0) * 3.5)<CR>
-nnoremap <silent> <C-b> :call comfortable_motion#flick(winheight(0) * -3.5)<CR>
+" " Little less then half of the screen
+" nnoremap <silent> <C-d> :call comfortable_motion#flick(winheight(0) * 2)<CR>
+" nnoremap <silent> <C-u> :call comfortable_motion#flick(winheight(0) * -2)<CR>
+"
+" " " Half of the screen
+" " nnoremap <silent> <C-d> :call comfortable_motion#flick(winheight(0) * 2.2)<CR>
+" " nnoremap <silent> <C-u> :call comfortable_motion#flick(winheight(0) * -2.2)<CR>
+"
+" " Full screen
+" nnoremap <silent> <C-f> :call comfortable_motion#flick(winheight(0) * 3.5)<CR>
+" nnoremap <silent> <C-b> :call comfortable_motion#flick(winheight(0) * -3.5)<CR>
 
 " }}}
 

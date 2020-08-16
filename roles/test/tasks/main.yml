@@ -1,0 +1,7 @@
+---
+
+# - debug: var=ansible_facts
+# - debug: var=ansible_env
+# - debug: var=ansible_distribution
+- debug: var=ansible_os_family
+- debug: var=ansible_pkg_mgr
