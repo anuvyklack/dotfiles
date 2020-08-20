@@ -3,5 +3,14 @@
 # - debug: var=ansible_facts
 # - debug: var=ansible_env
 # - debug: var=ansible_distribution
-- debug: var=ansible_os_family
-- debug: var=ansible_pkg_mgr
+# - debug: var=ansible_os_family
+# - debug: var=ansible_pkg_mgr
+
+# - debug: var=ansible_env.WSL_DISTRO_NAME
+# - debug: var=ansible_env.WSL_DISTRO_NAME_1
+
+- name: Check if WSL
+  debug:
+    msg: 'Hello!'
+  when: ('WSL_DISTRO_NAME' in ansible_env) or
+        ('IS_WSL' in ansible_env)

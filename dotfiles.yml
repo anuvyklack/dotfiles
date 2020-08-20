@@ -3,9 +3,9 @@
   hosts: local
   roles:
 
-    - role: test
-      tags:
-        - test
+    # - role: test
+    #   tags:
+    #     - test
 
     # - role: debian-testing
     #   when: ansible_distribution == 'Debian'
@@ -14,6 +14,7 @@
     #   check_mode: yes
 
     - role: wsl
+      when: ('WSL_DISTRO_NAME' in ansible_env) or ('IS_WSL' in ansible_env)
       tags:
         - wsl
 
