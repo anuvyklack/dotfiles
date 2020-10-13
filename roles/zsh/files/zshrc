@@ -179,6 +179,15 @@ esac
 source $ZDOTDIR/lib/history.zsh
 source $ZDOTDIR/lib/completion.zsh
 
+# Editors
+# ========================================================================
+# These settings are here and not in .zprofile because of the bug in
+# KDE Plasma which override default editor to nano.
+if command -v nvim > /dev/null 2>&1; then
+  export EDITOR='/usr/bin/nvim'
+fi
+export VISUAL="$EDITOR"
+
 
 # Output coloring {{{
 
@@ -823,6 +832,10 @@ fi
 
 ialias tree='tree -I .git -I .github'
 
+if command -v nvim > /dev/null 2>&1; then
+  ialias vim='nvim'
+fi
+
 # alias history="history -35"  # упрощение вывода истории команд
 
 # вывод свободного и использованного дискового пространства в
@@ -836,7 +849,9 @@ alias disk='df -h | grep -P "F|[A-Z]:"'
 ialias wget='wget -c'  # автоматическое продолжение при разрыве соединения
 ialias vw=' nvim -c WikiIndex'  # open wiki
 
-ialias fd=fdfind
+# ialias fd=fdfind
+
+
 
 # Git
 alias gs='git status'
@@ -849,7 +864,7 @@ alias cdh='back_in_history'
 # Lists the ten most used commands.
 ialias history-stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
 
-ialias atom='atom --force-device-scale-factor=1.1'
+# ialias atom='atom --force-device-scale-factor=1.1'
 
 # alias -s {avi,mpeg,mpg,mov,m2v}=mplayer
 # alias -s {odt,doc,sxw,rtf}=openoffice.org

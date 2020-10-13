@@ -25,7 +25,7 @@ let maplocalleader = ','
 
 " If disabled on Ubuntu "spellfile.vim" plugin unable to download spell
 " files. With Debian Neovim, though, it works.
-let loaded_netrwPlugin = 1 " disabled netrw
+let loaded_netrwPlugin = 1 " If 0 disabled netrw
 
 " http://items.sjbach.com/319/configuring-vim-right
 set mouse=a                     " Enable mouse in all modes
@@ -78,8 +78,8 @@ endif
 
 " Clipboard                                                        {{{
 " ====================================================================
-" if has('wsl')
-if has('unix')
+if has('wsl')
+" if has('unix')
     let g:clipboard = {
           \   'name': 'wslclipboard',
           \   'copy': {

@@ -23,6 +23,7 @@ export WORDCHARS='*?[]~=&;!#$%^(){}<>'
 
 # $IS_WSL env. variable existed in the older version in WSL 1, while
 # $WSL_DISTRO_NAME variable exists in the current version in WSL 2.
+# -n : true if length of string is non-zero.
 if [[ -n "$IS_WSL" || -n "$WSL_DISTRO_NAME" ]]; then
   # We are in wsl!
   export WINDOWS_HOST_IP=$(awk '/nameserver/ {print $2}' /etc/resolv.conf)
@@ -42,18 +43,20 @@ fi
 # }}}
 
 # Homebrew {{{
+if command -v brew > /dev/null 2>&1; then
 
-local BREWCACHE="$HOME/.cache/Homebrew/brewenv.zsh"
+  local BREWCACHE="$HOME/.cache/Homebrew/brewenv.zsh"
 
-if [[ ! -s $BREWCACHE(#q.md-7N) ]]
-then
-    /home/linuxbrew/.linuxbrew/bin/brew shellenv >! $BREWCACHE 2> /dev/null
+  if [[ ! -s $BREWCACHE(#q.md-7N) ]]
+  then
+      /home/linuxbrew/.linuxbrew/bin/brew shellenv >! $BREWCACHE 2> /dev/null
+  fi
+  source $BREWCACHE
+
+  # Enable completion for brew and programs installes with brew.
+  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+
 fi
-source $BREWCACHE
-
-# Enable completion for brew and programs installes with brew.
-FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
-
 # }}}
 
 # Put Miniconda after Homebrew to make minicondas python be earlier in the $PATH.
@@ -143,29 +146,35 @@ path=(
 # перенаправление stdin использовать без ввода команды: `< file.txt`.
 READNULLCMD='less'
 
-
 # Editors
 # ========================================================================
 
-# export EDITOR VISUAL
-if command -v nvim > /dev/null 2>&1; then
-  export EDITOR='nvim'
-else
-  export EDITOR='vim'
-fi
-
-export VISUAL="$EDITOR"
+# # export EDITOR VISUAL
+# if command -v nvim > /dev/null 2>&1; then
+#   export EDITOR='nvim'
+# else
+#   export EDITOR='vim'
+# fi
+#
+# export VISUAL="$EDITOR"
 
 export PAGER='less'
+
+
+# Browser
+# ========================================================================
+if [[ -f /opt/vivaldi/vivaldi ]]; then
+  export BROWSER='/opt/vivaldi/vivaldi'
+fi
 
 
 # Language
 # ========================================================================
 
-if [[ -z "$LANG" ]]; then
-    export LANG='en_US.UTF-8'
-    export LANGUAGE=en_US.UTF-8
-fi
+# if [[ -z "$LANG" ]]; then
+#     export LANG='en_US.UTF-8'
+#     export LANGUAGE=en_US.UTF-8
+# fi
 
 
 # Man
@@ -239,7 +248,7 @@ export PARINIT='rTbgqR B=.,?_A_a Q=_s>|'
 # XDG
 # ========================================================================
 
-export XDG_RUNTIME_DIR="/tmp/runtime-$USER"
+# export XDG_RUNTIME_DIR="/tmp/runtime-$USER"
 
 # pkg-config
 # ========================================================================

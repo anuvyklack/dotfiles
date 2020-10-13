@@ -674,6 +674,8 @@ Plug 'morhetz/gruvbox'
 " Plug 'mhartington/oceanic-next'
 " Plug 'ajmwagar/vim-deus'
 Plug 'sainnhe/gruvbox-material'
+Plug 'habamax/vim-gruvbit'
+Plug 'adigitoleo/vim-mellow'
 " }}}
 
 call plug#end()
@@ -691,6 +693,8 @@ call plug#end()
 " let s:theme = 'onedark'
 " let s:theme = 'gruvbox'
 let s:theme = 'gruvbox-material'
+" let s:theme = 'gruvbit'
+" let s:theme = 'mellow'
 " let s:theme = 'gruvbox-8'
 " let s:theme = 'deus'
 " let s:theme = 'OceanicNext'
@@ -792,7 +796,23 @@ elseif s:theme == 'gruvbox-material'
     " " My changes: #7ab061
     " let g:rainbow_conf.guifgs = ['#c475c1', '#8ab7d8', '#98c369', '#ffff70', '#ea9d70', '#971717']
     " let g:rainbow_conf.ctermfgs = ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta']
-
+" }}}
+" Gruvbit {{{
+elseif s:theme == 'gruvbit'
+    colorscheme gruvbit
+    let g:airline_theme = 'gruvbox_material'
+    if exists('g:lightline')
+        let g:lightline.colorscheme = 'gruvbox_material'
+    endif
+" }}}
+" Mellow {{{
+elseif s:theme == 'mellow'
+    set background=light
+    colorscheme mellow
+    let g:airline_theme = 'gruvbox_material'
+    if exists('g:lightline')
+        let g:lightline.colorscheme = 'gruvbox_material'
+    endif
 endif
 " }}}
 
