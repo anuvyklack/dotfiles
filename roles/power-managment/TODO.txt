@@ -1,0 +1,2 @@
+wajig install powertop
+cp 'files/powertop.service' '/etc/systemd/system/powertop.service'

@@ -18,8 +18,8 @@ window:
   # Specified in number of columns/lines, not pixels.
   # If both are `0`, this setting is ignored.
   dimensions:
-   columns: 160
-   lines: 52
+   columns: 180 # 160
+   lines: 65 # 52
 
   # Window position (changes require restart)
   #
@@ -334,6 +334,57 @@ schemes:
       cyan:    '0x89b482'
       white:   '0xdfbf8e'
 
+
+    mellow_light: &mellow-light
+      primary:
+        background: '#F2DDBC'
+        foreground: '#0F0908'
+
+      normal:
+        black:   '#0F0908'
+        red:     '#AF0032'
+        green:   '#4C6E25'
+        yellow:  '#A67458'
+        blue:    '#573E55'
+        magenta: '#66292F'
+        cyan:    '#BF472C'
+        white:   '#E0CCAE'
+
+      bright:
+        black:   '#3D241F'
+        red:     '#FF7477'
+        green:   '#84BF40'
+        yellow:  '#F5BB89'
+        blue:    '#8A7B85'
+        magenta: '#8A4B53'
+        cyan:    '#D47D49'
+        white:   '#F2DDBC'
+
+    mellow_dark: &mellow-dark
+        primary:
+            background: '#0F0908'
+            foreground: '#ECCD9D'
+
+        normal:
+            black:      '#0F0908'
+            red:        '#AF0032'
+            green:      '#577E2A'
+            yellow:     '#BF9169'
+            blue:       '#896186'
+            magenta:    '#66292F'
+            cyan:       '#BF472C'
+            white:      '#D3C1A6'
+
+        bright:
+            black:      '#3D241F'
+            red:        '#FF7477'
+            green:      '#84BF40'
+            yellow:     '#F5BB89'
+            blue:       '#9F939B'
+            magenta:    '#8A4B53'
+            cyan:       '#D47D49'
+            white:      '#ECCD9D'
+
   # Cursor colors
   #
   # Colors which should be used to draw the terminal cursor.
@@ -379,6 +430,8 @@ schemes:
     #  foreground: '#1d1f21'
 
 colors: *onedark
+# colors: *mellow-light
+# colors: *mellow-dark
 # colors: *gruvboxmaterial
 
 

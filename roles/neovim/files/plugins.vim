@@ -459,7 +459,9 @@ let g:rainbow_conf.separately.lisp = {'guifgs': ['#f28534', '#f2594b', '#80aa9e'
 " ---------------------- Tags ------------------------
 
 " Автоматически генерировать тэг-файлы
-Plug 'ludovicchabant/vim-gutentags'
+if executable("ctags")
+    Plug 'ludovicchabant/vim-gutentags'
+endif
 
 " " --------------------- Wintabs ----------------------
 "
@@ -807,7 +809,8 @@ elseif s:theme == 'gruvbit'
 " }}}
 " Mellow {{{
 elseif s:theme == 'mellow'
-    set background=light
+    " set background=light
+    set background=dark
     colorscheme mellow
     let g:airline_theme = 'gruvbox_material'
     if exists('g:lightline')

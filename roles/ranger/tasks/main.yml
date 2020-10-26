@@ -25,4 +25,4 @@
   # Haven't found any files in ~/.config/ranger dir or
   # even haven't found ranger dir itself.
   when: ranger_config.matched == 0
-  check_mode: yes
+  # check_mode: yes

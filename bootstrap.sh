@@ -10,8 +10,17 @@ fi
 # The home dir of current script
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-if ! [ -x "$(command -v ansible)" ]; then
-  sudo apt-get install ansible
-fi
+# # if command -v conda && conda env list | grep -q ansible; then
+# if command -v conda >/dev/null 2>&1 \
+#    && \
+#    conda env list | grep -q ansible
+# then
+#   conda activate ansible
+# fi
+
+# # -x - True if file exists and is executable.
+# if ! [ -x "$(command -v ansible)" ]; then
+#   sudo apt-get install ansible
+# fi
 
 ansible-playbook -i $DIR/hosts $DIR/dotfiles.yml --ask-become-pass --tags $tags

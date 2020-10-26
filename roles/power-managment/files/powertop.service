@@ -1,0 +1,14 @@
+#!/bin/bash
+
+[Unit]
+Description=Powertop tunings
+
+[Service]
+Type=oneshot
+# Arch
+# ExecStart=/usr/bin/powertop --auto-tune
+# Ubuntu
+ExecStart=/usr/sbin/powertop --auto-tune
+
+[Install]
+WantedBy=multi-user.target

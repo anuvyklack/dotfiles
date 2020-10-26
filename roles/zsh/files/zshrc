@@ -849,9 +849,11 @@ alias disk='df -h | grep -P "F|[A-Z]:"'
 ialias wget='wget -c'  # автоматическое продолжение при разрыве соединения
 ialias vw=' nvim -c WikiIndex'  # open wiki
 
-# ialias fd=fdfind
-
-
+# In Debian and its derivatives in package ‘fd-find’ the executable
+# and the associated manpage were renamed from ‘fd’ to ‘fdfind’.
+if [[ $(grep -Es '^ID_LIKE=.*(?:ubuntu|debian)' /etc/os-release) ]]; then
+  ialias fd=fdfind
+fi
 
 # Git
 alias gs='git status'

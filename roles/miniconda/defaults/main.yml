@@ -1,14 +1,15 @@
 ---
 
-miniconda_home: '{{ home }}/.miniconda'
-# miniconda_home: '/opt/miniconda3'
+# miniconda_home: '{{ home }}/.miniconda'
+
+miniconda_home: '/opt/miniconda3'
 
 miniconda_url: >
   https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 
-miniconda_environments:
-  - name: nvim
-    pkgs: 'pynvim'
+# miniconda_environments:
+#   - name: nvim
+#     pkgs: 'pynvim'
 
 
 # Sample in case two environments will be needed

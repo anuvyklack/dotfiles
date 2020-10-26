@@ -1,6 +1,6 @@
 ---
 
-- debug: var=home
+# - debug: var=home
 
 # - name: check if already installed
 #   stat:
@@ -34,7 +34,7 @@
 
 - name: "install miniconda to {{ miniconda_home }}"
   become: yes
-  become_user: "{{ user_name }}"
+  # become_user: "{{ user_name }}"
   shell:
     cmd: "/tmp/miniconda.sh -b -p {{ miniconda_home }}"
     creates: "{{ miniconda_home }}"
@@ -47,6 +47,28 @@
     - update conda to latest version
 
 # - debug: var=miniconda_installed
+
+- name: Ensure group "conda" exists
+  become: yes
+  group:
+    name: conda
+    state: present
+
+- name: Recursively change ownership of miniconda directory
+  become: yes
+  file:
+    path: "{{ miniconda_home }}"
+    state: directory
+    group: conda
+    mode: '770'
+    recurse: yes
+
+- name: Add the user who run this role to 'conda' group
+  become: yes
+  user:
+    name: "{{ user_name }}"
+    groups: conda
+    append: yes
 
 - name: symlink condarc
   file:

@@ -6,12 +6,12 @@
     autocrlf = false
     pager = diff-so-fancy | less  # use options from $LESS environment variable
     # pager = diff-so-fancy | less --tabs=4 -F -i -M -R -S
-    # pager = diff-so-fancy | less --tabs=4 -RFMX
 [alias]
     unstage = reset HEAD --
     graph = log --decorate --all --oneline --graph
     yolo = !git commit -m \"$(curl -s whatthecommit.com/index.txt)\"
 [credential]
+    # for wsl
     helper = /mnt/c/Users/artyu/scoop/apps/mingit/current/mingw64/libexec/git-core/git-credential-manager.exe
 [rerere]
     enabled = 1

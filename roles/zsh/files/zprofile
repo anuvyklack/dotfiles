@@ -43,7 +43,7 @@ fi
 # }}}
 
 # Homebrew {{{
-if command -v brew > /dev/null 2>&1; then
+if command -v /home/linuxbrew/.linuxbrew/bin/brew > /dev/null 2>&1; then
 
   local BREWCACHE="$HOME/.cache/Homebrew/brewenv.zsh"
 
@@ -80,8 +80,7 @@ local CONDACACHE="$HOME/.cache/zsh/conda.zsh"
 
 # Файл $COONDACACHE существует, был модифицирован не более 7 дней назад
 # и он моложе чем файл .zprofile.
-if [[ -s $CONDACACHE(#q.md-7N) && \
-      $CONDACACHE -nt "$(readlink -- ~/.config/zsh/.zprofile)" ]]
+if [[ -s $CONDACACHE(#q.md-7N) && $CONDACACHE -nt "$(readlink -- ~/.config/zsh/.zprofile)" ]]
 then
     source $CONDACACHE
 else

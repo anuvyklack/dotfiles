@@ -1,5 +1,5 @@
 # implies always using the --yes option whenever asked to proceed
-always_yes: True
+always_yes: true
 
 channels:
   - conda-forge
@@ -8,3 +8,5 @@ channels:
 channel_priority: strict
 
 changeps1: false
+
+auto_activate_base: false
