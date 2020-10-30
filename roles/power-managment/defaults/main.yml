@@ -1,0 +1,6 @@
+---
+# ubuntu_base_distros: ['Ubuntu', 'Pos!_OS']
+
+ubuntu_base_distros:
+  - 'Ubuntu'
+  # - 'Pop!_OS'  # on Pop!_OS doesn't work

@@ -1,0 +1,39 @@
+---
+
+# - debug:
+#     msg: Is Ubuntu based.
+#   when: ansible_distribution in ubuntu_base_distros
+#   # when: ansible_distribution in ['Ubuntu', 'Pop!_OS']
+
+- name: add tlp repository from PPA
+  become: yes
+  apt_repository:
+    repo: ppa:linrunner/tlp
+    state: present
+    update_cache: yes
+  when: ansible_distribution in ubuntu_base_distros
+
+- name: install tlp
+  become: yes
+  apt:
+    name:
+      - tlp
+      - tlp-rdw
+    state: latest
+    update_cache: yes
+
+
+# --------------------- Powertop ---------------------------
+
+# - name: install powertop
+#   become: yes
+#   apt:
+#     name: powertop
+#     state: latest
+#     update_cache: yes
+#
+# - name: Add powertop to systemd start-up
+#   file:
+#     src: "{{ role_path }}/files/powertop.service"
+#     dest: '/etc/systemd/system/powertop.service'
+#     state: link

@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+source color_output.sh
+
 local brewapps=(
     bat
     exa
@@ -13,31 +15,31 @@ local brewapps=(
 # Install Homebrew
 
 # Check we have correct dependencies installed for brew
-echo -e "\e[1;37mInstalling \e[1;33mHomebrew \e[1;37mdependencies\e[0m"
+echo -e "${WHITE}Installing ${LYELLOW}Homebrew ${WHITE}dependencies${RESET}"
 sudo apt-get install -y -q build-essential curl file git
 
 # Install Homebrew and it's packages
 if [[ ! -d "/home/linuxbrew/.linuxbrew" ]]
 then
-    echo -e "\e[1;37mInstalling \e[1;33mHomebrew \e[0m"
+    echo -e "${WHITE}Installing ${LYELLOW}Homebrew${RESET}"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 else
-    echo -e "\e[1;33mHomebrew \e[1;37malready installed \e[0m"
+    echo -e "${LYELLOW}Homebrew ${WHITE}already installed${RESET}"
 fi
 eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)
 echo ''
 
-echo -e "\e[1;37mInstalling \e[1;33mHomebrew \e[37;1mpackages: \e[0m"
+echo -e "${WHITE}Installing ${LYELLOW}Homebrew ${WHITE}packages:${RESET}"
 
 brewinstall() # {{{
 {
     # Check if installed and install using `brew` otherwise.
     if $(brew list $1 > /dev/null 2>&1)
     then
-        echo -e "\e[32;1m$1 \e[37;1malready installed \e[0m"
+        echo -e "${LGREEN} $1 ${WHITE}already installed${RESET}"
     else
         echo ''
-        echo -e "\e[33;1mbrew \e[37;1minstall \e[32;1m$1\e[0m"
+        echo -e "${LYELLOW}brew ${WHITE}install ${LGREEN} $1 ${RESET}"
         brew install $1
         echo ''
     fi

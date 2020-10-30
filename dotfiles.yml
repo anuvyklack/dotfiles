@@ -59,3 +59,7 @@
     # - role: lf
     #   tags:
     #     - lf
+
+    - role: power-managment
+      tags:
+        - power-managment
