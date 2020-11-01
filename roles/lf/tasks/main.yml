@@ -3,3 +3,4 @@
   file:
     src: "{{ role_path }}/files"
     dest: "{{ home }}/lf"
+    state: link

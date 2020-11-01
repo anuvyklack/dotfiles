@@ -60,6 +60,14 @@
     #   tags:
     #     - lf
 
-    - role: power-managment
+    # - role: power-managment
+    #   tags:
+    #     - power-managment
+
+    - role: interception-tools
       tags:
-        - power-managment
+        - interception-tools
+
+    # - role: xkeysnail
+    #   tags:
+    #     - xkeysnail
