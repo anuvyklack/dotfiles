@@ -1,0 +1,79 @@
+---
+
+- name: "Clone {{ app }} repo"
+  git:
+    repo: "{{ repo }}"
+    dest: "{{ tools }}/{{ app }}"
+    update: yes
+  register: git_status
+
+- name: Build the "{{ app }}"
+  become: yes
+  community.general.make:
+    chdir: "{{ build }}"
+  when: git_status.before != git_status.after
+  register: make
+
+# - debug:
+#     var: make
+
+- name: Install the "{{ app }}"
+  become: yes
+  community.general.make:
+    chdir: "{{ build }}"
+    target: install
+  when: make is not skipped
+  register: make_install
+
+# - debug:
+#     var: make_install
+
+
+# ----------------- Copy config files ----------------------
+
+- name: Copy dual-function-keys config file
+  become: yes
+  copy:
+    src: dual-function-keys.yaml
+    dest: /etc/interception-tools/dual-function-keys.yaml
+    backup: yes
+
+- name: Copy udevmon.yaml config file
+  become: yes
+  copy:
+    src: udevmon.yaml
+    dest: /etc/udevmon.yaml
+    backup: yes
+
+- name: Copy udevmon.service file
+  become: yes
+  copy:
+    src: udevmon.service
+    dest: /etc/systemd/system/udevmon.service
+    owner: root
+    group: root
+    backup: yes
+
+
+# --------------- Symlink config files ---------------------
+
+# - name: Symlink dual-function-keys config file
+#   become: yes
+#   file:
+#     src: "{{ role_path }}/files/dual-function-keys.yaml"
+#     dest: "/etc/{{ folder }}/dual-function-keys.yaml"
+#     state: link
+
+# - name: Symlink udevmon.yaml config file
+#   become: yes
+#   file:
+#     src: "{{ role_path }}/files/udevmon.yaml"
+#     dest: /etc/udevmon.yaml
+#     state: link
+
+# - name: Symlink udevmon.service config file
+#   become: yes
+#   file:
+#     src: "{{ role_path }}/files/udevmon.service"
+#     dest: /etc/systemd/system/udevmon.service
+#     state: link

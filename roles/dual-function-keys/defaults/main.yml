@@ -1,0 +1,7 @@
+---
+
+tools: "{{ home }}/tools"
+app: dual-function-keys
+build: "{{ tools }}/{{ app }}"
+
+repo: https://gitlab.com/interception/linux/plugins/dual-function-keys.git

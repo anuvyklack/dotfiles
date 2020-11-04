@@ -18,9 +18,10 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 #   conda activate ansible
 # fi
 
-# # -x - True if file exists and is executable.
-# if ! [ -x "$(command -v ansible)" ]; then
-#   sudo apt-get install ansible
-# fi
+# -x - True if file exists and is executable.
+if ! [ -x "$(command -v ansible)" ]; then
+  sudo apt-get install ansible
+  ansible-galaxy collection install community.general
+fi
 
 ansible-playbook -i $DIR/hosts $DIR/dotfiles.yml --ask-become-pass --tags $tags

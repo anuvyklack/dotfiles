@@ -3,10 +3,6 @@
   hosts: local
   roles:
 
-    # - role: test
-    #   tags:
-    #     - test
-
     # - role: debian-testing
     #   when: ansible_distribution == 'Debian'
     #   tags:
@@ -64,10 +60,6 @@
     #   tags:
     #     - power-managment
 
-    - role: interception-tools
+    - role: dual-function-keys
       tags:
-        - interception-tools
-
-    # - role: xkeysnail
-    #   tags:
-    #     - xkeysnail
+        - keys

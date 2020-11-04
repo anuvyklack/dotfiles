@@ -1,0 +1,7 @@
+---
+
+repo: https://gitlab.com/interception/linux/tools.git
+
+tools: "{{ home }}/tools"
+app: interception-tools
+build: "{{ tools }}/{{ app }}/build"

@@ -1,4 +1,4 @@
-# /home/username/.dual-function-keys.yaml
+# /etc/interception-tools/dual-function-keys.yaml
 TIMING:
   TAP_MILLISEC: 200
   DOUBLE_TAP_MILLISEC: 150
@@ -6,4 +6,4 @@ TIMING:
 MAPPINGS:
   - KEY: KEY_SPACE
     TAP: KEY_SPACE
-    HOLD: KEY_RIGHTCTRL
+    HOLD: KEY_LEFTCTRL
