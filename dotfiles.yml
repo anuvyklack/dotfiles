@@ -63,3 +63,7 @@
     - role: dual-function-keys
       tags:
         - keys
+
+    - role: tmux
+      tags:
+        - tmux

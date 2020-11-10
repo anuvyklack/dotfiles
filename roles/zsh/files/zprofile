@@ -216,19 +216,65 @@ fi
 
 export LESSHISTFILE="$HOME/.cache/lesshst"
 
+
+# Colored man pages
+# ========================================================================
+
+# export LESS_TERMCAP_mb=$'\e[01;31m'     # Begins blinking.
+export LESS_TERMCAP_md=$'\e[01;37m'     # Begins bold.
+export LESS_TERMCAP_so=$'\e[00;47;30m'  # Begins standout-mode.
+export LESS_TERMCAP_us=$'\e[04;97m'     # Begins underline.
+export LESS_TERMCAP_me=$'\e[0m'         # Ends mode.
+export LESS_TERMCAP_se=$'\e[0m'         # Ends standout-mode.
+export LESS_TERMCAP_ue=$'\e[0m'         # Ends underline.
+
+
 # LS_COLORS
 # ========================================================================
 
-# ls colors
+# BSD ls colors
 export LSCOLORS="Gxfxcxdxbxegedabagacad"
 
-# GNU ls colors
-export LS_COLORS="di=1;36:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43"
+# ----------------
+#  Specification:
+# ----------------
+#
+#   LS_COLORS='di=1:fi=0:...:or=31:*.deb=90'
+#
+# The '*.deb=90' parameter above tells 'ls' to display any files
+# ending with a '.deb' extension using the color specified, 90 or dark grey
+# in this case. This can be applied to any types of files (eg. you could
+# use '*.jpg=33' to make JPEG files appear orange).
+#
+# The $LS_COLORS variable aldo used to color the zsh comletions.
+
+# Tie together the scalar $LS_COLORS and the array $ls_colors in the same way
+# that $PATH and $path ties.
+typeset -T LS_COLORS ls_colors
+
+# Here the ';' chars need to be escaped by '\' (for example: di=1\;36), other
+# way they somewhy will be converted to ':' chars. Or it is also work to
+# enclose them in quotes.
+export ls_colors=(
+  'di=1;36'   # Directory : bold; cyan
+  'fi=0'      # File : default
+  'ln=35'     # Symbolic Link : purple
+  'pi=33'     # Fifo file
+  'so=32'     # Socket file
+  'bd=30;46'  # Block (buffered) special file : black; cyan background
+  'cd=34;43'  # Character (unbuffered) special file
+  # 'or'        # (ORPHAN) Symbolic link pointing to an orphaned non-existent file
+  # 'mi'        # Non-existent file pointed to by a symbolic link (visible when you type ls -l)
+  'su=30;41'  # File that is setuid (u+s)
+  'sg=30;46'  # File that is setgid (g+s)
+  'tw=30;42'  # Directory that is sticky and other-writable (+t,o+w)
+  'ow=30;43'  # Directory that is other-writable (o+w) and not sticky
+  'ex=31'     # File which is executable (ie. has ‘x’ set in permissions).
+)
 
 
 # Bat
 # ========================================================================
-
 export BAT_PAGER="less ${LESS}"
 # export BAT_PAGER="less -RF"
 

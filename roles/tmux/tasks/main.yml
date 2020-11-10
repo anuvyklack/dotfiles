@@ -1,0 +1,27 @@
+---
+
+- name: Install tmux
+  become: yes
+  apt:
+    name: tmux
+    state: present
+    update_cache: yes
+
+- name: Symlink tmux config file
+  file:
+    src: "{{ role_path }}/files"
+    dest: "{{ home }}/.config/tmux"
+    state: link
+
+- name: Ensure requared folder exists
+  file:
+    path: "{{ tmux_plugin_manager }}"
+    state: directory
+
+- name: "Clone tmux-plugin-manager repo"
+  git:
+    repo: https://github.com/tmux-plugins/tpm.git
+    dest: "{{ tmux_plugin_manager }}"
+
+- name: Install tmux plugins
+  command: "{{ tmux_plugin_manager }}/bin/install_plugins"

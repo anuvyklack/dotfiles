@@ -86,6 +86,16 @@ update()
   fi
   # }}}
 
+  # Tmux plugins {{{
+  TMUX_PLUGIN_MANAGER="${HOME}/.local/share/tmux/plugins/tpm/bin/update_plugins"
+  if [[ -s $TMUX_PLUGIN_MANAGER ]]
+  then
+      echo
+      echo -e "${WHITE}Updating ${LGREEN}Tmux ${WHITE}plugins ${RESET}"
+      $TMUX_PLUGIN_MANAGER all
+  fi
+  # }}}
+
 }
 
 # vim: ft=zsh

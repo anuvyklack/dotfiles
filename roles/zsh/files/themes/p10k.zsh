@@ -36,7 +36,16 @@
   local blue='4'
   local magenta='5'
   local cyan='6'
-  local white='7'
+  local white='7'  # actually silver
+
+  local bright_grey='8'
+  local bright_red='9'
+  local bright_lime='10'
+  local bright_yellow='11'
+  local bright_blue='12'
+  local bright_magenta='13'
+  local bright_cyan='14'
+  local bright_white='15'
 
   zmodload zsh/langinfo
   if [[ ${langinfo[CODESET]:-} != (utf|UTF)(-|)8 ]]; then
@@ -240,7 +249,7 @@
   ################################[ prompt_char: prompt symbol ]################################
   # Green prompt symbol if the last command succeeded.
   # Default: typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND=76
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND=$magenta
+  typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND=$bright_magenta
   # Red prompt symbol if the last command failed.
   # Default: typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND=196
   typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_{VIINS,VICMD,VIVIS,VIOWR}_FOREGROUND=$red

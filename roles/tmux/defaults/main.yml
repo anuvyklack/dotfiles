@@ -1,0 +1,2 @@
+---
+tmux_plugin_manager: "{{ home }}/.local/share/tmux/plugins/tpm"

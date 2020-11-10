@@ -222,117 +222,120 @@ schemes:
   material_theme: &material
     # Default colors
     primary:
-      background: '0x1e282d'
-      foreground: '0xc4c7d1'
+      background: '#1E282D'
+      foreground: '#C4C7D1'
 
     # Normal colors
     normal:
-      black:   '0x666666'
-      red:     '0xeb606b'
-      green:   '0xc3e88d'
-      yellow:  '0xf7eb95'
-      blue:    '0x80cbc4'
-      magenta: '0xff2f90'
-      cyan:    '0xaeddff'
-      white:   '0xffffff'
+      black:   '#666666'
+      red:     '#EB606B'
+      green:   '#C3E88D'
+      yellow:  '#F7EB95'
+      blue:    '#80CBC4'
+      magenta: '#FF2F90'
+      cyan:    '#AEDDFF'
+      white:   '#FFFFFF'
 
     # Bright colors
     bright:
-      black:   '0xff262b'
-      red:     '0xeb606b'
-      green:   '0xc3e88d'
-      yellow:  '0xf7eb95'
-      blue:    '0x7dc6bf'
-      magenta: '0x6c71c4'
-      cyan:    '0x35434d'
-      white:   '0xffffff'
+      black:   '#FF262B'
+      red:     '#EB606B'
+      green:   '#C3E88D'
+      yellow:  '#F7EB95'
+      blue:    '#7DC6BF'
+      magenta: '#6C71C4'
+      cyan:    '#35434D'
+      white:   '#FFFFFF'
 
   # Colors (One Dark)
   one_dark: &onedark
     # Default colors
     primary:
-      background: '0x282c34'
-      foreground: '0xabb2bf'
+      background: '#282c34'
+      foreground: '#abb2bf'
 
     # Normal colors
     normal:
       # NOTE: Use '0x131613' for the `black` color if you'd like to see
       # black text on the background.
-      black:   '0x282c34'
-      red:     '0xe06c75'
-      green:   '0x98c379'
-      yellow:  '0xd19a66'
-      blue:    '0x61afef'
-      magenta: '0xc678dd'
-      cyan:    '0x56b6c2'
-      white:   '0xabb2bf'
+      black:   '#282C34'
+      red:     '#E06C75'
+      green:   '#98C379'
+      yellow:  '#D19A66'
+      blue:    '#61AFEF'
+      magenta: '#C678DD'  # Original
+      cyan:    '#56B6C2'
+      white:   '#ABB2BF'
 
     # Bright colors
     bright:
-      black:   '0x5c6370'
-      red:     '0xe06c75'
-      green:   '0x98c379'
-      yellow:  '0xd19a66'
-      blue:    '0x61afef'
-      magenta: '0xc678dd'
-      cyan:    '0x56b6c2'
-      white:   '0xffffff'
+      black:   '#5C6370'
+      red:     '#E06C75'
+      green:   '#98C379'
+      # yellow:  '#D19A66'  # Original
+      yellow:  '#D1A166'
+      blue:    '#61AFEF'
+      # magenta: '#C678DD'
+      magenta: '#dc5bfc'
+      # magenta: '#FF00FF'
+      cyan:    '#56B6C2'
+      white:   '#FFFFFF'
 
   # Colors (Ayu Dark)
   ayu_dark: &ayu
     # Default colors
     primary:
-      background: '0x0A0E14'
-      foreground: '0xB3B1AD'
+      background: '#0A0E14'
+      foreground: '#B3B1AD'
 
     # Normal colors
     normal:
-      black:   '0x01060E'
-      red:     '0xEA6C73'
-      green:   '0x91B362'
-      yellow:  '0xF9AF4F'
-      blue:    '0x53BDFA'
-      magenta: '0xFAE994'
-      cyan:    '0x90E1C6'
-      white:   '0xC7C7C7'
+      black:   '#01060E'
+      red:     '#EA6C73'
+      green:   '#91B362'
+      yellow:  '#F9AF4F'
+      blue:    '#53BDFA'
+      magenta: '#FAE994'
+      cyan:    '#90E1C6'
+      white:   '#C7C7C7'
 
     # Bright colors
     bright:
-      black: '0x686868'
-      red: '0xF07178'
-      green: '0xC2D94C'
-      yellow: '0xFFB454'
-      blue: '0x59C2FF'
-      magenta: '0xFFEE99'
-      cyan: '0x95E6CB'
-      white: '0xFFFFFF'
+      black:   '#686868'
+      red:     '#F07178'
+      green:   '#C2D94C'
+      yellow:  '#FFB454'
+      blue:    '#59C2FF'
+      magenta: '#FFEE99'
+      cyan:    '#95E6CB'
+      white:   '#FFFFFF'
 
   # Colors (Gruvbox Material Dark Medium)
   gruvbox_material_medium: &gruvboxmaterial
     primary:
-      background: '0x282828'
-      foreground: '0xdfbf8e'
+      background: '#282828'
+      foreground: '#dfbf8e'
 
     normal:
-      black:   '0x665c54'
-      red:     '0xea6962'
-      green:   '0xa9b665'
-      yellow:  '0xe78a4e'
-      blue:    '0x7daea3'
-      magenta: '0xd3869b'
-      cyan:    '0x89b482'
-      # white:   '0xdfbf8e'
-      white:   '0xd4be98'
+      black:   '#665C54'
+      red:     '#EA6962'
+      green:   '#A9B665'
+      yellow:  '#E78A4E'
+      blue:    '#7DAEA3'
+      magenta: '#D3869B'
+      cyan:    '#89B482'
+      # white:   '#DFBF8E'
+      white:   '#D4BE98'
 
     bright:
-      black:   '0x928374'
-      red:     '0xea6962'
-      green:   '0xa9b665'
-      yellow:  '0xe3a84e'
-      blue:    '0x7daea3'
-      magenta: '0xd3869b'
-      cyan:    '0x89b482'
-      white:   '0xdfbf8e'
+      black:   '#928374'
+      red:     '#EA6962'
+      green:   '#A9B665'
+      yellow:  '#E3A84E'
+      blue:    '#7DAEA3'
+      magenta: '#D3869B'
+      cyan:    '#89B482'
+      white:   '#DFBF8E'
 
 
     mellow_light: &mellow-light
@@ -894,33 +897,34 @@ key_bindings:
   #- { key: W,      mods: Command,         action: Quit             }
   #- { key: F,      mods: Command|Control, action: ToggleFullscreen }
 
-  #- { key: Paste,                    action: Paste                            }
-  #- { key: Copy,                     action: Copy                             }
-  #- { key: L,         mods: Control, action: ClearLogNotice                   }
-  #- { key: L,         mods: Control, chars: "\x0c"                            }
-  #- { key: PageUp,    mods: Shift,   action: ScrollPageUp,   mode: ~Alt       }
-  #- { key: PageDown,  mods: Shift,   action: ScrollPageDown, mode: ~Alt       }
-  #- { key: Home,      mods: Shift,   action: ScrollToTop,    mode: ~Alt       }
-  #- { key: End,       mods: Shift,   action: ScrollToBottom, mode: ~Alt       }
+  #- { key: Paste,                    action: Paste                      }
+  #- { key: Copy,                     action: Copy                       }
+  #- { key: L,         mods: Control, action: ClearLogNotice             }
+  #- { key: L,         mods: Control, chars: "\x0c"                      }
+  #- { key: PageUp,    mods: Shift,   action: ScrollPageUp,   mode: ~Alt }
+  #- { key: PageDown,  mods: Shift,   action: ScrollPageDown, mode: ~Alt }
+  #- { key: Home,      mods: Shift,   action: ScrollToTop,    mode: ~Alt }
+  #- { key: End,       mods: Shift,   action: ScrollToBottom, mode: ~Alt }
 
-  # - { key: Tab,      mods: Control, chars: "\x1b\t"                          }
+  - { key: Tab,  mods: Control,        chars: "\x1b[27;5;9~" }
+  - { key: Tab,  mods: Control|Shift,  chars: "\x1b[27;6;9~" }
 
-  - { key: J,        mods: Alt,     chars: "\x1bj"                  }
-  - { key: K,        mods: Alt,     chars: "\x1bk"                  }
-  - { key: H,        mods: Alt,     chars: "\x1bh"                  }
-  - { key: L,        mods: Alt,     chars: "\x1bl"                  }
+  # - { key: J,        mods: Alt,     chars: "\x1bj" }
+  # - { key: K,        mods: Alt,     chars: "\x1bk" }
+  # - { key: H,        mods: Alt,     chars: "\x1bh" }
+  # - { key: L,        mods: Alt,     chars: "\x1bl" }
 
-  - { key: Space,    mods: Control, chars: "\x00"                   }
-  - { key: B,        mods: Alt,     chars: "\eb"                    }
-  - { key: C,        mods: Alt,     chars: "\ec"                    }
-  - { key: F,        mods: Alt,     chars: "\ef"                    }
-  - { key: N,        mods: Alt,     chars: "\en"                    }
-  - { key: X,        mods: Alt,     chars: "\ex"                    }
+  - { key: Space,    mods: Control, chars: "\x00" }
+  - { key: B,        mods: Alt,     chars: "\eb"  }
+  - { key: C,        mods: Alt,     chars: "\ec"  }
+  - { key: F,        mods: Alt,     chars: "\ef"  }
+  - { key: N,        mods: Alt,     chars: "\en"  }
+  - { key: X,        mods: Alt,     chars: "\ex"  }
 
-  # - { key: .,        mods: Alt,     chars: "\x1b."                           }
+  # - { key: .,        mods: Alt,     chars: "\x1b." }
 
-  # - { key: Return,   mods: Shift,   chars: "\x1b[25;3~"                      }
-  # - { key: Return,   mods: Shift,   chars: "\x1b[13;2u"                      }
-  # - { key: Return,   mods: Control, chars: "\x1b[13;5u"                      }
+  # - { key: Return,   mods: Shift,   chars: "\x1b[25;3~" }
+  # - { key: Return,   mods: Shift,   chars: "\x1b[13;2u" }
+  # - { key: Return,   mods: Control, chars: "\x1b[13;5u" }
 
-  # - { key: Return,   mods: Shift,   chars: "\x1bj"                      }
+  # - { key: Return,   mods: Shift,   chars: "\x1bj" }

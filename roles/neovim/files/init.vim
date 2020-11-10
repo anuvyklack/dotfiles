@@ -23,9 +23,9 @@ set fileencodings=utf-8,cp1251
 let mapleader = "\<Space>"      " клавиша, соответствующая ключю <leader>
 let maplocalleader = ','
 
-" If disabled on Ubuntu "spellfile.vim" plugin unable to download spell
-" files. With Debian Neovim, though, it works.
-let loaded_netrwPlugin = 1 " If 0 disabled netrw
+" " If disabled on Ubuntu "spellfile.vim" plugin unable to download spell
+" " files. With Debian Neovim, though, it works.
+" let loaded_netrwPlugin = 1 " If 0 disabled netrw
 
 " http://items.sjbach.com/319/configuring-vim-right
 set mouse=a                     " Enable mouse in all modes
@@ -51,7 +51,7 @@ syntax enable                   " Включить подсветку синта
 " set completeopt-=preview        " Not to show preview window on complection
 
 set title
-set titlestring=\ %F
+set titlestring=%t  " tile
 
 set exrc    " Allow vim search local configuratin files in project filders.
 set secure  " Disallows the use of :autocmd, shell and write commands in
@@ -264,7 +264,8 @@ set smartcase    " ...unless we type a capital
 
 " ==================== Spelling ======================
 
-set spelllang=ru,en
+" set spelllang=ru,en
+set spelllang=ru_ru,en_us
 " set dictionary            " используемые словари
 
 " Автоматически включать проверку орфографии для определённых типов файлов
@@ -487,6 +488,11 @@ function! MaxFoldLevel() " {{{
 endfunction
 "}}}
 
+" Tmux windows names
+" autocmd BufReadPost,FileReadPost,BufNewFile * call system("tmux rename-window " . expand("%"))
+" autocmd BufEnter * let &titlestring = ' ' . expand("%:t")
+" set title
+
 " }}}
 
 " Key Bindings                                         {{{
@@ -502,8 +508,8 @@ endfunction
 command! W w
 
 " Копировать, вставить
-vnoremap <C-c> "*y  " :let @+=@*<CR>
-map <C-p> "*p
+vnoremap <silent> <C-c> "+y :let @*=@+<CR>
+map <C-p> "+p
 
 " If cursor is inside very long line in the file than wraps around
 " several rows on the screen, then 'j' key moves you to the next line
@@ -541,11 +547,11 @@ inoremap <expr> <Enter> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 nnoremap 2o o<CR>
 nnoremap 2O O<Esc>O
 
-" Quick jumping between splits
-map <C-J> <C-W>j
-map <C-K> <C-W>k
-map <C-H> <C-W>h
-map <C-L> <C-W>l
+" " Quick jumping between splits
+" map <C-J> <C-W>j
+" map <C-K> <C-W>k
+" map <C-H> <C-W>h
+" map <C-L> <C-W>l
 
 nnoremap <A-Up> <C-W>+
 nnoremap <A-Down> <C-W>-

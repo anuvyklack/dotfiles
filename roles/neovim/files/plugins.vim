@@ -335,8 +335,8 @@ let g:clever_f_chars_match_any_signs = ';'
 " Different bidirectional motions: switch buffers, add balnk lines, etc.
 Plug 'tpope/vim-unimpaired'
 
-" Clever % command
-Plug 'andymass/vim-matchup'
+" " Clever % command
+" Plug 'andymass/vim-matchup'
 
 " --------------------- Fold ------------------------
 " Plug 'arecarn/vim-fold-cycle'
@@ -548,12 +548,21 @@ let g:smoothie_base_speed = 7
 
 " }}}
 
-" Startify                                                         " {{{
+" Startify                                                           {{{
 " ======================================================================
 Plug 'mhinz/vim-startify'    " Красивый стартовый экран
 so ~/.config/nvim/plugins_settings/startify.vim
 
 " }}}
+
+" Tmux                                                               {{{
+" ======================================================================
+Plug 'christoomey/vim-tmux-navigator'
+" Plug 'tmux-plugins/vim-tmux-focus-events'
+" Plug 'tmux-plugins/vim-tmux'
+
+" }}}
+
 
 " C/C++                                                              {{{
 " ======================================================================
@@ -691,6 +700,7 @@ call plug#end()
 " ░░█████ ░░█████ ░██░░█████  ███        ██████ ░░█████ ░██  ░██░░█████  ███ ░██ ░██░░█████
 "  ░░░░░   ░░░░░  ░░  ░░░░░  ░░░        ░░░░░░   ░░░░░  ░░   ░░  ░░░░░  ░░░  ░░  ░░  ░░░░░
 
+" let s:theme = ''
 " let s:theme = 'ayu'
 " let s:theme = 'onedark'
 " let s:theme = 'gruvbox'
@@ -940,6 +950,29 @@ nmap ga <Plug>(EasyAlign)
 
 " }}}
 
+" Tmux {{{
+
+let g:tmux_navigator_no_mappings = 1
+
+" nnoremap <silent> <C-a><C-h> :TmuxNavigateLeft<cr>
+" nnoremap <silent> <C-a><C-j> :TmuxNavigateDown<cr>
+" nnoremap <silent> <C-a><C-k> :TmuxNavigateUp<cr>
+" nnoremap <silent> <C-a><C-l> :TmuxNavigateRight<cr>
+
+" nnoremap <silent> <C-g><C-H> :TmuxNavigateLeft<cr>
+" nnoremap <silent> <C-g><C-J> :TmuxNavigateDown<cr>
+" nnoremap <silent> <C-g><C-K> :TmuxNavigateUp<cr>
+" nnoremap <silent> <C-g><C-L> :TmuxNavigateRight<cr>
+
+nnoremap <C-g><C-H> :TmuxNavigateLeft<cr>
+nnoremap <C-g><C-J> :TmuxNavigateDown<cr>
+nnoremap <C-g><C-K> :TmuxNavigateUp<cr>
+nnoremap <C-g><C-L> :TmuxNavigateRight<cr>
+
+" nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
+
+" }}}
+
 " Открыть файловую панель NERDTree, и установить в ней курсор на файле
 " открытом в текущем буфере. Повторное нажатие закроет файловую панель.
 nnoremap <silent> <F2> :call ToggleNERDTree()<CR>
@@ -978,10 +1011,10 @@ nnoremap <Leader>u :UndotreeToggle<CR>
 nmap <leader>vw <Plug>(wiki-index)
 
 
-" Показать syntax group для участка кода, а также цвет этой группы.
-" Удобно при создании своей цветовой схемы
-nnoremap <C-g> :call SyntaxAttr()<CR>
+" " Показать syntax group для участка кода, а также цвет этой группы.
+" " Удобно при создании своей цветовой схемы
+" nnoremap <C-g> :call SyntaxAttr()<CR>
 
 " nnoremap <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
-" vim: foldenable tw=75 colorcolumn=+1
+" vim: foldenable tw=76 colorcolumn=+1

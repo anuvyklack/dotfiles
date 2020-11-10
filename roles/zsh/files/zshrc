@@ -195,22 +195,10 @@ export VISUAL="$EDITOR"
 # # (using 'dircolors -b') the proper $LS_COLORS environment variable and
 # # wright it into 'c.zsh' file. Execute this file at plugin loading.
 # #
-# zinit ice nocompile:! \
-#             atclone:'dircolors -b LS_COLORS > c.zsh' atpull:'%atclone' \
-#             pick:"c.zsh"
+# zinit ice atclone"dircolors -b LS_COLORS > clrs.zsh" \
+#           atpull'%atclone' pick"clrs.zsh" nocompile'!' \
+#           atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
 # zinit light trapd00r/LS_COLORS
-
-# Colored man pages {{{
-
-# # Support colors in less
-# export LESS_TERMCAP_mb=$'\E[01;31m'     # Begins blinking.
-# export LESS_TERMCAP_md=$'\E[01;31m'     # Begins bold.
-# export LESS_TERMCAP_me=$'\E[0m'         # Ends mode.
-# export LESS_TERMCAP_se=$'\E[0m'         # Ends standout-mode.
-# export LESS_TERMCAP_so=$'\E[00;47;30m'  # Begins standout-mode.
-# export LESS_TERMCAP_ue=$'\E[0m'         # Ends underline.
-# export LESS_TERMCAP_us=$'\E[01;32m'     # Begins underline.
-# # }}}
 
 # }}}
 
@@ -262,6 +250,32 @@ unset THEME
 
 # }}}
 
+# Terminal title {{{
+
+# Heavy inspired by: https://github.com/zpm-zsh/title
+# zinit ice lucid id-as"auto"
+# zinit light zpm-zsh/title
+
+_show_title(){
+  # print -Pn "\033]0;${PROMPT_TITLE:-"$USER@$HOST"}\007"
+  print -Pn "\033]0;${PROMPT_TITLE}\007"
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _show_title
+_show_title
+
+# PROMPT_TITLE='$USER@$HOST $PWD'  # default
+
+# Полный путь до текущей директории. ПОдстроку эквивалентную `$HOME`
+# заменяем на тильду. Ковычки дожны быть одинарными. С двойными заголовок
+# не обновляется при смене директории.
+# PROMPT_TITLE='${PWD/#${HOME}/~}'
+
+PROMPT_TITLE=''
+
+# }}}
+
 # Plugins {{{
 
 # Zsh-Autosuggestions {{{
@@ -284,8 +298,7 @@ zinit ice lucid atload'_zsh_autosuggest_start'
 zinit light zsh-users/zsh-autosuggestions
 
 export ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd history completion)
-export ZSH_AUTOSUGGEST_USE_ASYNC=1  # suggestions will be fetched
-                                    # asynchronously
+export ZSH_AUTOSUGGEST_USE_ASYNC=1  # suggestions will be fetched asynchronously
 # }}}
 
 # Completions {{{
@@ -363,20 +376,18 @@ fi
 zinit ice id-as"auto"
 zinit light skywind3000/z.lua
 
-# zinit ice id-as"auto" as"null"
-# zinit light skywind3000/z.lua
-# eval "$(lua $HOME/.zinit/plugins/z.lua/z.lua --init zsh)"
-
 # Where to store the datafile
 export _ZL_DATA=$HOME/.cache/.zlua
 
 # }}}
 
-# Alt-K to activate
+# Deer: Alt-K to navigate through file sistem in zsh like in ranger {{{
 zinit ice lucid id-as"auto" pick'deer'
 zinit light Vifon/deer
 zle -N deer
 bindkey '\ek' deer
+# }}}
+
 
 #==========================================================
 #    WARNING: This two should be last in this order!
@@ -463,6 +474,7 @@ delete_line_from_history ()  # {{{
 }
 zle -N delete_line_from_history
 bindkey '^[f' delete_line_from_history  # Alt + F
+# bindkey '\ef' delete_line_from_history  # Alt + F
 # }}}
 
 run_ranger()  # {{{
@@ -554,9 +566,9 @@ bindkey ';5D'   backward-word  # ctrl+left
 bindkey ';5C'   forward-word   # ctrl+right
 
 
-# allow ctrl+a and ctrl+e to move to beginning/end of line
-bindkey '^a' beginning-of-line
-bindkey '^e' end-of-line
+# # allow ctrl+a and ctrl+e to move to beginning/end of line
+# bindkey '^a' beginning-of-line
+# bindkey '^e' end-of-line
 
 # show man page of current command with alt+h
 bindkey '\eh' run-help
@@ -627,13 +639,16 @@ zinit snippet https://github.com/junegunn/fzf/blob/master/shell/completion.zsh
 export FZF_DEFAULT_OPTS='--height 75% --layout=reverse --border'
 # export FZF_DEFAULT_OPTS='--height 75% --layout=reverse --border --preview="head -30 {}"'
 
-# Using ripgrep with fzf
+# Using ripgrep with fzf.
 # (I've tried fd, but ripgrep is faster.)
-# --files: List files that would be searched but do not search
+# -------------------------------------------------------------------
+# --files: List files that would be searched but do not search.
 # --no-ignore: Do not respect .gitignore, etc...
-# --hidden: Search hidden files and folders
-# --follow: Follow symlinks
-# --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
+# --hidden: Search hidden files and folders.
+# --follow: Follow symlinks.
+# -g or --glob: Additional conditions for search (in this case ignore
+#               everything in the .git/ folder).
+# -------------------------------------------------------------------
 # export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}" 2> /dev/null'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
@@ -678,7 +693,7 @@ fzf-history-widget()
 
 # Make CTRL-T command return full path to the file, not relevant to $PWD.
 # Also if this path is inside the $HOME directory the $HOME prefix exchange
-# to `~` symbol.
+# to tilda `~` symbol.
 fzf-file-widget() {
 
   # If $PWD is not root ('/') add '/' char to make path valid.
@@ -872,6 +887,12 @@ ialias history-stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r
 # alias -s {odt,doc,sxw,rtf}=openoffice.org
 # autoload -U pick-web-browser
 # alias -s {html,htm}=chromium
+
+# # tmux
+# alias t="tmux"
+# alias ta="t a -t"
+# alias tls="t ls"
+# alias tn="t new -t"
 
 # }}}
 
