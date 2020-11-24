@@ -25,7 +25,7 @@ setopt hist_expire_dups_first  # Delete duplicates first when HISTFILE size exce
 # setopt hist_save_no_dups       # Don't write duplicate entries in the history file.
 
 # Patterns that would not be stored in history
-export HISTORY_IGNORE="(cd|ranger|r|exit|kill)"
+export HISTORY_IGNORE="(cd|ranger|r|exit|:q|kill)"
 
 # Not store failed commands into history
 zshaddhistory() { whence ${${(z)1}[1]} >/dev/null || return 2 }

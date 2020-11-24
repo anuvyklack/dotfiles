@@ -23,6 +23,10 @@
       tags:
          git
 
+    - role: alacritty
+      tags:
+        - alacritty
+
     - role: ripgrep
       tags:
         - ripgrep

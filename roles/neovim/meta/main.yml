@@ -1,5 +1,5 @@
-
 ---
+
 dependencies:
   - role: nodejs-apt
     when: ansible_pkg_mgr == 'apt'

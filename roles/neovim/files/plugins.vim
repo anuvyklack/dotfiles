@@ -971,6 +971,12 @@ nnoremap <C-g><C-L> :TmuxNavigateRight<cr>
 
 " nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
 
+" Quick jumping between splits
+map <C-J> <C-W>j
+map <C-K> <C-W>k
+map <C-H> <C-W>h
+map <C-L> <C-W>l
+
 " }}}
 
 " Открыть файловую панель NERDTree, и установить в ней курсор на файле

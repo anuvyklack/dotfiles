@@ -802,9 +802,11 @@ ialias ping='ping -c 1'
 # command -v nvim >/dev/null && ialias vim="nvim" vimdiff="nvim -d"
 
 ialias :q='exit'
-ialias mv='nocorrect mv -vi'  # переименование-перемещение c пogтвepжgeнueм
+# ialias mv='nocorrect mv -vi'  # переименование-перемещение c пogтвepжgeнueм
+ialias mv='nocorrect mv -v'
 ialias cp='nocorrect cp -viR'  # рекурсивное копирование с подтверждением
-ialias rm='nocorrect rm -vi'  # удаление с подтверждением
+# ialias rm='nocorrect rm -vi'  # удаление с подтверждением
+ialias rm='nocorrect rm -v'
 # alias rmf='nocorrect rm -f'  # принудительное удаление
 # alias rmrf='nocorrect rm -fR' # принудительное рекурсивное удаление
 
