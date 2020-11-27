@@ -24,8 +24,7 @@
     nnoremap <silent> <C-ScrollWheelUp> :set guifont=+<CR>
     nnoremap <silent> <C-ScrollWheelDown> :set guifont=-<CR>
     nnoremap <A-CR> :FVimToggleFullScreen<CR>
-else " Nvim-QT
-    " This means, we are in nvim-qt
+else " This means, we are in nvim-qt
 
     call GuiWindowMaximized(1)
     GuiTabline 0

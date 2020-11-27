@@ -70,8 +70,19 @@
     groups: conda
     append: yes
 
+- name: Ensure required directories are exists
+  file:
+    path: "{{ home }}/.jupyter"
+    state: directory
+
 - name: symlink condarc
   file:
     src: "{{ role_path }}/files/condarc"
     dest: "{{ home }}/.condarc"
+    state: link
+
+- name: symlink juyter qtconsole config
+  file:
+    src: "{{ role_path }}/files/jupyter_qtconsole_config.py"
+    dest: "{{ home }}/.jupyter/jupyter_qtconsole_config.py"
     state: link

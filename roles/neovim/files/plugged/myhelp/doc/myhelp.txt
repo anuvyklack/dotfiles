@@ -1,7 +1,19 @@
 *myhelp.txt*    My notes for Neovim
 
-Type `:helpt %:p:h` to regenerate help-tags.                        *myhelp*
-Help syntaxis: https://devhints.io/vim-help
+                                                                  *myhelp*
+To regenerate help-tags type: `:helpt %:p:h`
+Vim helpfiles cheatsheet: https://devhints.io/vim-help
+
+Navigation inside vim help~
+
+Jump to specific subjects by using tags:
+- Use the "CTRL-]" keybinding while standing on the name of a command or
+  option.  This only works when the tag is a keyword.  "<C-Leftmouse>" and
+  "g<LeftMouse>" work just like "CTRL-]".
+- Use the ":ta {subject}" command.  This also works with non-keyword
+  characters.
+
+Use CTRL-T or CTRL-O to jump back.
 
                                       Type |gO| to see the table of contents.
 
@@ -13,20 +25,19 @@ CONTENTS                                                *myhelp-contents*
      Insert Mode...............................|myhelp-insert|
      Command Mode..............................|myhelp-command|
      Diff Mode.................................|myhelp-diff|
-
      Text Manipulations........................|myhelp-text-manipulation|
+     Python....................................|myhelp-python|
+	jupyter-vim............................|myhelp-jupyter-vim|
 
 ==============================================================================
-Normal Mode                                                *myhelp-normal*
+NORMAL MODE                                                *myhelp-normal*
 
-   - :wall : Save modified buffers
-   - :x : Save buffer only if modified, then exit (better than :wq)
-   - ]] : next section
-   - ]m : next method
-   - [m : back to the start of the method
-   - ) : Next sentence
-   - CTRL-D : Down half a page
-   - CTRL-U : Up half a page
+	*Todo	this will close window without saving and promptning
+Q                       Close service (preview, man, etc) window if exists,
+			else close current window.
+
+:x			Save buffer only if modified, then exit (better than
+			:wq)
 
    - ~ Uppercase a letter (works on ranges)
    - z commands:
@@ -40,7 +51,7 @@ Normal Mode                                                *myhelp-normal*
 
 
 ==============================================================================
-Visual Mode                                                *myhelp-visual*
+VISUAL MODE                                                *myhelp-visual*
 
 gv                      Reselect previous selected region
 
@@ -50,7 +61,7 @@ gv                      Reselect previous selected region
 
 
 ===============================================================================
-Insert Mode                                                *myhelp-insert*
+INSERT MODE                                                *myhelp-insert*
 
    - <C-N>: Complete word
    - <C-N><C-P>: Complete word (?)
@@ -61,7 +72,7 @@ Insert Mode                                                *myhelp-insert*
      commands)
 
 ==============================================================================
-Command Mode                                              *myhelp-command*
+COMMAND MODE                                              *myhelp-command*
 
 :!{cmd}                 Execute shell command inside vim (example `:!exa ~` )
 
@@ -76,26 +87,26 @@ Command Mode                                              *myhelp-command*
 
 
 ==============================================================================
-Diff Mode                                                    *myhelp-diff*
+DIFF MODE                                                    *myhelp-diff*
 
 Starting Vim in diff mode: >
 	nvim -d file1 file2 [file3 [file4]]
 <
-         `zo`      развернуть блок
-         `zc`      свернуть блок
-         `]c`      следующая разница
-         `[c`      предыдущая разница
-         `do`      (diff-obtain) получить разницу из другого окна в текущее
-         `dp`      (diff-put) отправить разницу из текущего окна в соседнее
-`:diffupdate`      re-scan the files for differences
+      `zo`   развернуть блок
+      `zc`   свернуть блок
+      `]c`   следующая разница
+      `[c`   предыдущая разница
+      `do`   (diff-obtain) получить разницу из другого окна в текущее
+      `dp`   (diff-put) отправить разницу из текущего окна в соседнее
+
+`:diffupdate`   re-scan the files for differences
 
 
 ==============================================================================
-Text Manipulations                              *myhelp-text-manipulation*
+TEXT MANIPULATIONS                              *myhelp-text-manipulation*
 
 ------------------------------------------------------------------------------
 Отформатировать строки так, чтобы они не превышали заданной длины~
-------------------------------------------------------------------------------
 
 gq{motion}              Format the lines that {motion} moves over.
 
@@ -114,8 +125,7 @@ gwip                    Отформатировать текущий параг
 
 ------------------------------------------------------------------------------
 Выравнивание строк по заданным элементам~
-------------------------------------------------------------------------------
-                                                      Плагин *easy-align*
+                                                       Плагин *easy-align*
 
 {selected text}ga       Start interactive EasyAlign in visual mode (e.g. vipga)
 
@@ -126,15 +136,47 @@ Example: type `gaip=` on the paragraph below: >
     apple   =red
     grass+=green
     sky-=   blue
+<
 
 ------------------------------------------------------------------------------
-Switch between single-line and multiline forms of code~
-------------------------------------------------------------------------------
-                                                      Плагин *splitjoin*
+Switch between single-line and multiline formats of code~
+                                                        Плагин *splitjoin*
 
 gS                      Split into multiline constraction.
 gJ                      Join into single-line construction.
 
+------------------------------------------------------------------------------
+PYTHON                                                     *myhelp-python*
+
+]]			next section
+]m			next method
+[m			back to the start of the method
+
+------------------------------------------------------------------------------
+Jupyter-vim                                           *myhelp-jupyter-vim*
+
+Open QtConsole. Then, in Vim, open a Python file and execute the following
+command: >
+
+    :JupyterConnect
+<
+<localleader>R		Run the current file.
+
+<localleader>I		Import the current file.
+
+<localleader>d		Change the working directory of the Jupyter kernel to
+			the directory containing this file.
+
+<Enter>		        Execute the current code cell, The cell delimiters are
+<localleader>x		Execute the current code cell, The cell delimiters are
+			`##`, `#%%`, `# %%`, or `# <codecell>` .
+
+<localleader>E		Execute the current line.
+
+<localleader>e		Use with any vim text |objects| to execute it. Or in
+			visual mode: execute selected code.
+
+<localleader>b		Insert a PDB breakpoint at the current line.
 
 ------------------------------------------------------------------------------
  vim:tw=78:isk=!-~,^*,^\|,^\":ts=8:noet:ft=help:norl:ma:noro

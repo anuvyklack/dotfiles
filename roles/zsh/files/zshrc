@@ -179,16 +179,6 @@ esac
 source $ZDOTDIR/lib/history.zsh
 source $ZDOTDIR/lib/completion.zsh
 
-# Editors
-# ========================================================================
-# These settings are here and not in .zprofile because of the bug in
-# KDE Plasma which override default editor to nano.
-if command -v nvim > /dev/null 2>&1; then
-  export EDITOR='/usr/bin/nvim'
-fi
-export VISUAL="$EDITOR"
-
-
 # Output coloring {{{
 
 # # After cloning and renewal repository construct from 'LS_COLORS' file
@@ -276,6 +266,57 @@ PROMPT_TITLE=''
 
 # }}}
 
+# Completions {{{
+
+zinit ice lucid blockf
+zinit light zsh-users/zsh-completions
+
+# conda completion
+zinit ice lucid blockf
+zinit light esc/conda-zsh-completion
+zstyle ":conda_zsh_completion:*" use-groups true
+
+# pip zsh completion {{{
+
+function _pip_completion {
+  local words cword
+  read -Ac words
+  read -cn cword
+  reply=( $( COMP_WORDS="$words[*]" \
+             COMP_CWORD=$(( cword-1 )) \
+             PIP_AUTO_COMPLETE=1 $words[1] 2>/dev/null ))
+}
+compctl -K _pip_completion pip
+compctl -K _pip_completion pip3
+
+# }}}
+
+# zinit ice lucid id-as"auto" as"completion" blockf
+# zinit snippet OMZ::plugins/fd/_fd
+
+# buku bookmark manager completion
+if command -v buku > /dev/null 2>&1;
+then
+  zinit ice id-as"buku-completion" mv"buku-completion -> _buku" as"completion"
+  zinit snippet https://github.com/jarun/buku/blob/master/auto-completion/zsh/_buku
+fi
+
+if command -v dnote > /dev/null 2>&1
+then
+  zinit ice as"completion"
+  zinit snippet OMZP::dnote/_dnote
+fi
+
+
+# cppman completion
+if command -v cppman > /dev/null 2>&1
+then
+  zinit ice id-as"cppman-completion" mv"cppman-completion -> _cppman" as"completion"
+  zinit snippet https://github.com/aitjcize/cppman/blob/master/misc/completions/cppman.zsh
+fi
+
+# }}}
+
 # Plugins {{{
 
 # Zsh-Autosuggestions {{{
@@ -299,48 +340,6 @@ zinit light zsh-users/zsh-autosuggestions
 
 export ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd history completion)
 export ZSH_AUTOSUGGEST_USE_ASYNC=1  # suggestions will be fetched asynchronously
-# }}}
-
-# Completions {{{
-
-zinit ice lucid blockf
-zinit light zsh-users/zsh-completions
-
-# conda completion
-zinit ice lucid blockf
-zinit light esc/conda-zsh-completion
-zstyle ":conda_zsh_completion:*" use-groups true
-
-# pip zsh completion start
-function _pip_completion {
-  local words cword
-  read -Ac words
-  read -cn cword
-  reply=( $( COMP_WORDS="$words[*]" \
-             COMP_CWORD=$(( cword-1 )) \
-             PIP_AUTO_COMPLETE=1 $words[1] 2>/dev/null ))
-}
-compctl -K _pip_completion pip
-compctl -K _pip_completion pip3
-# pip zsh completion end
-
-# zinit ice lucid id-as"auto" as"completion" blockf
-# zinit snippet OMZ::plugins/fd/_fd
-
-# # fzf completions
-# zinit ice id-as"fzf-completion.zsh" \
-#           nocompile \
-#           mv"fzf-completion.zsh ->_fzf-completion" \
-#           # as"completion"
-# zinit snippet https://github.com/junegunn/fzf/blob/master/shell/completion.zsh
-
-# cppman completion
-if command -v cppman > /dev/null 2>&1
-then
-  zinit ice id-as"cppman-completion" mv"cppman-completion -> _cppman" as"completion"
-  zinit snippet https://github.com/aitjcize/cppman/blob/master/misc/completions/cppman.zsh
-fi
-
 # }}}
 
 # Install diff-so-fancy using zinit
@@ -377,7 +376,7 @@ zinit ice id-as"auto"
 zinit light skywind3000/z.lua
 
 # Where to store the datafile
-export _ZL_DATA=$HOME/.cache/.zlua
+export _ZL_DATA=${HOME}/.cache/zlua
 
 # }}}
 
@@ -387,18 +386,6 @@ zinit light Vifon/deer
 zle -N deer
 bindkey '\ek' deer
 # }}}
-
-
-#==========================================================
-#    WARNING: This two should be last in this order!
-#==========================================================
-zinit ice silent id-as"auto" atload"zpcompinit; zpcdreplay"
-zinit light zsh-users/zsh-syntax-highlighting
-
-zinit ice lucid id-as"auto"
-# zinit ice id-as"auto"
-zinit light zsh-users/zsh-history-substring-search
-#==========================================================
 
 # }}}
 
@@ -599,9 +586,15 @@ bindkey '^O' run_ranger
 
 # ---------------------------------------------------------------------- #
 # fzf keybindings for Zsh                                                #
+# -----------------------                                                #
 # CTRL-R - Paste the selected command from history into the command line #
 # CTRL-T - Paste the selected file path(s) into the command line         #
 # ALT-C  - cd into the selected directory                                #
+#                                                                        #
+# fzf-marks                                                              #
+# ---------                                                              #
+# mark <name> - register a new mark to the current directory             #
+# CTRL-F - fzf-marks                                                     #
 # ---------------------------------------------------------------------- #
 
 
@@ -628,6 +621,17 @@ zinit snippet https://github.com/junegunn/fzf/blob/master/plugin/fzf.vim
 zinit ice id-as"fzf-completion" mv"fzf-completion -> _fzf" as"completion"
 zinit snippet https://github.com/junegunn/fzf/blob/master/shell/completion.zsh
 
+# fzf-marks {{{
+
+zinit ice lucid id-as"fzf-marks"
+zinit snippet https://github.com/urbainvaes/fzf-marks/blob/master/fzf-marks.plugin.zsh
+
+export FZF_MARKS_FILE="${HOME}/.cache/zsh/fzf-marks"
+
+export FZF_MARKS_JUMP='^f'  # Ctrl-f
+bindkey ${FZF_MARKS_JUMP:-'^g'} fzm
+
+# }}}
 
 # # Enable if fzf installed with apt.
 # # Documentation is at: /usr/share/doc/fzf/README.Debian
@@ -885,6 +889,9 @@ ialias history-stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r
 
 # ialias atom='atom --force-device-scale-factor=1.1'
 
+# ialias b='buku --suggest'
+alias b='buku'
+
 # alias -s {avi,mpeg,mpg,mov,m2v}=mplayer
 # alias -s {odt,doc,sxw,rtf}=openoffice.org
 # autoload -U pick-web-browser
@@ -900,15 +907,15 @@ ialias history-stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r
 
 # Initializing completion system {{{
 
-# # This line initialized completion system and should be at the end of the
-# # file after loading all plugin and all "zstyle ':completion:*'" options.
-# autoload -Uz compinit; compinit
-#
-# # Run all the `compdef's saved before `compinit` call (`compinit' declares
-# # the `compdef' function, so it cannot be used until `compinit` is ran;
-# # Zplugin solves this via intercepting the `compdef'-calls and storing them
-# # for later use with `zinit cdreplay'). `-q` is for quiet.
-# zinit cdreplay -q
+# This line initialized completion system and should be at the end of the
+# file after loading all plugin and all "zstyle ':completion:*'" options.
+autoload -Uz compinit; compinit
+
+# Run all the `compdef's saved before `compinit` call (`compinit' declares
+# the `compdef' function, so it cannot be used until `compinit` is ran;
+# Zplugin solves this via intercepting the `compdef'-calls and storing them
+# for later use with `zinit cdreplay'). `-q` is for quiet.
+zinit cdreplay -q
 
 
 # `compdef _gnu_generic myCommand` will parse output of `myCommand --help`
@@ -930,5 +937,15 @@ fi
 # fi
 
 # }}}
+
+#==========================================================
+#  WARNING: This two plugins should be last in this order!
+#==========================================================
+zinit ice silent id-as"auto" atload"zpcompinit; zpcdreplay"
+zinit light zsh-users/zsh-syntax-highlighting
+
+zinit ice lucid id-as"auto"
+zinit light zsh-users/zsh-history-substring-search
+#==========================================================
 
 # vim: tw=75 fdm=marker ts=2 sw=2 number

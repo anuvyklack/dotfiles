@@ -1,4 +1,4 @@
-
+"
 "         ███                 ██
 "        ░░██                ░░
 "  ██████ ░██ ██   ██  ██████ ██ ██████   ██████
@@ -85,6 +85,7 @@ let pomodoro_use_devicons = 1
 " " Asynchronous Lint Engine -- is a plugin providing linting (syntax
 " " checking and semantic errors) while you edit your text files, and acts
 " " as a Vim Language Server Protocol client.
+" " https://github.com/dense-analysis/ale
 " Plug 'dense-analysis/ale'
 
 " let g:ale_linters = {
@@ -219,7 +220,7 @@ Plug 'tomtom/tcomment_vim'
 
 " }}}
 
-" "  fzf                                              {{{
+" " fzf                                               {{{
 " " =====================================================
 " if has('unix')
 "
@@ -302,7 +303,7 @@ endif
 
 " }}}
 
-"  Git                                             {{{
+"  git                                             {{{
 " ====================================================
 
 Plug 'tpope/vim-fugitive'  " git integration
@@ -393,14 +394,23 @@ let g:SimpylFold_fold_import = 0
 " Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins', 'for': 'python'}
 " so ~/.config/nvim/plugins_settings/semshi.vim
 
+" =====================================================================
+" }}}
+
+" Jupyter                                                           {{{
+" =====================================================================
+
+" Editing Jupyter notebook (ipynb) files through jupytext in vim.
+" https://github.com/goerz/jupytext.vim
+Plug 'goerz/jupytext.vim', { 'for': 'python' }
+let g:jupytext_filetype_map = {'md': 'pandoc'}
+
 " Connection to Jupyter QtConsole
-" Plug 'broesler/jupyter-vim'
-" let g:jupyter_mapkeys = 1  " enable default key mapping
+Plug 'broesler/jupyter-vim'
+let g:jupyter_mapkeys = 1  " enable default key mapping
 
 " Looks like it doesn't works with Neovim
 " Plug 'williamjameshandley/vimteractive'  " connection with ipython
-
-" Plug 'szymonmaszke/vimpyter'  " edit ipython or ntrect notebooks in vim
 
 " =====================================================================
 " }}}
@@ -467,7 +477,7 @@ endif
 "
 " " TODO: разберёмся с этим позже
 " " Plug 'zefei/vim-wintabs'
-" " Plug 'zefei/vim-wintabs-powerline'"
+" " Plug 'zefei/vim-wintabs-powerline'
 
 Plug 'roxma/vim-window-resize-easy'
 
@@ -515,6 +525,7 @@ Plug 'skywind3000/vim-quickui'
 " Smooth scroll                                    {{{
 " ====================================================
 
+" https://github.com/psliwka/vim-smoothie
 Plug 'psliwka/vim-smoothie'
 
 " Time (in milliseconds) between subseqent screen/cursor postion updates.
@@ -578,8 +589,10 @@ Plug 'anuvyklack/vim-cppman'
 
 " Different syntaxes and languages                                   {{{
 " ======================================================================
-Plug 'sheerun/vim-polyglot'  " подсветка синтаксисов разных языков
+
+" This variable should be declared before polyglot is loaded!
 let g:polyglot_disabled = ['markdown']
+Plug 'sheerun/vim-polyglot'  " подсветка синтаксисов разных языков
 
 Plug 'lervag/vimtex', { 'for': 'LaTeX' }  " latex
 Plug 'PProvost/vim-ps1', {'for': 'ps1'}   " powershell
@@ -856,19 +869,17 @@ nmap ;b <Plug>(easymotion-b)
 nmap ;l <Plug>(easymotion-lineanywhere)
 "}}}
 
-" Windows scrolling options / Comfortable motion key bindings {{{
+" Easy-Align {{{
 
-" " Little less then half of the screen
-" nnoremap <silent> <C-d> :call comfortable_motion#flick(winheight(0) * 2)<CR>
-" nnoremap <silent> <C-u> :call comfortable_motion#flick(winheight(0) * -2)<CR>
-"
-" " " Half of the screen
-" " nnoremap <silent> <C-d> :call comfortable_motion#flick(winheight(0) * 2.2)<CR>
-" " nnoremap <silent> <C-u> :call comfortable_motion#flick(winheight(0) * -2.2)<CR>
-"
-" " Full screen
-" nnoremap <silent> <C-f> :call comfortable_motion#flick(winheight(0) * 3.5)<CR>
-" nnoremap <silent> <C-b> :call comfortable_motion#flick(winheight(0) * -3.5)<CR>
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
+" apple   =red
+" grass+=green
+" sky-=   blue
 
 " }}}
 
@@ -936,17 +947,38 @@ nmap q/ :LeaderfHistorySearch<CR>
 
 " }}}
 
-" Easy-Align {{{
+" jupyter-vim {{{
 
-" Start interactive EasyAlign in visual mode (e.g. vipga)
-xmap ga <Plug>(EasyAlign)
+augroup JupyterVim
+    autocmd!
+    autocmd FileType python nnoremap <buffer> <silent> <localleader>x :JupyterSendCell<CR>
+    autocmd FileType python nnoremap <buffer> <silent> <CR> :JupyterSendCell<CR>
+augroup END
 
-" Start interactive EasyAlign for a motion/text object (e.g. gaip)
-nmap ga <Plug>(EasyAlign)
+" nnoremap <buffer> <silent> <localleader>R :JupyterRunFile<CR>
+" nnoremap <buffer> <silent> <localleader>I :PythonImportThisFile<CR>
+" nnoremap <buffer> <silent> <localleader>d :JupyterCd %:p:h<CR>
+" nnoremap <buffer> <silent> <localleader>E :JupyterSendRange<CR>
+" nmap     <buffer> <silent> <localleader>e <Plug>JupyterRunTextObj
+" vmap     <buffer> <silent> <localleader>e <Plug>JupyterRunVisual
+" nnoremap <buffer> <silent> <localleader>U :JupyterUpdateShell<CR>
+" nnoremap <buffer> <silent> <localleader>b :PythonSetBreak<CR>
 
-" apple   =red
-" grass+=green
-" sky-=   blue
+" }}}
+
+" Windows scrolling options / Comfortable motion key bindings {{{
+
+" " Little less then half of the screen
+" nnoremap <silent> <C-d> :call comfortable_motion#flick(winheight(0) * 2)<CR>
+" nnoremap <silent> <C-u> :call comfortable_motion#flick(winheight(0) * -2)<CR>
+"
+" " " Half of the screen
+" " nnoremap <silent> <C-d> :call comfortable_motion#flick(winheight(0) * 2.2)<CR>
+" " nnoremap <silent> <C-u> :call comfortable_motion#flick(winheight(0) * -2.2)<CR>
+"
+" " Full screen
+" nnoremap <silent> <C-f> :call comfortable_motion#flick(winheight(0) * 3.5)<CR>
+" nnoremap <silent> <C-b> :call comfortable_motion#flick(winheight(0) * -3.5)<CR>
 
 " }}}
 

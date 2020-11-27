@@ -2,7 +2,7 @@
 
 " All extensions in this list will be automatically installed
 " on coc-server startup.
-let g:coc_global_extensions = ['coc-python', 'coc-json']
+let g:coc_global_extensions = ['coc-pyright', 'coc-json']
 
 " ----------------- General settings -------------------
 

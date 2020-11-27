@@ -148,14 +148,14 @@ READNULLCMD='less'
 # Editors
 # ========================================================================
 
-# # export EDITOR VISUAL
-# if command -v nvim > /dev/null 2>&1; then
-#   export EDITOR='nvim'
-# else
-#   export EDITOR='vim'
-# fi
-#
-# export VISUAL="$EDITOR"
+# export EDITOR VISUAL
+if command -v nvim > /dev/null 2>&1; then
+  export EDITOR='nvim'
+else
+  export EDITOR='vim'
+fi
+
+export VISUAL="$EDITOR"
 
 export PAGER='less'
 
