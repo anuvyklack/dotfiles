@@ -9,8 +9,10 @@
 # - debug: var=ansible_env.WSL_DISTRO_NAME
 # - debug: var=ansible_env.WSL_DISTRO_NAME_1
 
-- name: Check if WSL
-  debug:
-    msg: 'Hello!'
-  when: ('WSL_DISTRO_NAME' in ansible_env) or
-        ('IS_WSL' in ansible_env)
+- debug: var=ansible_lsb.codename
+
+# - name: Check if WSL
+#   debug:
+#     msg: 'Hello!'
+#   when: ('WSL_DISTRO_NAME' in ansible_env) or
+#         ('IS_WSL' in ansible_env)

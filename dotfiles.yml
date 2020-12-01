@@ -3,6 +3,10 @@
   hosts: local
   roles:
 
+    # - role: test
+    #   tags:
+    #     - test
+
     # - role: debian-testing
     #   when: ansible_distribution == 'Debian'
     #   tags:
