@@ -592,7 +592,8 @@ Plug 'anuvyklack/vim-cppman'
 
 " This variable should be declared before polyglot is loaded!
 let g:polyglot_disabled = ['markdown']
-Plug 'sheerun/vim-polyglot'  " подсветка синтаксисов разных языков
+" Подсветка синтаксисов разных языков
+Plug 'sheerun/vim-polyglot', { 'tag': 'v4.13.5' }
 
 Plug 'lervag/vimtex', { 'for': 'LaTeX' }  " latex
 Plug 'PProvost/vim-ps1', {'for': 'ps1'}   " powershell
