@@ -402,11 +402,11 @@ let g:SimpylFold_fold_import = 0
 
 " Editing Jupyter notebook (ipynb) files through jupytext in vim.
 " https://github.com/goerz/jupytext.vim
-Plug 'goerz/jupytext.vim', { 'for': 'python' }
+Plug 'goerz/jupytext.vim'
 let g:jupytext_filetype_map = {'md': 'pandoc'}
 
 " Connection to Jupyter QtConsole
-Plug 'broesler/jupyter-vim'
+Plug 'broesler/jupyter-vim', { 'for': 'python' }
 let g:jupyter_mapkeys = 1  " enable default key mapping
 
 " Looks like it doesn't works with Neovim

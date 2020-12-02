@@ -84,7 +84,7 @@ if [[ -s $CONDACACHE(#q.md-7N) && $CONDACACHE -nt "$(readlink -- ~/.config/zsh/.
 then
     source $CONDACACHE
 else
-    # Make ~/.cache/zsh folder if if it doesn't exist.
+    # Make ~/.cache/zsh folder if it doesn't exist.
     [[ -d ~/.cache/zsh ]] || mkdir -pv ~/.cache/zsh
 
     local PATH_TO_CONDA_INSTALL="/opt/miniconda3"

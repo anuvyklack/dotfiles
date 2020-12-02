@@ -1,0 +1,9 @@
+[style]
+# based_on_style = pep8
+# based_on_style = google
+based_on_style = facebook
+# based_on_style = yapf
+
+indent_width = 4  # For yapf style: it use 2 spaces per indent.
+spaces_before_comment = 2
+# split_before_logical_operator = true

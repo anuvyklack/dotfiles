@@ -70,19 +70,20 @@
     groups: conda
     append: yes
 
-- name: Ensure required directories are exists
+- name: Ensure all required directories are exists
   file:
-    path: "{{ home }}/.jupyter"
+    path: "{{ item }}"
     state: directory
+  loop:
+    - "{{ home }}/.jupyter"
+    - "{{ home }}/.config/yapf"
 
-- name: symlink condarc
+- name: Symlink config files
   file:
-    src: "{{ role_path }}/files/condarc"
-    dest: "{{ home }}/.condarc"
+    src:  "{{ item.src }}"
+    dest: "{{ item.dest }}"
     state: link
-
-- name: symlink juyter qtconsole config
-  file:
-    src: "{{ role_path }}/files/jupyter_qtconsole_config.py"
-    dest: "{{ home }}/.jupyter/jupyter_qtconsole_config.py"
-    state: link
+  loop:
+    - { src: "{{ files }}/condarc",    dest: "{{ home }}/.condarc" }
+    - { src: "{{ files }}/style.yapf", dest: "{{ home }}/.config/yapf/style" }
+    - { src: "{{ files }}/jupyter_qtconsole_config.py", dest: "{{ home }}/.jupyter/jupyter_qtconsole_config.py" }

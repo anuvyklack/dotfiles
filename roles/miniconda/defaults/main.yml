@@ -1,11 +1,13 @@
 ---
 
 # miniconda_home: '{{ home }}/.miniconda'
-
 miniconda_home: '/opt/miniconda3'
 
 miniconda_url: >
   https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+
+files: "{{ role_path }}/files"
+
 
 # miniconda_environments:
 #   - name: nvim
