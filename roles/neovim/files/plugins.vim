@@ -594,6 +594,7 @@ Plug 'anuvyklack/vim-cppman'
 let g:polyglot_disabled = ['markdown']
 " Подсветка синтаксисов разных языков
 Plug 'sheerun/vim-polyglot', { 'tag': 'v4.13.5' }
+" Plug 'sheerun/vim-polyglot'
 
 Plug 'lervag/vimtex', { 'for': 'LaTeX' }  " latex
 Plug 'PProvost/vim-ps1', {'for': 'ps1'}   " powershell

@@ -45,6 +45,45 @@ autoload -Uz _zinit
 
 # }}}
 
+# Programs and utilities {{{
+
+# zinit ice id-as"fzf" as"program" from"gh-r" \
+#           mv"fzf -> $ZPFX/bin/" \
+#           pick"$ZPFX/bin/fzf"
+# zinit light junegunn/fzf-bin
+
+zinit ice from"gh-r" as"program"
+zinit load junegunn/fzf-bin
+
+zinit load uvaes/fzf-marks
+
+zinit snippet 'https://raw.githubusercontent.com/junegunn/fzf/master/shell/completion.zsh'
+zinit snippet 'https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.zsh'
+# zinit snippet 'https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker'
+
+zinit ice from"gh-r" as"program" mv"fd-*/fd -> fd"
+zinit load sharkdp/fd
+
+zinit ice from"gh-r" as"program" mv"ripgrep-*/rg -> rg"
+zinit load BurntSushi/ripgrep
+
+zinit ice from"gh-r" as"program" mv"docker-compose* -> docker-compose" pick"docker-compose"
+zinit light docker/compose
+
+zinit ice from"gh-r" as"program" pick"drone"
+zinit light drone/drone-cli
+
+zinit ice from"gh-r" as"program" mv"exa-* -> exa" pick"exa"
+zinit light ogham/exa
+
+# zinit ice from"gh-r" as"program" mv"direnv* -> direnv" atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' pick"direnv"
+# zinit light direnv/direnv
+# if [ -f "$HOME/.zinit/plugins/direnv---direnv/zhook.zsh" ]; then
+#   . "$HOME/.zinit/plugins/direnv---direnv/zhook.zsh"
+# fi
+
+# }}}
+
 # General settings {{{
 
 # Report time stats of commands running longer than 20 sec

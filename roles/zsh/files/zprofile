@@ -133,7 +133,6 @@ typeset -gU cdpath fpath mailpath path
 # Set the list of directories that Zsh searches for programs.
 path=(
   /usr/local/{bin,sbin}
-  $HOME/bin
   $path
 )
 
@@ -285,14 +284,12 @@ export RIPGREP_CONFIG_PATH=$HOME/.config/rg/config
 
 # Par (paragraph formating)
 # ========================================================================
-
 # The following string is recommended in par man.
 export PARINIT='rTbgqR B=.,?_A_a Q=_s>|'
 
 
 # XDG
 # ========================================================================
-
 # export XDG_RUNTIME_DIR="/tmp/runtime-$USER"
 
 # pkg-config
@@ -320,5 +317,9 @@ if [[ -s /opt/intel/mkl/bin/mklvars.sh ]]; then
     export MKL_THREADING_LAYER=GNU
 fi
 
+# PuDB (Python debugger)
+# ========================================================================
+# Set breakpoint() in Python to call pudb
+export PYTHONBREAKPOINT="pudb.set_trace"
 
 # vim: ft=zsh
