@@ -26,7 +26,7 @@
     state: directory
   loop:
     - "{{ home }}/.local/bin"
-    - "{{ zshdir }}/lib"
+    - "{{ zshdir }}/settings"
     - "{{ zshdir }}/themes"
 
 - name: Symlink zsh dotfiles
@@ -42,14 +42,14 @@
     - { src: "{{ files }}/functions", dest: "{{ zshdir }}/functions" }
 
 
-- name: Link files in 'lib' folder
+- name: Link files in 'settings' folder
   file:
     src: "{{ item.src }}"
-    dest: "{{ zshdir }}/lib/{{ item.path }}"
+    dest: "{{ zshdir }}/settings/{{ item.path }}"
     state: link
-  with_filetree: "{{ files }}/lib"
+  with_filetree: "{{ files }}/settings"
   loop_control:
-    label: "~/.config/zsh/lib/{{ item.path }}"
+    label: "~/.config/zsh/settings/{{ item.path }}"
 
 - name: Link files in 'themes' folder
   file:

@@ -1,4 +1,5 @@
 ---
+
 - name: symlink bat config files
   file:
     src: "{{ role_path }}/files"

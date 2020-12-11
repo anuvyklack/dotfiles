@@ -26,15 +26,24 @@ fi
 
 # Zinit plugin manager invocation {{{
 
+# Setup array with zinit environment variables
+# --------------------------------------------
+# 'declare' is the same as 'typeset'.
+# -A :: The names refer to associative array parameters.
+declare -A ZINIT
+ZINIT[HOME_DIR]="$HOME/.local/share/zinit"
+ZINIT[BIN_DIR]="$ZINIT[HOME_DIR]/bin"
+export ZPFX="$ZINIT[HOME_DIR]/polaris"
+
 # Source zinit. Install if it's absent. These lines must be at the very
 # begining of the file. The order of plugins loading matters.
-if [[ ! -s "$HOME/.zinit/bin/zinit.zsh" ]]; then
-  mkdir -v ~/.zinit
-  git clone https://github.com/zdharma/zinit.git ~/.zinit/bin
-  source "$HOME/.zinit/bin/zinit.zsh"
+if [[ ! -s "$ZINIT[BIN_DIR]/zinit.zsh" ]]; then
+  # git clone --depth=1 https://github.com/zdharma/zinit.git ~/.zinit/bin
+  git clone --depth=1 https://github.com/zdharma/zinit.git $ZINIT[BIN_DIR]
+  source "$ZINIT[BIN_DIR]/zinit.zsh"
   zinit self-update
 else
-  source "$HOME/.zinit/bin/zinit.zsh"
+  source "$ZINIT[BIN_DIR]/zinit.zsh"
 fi
 
 # The lines attach Zplugin completion "on-the-fly" to already initialized
@@ -47,33 +56,7 @@ autoload -Uz _zinit
 
 # Programs and utilities {{{
 
-# zinit ice id-as"fzf" as"program" from"gh-r" \
-#           mv"fzf -> $ZPFX/bin/" \
-#           pick"$ZPFX/bin/fzf"
-# zinit light junegunn/fzf-bin
-
-zinit ice from"gh-r" as"program"
-zinit load junegunn/fzf-bin
-
-zinit load uvaes/fzf-marks
-
-zinit snippet 'https://raw.githubusercontent.com/junegunn/fzf/master/shell/completion.zsh'
-zinit snippet 'https://raw.githubusercontent.com/junegunn/fzf/master/shell/key-bindings.zsh'
-# zinit snippet 'https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker'
-
-zinit ice from"gh-r" as"program" mv"fd-*/fd -> fd"
-zinit load sharkdp/fd
-
-zinit ice from"gh-r" as"program" mv"ripgrep-*/rg -> rg"
-zinit load BurntSushi/ripgrep
-
-zinit ice from"gh-r" as"program" mv"docker-compose* -> docker-compose" pick"docker-compose"
-zinit light docker/compose
-
-zinit ice from"gh-r" as"program" pick"drone"
-zinit light drone/drone-cli
-
-zinit ice from"gh-r" as"program" mv"exa-* -> exa" pick"exa"
+zinit ice id-as"exa" from"gh-r" mv"exa-* -> $ZPFX/bin/exa"
 zinit light ogham/exa
 
 # zinit ice from"gh-r" as"program" mv"direnv* -> direnv" atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' pick"direnv"
@@ -81,6 +64,10 @@ zinit light ogham/exa
 # if [ -f "$HOME/.zinit/plugins/direnv---direnv/zhook.zsh" ]; then
 #   . "$HOME/.zinit/plugins/direnv---direnv/zhook.zsh"
 # fi
+
+# A special plugin to install diff-so-fancy
+zinit ice wait"2" id-as"diff-so-fancy" lucid as"program" pick"bin/git-dsf"
+zinit light zdharma/zsh-diff-so-fancy
 
 # }}}
 
@@ -215,8 +202,8 @@ esac
 
 # }}}
 
-source $ZDOTDIR/lib/history.zsh
-source $ZDOTDIR/lib/completion.zsh
+source $ZDOTDIR/settings/history.zsh
+source $ZDOTDIR/settings/completion.zsh
 
 # Output coloring {{{
 
@@ -381,10 +368,6 @@ export ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd history completion)
 export ZSH_AUTOSUGGEST_USE_ASYNC=1  # suggestions will be fetched asynchronously
 # }}}
 
-# Install diff-so-fancy using zinit
-zinit ice id-as"diff-so-fancy" wait"2" lucid as"program" pick"bin/git-dsf"
-zinit light zdharma/zsh-diff-so-fancy
-
 # # Автодополнение путей с использованием fzf для команды cd
 # zinit ice wait"1" lucid
 # zinit light changyuheng/zsh-interactive-cd
@@ -516,7 +499,7 @@ zle -N run_ranger
 # Key bindings                                                       {{{1
 # =======================================================================
 
-source $ZDOTDIR/lib/vi-mode.zsh
+source $ZDOTDIR/settings/vi-mode.zsh
 
 # Нормальное поведение клавиш (не как в vi и emacs). {{{2
 
@@ -641,12 +624,16 @@ bindkey '^O' run_ranger
 # Set plugin id as 'fzf'. Now it is possible to update by:
 # "zinit update fzf" delete by: "zinit delete fzf" and so on.
 # Downloaded last release from "github releases", unpack it and move
-# "fzf" to "$ZPFX/bin/fzf", which is already at he $PATH.
+# "fzf" bin to "$ZPFX/bin/" directory, which is already at the $PATH.
 #
-zinit ice id-as"fzf" as"program" from"gh-r" \
-          mv"fzf -> $ZPFX/bin/" \
-          pick"$ZPFX/bin/fzf"
+zinit ice id-as"fzf" from"gh-r" mv"fzf -> $ZPFX/bin/"
 zinit light junegunn/fzf-bin
+
+# Alternative way:
+# Ice as"program" add the plugin folder to $PATH, what I personally don't
+# want to, because I prefer to keep $PATH as small as possible.
+#
+# zinit ice id-as"fzf" from"gh-r" as"program" pick"$ZPFX/bin/fzf"
 
 # fzf keybindings
 zinit ice id-as"fzf-keybindings.zsh"

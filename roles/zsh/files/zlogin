@@ -21,18 +21,11 @@
         zrecompile -pq "${ZDOTDIR:-${HOME}}/.$i"
     done
 
-    # # zcompile .zshrc
-    # zrecompile -pq ${ZDOTDIR:-${HOME}}/.zprofile
-    # zrecompile -pq ${ZDOTDIR:-${HOME}}/.zshrc
-    # zrecompile -pq ${ZDOTDIR:-${HOME}}/.zlogin
-
-    # recompile all zsh or sh
+    # recompile all zsh or sh files
     for FILE in {$ZDOTDIR/**,$HOME/.cache/zsh/**}/*.*sh(#qN)
     do
         zrecompile -pq $FILE
     done
-
-    # local CACHE="$HOME/.cache/zsh/conda.zsh"
 
     # Compile all functions in single 'digest' file
     zrecompile -pq "$ZDOTDIR/functions.zwc" $(echo -n $(find "$ZDOTDIR"/functions/ -maxdepth 1 -type f))
