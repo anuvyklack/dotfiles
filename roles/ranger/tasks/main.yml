@@ -6,6 +6,7 @@
   apt:
     name: ranger
     state: present
+    force_apt_get: yes
     update_cache: yes
   when: ansible_pkg_mgr == 'apt'
 
