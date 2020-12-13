@@ -64,13 +64,13 @@
     #   tags:
     #     - lf
 
-    # - role: power-managment
-    #   tags:
-    #     - power-managment
+    - role: power-managment
+      tags:
+        - power-managment
 
     - role: dual-function-keys
       tags:
-        - keys
+        - keyboard
 
     - role: tmux
       tags:

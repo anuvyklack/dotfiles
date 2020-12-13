@@ -36,6 +36,7 @@
   copy:
     src: dual-function-keys.yaml
     dest: /etc/interception-tools/dual-function-keys.yaml
+    force: yes
     backup: yes
 
 - name: Copy udevmon.yaml config file
@@ -43,6 +44,7 @@
   copy:
     src: udevmon.yaml
     dest: /etc/udevmon.yaml
+    force: yes
     backup: yes
 
 - name: Copy udevmon.service file
@@ -52,6 +54,7 @@
     dest: /etc/systemd/system/udevmon.service
     owner: root
     group: root
+    force: yes
     backup: yes
 
 

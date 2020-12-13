@@ -1,7 +1,6 @@
-#!/bin/zsh
+#!/bin/bash
 
-man()
-{
+man() {
 
     WIDTH=80
     if (( WIDTH > COLUMNS )); then
