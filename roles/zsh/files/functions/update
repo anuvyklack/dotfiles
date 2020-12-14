@@ -29,60 +29,68 @@ update()
   sudo apt autoremove --yes
 
 
-  # Update conda {{{
+  # conda {{{
   if command -v conda > /dev/null 2>&1
   then
 
-      # Remember the current conda environment if any.
-      if [[ -n $CONDA_DEFAULT_ENV ]]
-      then
-          local conda_env=$CONDA_DEFAULT_ENV
-      fi
+    # Remember the current conda environment if any.
+    if [[ -n $CONDA_DEFAULT_ENV ]]
+    then
+        local conda_env=$CONDA_DEFAULT_ENV
+    fi
 
-      echo ''
-      echo -e "${LGREEN}conda ${WHITE}updating ${LYELLOW}base ${RESET}"
+    echo ''
+    echo -e "${LGREEN}conda ${WHITE}updating ${LYELLOW}base ${RESET}"
 
-      conda activate base
-      conda update conda --yes
-      conda update --all --yes
+    conda activate base
+    conda update conda --yes
+    conda update --all --yes
 
-      # echo ''
-      # echo -e '\e[32;1mconda \e[37;1mupdating \e[33;1mnvim \e[0m'
-      #
-      # conda activate nvim
-      # conda update --all --yes
+    # echo ''
+    # echo -e '\e[32;1mconda \e[37;1mupdating \e[33;1mnvim \e[0m'
+    #
+    # conda activate nvim
+    # conda update --all --yes
 
-      # Очистить кэш
-      conda clean --all --yes
+    # Очистить кэш
+    conda clean --all --yes
 
-      # # Restore conda environment
-      # if [[ -n conda_env ]]
-      # then
-      #     conda activate $conda_env
-      # else
-      #     conda deactivate
-      # fi
+    # # Restore conda environment
+    # if [[ -n conda_env ]]
+    # then
+    #     conda activate $conda_env
+    # else
+    #     conda deactivate
+    # fi
 
   fi
   # }}}
 
-  # Update Homebrew {{{
+  # Homebrew {{{
   if command -v brew > /dev/null 2>&1
   then
-      echo
-      echo -e "${WHITE}Updating ${LYELLOW}Homebrew ${WHITE}"
-      brew update
-      brew upgrade
+    echo -e "${WHITE}Updating ${LYELLOW}Homebrew ${RESET}"
+    brew update
+    brew upgrade
+  fi
+  # }}}
+
+  # Pipx apps {{{
+  if command -v /usr/bin/pipx > /dev/null 2>&1
+  then
+    echo
+    echo -e "${WHITE}Updating ${LGREEN}Pipx ${WHITE}apps ${RESET}"
+    /usr/bin/pipx upgrade-all
   fi
   # }}}
 
   # Zinit {{{
   if command -v zinit > /dev/null 2>&1
   then
-      echo
-      echo -e "${WHITE}Updating ${LPURPLE}Zinit ${RESET}"
-      zinit self-update
-      zinit update --all
+    echo
+    echo -e "${WHITE}Updating ${LPURPLE}Zinit ${RESET}"
+    zinit self-update
+    zinit update --all
   fi
   # }}}
 
@@ -90,9 +98,9 @@ update()
   TMUX_PLUGIN_MANAGER="${HOME}/.local/share/tmux/plugins/tpm/bin/update_plugins"
   if [[ -s $TMUX_PLUGIN_MANAGER ]]
   then
-      echo
-      echo -e "${WHITE}Updating ${LGREEN}Tmux ${WHITE}plugins ${RESET}"
-      $TMUX_PLUGIN_MANAGER all
+    echo
+    echo -e "${WHITE}Updating ${LGREEN}Tmux ${WHITE}plugins ${RESET}"
+    $TMUX_PLUGIN_MANAGER all
   fi
   # }}}
 

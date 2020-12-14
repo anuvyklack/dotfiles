@@ -1,5 +1,13 @@
 ---
 
+- name: install bat (apt)
+  become: yes
+  apt:
+    name: bat
+    state: latest
+    force_apt_get: yes  # Force usage of apt-get instead of aptitude
+    cache_valid_time: 3600  # One hour
+
 - name: symlink bat config files
   file:
     src: "{{ role_path }}/files"

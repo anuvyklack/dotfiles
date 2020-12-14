@@ -68,6 +68,10 @@
       tags:
         - power-managment
 
+    - role: gnome3
+      tags:
+        - gnome
+
     - role: dual-function-keys
       tags:
         - keyboard

@@ -1,0 +1,15 @@
+---
+
+- name: install gnome apps
+  become: yes
+  apt:
+    pkg:
+      - gnome-tweaks
+      - dconf-editor
+    force_apt_get: yes  # Force usage of apt-get instead of aptitude
+    update_cache: yes
+    cache_valid_time: 3600  # One hour
+    state: present
+
+- name: setup gnome settings
+  command: "{{ role_path }}/files/gnome-settings.sh"
