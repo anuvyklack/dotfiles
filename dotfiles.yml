@@ -83,3 +83,7 @@
     - role: vivaldi
       tags:
         - vivaldi
+
+    - role: notes-cli
+      tags:
+        - notes

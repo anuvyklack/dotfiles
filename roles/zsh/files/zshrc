@@ -327,12 +327,19 @@ then
   zinit snippet https://github.com/jarun/buku/blob/master/auto-completion/zsh/_buku
 fi
 
+# notes (cli notebook) completion
+if command -v notes > /dev/null 2>&1
+then
+  zinit ice id-as"notes-cli-completion" mv"notes-cli-completion -> _notes" as"completion"
+  zinit snippet https://github.com/rhysd/notes-cli/blob/master/completions/zsh/_notes
+fi
+
+# dnote (cli notebook) completion
 if command -v dnote > /dev/null 2>&1
 then
   zinit ice as"completion"
   zinit snippet OMZP::dnote/_dnote
 fi
-
 
 # cppman completion
 if command -v cppman > /dev/null 2>&1

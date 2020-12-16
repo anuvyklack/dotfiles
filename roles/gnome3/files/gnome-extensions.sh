@@ -1,8 +1,5 @@
 #!/usr/bin/bash
 
-# Extensions settings
-# -----------------------------------------------------------------------------
-
 extension () {
    # return the path to extencion schemas folder
    echo "$HOME/.local/share/gnome-shell/extensions/$1/schemas"
@@ -35,5 +32,9 @@ gsettings --schemadir $(extension dash-to-dock@micxgx.gmail.com) \
    isolate-monitors true
 
 
-# Status Area Horizontal Spacing
+# Caffeine
 # -----------------------------------------------------------------------------
+# Restore states across reboots
+gsettings --schemadir $(extension caffeine@patapon.info) \
+   set org.gnome.shell.extensions.caffeine \
+   restore-state true

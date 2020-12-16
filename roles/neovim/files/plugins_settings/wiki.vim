@@ -1,5 +1,5 @@
-" let g:wiki_root = '~/wiki'
-let g:wiki_root = '/mnt/d/artyu/wiki'
+let g:wiki_root = '~/wiki'
+" let g:wiki_root = '/mnt/d/artyu/wiki'
 
 " List of filetypes for which wiki.vim should be enabled.
 let g:wiki_filetypes = ['md', 'wiki']

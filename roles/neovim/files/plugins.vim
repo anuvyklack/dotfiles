@@ -405,9 +405,9 @@ let g:SimpylFold_fold_import = 0
 Plug 'goerz/jupytext.vim'
 let g:jupytext_filetype_map = {'md': 'pandoc'}
 
-" Connection to Jupyter QtConsole
-Plug 'broesler/jupyter-vim', { 'for': 'python' }
-let g:jupyter_mapkeys = 1  " enable default key mapping
+" " Connection to Jupyter QtConsole
+" Plug 'broesler/jupyter-vim', { 'for': 'python' }
+" let g:jupyter_mapkeys = 1  " enable default key mapping
 
 " Looks like it doesn't works with Neovim
 " Plug 'williamjameshandley/vimteractive'  " connection with ipython

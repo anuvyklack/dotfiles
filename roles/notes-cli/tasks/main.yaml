@@ -1,0 +1,39 @@
+---
+
+- name: check if note-cli already installed
+  shell: "command -v notes"
+  register: check_notes
+  failed_when: False
+  changed_when: check_notes.rc != 0
+
+- name: Get notes-cli latest release info
+  uri:
+    url: https://api.github.com/repos/rhysd/notes-cli/releases/latest
+    return_content: yes
+  register: latest_release
+
+- name: "Installing notes-cli {{ latest_release.json.tag_name }}"
+  loop: "{{ latest_release.json.assets }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - ('linux_amd64' in item.name)
+    - check_notes.rc != 0
+  unarchive:
+    remote_src: yes
+    src: "{{ item.browser_download_url }}"
+    dest: "{{ home }}/.local/bin"
+    keep_newer: yes
+
+- name: Ensure user local man folder exists
+  file:
+    path: "{{ home }}/.local/share/man/man1"
+    state: directory
+
+- name: Install notes-cli manual file
+  shell:
+    cmd: "notes --help-man > {{ home }}/.local/share/man/man1/notes.1"
+    creates: "{{ home }}/.local/share/man/man1/notes.1"
+
+- name: Update man databes
+  command: mandb
