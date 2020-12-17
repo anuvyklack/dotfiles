@@ -26,8 +26,8 @@ window:
   # Specified in number of pixels.
   # If the position is not set, the window manager will handle the placement.
   position:
-   x: 1100
-   y: 300
+   x: 700
+   y: 110
 
   # Window padding (changes require restart)
   #
@@ -657,9 +657,16 @@ live_config_reload: true
 #   - (Windows) powershell
 
 shell:
-  program: /bin/zsh
+  program: /bin/bash
   args:
-    - --login
+    - -l
+    - -c
+    - "tmux attach || tmux"
+
+# shell:
+#   program: /bin/zsh
+#   args:
+#     - --login
 
 # shell:
 #   program: "C:\\Windows\\System32\\wsl.exe"
