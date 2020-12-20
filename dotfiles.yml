@@ -60,10 +60,6 @@
       tags:
         - neovim
 
-    # - role: lf
-    #   tags:
-    #     - lf
-
     - role: power-managment
       tags:
         - power-managment
@@ -84,6 +80,14 @@
       tags:
         - vivaldi
 
-    - role: notes-cli
-      tags:
-        - notes
+    # - role: lf
+    #   tags:
+    #     - lf
+
+    # - role: far2l
+    #   tags:
+    #     - far2l
+
+    # - role: notes-cli
+    #   tags:
+    #     - notes

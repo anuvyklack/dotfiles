@@ -1,20 +1,54 @@
 ---
 
-- name: install bat (apt)
+# -------------------------- Install from apt -----------------------------
+
+# - name: install bat (apt)
+#   become: yes
+#   apt:
+#     name: bat
+#     state: latest
+#     force_apt_get: yes  # Force usage of apt-get instead of aptitude
+#     cache_valid_time: 3600  # One hour
+
+
+# --------------------- Install from Github release -----------------------
+
+- name: Get latest release info
+  uri:
+    url: "{{ release }}"
+    body_format: json
+    return_content: yes
+  register: latest_release
+
+# - debug:
+#     msg: "{{ latest_release.json | json_query('assets[*].name') }}"
+
+- name: Get deb package name
+  set_fact:
+    deb_package: "{{ item.name }}"
+  loop: "{{ latest_release.json.assets }}"
+  when: item.name | regex_search('bat-musl_.*_amd64\.deb')  # Statically-linked version
+  # when: item.name | regex_search('bat_.*_amd64\.deb')
+  loop_control:
+    label: "{{ item.name }}"
+
+# - debug: var=deb_package
+
+- name: Install "{{ deb_package }}"
   become: yes
   apt:
-    name: bat
-    state: latest
-    force_apt_get: yes  # Force usage of apt-get instead of aptitude
-    cache_valid_time: 3600  # One hour
+    deb: "{{ latest_release.json | json_query(query) | first }}"
+    # deb: "{{ latest_release.json | to_json | from_json | json_query(query) }}"
+  vars:
+    query: "assets[?name == '{{ deb_package }}'].browser_download_url"
+    # query: "assets[?contains(name,'{{ deb_package }}')].browser_download_url"
+  notify:
+    - build bat cache
+
+# -------------------------------------------------------------------------
 
 - name: symlink bat config files
   file:
     src: "{{ role_path }}/files"
     dest: "{{ home }}/.config/bat"
     state: link
-
-- name: build bat cache
-  command: bat cache --build
-  ignore_errors: True
-  changed_when: False  # so as not to distract
