@@ -8,7 +8,7 @@
 
 - name: Get notes-cli latest release info
   uri:
-    url: https://api.github.com/repos/rhysd/notes-cli/releases/latest
+    url: "{{ release }}"
     return_content: yes
   register: latest_release
 

@@ -1,0 +1,11 @@
+---
+
+- name: add far2l ppa repo
+  become: yes
+  apt_repository:
+    repo: ppa:far2l-team/ppa
+
+- name: install far2l
+  become: yes
+  apt:
+    name: far2l
