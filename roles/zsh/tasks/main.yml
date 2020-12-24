@@ -6,6 +6,7 @@
   become_method: sudo
   apt:
     pkg:
+      - unzip
       - git
       - bfs
       - lua5.3

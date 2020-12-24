@@ -389,11 +389,11 @@ if type lf > /dev/null 2>&1; then
   zinit snippet https://github.com/gokcehan/lf/blob/master/etc/lf.zsh
 
   zinit ice id-as"lfcd.sh" as"null" \
-            mv"lfcd.sh -> $HOME/dotfiles/config/zsh/functions/lfcd"
+            mv"lfcd.sh -> $ZDOTDIR/functions/lfcd"
   zinit snippet https://github.com/gokcehan/lf/blob/master/etc/lfcd.sh
 
   # # <Ctrl-o> - use lf to switch directories.
-  # bindkey -s '^o' 'lfcd\n'
+  bindkey -s '^o' 'lfcd\n'
   # bindkey -s '^o' 'lfcd^m'
 
 fi
@@ -409,7 +409,7 @@ export _ZL_DATA=${HOME}/.cache/zlua
 
 # }}}
 
-# Deer: Alt-K to navigate through file sistem in zsh like in ranger {{{
+# Deer: Alt-K to navigate through file system in zsh prompt like in ranger {{{
 zinit ice lucid id-as"auto" pick'deer'
 zinit light Vifon/deer
 zle -N deer
@@ -493,13 +493,14 @@ bindkey '^[f' delete_line_from_history  # Alt + F
 # bindkey '\ef' delete_line_from_history  # Alt + F
 # }}}
 
-run_ranger()  # {{{
-{
-    BUFFER=" source ranger && clear -x"
-    zle accept-line
-}
-zle -N run_ranger
-# }}}
+# run_ranger()  # {{{
+# {
+#     zle .reset-prompt
+#     BUFFER=" source ranger && clear -x"
+#     zle accept-line
+# }
+# zle -N run_ranger
+# # }}}
 
 # }}}1
 
@@ -607,7 +608,8 @@ bindkey -s '\e5' "!:4-4 \t"
 # bindkey '^s' history-incremental-search-forward
 
 # Launch Ranger and cd to the last directory after closing it
-bindkey '^O' run_ranger
+# bindkey '^O' run_ranger
+bindkey '^O' nnn_quitcd
 
 # }}}1
 
@@ -751,6 +753,32 @@ fzf-file-widget() {
   return $ret
 }
 # }}}2
+
+# }}}
+
+# nnn {{{
+
+# cd into last dir on quit nnn {{{
+
+if command -v nnn > /dev/null 2>&1;
+then
+  zinit ice id-as"nnn_quitcd" as"null" \
+            mv"nnn_quitcd -> $ZDOTDIR/functions/n"
+  zinit snippet https://github.com/jarun/nnn/blob/master/misc/quitcd/quitcd.bash_zsh
+
+  nnn_quitcd() {
+      zle .reset-prompt
+      BUFFER=" n && clear -x"
+      zle accept-line
+  }
+  zle -N nnn_quitcd
+
+fi
+
+# }}}
+
+# nnn bookmarks
+export NNN_BMS='d:~/Documents;u:/home/user/Cam Uploads;D:~/Downloads/'
 
 # }}}
 

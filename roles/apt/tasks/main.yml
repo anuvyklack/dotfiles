@@ -14,17 +14,18 @@
       - rsync
       - mlocate
       - fd-find
+      - htop
 
       # - x11-xkb-utils
       # - bfs      # find(1) c поиском в ширину в первую очередь
       # - par      # Paragraph formating utility for vim
-      # - ripgrep
       # - lua5.3
-      # - neovim
-      # - ranger
-      # - tig
 
-      # - htop
       # - exa      # a modern replacment for ls
       # - silversearcher-ag
       # - fzf      # fuzzy finder
+
+- name: "Create ~/.config folder"
+  file:
+    path: "{{ home }}/.config"
+    state: directory

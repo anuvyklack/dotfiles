@@ -47,6 +47,10 @@
       tags:
         - ranger
 
+    - role: nnn
+      tags:
+        - nnn
+
     - role: miniconda
       tags:
         - miniconda
