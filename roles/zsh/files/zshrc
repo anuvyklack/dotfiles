@@ -42,9 +42,12 @@ if [[ ! -s "$ZINIT[BIN_DIR]/zinit.zsh" ]]; then
   git clone --depth=1 https://github.com/zdharma/zinit.git $ZINIT[BIN_DIR]
   source "$ZINIT[BIN_DIR]/zinit.zsh"
   zinit self-update
+  mkdir -p $ZPFX/{bin,man/man1}
 else
   source "$ZINIT[BIN_DIR]/zinit.zsh"
 fi
+
+# zinit light zinit-zsh/z-a-patch-dl
 
 # The lines attach Zplugin completion "on-the-fly" to already initialized
 # completion system. They need to be added if zinit is sourced after
@@ -622,12 +625,19 @@ bindkey '^O' nnn_quitcd
 # CTRL-T - Paste the selected file path(s) into the command line         #
 # ALT-C  - cd into the selected directory                                #
 #                                                                        #
+# fzf completion for Zsh                                                 #
+# ----------------------                                                 #
+# Fuzzy completion for files and directories can be triggered if the     #
+# word before the cursor ends with the trigger sequence which is by      #
+# default **.                                                            #
+#                                                                        #
 # fzf-marks                                                              #
 # ---------                                                              #
 # mark <name> - register a new mark to the current directory             #
 # CTRL-F - fzf-marks                                                     #
 # ---------------------------------------------------------------------- #
 
+# zinit pack"binary+keys" for fzf
 
 # Install fzf with zinit
 # Set plugin id as 'fzf'. Now it is possible to update by:
@@ -636,25 +646,28 @@ bindkey '^O' nnn_quitcd
 # "fzf" bin to "$ZPFX/bin/" directory, which is already at the $PATH.
 #
 zinit ice id-as"fzf" from"gh-r" mv"fzf -> $ZPFX/bin/"
-zinit light junegunn/fzf-bin
+zinit light junegunn/fzf
 
-# Alternative way:
-# Ice as"program" add the plugin folder to $PATH, what I personally don't
-# want to, because I prefer to keep $PATH as small as possible.
-#
-# zinit ice id-as"fzf" from"gh-r" as"program" pick"$ZPFX/bin/fzf"
+# If symlink doesn't exists, or not a symlink
+if [[ ! -L "$HOME/.local/bin/fzf" ]]; then
+    ln -sv "$ZPFX/bin/fzf" "$HOME/.local/bin/fzf"
+fi
 
 # fzf keybindings
-zinit ice id-as"fzf-keybindings.zsh"
+zinit ice id-as"fzf-key-bindings.zsh"
 zinit snippet https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh
 
-# fzf.vim  Needed to enable fzf in vim/neovim.
-zinit ice wait"2" lucid id-as"auto" as"null"
-zinit snippet https://github.com/junegunn/fzf/blob/master/plugin/fzf.vim
-
-# fzf completions
-zinit ice id-as"fzf-completion" mv"fzf-completion -> _fzf" as"completion"
+# fzf completions script
+zinit ice id-as"fzf-completion.zsh"
 zinit snippet https://github.com/junegunn/fzf/blob/master/shell/completion.zsh
+
+# fzf man
+zinit ice id-as"fzf-man" as"null" mv"fzf-man -> $ZPFX/man/man1/fzf.1"
+zinit snippet https://github.com/junegunn/fzf/blob/master/man/man1/fzf.1
+
+# # fzf-tmux man
+# zinit ice id-as"fzf-tmux-man" as"null" mv"fzf-tmux-man -> $ZPFX/man/man1/fzf-tmux.1"
+# zinit snippet https://github.com/junegunn/fzf/blob/master/man/man1/fzf-tmux.1
 
 # fzf-marks {{{
 
@@ -667,6 +680,10 @@ export FZF_MARKS_JUMP='^f'  # Ctrl-f
 bindkey ${FZF_MARKS_JUMP:-'^g'} fzm
 
 # }}}
+
+# fzf.vim  Needed to enable fzf in vim/neovim.
+zinit ice wait"2" lucid id-as"auto" as"null"
+zinit snippet https://github.com/junegunn/fzf/blob/master/plugin/fzf.vim
 
 # # Enable if fzf installed with apt.
 # # Documentation is at: /usr/share/doc/fzf/README.Debian
@@ -762,9 +779,11 @@ fzf-file-widget() {
 
 if command -v nnn > /dev/null 2>&1;
 then
-  zinit ice id-as"nnn_quitcd" as"null" \
-            mv"nnn_quitcd -> $ZDOTDIR/functions/n"
-  zinit snippet https://github.com/jarun/nnn/blob/master/misc/quitcd/quitcd.bash_zsh
+
+  # # Copy original 'quitcd' function. I heavy modified it, so comment this block.
+  # zinit ice id-as"nnn_quitcd" as"null" \
+  #           mv"nnn_quitcd -> $ZDOTDIR/functions/n"
+  # zinit snippet https://github.com/jarun/nnn/blob/master/misc/quitcd/quitcd.bash_zsh
 
   nnn_quitcd() {
       zle .reset-prompt
@@ -778,7 +797,7 @@ fi
 # }}}
 
 # nnn bookmarks
-export NNN_BMS='d:~/Documents;u:/home/user/Cam Uploads;D:~/Downloads/'
+export NNN_BMS='d:~/Documents;D:~/Downloads/'
 
 # }}}
 

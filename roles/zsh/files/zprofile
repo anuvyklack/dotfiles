@@ -128,8 +128,9 @@ fi
 # Ensure path arrays do not contain duplicates.
 typeset -gU cdpath fpath mailpath path
 
-# Set the list of directories that cd searches.
+# # Set the list of directories that cd searches.
 # cdpath=(
+#   $HOME/.config
 #   $cdpath
 # )
 
@@ -182,6 +183,13 @@ fi
 # ========================================================================
 
 export MANWIDTH=80  # The width of the text column in the man.
+
+# Tie together the scalar $MANPATH and the array $manpath
+# in the same way that $PATH and $path ties.
+typeset -T MANPATH manpath
+
+# Ensure array do not contain duplicates.
+typeset -gU manpath
 
 # # Use `bat` as a colorizing pager for `man`
 # export MANPAGER="sh -c 'col -bx | bat -l man -p'"
