@@ -28,8 +28,7 @@ n ()
     # $LESS env variable and restore it later.
     LESS=$(echo $LESS_ORIG | sed 's/-F//')
 
-    # -e  -- open text files in $VISUAL/$EDITOR/vi
-    nnn -e "$@"
+    nnn "$@"
 
     # Restore original $LESS value.
     LESS=$LESS_ORIG

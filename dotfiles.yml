@@ -31,6 +31,10 @@
       tags:
         - alacritty
 
+    - role: kitty
+      tags:
+        - kitty
+
     - role: ripgrep
       tags:
         - ripgrep

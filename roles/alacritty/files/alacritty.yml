@@ -913,8 +913,8 @@ key_bindings:
   #- { key: Home,      mods: Shift,   action: ScrollToTop,    mode: ~Alt }
   #- { key: End,       mods: Shift,   action: ScrollToBottom, mode: ~Alt }
 
-  - { key: Tab,  mods: Control,        chars: "\x1b[27;5;9~" }
-  - { key: Tab,  mods: Control|Shift,  chars: "\x1b[27;6;9~" }
+  - { key: Tab,  mods: Control,        chars: "\x1b[27;5;9~" }  # Ctrl + Tab
+  - { key: Tab,  mods: Control|Shift,  chars: "\x1b[27;6;9~" }  # Ctrl + Shift +Tab
 
   # - { key: J,        mods: Alt,     chars: "\x1bj" }
   # - { key: K,        mods: Alt,     chars: "\x1bk" }

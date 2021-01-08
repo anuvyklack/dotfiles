@@ -665,10 +665,6 @@ zinit snippet https://github.com/junegunn/fzf/blob/master/shell/completion.zsh
 zinit ice id-as"fzf-man" as"null" mv"fzf-man -> $ZPFX/man/man1/fzf.1"
 zinit snippet https://github.com/junegunn/fzf/blob/master/man/man1/fzf.1
 
-# # fzf-tmux man
-# zinit ice id-as"fzf-tmux-man" as"null" mv"fzf-tmux-man -> $ZPFX/man/man1/fzf-tmux.1"
-# zinit snippet https://github.com/junegunn/fzf/blob/master/man/man1/fzf-tmux.1
-
 # fzf-marks {{{
 
 zinit ice lucid id-as"fzf-marks"
@@ -796,8 +792,31 @@ fi
 
 # }}}
 
-# nnn bookmarks
+# nnn bookmarks pairs
 export NNN_BMS='d:~/Documents;D:~/Downloads/'
+
+# options to nnn binary
+# ------------------------------------
+# -e : text in $VISUAL/$EDITOR/vi
+# -E : use EDITOR for undetached edits
+# -r : use advcpmv patched cp, mv
+# -x : notis, sel to system clipboard
+# ------------------------------------
+export NNN_OPTS="eErx"
+
+# context (tabs) colors
+export NNN_COLORS='4321'
+
+# file-specific colors
+# export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'  # original
+export NNN_FCOLORS='c1e20470006033f7c6d6ab01'
+
+# FIFO to write hovered file path to
+export NNN_FIFO='/tmp/nnn.fifo'
+
+# plugins
+# export NNN_PLUG='f:finder;o:fzopen;p:mocplay;d:diffs;t:nmount;v:imgview'
+export NNN_PLUG='v:preview-tabbed'
 
 # }}}
 

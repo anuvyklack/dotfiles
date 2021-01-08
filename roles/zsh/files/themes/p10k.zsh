@@ -59,6 +59,7 @@
     dir                     # current directory
     vcs                     # git status
     ranger                  # ranger shell (https://github.com/ranger/ranger)
+    nnn                     # nnn shell (https://github.com/jarun/nnn)
     anaconda                # conda environment (https://conda.io/)
 
     # =========================[ Line #2 ]=========================
@@ -103,7 +104,7 @@
     context                 # user@hostname
     nordvpn                 # nordvpn connection status, linux only (https://nordvpn.com/)
     # ranger                  # ranger shell (https://github.com/ranger/ranger)
-    nnn                     # nnn shell (https://github.com/jarun/nnn)
+    # nnn                     # nnn shell (https://github.com/jarun/nnn)
     vim_shell               # vim shell indicator (:sh)
     midnight_commander      # midnight commander shell (https://midnight-commander.org/)
     nix_shell               # nix shell (https://nixos.org/nixos/nix-pills/developing-with-nix-shell.html)
