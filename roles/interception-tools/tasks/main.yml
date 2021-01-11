@@ -4,6 +4,7 @@
   become: yes
   apt:
     pkg:
+      - libboost-dev
       - libudev-dev
       - libyaml-cpp-dev
       - libevdev-dev

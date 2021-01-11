@@ -809,7 +809,7 @@ export NNN_COLORS='4321'
 
 # file-specific colors
 # export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'  # original
-export NNN_FCOLORS='c1e20470006033f7c6d6ab01'
+export NNN_FCOLORS='c1e20402006033f7c6d6ab01'
 
 # FIFO to write hovered file path to
 export NNN_FIFO='/tmp/nnn.fifo'
