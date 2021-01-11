@@ -496,14 +496,14 @@ bindkey '^[f' delete_line_from_history  # Alt + F
 # bindkey '\ef' delete_line_from_history  # Alt + F
 # }}}
 
-# run_ranger()  # {{{
-# {
-#     zle .reset-prompt
-#     BUFFER=" source ranger && clear -x"
-#     zle accept-line
-# }
-# zle -N run_ranger
-# # }}}
+run_ranger()  # {{{
+{
+    zle .reset-prompt
+    BUFFER=" source ranger && clear -x"
+    zle accept-line
+}
+zle -N run_ranger
+# }}}
 
 # }}}1
 
@@ -611,8 +611,8 @@ bindkey -s '\e5' "!:4-4 \t"
 # bindkey '^s' history-incremental-search-forward
 
 # Launch Ranger and cd to the last directory after closing it
-# bindkey '^O' run_ranger
-bindkey '^O' nnn_quitcd
+bindkey '^O' run_ranger
+# bindkey '^O' nnn_quitcd
 
 # }}}1
 
@@ -802,7 +802,8 @@ export NNN_BMS='d:~/Documents;D:~/Downloads/'
 # -r : use advcpmv patched cp, mv
 # -x : notis, sel to system clipboard
 # ------------------------------------
-export NNN_OPTS="eErx"
+# export NNN_OPTS="eErx"
+export NNN_OPTS="eEx"
 
 # context (tabs) colors
 export NNN_COLORS='4321'

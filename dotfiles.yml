@@ -13,6 +13,10 @@
     #     - debian-testing
     #   check_mode: yes
 
+    - role: hidpi
+      tags:
+        - hidpi
+
     - role: wsl
       when: ('WSL_DISTRO_NAME' in ansible_env) or ('IS_WSL' in ansible_env)
       tags:

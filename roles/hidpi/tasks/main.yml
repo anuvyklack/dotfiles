@@ -1,0 +1,15 @@
+---
+
+- name: Check if .xprofile file already exists
+  stat:
+    path: "{{ home }}/.xprofile"
+  register: xprofile
+
+# - debug: var=xprofile
+
+- name: Symlink .xprofile file
+  file:
+    src: "{{ role_path }}/files/.xprofile"
+    dest: "{{ home }}/.xprofile"
+    state: link
+  when: not xprofile.stat.exists
