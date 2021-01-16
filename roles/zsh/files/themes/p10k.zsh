@@ -57,8 +57,8 @@
     # =========================[ Line #1 ]=========================
     # os_icon                 # os identifier
     dir                     # current directory
-    vcs                     # git status
     ranger                  # ranger shell (https://github.com/ranger/ranger)
+    vcs                     # git status
     nnn                     # nnn shell (https://github.com/jarun/nnn)
     anaconda                # conda environment (https://conda.io/)
 
@@ -685,9 +685,15 @@
 
   #################[ ranger: ranger shell (https://github.com/ranger/ranger) ]##################
   # Ranger shell color.
-  typeset -g POWERLEVEL9K_RANGER_FOREGROUND=178
+  # typeset -g POWERLEVEL9K_RANGER_FOREGROUND=178  # original
+  typeset -g POWERLEVEL9K_RANGER_FOREGROUND=71
+  # typeset -g POWERLEVEL9K_RANGER_FOREGROUND=72
+  # typeset -g POWERLEVEL9K_RANGER_FOREGROUND=73
   # Custom icon.
-  # typeset -g POWERLEVEL9K_RANGER_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  # typeset -g POWERLEVEL9K_RANGER_VISUAL_IDENTIFIER_EXPANSION='📂'
+  typeset -g POWERLEVEL9K_RANGER_VISUAL_IDENTIFIER_EXPANSION='ranger'
+  # typeset -g POWERLEVEL9K_RANGER_VISUAL_IDENTIFIER_EXPANSION=' ranger'
+  # typeset -g POWERLEVEL9K_RANGER_VISUAL_IDENTIFIER_EXPANSION=' ranger'
 
   ######################[ nnn: nnn shell (https://github.com/jarun/nnn) ]#######################
   # Nnn shell color.

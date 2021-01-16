@@ -27,3 +27,24 @@
   # even haven't found ranger dir itself.
   when: ranger_config.matched == 0
   # check_mode: yes
+
+
+- name: Copy ranger icon
+  become: yes
+  copy:
+    src: ranger.png
+    dest: /usr/share/pixmaps/ranger.png
+    # owner: root
+    # group: root
+    force: no
+    backup: yes
+
+- name: Copy ranger.desktop file
+  become: yes
+  copy:
+    src: ranger.desktop
+    dest: /usr/share/applications/ranger.desktop
+    # owner: root
+    # group: root
+    force: yes
+    backup: yes

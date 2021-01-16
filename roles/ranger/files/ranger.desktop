@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Name=ranger
+Comment=Launches the ranger file manager
+# Icon=utilities-terminal
+# Terminal=true
+# Exec=ranger
+Icon=ranger
+Terminal=false
+# Exec=/bin/sh -c "kitty ranger"
+Exec=/bin/sh -c "kitty --config ${HOME}/.config/kitty/kitty.conf --config ${HOME}/.config/ranger/kitty.conf ranger"
+# Exec=/bin/sh -c "kitty --config ${HOME}/.config/ranger/kitty.conf ranger"
+Categories=ConsoleOnly;System;FileTools;FileManager
+MimeType=inode/directory;
+Keywords=File;Manager;Browser;Explorer;Launcher;Vi;Vim;Python
