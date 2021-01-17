@@ -547,6 +547,7 @@ inoremap <expr> <Enter> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 nnoremap 2o o<CR>
 nnoremap 2O O<Esc>O
 
+" WARNING: Replaced with 'christoomey/vim-tmux-navigator' plugin
 " " Quick jumping between splits
 " map <C-J> <C-W>j
 " map <C-K> <C-W>k

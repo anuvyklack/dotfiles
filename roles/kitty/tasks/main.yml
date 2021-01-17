@@ -15,3 +15,22 @@
     src: "{{ role_path }}/files"
     dest: "{{ home }}/.config/kitty"
     state: link
+
+- name: get path to kitty bin
+  shell: "which kitty"
+  # shell: "command -v kitty"
+  register: check_kitty
+  changed_when: No
+
+# - debug: var=check_kitty
+
+# sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator `which kitty` 50
+# sudo update-alternatives --config x-terminal-emulator
+#
+- name: "update-alternatives: x-terminal-emulator -> kitty"
+  become: yes
+  community.general.alternatives:
+    name: x-terminal-emulator
+    # link: /usr/bin/x-terminal-emulator
+    path: "{{ check_kitty.stdout }}"
+    priority: 50

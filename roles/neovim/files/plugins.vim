@@ -568,7 +568,14 @@ so ~/.config/nvim/plugins_settings/startify.vim
 
 " Tmux                                                               {{{
 " ======================================================================
-Plug 'christoomey/vim-tmux-navigator'
+" Plug 'christoomey/vim-tmux-navigator'  " original
+Plug 'anuvyklack/vim-tmux-navigator'  " my fork
+" Activate autoupdate on exit
+let g:tmux_navigator_save_on_switch = 0
+
+" Disable vim->tmux navigation when the Vim pane is zoomed in tmux
+let g:tmux_navigator_disable_when_zoomed = 1
+
 " Plug 'tmux-plugins/vim-tmux-focus-events'
 " Plug 'tmux-plugins/vim-tmux'
 
@@ -987,28 +994,17 @@ augroup END
 
 let g:tmux_navigator_no_mappings = 1
 
-" nnoremap <silent> <C-a><C-h> :TmuxNavigateLeft<cr>
-" nnoremap <silent> <C-a><C-j> :TmuxNavigateDown<cr>
-" nnoremap <silent> <C-a><C-k> :TmuxNavigateUp<cr>
-" nnoremap <silent> <C-a><C-l> :TmuxNavigateRight<cr>
-
 " nnoremap <silent> <C-g><C-H> :TmuxNavigateLeft<cr>
 " nnoremap <silent> <C-g><C-J> :TmuxNavigateDown<cr>
 " nnoremap <silent> <C-g><C-K> :TmuxNavigateUp<cr>
 " nnoremap <silent> <C-g><C-L> :TmuxNavigateRight<cr>
 
-nnoremap <C-g><C-H> :TmuxNavigateLeft<cr>
-nnoremap <C-g><C-J> :TmuxNavigateDown<cr>
-nnoremap <C-g><C-K> :TmuxNavigateUp<cr>
-nnoremap <C-g><C-L> :TmuxNavigateRight<cr>
+nnoremap <silent> <C-H> :TmuxNavigateLeft<cr>
+nnoremap <silent> <C-J> :TmuxNavigateDown<cr>
+nnoremap <silent> <C-K> :TmuxNavigateUp<cr>
+nnoremap <silent> <C-L> :TmuxNavigateRight<cr>
 
 " nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
-
-" Quick jumping between splits
-map <C-J> <C-W>j
-map <C-K> <C-W>k
-map <C-H> <C-W>h
-map <C-L> <C-W>l
 
 " }}}
 

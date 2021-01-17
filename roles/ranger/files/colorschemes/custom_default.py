@@ -18,8 +18,21 @@ class Scheme(Default):
     def use(self, context):  # pylint: disable=too-many-branches,too-many-statements
         fg, bg, attr = Default.use(self, context)
 
-        if context.in_browser and context.selected:
-            if context.container:
-                bg = white
+        # if context.in_browser and context.selected:
+        #     if context.container:
+        #         bg = white
+
+        if context.in_titlebar:
+            if context.hostname:
+                fg = red if context.bad else green
+            elif context.directory:
+                fg = blue
+            elif context.tab:
+                if context.good:
+                    bg = green
+                    fg = black
+            elif context.link:
+                fg = cyan
+            attr |= bold
 
         return fg, bg, attr
