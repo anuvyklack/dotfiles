@@ -13,6 +13,34 @@
 # This version of .zshrc use Powerlevel10k instant prompt and so doesn't
 # use "zinit" plugin manager "wait" ice.
 
+  # Color codes {{{
+  RESET="\e[0m"
+
+  RED="\e[00;31m"
+  GREEN="\e[00;32m"
+  YELLOW="\e[00;33m"
+  BLUE="\e[00;34m"
+  PURPLE="\e[00;35m"
+  CYAN="\e[00;36m"
+  GRAY="\e[00;37m"
+
+  BOLD_RED="\e[01;31m"
+  BOLD_GREEN="\e[01;32m"
+  BOLD_YELLOW="\e[01;33m"
+  BOLD_BLUE="\e[01;34m"
+  BOLD_PURPLE="\e[01;35m"
+  BOLD_CYAN="\e[01;36m"
+  BOLD_WHITE="\e[01;37m"
+
+  BRIGHT_RED="\e[01;91m"
+  BRIGHT_GREEN="\e[01;92m"
+  BRIGHT_YELLOW="\e[01;93m"
+  BRIGHT_BLUE="\e[01;94m"
+  BRIGHT_PURPLE="\e[01;95m"
+  BRIGHT_CYAN="\e[01;96m"
+  BRIGHT_WHITE="\e[01;97m"
+  # }}}
+
 # Powerlevel10k instant prompt {{{
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
@@ -716,10 +744,9 @@ then
   # show hidden folders
   export FZF_ALT_C_COMMAND="bfs -type d -L -print 2> /dev/null"
 else
-  echo -e '\e[33;1mWarning: \e[37;1mfzf\e[0m use \e[37;1mbfs\e[0m utility but it \e[31;1mnot\e[0m installed!'
-  echo -e '\e[37;1mhttps://github.com/tavianator/bfs'
+  echo -e "${BOLD_YELLOW}Warning: ${BRIGHT_WHITE}fzf${RESET} use ${BRIGHT_WHITE}bfs${RESET} utility but it is ${BRIGHT_RED}not installed\!${RESET}"
+  echo -e "${BOLD_WHITE}https://github.com/tavianator/bfs"
 fi
-
 
 # Make fzf history search unique {{{2
 fzf-history-widget()
@@ -894,6 +921,8 @@ alias .....=" cd ../../../.."
 
 ialias -g L='| less'
 
+ialias cls=clear
+
 ialias z=_zlua
 
 alias wse='wajig search '
@@ -945,7 +974,7 @@ else
   # ialias ll='exa --group-directories-first -lF --git --color=always --header --icons'
   # ialias ll='command exa --group-directories-first --lF --git --color=always --header'
   ialias ll='command exa --group-directories-first -lF --git --color=always'
-  ialias ls='command exa --group-directories-first -F'
+  # ialias ls='command exa --group-directories-first -F'
 fi
 
 
@@ -1002,6 +1031,8 @@ alias b='buku'
 # alias ta="t a -t"
 # alias tls="t ls"
 # alias tn="t new -t"
+
+# ialias qimgv="QT_SCALE_FACTOR="1.5" qimgv"
 
 # }}}
 

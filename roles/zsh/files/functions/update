@@ -14,20 +14,34 @@ update()
   CYAN="\e[00;36m"
   GRAY="\e[00;37m"
 
-  LRED="\e[01;31m"
-  LGREEN="\e[01;32m"
-  LYELLOW="\e[01;33m"
-  LBLUE="\e[01;34m"
-  LPURPLE="\e[01;35m"
-  LCYAN="\e[01;36m"
-  WHITE="\e[01;37m"
+  BOLD_RED="\e[01;31m"
+  BOLD_GREEN="\e[01;32m"
+  BOLD_YELLOW="\e[01;33m"
+  BOLD_BLUE="\e[01;34m"
+  BOLD_PURPLE="\e[01;35m"
+  BOLD_CYAN="\e[01;36m"
+  BOLD_WHITE="\e[01;37m"
+
+  BRIGHT_RED="\e[01;91m"
+  BRIGHT_GREEN="\e[01;92m"
+  BRIGHT_YELLOW="\e[01;93m"
+  BRIGHT_BLUE="\e[01;94m"
+  BRIGHT_PURPLE="\e[01;95m"
+  BRIGHT_CYAN="\e[01;96m"
+  BRIGHT_WHITE="\e[01;97m"
   # }}}
 
   sudo apt update --yes
   # sudo apt upgrade --yes
   sudo apt full-upgrade --yes
   sudo apt autoremove --yes
+  sudo apt autoclean --yes
 
+  # Update pip packages {{{
+
+  # pip install -U $(pip freeze | cut -d '=' -f 1)
+
+  # }}}
 
   # conda {{{
   if command -v conda > /dev/null 2>&1
@@ -40,7 +54,7 @@ update()
     fi
 
     echo ''
-    echo -e "${LGREEN}conda ${WHITE}updating ${LYELLOW}base ${RESET}"
+    echo -e "${BRIGHT_GREEN}conda ${BOLD_WHITE}updating ${BOLD_YELLOW}base ${RESET}"
 
     conda activate base
     conda update conda --yes
@@ -52,7 +66,7 @@ update()
     # conda activate nvim
     # conda update --all --yes
 
-    # Очистить кэш
+    # Clear cache
     conda clean --all --yes
 
     # # Restore conda environment
@@ -63,13 +77,15 @@ update()
     #     conda deactivate
     # fi
 
+    conda deactivate
+
   fi
   # }}}
 
   # Homebrew {{{
   if command -v brew > /dev/null 2>&1
   then
-    echo -e "${WHITE}Updating ${LYELLOW}Homebrew ${RESET}"
+    echo -e "${BOLD_WHITE}Updating ${BOLD_YELLOW}Homebrew ${RESET}"
     brew update
     brew upgrade
   fi
@@ -79,7 +95,7 @@ update()
   if command -v /usr/bin/pipx > /dev/null 2>&1
   then
     echo
-    echo -e "${WHITE}Updating ${LGREEN}Pipx ${WHITE}apps ${RESET}"
+    echo -e "${BOLD_WHITE}Updating ${BRIGHT_GREEN}Pipx ${BOLD_WHITE}apps ${RESET}"
     /usr/bin/pipx upgrade-all
   fi
   # }}}
@@ -88,7 +104,7 @@ update()
   if command -v zinit > /dev/null 2>&1
   then
     echo
-    echo -e "${WHITE}Updating ${LPURPLE}Zinit ${RESET}"
+    echo -e "${BOLD_WHITE}Updating ${BRIGHT_PURPLE}Zinit ${RESET}"
     zinit self-update
     zinit update --all
   fi
@@ -99,7 +115,7 @@ update()
   if [[ -s $TMUX_PLUGIN_MANAGER ]]
   then
     echo
-    echo -e "${WHITE}Updating ${LGREEN}Tmux ${WHITE}plugins ${RESET}"
+    echo -e "${BOLD_WHITE}Updating ${BRIGHT_GREEN}Tmux ${BOLD_WHITE}plugins ${RESET}"
     $TMUX_PLUGIN_MANAGER all
   fi
   # }}}

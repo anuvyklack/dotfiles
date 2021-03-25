@@ -134,6 +134,9 @@ typeset -gU cdpath fpath mailpath path
 path=(
   /usr/local/{bin,sbin}
   $path
+  /opt/visit/bin
+  /opt/ParaView-5.8.1/bin
+  /opt/glvis/bin
 )
 
 
@@ -212,7 +215,8 @@ typeset -gU manpath
 # -z-4: Move page not on the full high of the screen but on high minus 4 lines
 
 # export LESS='-F -i -M -R -S -w -z-3'
-export LESS='-F -i -M -R -S -z-3'
+# export LESS='-F -i -M -R -S -z-3'
+export LESS='-i -M -R -S -z-3'
 
 # Set the Less input preprocessor.
 # Try both `lesspipe` and `lesspipe.sh` as either might exist on a system.
@@ -227,7 +231,7 @@ export LESSHISTFILE="$HOME/.cache/lesshst"
 # ========================================================================
 
 # export LESS_TERMCAP_mb=$'\e[01;31m'     # Begins blinking.
-export LESS_TERMCAP_md=$'\e[01;37m'     # Begins bold.
+export LESS_TERMCAP_md=$'\e[01;97m'     # Begins bold.
 export LESS_TERMCAP_so=$'\e[00;47;30m'  # Begins standout-mode.
 export LESS_TERMCAP_us=$'\e[04;97m'     # Begins underline.
 export LESS_TERMCAP_me=$'\e[0m'         # Ends mode.
@@ -329,4 +333,12 @@ fi
 # Set breakpoint() in Python to call pudb
 export PYTHONBREAKPOINT="pudb.set_trace"
 
-# vim: ft=zsh
+
+# Libraries
+# ========================================================================
+# export PETSC_DIR=`pwd`
+# export PETSC_ARCH=""
+# export SLEPC_DIR=~/src/slepc-3.14.2
+export DEAL_II_DIR=~/software/dealii-9.2.0/build
+
+# vim: ft=zsh ts=2 sw=2
