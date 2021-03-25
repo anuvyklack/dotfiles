@@ -31,14 +31,6 @@
       tags:
          git
 
-    - role: alacritty
-      tags:
-        - alacritty
-
-    - role: kitty
-      tags:
-        - kitty
-
     - role: ripgrep
       tags:
         - ripgrep
@@ -55,51 +47,10 @@
       tags:
         - ranger
 
-    - role: nnn
-      tags:
-        - nnn
-
-    - role: miniconda
-      tags:
-        - miniconda
-
-    # - role: nodejs
-    #   tags:
-    #     - nodejs
-    #   when: ansible_pkg_mgr == 'apt'
-
     - role: neovim
       tags:
         - neovim
 
-    - role: power-managment
-      tags:
-        - power-managment
-
-    - role: gnome3
-      tags:
-        - gnome
-
-    - role: dual-function-keys
-      tags:
-        - keyboard
-
     - role: tmux
       tags:
         - tmux
-
-    - role: vivaldi
-      tags:
-        - vivaldi
-
-    # - role: lf
-    #   tags:
-    #     - lf
-
-    # - role: far2l
-    #   tags:
-    #     - far2l
-
-    # - role: notes-cli
-    #   tags:
-    #     - notes
