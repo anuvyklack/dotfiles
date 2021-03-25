@@ -15,6 +15,7 @@
       - mlocate
       - fd-find
       - htop
+      - ntfs-3g
 
       # - x11-xkb-utils
       # - bfs      # find(1) c поиском в ширину в первую очередь

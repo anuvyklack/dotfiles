@@ -1,0 +1,10 @@
+---
+
+- name: Install nnn with dependencies
+  become: yes
+  apt:
+    pkg:
+      - sxiv
+      - suckless-tools
+    state: latest
+    update_cache: yes

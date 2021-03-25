@@ -241,11 +241,11 @@ set wildoptions=pum,tagfile
 " ================== Pop-Up Menu ====================
 
 set pumblend=7          " Прозрачность всплывающего меню
-set pumheight=13        " Количество строк во всплывающем окне
+set pumheight=15        " Количество строк во всплывающем окне
 
 " =================== Scrolling ======================
 
-" Start scrolling when we're 3 lines away from margins
+" Start scrolling when we're n lines away from margins
 set scrolloff=0
 
 " Сколько колонок должно остаться до конца экрана, чтобы Vim начал

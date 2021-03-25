@@ -1,7 +1,10 @@
 tags*
 *.zwc
+
 **/neovim/files/plugged/*
 !**/neovim/files/plugged/myhelp
 **/neovim/files/autoload/plug.vim*
+**/neovim/files/.netrwhist
+
 __pycache__/
 **/ranger/**/__init__.py
