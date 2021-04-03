@@ -432,7 +432,7 @@ let g:rainbow_active = 1
 if !exists('g:rainbow_conf')
   let g:rainbow_conf = {}
 endif
-let g:rainbow_conf.separately = { 'nerdtree': 0, 'pandoc': 0 }
+let g:rainbow_conf.separately = { 'nerdtree': 0, 'pandoc': 0, 'cmake': 0 }
 " let g:rainbow_conf.separately.lisp = {'guifgs': ['#c475c1', '#8ab7d8', '#98c369', '#ffff70', '#ea9d70', '#971717'] }
 let g:rainbow_conf.separately.lisp = {'guifgs': ['#f28534', '#f2594b', '#80aa9e', '#e9b143', '#b0b846', '#d3869b'] }
 

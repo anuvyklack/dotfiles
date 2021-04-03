@@ -136,7 +136,6 @@ path=(
   $path
   /opt/visit/bin
   /opt/ParaView-5.8.1/bin
-  /opt/glvis/bin
 )
 
 

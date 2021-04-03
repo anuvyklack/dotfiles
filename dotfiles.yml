@@ -7,20 +7,9 @@
     #   tags:
     #     - test
 
-    # - role: debian-testing
-    #   when: ansible_distribution == 'Debian'
-    #   tags:
-    #     - debian-testing
-    #   check_mode: yes
-
     - role: hidpi
       tags:
         - hidpi
-
-    - role: wsl
-      when: ('WSL_DISTRO_NAME' in ansible_env) or ('IS_WSL' in ansible_env)
-      tags:
-        - wsl
 
     - role: apt
       when: ansible_pkg_mgr == 'apt'
@@ -55,10 +44,6 @@
       tags:
         - ranger
 
-    - role: nnn
-      tags:
-        - nnn
-
     - role: miniconda
       tags:
         - miniconda
@@ -91,6 +76,10 @@
     - role: vivaldi
       tags:
         - vivaldi
+
+    # - role: nnn
+    #   tags:
+    #     - nnn
 
     # - role: lf
     #   tags:
