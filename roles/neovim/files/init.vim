@@ -234,7 +234,7 @@ set wildmenu  " enable ctrl-n and ctrl-p to scroll through matches
 set wildcharm=<C-z>
 
 " Отключение опции 'pum' включает автодополнение в командной строке
-" в старом стиле: в строку а не в формате вертикального выпадающего списка.
+" в старом стиле: в строку, а не в формате вертикального выпадающего списка.
 set wildoptions=pum,tagfile
 " set wildoptions=tagfile
 

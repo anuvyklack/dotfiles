@@ -588,13 +588,15 @@ let g:tmux_navigator_disable_when_zoomed = 1
 Plug 'octol/vim-cpp-enhanced-highlight'  " c++ highlight
 so ~/.config/nvim/plugins_settings/vim-cpp-enhanced-highlight.vim
 
+Plug 'vim-scripts/DoxygenToolkit.vim'
+
 " Use cppman for c++ documentations
 " Plug 'gauteh/vim-cppman'
 Plug 'anuvyklack/vim-cppman'
 
 " }}}
 
-" Different syntaxes and languages                                   {{{
+" Syntaxes and languages                                             {{{
 " ======================================================================
 
 " This variable should be declared before polyglot is loaded!
@@ -605,6 +607,8 @@ Plug 'sheerun/vim-polyglot'
 Plug 'lervag/vimtex', { 'for': 'LaTeX' }  " latex
 Plug 'PProvost/vim-ps1', {'for': 'ps1'}   " powershell
 Plug 'zinit-zsh/zinit-vim-syntax', { 'for': 'zsh' }  " zinit syntaxis
+
+Plug 'anuvyklack/vim-dealii-prm', { 'for': 'prm' }
 
 " }}}
 
@@ -840,8 +844,8 @@ elseif s:theme == 'gruvbit'
 " }}}
 " Mellow {{{
 elseif s:theme == 'mellow'
-    " set background=light
-    set background=dark
+    set background=light
+    " set background=dark
     colorscheme mellow
     let g:airline_theme = 'gruvbox_material'
     if exists('g:lightline')
