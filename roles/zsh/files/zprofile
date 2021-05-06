@@ -319,13 +319,9 @@ export PARINIT='rTbgqR B=.,?_A_a Q=_s>|'
 # )
 #
 
-# Intel-MKL
+# CMake options
 # ========================================================================
-
-if [[ -s /opt/intel/mkl/bin/mklvars.sh ]]; then
-    source /opt/intel/mkl/bin/mklvars.sh intel64
-    export MKL_THREADING_LAYER=GNU
-fi
+export CMAKE_BUILD_PARALLEL_LEVEL=7
 
 # PuDB (Python debugger)
 # ========================================================================
@@ -339,5 +335,14 @@ export PYTHONBREAKPOINT="pudb.set_trace"
 # export PETSC_ARCH=""
 # export SLEPC_DIR=~/src/slepc-3.14.2
 export DEAL_II_DIR=~/software/dealii-9.2.0/build
+
+
+# Intel-MKL
+# ========================================================================
+
+if [[ -s /opt/intel/mkl/bin/mklvars.sh ]]; then
+    source /opt/intel/mkl/bin/mklvars.sh intel64
+    export MKL_THREADING_LAYER=GNU
+fi
 
 # vim: ft=zsh ts=2 sw=2

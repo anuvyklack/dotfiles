@@ -9,7 +9,7 @@
       - unzip
       - git
       - bfs
-      - lua5.3
+      - lua5.4
       - zsh
     state: present
     update_cache: yes

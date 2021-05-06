@@ -7,14 +7,6 @@
 "  ░██ ░██  ░██ ░██  ░░███  ██  ░░██   ░██ ███ ░██ ░██
 "  ░░  ░░   ░░  ░░    ░░░  ░░    ░░    ░░ ░░░  ░░  ░░
 
-" Vim special settings {{{
-if !has('nvim')
-    set nocompatible  " This must be first, because it changes other
-                      " options as a side effect.
-    set t_Co=256
-endif
-" }}}
-
 " General Config                                                     {{{
 " ======================================================================
 " Список кодировок для автоматического их определения
@@ -95,15 +87,6 @@ if has('wsl')
 endif
 " }}}
 
-" Plugins                                          {{{
-" ====================================================
-if has('unix')
-    source ~/.config/nvim/plugins.vim
-elseif has('win32')
-    source ~\AppData\Local\nvim\plugins.vim
-endif
-" }}}
-
 "  Indentation                                                      {{{
 " =====================================================================
 set autoindent     " Копировать отступы с текущей строки при
@@ -126,18 +109,18 @@ set list listchars=tab:\ \ ,trail:· ",eol:¶ ",eol:¤
 " Folds                                                             {{{
 " =====================================================================
 set foldenable         " fold by default
-set foldmethod=marker   " fold based on markers
+" set foldmethod=marker   " fold based on markers
 " set foldmethod=indent   " fold based on indent
 
-set foldnestmax=3       " deepest fold is 3 levels (only for sintax and indent)
+" set foldnestmax=3       " deepest fold is 3 levels (only for sintax and indent)
 
 set foldtext=CustomFoldText('·')
 
-function! CustomFoldText(string) " {{{
+function! CustomFoldText(string) "{{{
     " Idea by:
-    " http://www.gregsexton.org/2011/03/improving-the-text-displayed-in-a-fold/
+    " http://gregsexton.org/2011/03/27/improving-the-text-displayed-in-a-vim-fold.html
 
-    "get first non-blank line
+    " get first non-blank line
     let fs = v:foldstart
     if getline(fs) =~ '^\s*$'
       let fs = nextnonblank(fs + 1)
@@ -189,13 +172,12 @@ function! CustomFoldText(string) " {{{
     " return foldLevelStr . '|' . line . '|' . expansionString . foldSizeStr . foldPercentage
     return foldLevelStr . line . expansionString . foldSizeStr . foldPercentage
 
-endfunction
-" }}}
+endfunction "}}}
 
 " }}}
 
-" Formating text                                                    {{{
-" =====================================================================
+" Formating text                                   {{{
+" ====================================================
 " The behavior of 'gw' command
 set formatoptions=tcqj  " Default value is 'tcqj'
 
@@ -325,9 +307,17 @@ set guicursor+=i-ci-ve:ver25-Cursor2/lCursor2,r-cr:hor20,o:hor50
 set splitbelow
 set splitright
 
+" Plugins                                          {{{
+" ====================================================
+if has('unix')
+    source ~/.config/nvim/plugins.vim
+elseif has('win32')
+    source ~\AppData\Local\nvim\plugins.vim
+endif
+" }}}
 
-" Autocommands and Functions                                         {{{
-" ======================================================================
+"             Autocommands and Functions           {{{
+" ====================================================
 
 " https://www.bobbywlindsey.com/2017/07/30/vim-functions/
 " convert rows of numbers or text (as if pasted from excel column) to a tuple
@@ -456,9 +446,9 @@ function! SetFoldColumn() "{{{
         " echom 'win '. window .' fdc='. fdc
 
     endfor
-endfunction
-"}}}
-function! MaxFoldLevel() " {{{
+endfunction "}}}
+
+function! MaxFoldLevel() "{{{
     " Retrun a number which is the maximum fold level of the current file.
 
     let winview = winsaveview()  " save window and cursor positions
@@ -485,8 +475,8 @@ function! MaxFoldLevel() " {{{
     call winrestview(winview)  " restore the window and cursor positions
 
     return mfl
-endfunction
-"}}}
+endfunction "}}}
+
 
 " Tmux windows names
 " autocmd BufReadPost,FileReadPost,BufNewFile * call system("tmux rename-window " . expand("%"))
@@ -495,7 +485,7 @@ endfunction
 
 " }}}
 
-" Key Bindings                                         {{{
+"                      Key Bindings                    {{{
 " ========================================================
 " Синтаксис создания комбинации
 " [[mode]nore]map keys command

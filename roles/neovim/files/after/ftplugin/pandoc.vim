@@ -8,8 +8,8 @@ setlocal modifiable
 
 setlocal formatoptions=tcq21jp
 
-" replace common punctuation
-iabbrev <buffer> << «
-iabbrev <buffer> >> »
+" " replace common punctuation
+" iabbrev <buffer> << «
+" iabbrev <buffer> >> »
 
 nnoremap <silent> <leader>t :TOC<CR>

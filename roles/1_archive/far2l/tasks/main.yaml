@@ -1,6 +1,6 @@
 ---
 
-- name: add far2l ppa repo
+- name: add far2l ppa repository
   become: yes
   apt_repository:
     repo: ppa:far2l-team/ppa

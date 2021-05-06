@@ -1,4 +1,4 @@
-*myhelp.txt*    My notes for Neovim
+*myhelp.txt*       My notes for Neovim
 
                                                                   *myhelp*
 To regenerate help-tags type: `:helpt %:p:h`
@@ -20,6 +20,7 @@ Use CTRL-T or CTRL-O to jump back.
 ==============================================================================
 CONTENTS                                                *myhelp-contents*
 
+     Useful help pages.........................|myhelp-help-pages|
      Normal Mode...............................|myhelp-normal|
      Visual Mode...............................|myhelp-visual|
      Insert Mode...............................|myhelp-insert|
@@ -28,6 +29,11 @@ CONTENTS                                                *myhelp-contents*
      Text Manipulations........................|myhelp-text-manipulation|
      Python....................................|myhelp-python|
 	jupyter-vim............................|myhelp-jupyter-vim|
+
+==============================================================================
+USEFUL HELP PAGES                                      *myhelp-help-pages*
+
+:help funciton-list     Список функций сгруппированный по темам.
 
 ==============================================================================
 NORMAL MODE                                                *myhelp-normal*
@@ -82,8 +88,8 @@ COMMAND MODE                                              *myhelp-command*
 :retab                  Заменяет все символы табуляции пробелами в соответствии
                         с параметром |'tabstop'|.
 
-:spelldump              Create a new buffer containing everything from the spell
-	                file(s) currently in use.
+:spelldump              Create a new buffer containing everything from the
+			spell file(s) currently in use.
 
 
 ==============================================================================
