@@ -1,0 +1,21 @@
+---
+
+- name: Add foliate repository
+  become: yes
+  apt_repository:
+    repo: ppa:apandada1/foliate
+    state: present
+
+- name: Install foliate
+  become: yes
+  apt:
+    name: foliate
+    update_cache: yes
+    state: present
+
+- name: Symlink foliate bin
+  become: yes
+  file:
+    src: "/usr/bin/com.github.johnfactotum.Foliate"
+    dest: "/usr/bin/foliate"
+    state: link

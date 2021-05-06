@@ -77,6 +77,10 @@
       tags:
         - vivaldi
 
+    - role: foliate
+      tags:
+        - foliate
+
     # - role: nnn
     #   tags:
     #     - nnn
