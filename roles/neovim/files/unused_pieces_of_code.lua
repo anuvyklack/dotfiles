@@ -19,7 +19,6 @@ vim.opt.wildignore = '*.o,*.a,__pycache__'
 -- list-style options, but using lua tables:
 vim.opt.wildignore = { '*.o', '*.a', '__pycache__' }
 
-
 -- For lsp the following has been working pretty well for me
 -- Nvim-lspconfig (for loading language servers)
 -- nvim-compe (for completion)

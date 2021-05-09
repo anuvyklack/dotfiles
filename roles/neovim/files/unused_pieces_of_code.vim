@@ -55,8 +55,6 @@ nnoremap P P=`]<C-o>
 " Show the line and column number of the cursor position,
 " separated by a comma.
 set ruler
-" показывать номера строк относительно текущей
-set relativenumber
 
 " set current working directory to the open file direcotry
 set autochdir

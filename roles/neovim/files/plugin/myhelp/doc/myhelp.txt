@@ -34,6 +34,7 @@ CONTENTS                                                *myhelp-contents*
 USEFUL HELP PAGES                                      *myhelp-help-pages*
 
 :help funciton-list     Список функций сгруппированный по темам.
+:help digraphs
 
 ==============================================================================
 NORMAL MODE                                                *myhelp-normal*

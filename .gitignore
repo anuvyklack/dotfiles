@@ -1,10 +1,8 @@
 tags*
 *.zwc
 
-**/neovim/files/plugged/*
-!**/neovim/files/plugged/myhelp
-**/neovim/files/autoload/plug.vim*
 **/neovim/files/.netrwhist
+**/neovim/files/plugin/packer_compiled.vim
 
 __pycache__/
 **/ranger/**/__init__.py

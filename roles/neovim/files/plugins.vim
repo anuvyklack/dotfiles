@@ -10,37 +10,40 @@
 " ░░                  ░░░░░
 
 
-"        Install Vim-Plug in Unix if not yet       {{{
+"            Install Vim-Plug if not yet           {{{
 " ----------------------------------------------------
-if has('unix')
-    let vimplug_exists=expand('~/.config/nvim/autoload/plug.vim')
+let vimplug_exists=expand('~/.config/nvim/autoload/plug.vim')
+if has('win32')&&!has('win64')
+  let curl_exists=expand('C:\Windows\Sysnative\curl.exe')
+else
+  let curl_exists=expand('curl')
+endif
 
-    if !filereadable(vimplug_exists)
-        if !executable("curl")
-            echoerr "You have to install curl or first install vim-plug yourself!"
-            execute "q!"
-        endif
-        echo "Installing Vim-Plug..."
-        echo ""
-        silent exec "!\curl -fLo " . vimplug_exists . " --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+if !filereadable(vimplug_exists)
+  if !executable(curl_exists)
+    echoerr "You have to install curl or first install vim-plug yourself!"
+    execute "q!"
+  endif
+  echo "Installing Vim-Plug..."
+  echo ""
+  silent exec "!"curl_exists" -fLo " . shellescape(vimplug_exists) . " --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+  let g:not_finish_vimplug = "yes"
 
-        autocmd VimEnter * PlugInstall
-    endif
+  autocmd VimEnter * PlugInstall
 endif
 " -------------------------------------------------}}}
 
-call plug#begin(expand('~/.config/nvim/plugged'))
+
+if has('unix')
+    call plug#begin(expand('~/.config/nvim/plugged'))
+elseif has('win32')
+    call plug#begin(expand('~\AppData\Local\nvim\plugged'))
+endif
 
 " --------------------- Прочее -----------------------
 
 " My custom F1 help page
 Plug '~/.config/nvim/plugged/myhelp'
-
-"                    Buffexplorer                  {{{
-" ----------------------------------------------------
-Plug 'jlanzarotta/bufexplorer'
-let g:bufExplorerFindActive=0   " Do not go to active window.
-" -------------------------------------------------}}}
 
 " ------------------ Text editing --------------------
 
@@ -50,7 +53,7 @@ Plug 'tpope/vim-surround'    " заключать фрагменты текст�
 Plug 'wellle/targets.vim'    " plugin that provides additional text objects
 Plug 'kshenoy/vim-signature' " display and navigate marks
 Plug 'tpope/vim-unimpaired'  " Different bidirectional motions: switch
-                             "   buffers, add blank lines, etc.
+                             " buffers, add blank lines, etc.
 
 " -------------- Programming feature -----------------
 " ------------------- Statusline ---------------------
@@ -100,8 +103,15 @@ Plug 'vim-pandoc/vim-pandoc-syntax'
 so ~/.config/nvim/plugins_settings/pandoc.vim
 " -------------------------------------------------}}}
 
-" ----------- Windows and tabs managment -------------
+" --------- Windows and buffers managment ------------
 Plug 'roxma/vim-window-resize-easy'
+
+"                    Buffexplorer                  {{{
+" ----------------------------------------------------
+Plug 'jlanzarotta/bufexplorer'
+let g:bufExplorerFindActive=0   " Do not go to active window.
+" -------------------------------------------------}}}
+
 " ----------------------------------------------------
 
 "                  Smooth scroll                   {{{
@@ -119,7 +129,7 @@ let g:smoothie_update_interval = 20
 let g:smoothie_base_speed = 7
 " -------------------------------------------------}}}
 
-"                       Tmux                       {{{
+"                  Tmux integration                {{{
 " ----------------------------------------------------
 " Plug 'christoomey/vim-tmux-navigator'  " original
 Plug 'anuvyklack/vim-tmux-navigator'  " my fork
@@ -367,7 +377,8 @@ require'nvim-treesitter.configs'.setup {
   playground = {
     enable = true,
     disable = {},
-    updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+    updatetime = 25, -- Debounced time for highlighting nodes
+                     --   in the playground from source code.
     persist_queries = false, -- Whether the query persists across vim sessions
     keybindings = {
       toggle_query_editor = 'o',
