@@ -101,7 +101,7 @@ zstyle ':completion:*:cd:*' ignore-parents parent pwd
 # don't complete backup files as executables
 zstyle ':completion:*:complete:-command-::commands' ignored-patterns '(aptitude-*|*\~)'
 
-# activate color-completion
+# enable ls colors for zsh completion
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
 # Directories

@@ -41,6 +41,7 @@
     - { src: "{{ files }}/zshrc",     dest: "{{ zshdir }}/.zshrc" }
     - { src: "{{ files }}/zlogin",    dest: "{{ zshdir }}/.zlogin" }
     - { src: "{{ files }}/functions", dest: "{{ zshdir }}/functions" }
+    - { src: "{{ files }}/dircolors", dest: "{{ zshdir }}/dircolors" }
 
 
 - name: Link files in 'settings' folder
@@ -50,7 +51,8 @@
     state: link
   with_filetree: "{{ files }}/settings"
   loop_control:
-    label: "~/.config/zsh/settings/{{ item.path }}"
+    label: "{{ zshdir }}/settings/{{ item.path }}"
+
 
 - name: Link files in 'themes' folder
   file:
@@ -59,7 +61,7 @@
     state: link
   with_filetree: "{{ files }}/themes"
   loop_control:
-    label: "~/.config/zsh/theme/{{ item.path }}"
+    label: "{{ zshdir }}/theme/{{ item.path }}"
 
 - name: Link files in 'bin' folder
   file:
@@ -68,4 +70,5 @@
     state: link
   with_filetree: "{{ files }}/bin"
   loop_control:
-    label: "~/.local/bin/{{ item.path }}"
+    label: "{{ zshdir }}/bin/{{ item.path }}"
+

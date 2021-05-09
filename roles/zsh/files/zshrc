@@ -239,13 +239,23 @@ source $ZDOTDIR/settings/completion.zsh
 # Output coloring {{{
 
 # # After cloning and renewal repository construct from 'LS_COLORS' file
-# # (using 'dircolors -b') the proper $LS_COLORS environment variable and
+# # (using 'dircolors --sh') the proper $LS_COLORS environment variable and
 # # wright it into 'c.zsh' file. Execute this file at plugin loading.
 # #
-# zinit ice atclone"dircolors -b LS_COLORS > clrs.zsh" \
+# zinit ice atclone"dircolors --sh LS_COLORS > clrs.zsh" \
 #           atpull'%atclone' pick"clrs.zsh" nocompile'!' \
 #           atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
 # zinit light trapd00r/LS_COLORS
+
+# eval `dircolors --sh $ZDOTDIR/dircolors/moonshine`
+# eval `dircolors --sh $ZDOTDIR/dircolors/LS_COLORS`
+# eval `dircolors --sh $ZDOTDIR/dircolors/jellybeans`
+# eval `dircolors --sh $ZDOTDIR/dircolors/dracula`
+
+# # One-darke scheme will be enable with vivid version > v0.6.0
+# export LS_COLORS="$(vivid generate one-dark)" 
+# export LS_COLORS="$(vivid generate ayu)" 
+# export LS_COLORS="$(vivid generate molokai)" 
 
 # }}}
 
@@ -352,28 +362,28 @@ compctl -K _pip_completion pip3
 # zinit snippet OMZ::plugins/fd/_fd
 
 # buku bookmark manager completion
-if command -v buku > /dev/null 2>&1;
+if whence buku > /dev/null 2>&1;
 then
   zinit ice id-as"buku-completion" mv"buku-completion -> _buku" as"completion"
   zinit snippet https://github.com/jarun/buku/blob/master/auto-completion/zsh/_buku
 fi
 
 # notes (cli notebook) completion
-if command -v notes > /dev/null 2>&1
+if whence notes > /dev/null 2>&1
 then
   zinit ice id-as"notes-cli-completion" mv"notes-cli-completion -> _notes" as"completion"
   zinit snippet https://github.com/rhysd/notes-cli/blob/master/completions/zsh/_notes
 fi
 
 # dnote (cli notebook) completion
-if command -v dnote > /dev/null 2>&1
+if whence dnote > /dev/null 2>&1
 then
   zinit ice as"completion"
   zinit snippet OMZP::dnote/_dnote
 fi
 
 # cppman completion
-if command -v cppman > /dev/null 2>&1
+if whence cppman > /dev/null 2>&1
 then
   zinit ice id-as"cppman-completion" mv"cppman-completion -> _cppman" as"completion"
   zinit snippet https://github.com/aitjcize/cppman/blob/master/misc/completions/cppman.zsh
@@ -736,7 +746,7 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # Using bfs utility for directory searching.
 # https://github.com/tavianator/bfs
-if command -v bfs > /dev/null 2>&1
+if whence bfs > /dev/null 2>&1
 then
   # # don't show hidden folders
   # export FZF_ALT_C_COMMAND="bfs -type d -nohidden -L -print 2> /dev/null"
@@ -800,7 +810,7 @@ fzf-file-widget() {
 
 # cd into last dir on quit nnn {{{
 
-if command -v nnn > /dev/null 2>&1;
+if whence nnn > /dev/null 2>&1;
 then
 
   # # Copy original 'quitcd' function. I heavy modified it, so comment this block.
@@ -932,7 +942,7 @@ alias wsh='wajig show '
 ialias ping='ping -c 1'
 
 # # Use neovim for vim if present.
-# command -v nvim >/dev/null && ialias vim="nvim" vimdiff="nvim -d"
+# whence nvim >/dev/null && ialias vim="nvim" vimdiff="nvim -d"
 
 ialias :q='exit'
 # ialias mv='nocorrect mv -vi'  # переименование-перемещение c пogтвepжgeнueм
@@ -948,7 +958,7 @@ ialias rm='nocorrect rm -v'
 ialias mkdir='nocorrect mkdir -vp'
 
 # alias l='ls -lAh --color=auto --group-directories-first'
-# alias ls='ls --color=auto --group-directories-first'
+alias ls='ls --color=auto --group-directories-first'
 
 # alias ls='ls -F'  # вывод символов типов файлов
 # alias ll='ls -l'  # вывog в gлuннoм фopмaтe
@@ -977,12 +987,11 @@ else
   # ialias ls='command exa --group-directories-first -F'
 fi
 
-
 # }}}
 
 ialias tree='tree -I .git -I .github'
 
-if command -v nvim > /dev/null 2>&1; then
+if whence nvim > /dev/null 2>&1; then
   ialias vim='nvim'
 fi
 
@@ -1055,13 +1064,13 @@ zinit cdreplay -q
 
 compdef _gnu_generic update-alternatives
 
-if command -v lsd > /dev/null 2>&1; then
+if whence lsd > /dev/null 2>&1; then
   compdef _gnu_generic lsd
 fi
 
 # # Generate completion for `bat` utility
 # # `&!` is to make command silently run in the backgound
-# if command -v bat > /dev/null 2>&1
+# if whence bat > /dev/null 2>&1
 # then
 # # compdef _gnu_generic bat &!
 #   compdef _gnu_generic bat

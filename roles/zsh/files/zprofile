@@ -42,7 +42,7 @@ fi
 # }}}
 
 # Homebrew {{{
-if command -v /home/linuxbrew/.linuxbrew/bin/brew > /dev/null 2>&1; then
+if whence /home/linuxbrew/.linuxbrew/bin/brew > /dev/null 2>&1; then
 
   local BREWCACHE="$HOME/.cache/Homebrew/brewenv.zsh"
 
@@ -150,7 +150,7 @@ READNULLCMD='less'
 # ========================================================================
 
 # export EDITOR VISUAL
-if command -v nvim > /dev/null 2>&1; then
+if whence nvim > /dev/null 2>&1; then
   export EDITOR='nvim'
 else
   export EDITOR='vim'

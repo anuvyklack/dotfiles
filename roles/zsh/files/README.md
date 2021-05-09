@@ -101,7 +101,8 @@ Here, you can clear your terminal or any other resource which was setup at
 login.
 
 
-## How I choose where to put a setting
+How I choose where to put a setting
+-----------------------------------
 
 * if it is needed by a command run non-interactively: `.zshenv`
 * if it should be updated on each new shell: `.zshenv`
@@ -114,12 +115,31 @@ login.
 Some zsh syntax
 ===============
 
-autoload -Uz function_name
+`command -v` or `whence`
+:                       `which` was a `csh` command (well a csh script that
+                        read your `~/.cshrc`), `whence` was the Korn shell's
+                        answer to csh's `which`, type the Bourne shell one,
+                        `command -v/V` the POSIX one...
+
+                        zsh implements ksh's `whence` with a few extensions,
+                        but also provides a `which` alias for the csh junkies
+                        and `type`/`command -v/V` for POSIX compliance which
+                        are just the same command but with different default
+                        behaviour.
+
+                        `which` is `whence -c` (`c` for csh)
+                        `type` is `whence -v` (more verbose `whence`)
+                        `where` is `whence -ca`
+                        POSIX `command -v` is like `whence`
+                        POSIX `command -V` is like `whence -v`
+
+
+autoload -Uz [function_name]
 :   **-U** - prevents alias from being expanded. That is, whenever you define an
     alias and a function having the same name, the alias will be considered first
     instead, so -U just skips alias expansion.
 
-    **-z** - indicates that the function will be auto-loaded using zsh or
+:   **-z** - indicates that the function will be auto-loaded using zsh or
     ksh style.
 
 
