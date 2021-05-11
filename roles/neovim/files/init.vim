@@ -715,7 +715,5 @@ endf "}}}
 
 " }}}
 
-" echomsg "init.vim settings file is loaded."
-" source ~/.config/nvim/lua/plugins_config/pandoc.vim
 
 " vim: fen fdm=marker number tw=76 cc=+1
