@@ -670,16 +670,14 @@ cnoremap <C-j> <Down>
 cnoremap <C-k> <Up>
 cnoremap <C-l> <Right>
 
-
-" Save changes in buffer
-nmap <silent> <Leader>s :write<Enter>
-
+" " Save changes in buffer
+" nmap <silent> <Leader>s :write<Enter>
 
 " открыть файл конфигурации .vimrc или init.vim
 command! I edit $MYVIMRC
 " открыть файл с плагинами
 if has('unix')
-    command! P edit ~/.config/nvim/plugins.vim
+    command! P edit ~/.config/nvim/lua/plugins.lua
 endif
 
 " Включать и выклюяать проверку орфографии
@@ -716,5 +714,8 @@ fu! ToggleKeyboardLayout() "{{{
 endf "}}}
 
 " }}}
+
+" echomsg "init.vim settings file is loaded."
+" source ~/.config/nvim/lua/plugins_config/pandoc.vim
 
 " vim: fen fdm=marker number tw=76 cc=+1

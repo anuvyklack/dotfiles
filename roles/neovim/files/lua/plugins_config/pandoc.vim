@@ -18,8 +18,9 @@ let g:pandoc#folding#fdc = 0
 
 let g:pandoc#keyboard#sections#header_style = 's'
 
-let g:pandoc#toc#shift = 2
+let g:pandoc#toc#shift = 3
 
 " ----------------- Pandoc Syntax --------------------
 let g:pandoc#syntax#codeblocks#embeds#langs =
     \ ["python", "shell=sh", "bash=sh", "sh", "zsh", "json", "vim"]
+

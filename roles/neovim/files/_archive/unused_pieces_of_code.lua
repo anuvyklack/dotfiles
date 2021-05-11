@@ -19,10 +19,3 @@ vim.opt.wildignore = '*.o,*.a,__pycache__'
 -- list-style options, but using lua tables:
 vim.opt.wildignore = { '*.o', '*.a', '__pycache__' }
 
--- For lsp the following has been working pretty well for me
--- Nvim-lspconfig (for loading language servers)
--- nvim-compe (for completion)
--- lsp-trouble (for viewing info)
--- And then come-tabnine as a tabnine source for compe + lspsaga for cool icons.
--- Its definitely not a unified experience, but it isn't very hard to put
--- together,

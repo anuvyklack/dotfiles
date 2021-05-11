@@ -22,6 +22,7 @@
 --
 -- Remove any disabled or unused plugins.
 -- :PackerClean
+--
 -- Performs `PackerClean` and then `PackerUpdate`.
 -- :PackerSync
 --
@@ -33,22 +34,24 @@ local fn = vim.fn
 local execute = vim.api.nvim_command
 
 -- Auto install packer.nvim if not exists
-local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+local install_path = fn.stdpath('data')..'/site/pack/packer/opt/packer.nvim'
 if fn.empty( fn.glob(install_path) ) > 0 then
   execute('!git clone https://github.com/wbthomason/packer.nvim '..install_path)
 end
-
--- -- This line is needed if packer.nvim is cloned in `opt` folder as suggested
--- in packer manual.  For more info look `:h packages`.
--- vim.cmd [[packadd packer.nvim]]
+vim.cmd [[packadd packer.nvim]]
 
 -- Auto compile when there are changes in plugins.lua
 vim.cmd 'autocmd BufWritePost plugins.lua PackerCompile'
 
+require('packer').init{
+  display = {
+    open_cmd = '85vnew [packer]'  -- set the width of the packer split
+  }
+}
 
 return require('packer').startup(function()
 
-  use 'wbthomason/packer.nvim' -- Packer can manage itself
+  use { 'wbthomason/packer.nvim', opt = true } -- Packer can manage itself
   
   -------------------- Text editing ---------------------
   
@@ -61,18 +64,32 @@ return require('packer').startup(function()
 
   -- Autopairs for neovim written by lua.
   -- https://github.com/windwp/nvim-autopairs
-  use {
-    'windwp/nvim-autopairs',
+  use { 'windwp/nvim-autopairs',
     config = function()
       require('nvim-autopairs').setup()
     end
   }
 
-  use 'tpope/vim-surround'    -- заключать фрагменты текста в кавычки или скобки
+  -- Заключать фрагменты текста в кавычки или скобки.
+  use { 'tpope/vim-surround',
+    requires = 'tpope/vim-repeat'
+  }
+
+  -- -- Not yet as usable as tpope/vim-surround.
   -- use {
-  --   'machakann/vim-sandwich',
+  --   "blackCauldron7/surround.nvim",
   --   config = function()
-  --     vim.cmd("runtime macros/sandwich/keymap/surround.vim")
+  --     vim.g.surround_mappings_style = 'surround'
+  --     vim.g.surround_load_autogroups = true
+  --
+  --     require "surround".setup {}
+  --   end
+  -- }
+
+  -- -- Подсвечивать и удалять висящие пробелы в конце строк
+  -- use { 'ntpeters/vim-better-whitespace',
+  --   config = function()
+  --     vim.cmd('source ~/.config/nvim/lua/plugins_config/vim-better-whitespace.vim')
   --   end
   -- }
 
@@ -88,9 +105,18 @@ return require('packer').startup(function()
   -- Найденный текст пульсирует
   use { 'inside/vim-search-pulse', disable=true }
 
+  -- Which Key
+  use { "folke/which-key.nvim",
+    config = function()
+      require("which-key").setup {
+        -- Your configuration comes here
+        -- or leave it empty to use the default settings.
+      }
+    end
+  }
+
   ----------- Windows and buffers managment ------------
-  use {
-    'jlanzarotta/bufexplorer',
+  use { 'jlanzarotta/bufexplorer',
     config = function()
       -- Do not go to active window.
       vim.g.bufExplorerFindActive = 0
@@ -100,24 +126,13 @@ return require('packer').startup(function()
   use 'roxma/vim-window-resize-easy'
 
   -------------------- Movements ----------------------
-  use {
-    'easymotion/vim-easymotion',
+  use { 'easymotion/vim-easymotion',
     config = function() require('plugins_config.easymotion') end
   }
 
-  -- -- Easymotion alternative
-  -- use {
-  --   'justinmk/vim-sneak',
-  --   config = function()
-  --     vim.g['sneak#label'] = 1
-  --     vim.g['sneak#s_next'] = 1
-  --   end
-  -- }
-
   -- Smooth scroll                   
   -- https://github.com/psliwka/vim-smoothie
-  use {
-    'psliwka/vim-smoothie',
+  use { 'psliwka/vim-smoothie',
     config = function()
       -- Time (in milliseconds) between subseqent screen/cursor postion updates.
       -- Lower value produces smoother animation.
@@ -129,6 +144,18 @@ return require('packer').startup(function()
       vim.g.smoothie_base_speed = 7
     end
   }
+
+    -- -- Clever-f
+    -- use { 'rhysd/clever-f.vim',
+    --   config = function()
+    --     vim.g.clever_f_ignore_case = 1
+    --     vim.g.clever_f_smart_case = 1
+    --     vim.g.clever_f_show_prompt = 1
+    --     vim.g.clever_f_chars_match_any_signs = ';'
+    --   end
+    -- }
+
+  -- use 'chaoren/vim-wordmotion'  -- More useful word motions for Vim
 
   -----------------------------------------------------
 
@@ -142,20 +169,31 @@ return require('packer').startup(function()
   -- Its definitely not a unified experience, but it isn't very hard to put
   -- together,
 
-  -- use { 'neovim/nvim-lspconfig' }
+  use { 'neovim/nvim-lspconfig',
+    config = function()
+      -- require'lspconfig'.pyright.setup{}
+    end
+  }
+
   -- use { 'nvim-lua/completion-nvim' }
 
-  -- use {
-  --   'haorenW1025/completion-nvim',
+  -- use { 'haorenW1025/completion-nvim',
   --   opt = true,
   --   requires = { {'hrsh7th/vim-vsnip', opt = true},
   --                {'hrsh7th/vim-vsnip-integ', opt = true} }
   -- }
+
+  -- use 'neovim/nvim-lspconfig' 
+  -- use 'nvim-lua/diagnostic-nvim'
+  -- use 'nvim-lua/completion-nvim'
+  -- use 'nvim-lua/lsp_extensions.nvim'
+  -- use 'steelsojka/completion-buffers'
+  -- use 'tjdevries/nlua.nvim'
+
   -------------------------------------------------------
 
   --------------------- Treesitter ----------------------
-  use { 
-    'nvim-treesitter/nvim-treesitter',
+  use { 'nvim-treesitter/nvim-treesitter',
     requires = {
       'nvim-treesitter/nvim-treesitter-refactor',
       'nvim-treesitter/nvim-treesitter-textobjects'
@@ -165,8 +203,7 @@ return require('packer').startup(function()
   }
   
   -------------------- Fuzzy finder ---------------------
-  use {
-    'nvim-telescope/telescope.nvim',
+  use { 'nvim-telescope/telescope.nvim',
     requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'}
   }
 
@@ -178,20 +215,36 @@ return require('packer').startup(function()
                           -- and
                           -- :help include-search
 
+  -- use 'wellle/context.vim'   -- Vscode breadcrumbs analog
+  -- use 'majutsushi/tagbar'    -- список тегов в текущем файле
+  -- use 'liuchengxu/vista.vim' -- View and search LSP symbols and tags.
+
   -- Asynchronous build and test dispatcher
-  use {
-    'tpope/vim-dispatch',
+  use { 'tpope/vim-dispatch',
     opt = true,
     cmd = {'Dispatch', 'Make', 'Focus', 'Start'}
   }
 
-  -- use {
-  --   'lewis6991/gitsigns.nvim',
+  -- use 'junegunn/gv.vim'  -- A git commit browser in Vim.
+
+  -- use { 'lewis6991/gitsigns.nvim',
   --   requires = 'nvim-lua/plenary.nvim' ,
   --   config = function()
   --     require('gitsigns').setup()
   --   end
   -- }
+
+  ---------- Syntaxes and programming languages ----------
+
+  use {'sheerun/vim-polyglot', -- Подсветка синтаксисов разных языков.
+    setup = function()  -- run before plugin load
+      -- This variable should be declared before polyglot is loaded!
+      vim.g.polyglot_disabled = 'markdown'
+    end
+  }
+
+  use { 'zinit-zsh/zinit-vim-syntax', ft = 'zsh' } -- zinit syntaxis
+  use { 'anuvyklack/vim-dealii-prm', event = 'BufNewFile,BufRead *.prm' }
 
   -------------------- Color scheme ---------------------
   local color_themes = {
@@ -260,6 +313,7 @@ return require('packer').startup(function()
 
   local theme = 'gruvbox-material'
   -- local theme = 'melange'
+  -- local theme = 'mellow'
   -- local theme = 'moonshine'
   -- local theme = 'srcery'
 
@@ -269,13 +323,25 @@ return require('packer').startup(function()
   -------------------------------------------------------
 
   -- --------------------- Statusline ----------------------
-  -- use {
-  --   'glepnir/galaxyline.nvim',
+  -- use { 'glepnir/galaxyline.nvim',
   --   branch = 'main',
   --   config = function() require'statusline' end,
   --   requires = {'kyazdani42/nvim-web-devicons'}
   -- }
   -- -------------------------------------------------------
+
+  ---------------------- Undo tree ----------------------
+
+  -- use { 'mbbill/undotree',  -- visualize undo tree
+  --   config = function()
+  --     vim.g.undotree_HighlightChangedWithSign = 0
+  --     vim.g.undotree_WindowLayout = 2
+  --   end
+  -- }
+
+  -- use 'simnalamburt/vim-mundo'  -- another undo tree visualizer
+
+  -------------------------------------------------------
 
   --                  Lua development                 {{{
   -------------------------------------------------------
@@ -290,8 +356,8 @@ return require('packer').startup(function()
   --                 Tmux integration                {{{
   ------------------------------------------------------
   use {
-    -- 'christoomey/vim-tmux-navigator',  -- original
     'anuvyklack/vim-tmux-navigator',  -- my fork
+    -- 'christoomey/vim-tmux-navigator',  -- original
 
     config = function()
       -- Activate autoupdate on exit
@@ -305,7 +371,31 @@ return require('packer').startup(function()
   use { 'tmux-plugins/vim-tmux-focus-events', disable=true }
   use { 'tmux-plugins/vim-tmux', disable=true }
   ---------------------------------------------------}}}
-  
+
+  --                      Pandoc                      {{{
+  -------------------------------------------------------
+  use { 'vim-pandoc/vim-pandoc',
+    ft = {'markdown', 'pandoc'},
+    requires = {'vim-pandoc/vim-pandoc-syntax', opt = true},
+    config = function()
+      vim.cmd('source ~/.config/nvim/lua/plugins_config/pandoc.vim')
+    end
+  }
+  ----------------------------------------------------}}}
+
+  --          Русский язык (Switch language)          {{{
+  -------------------------------------------------------
+
+  -- use { 'lyokha/vim-xkbswitch',
+  --   config = function()
+  --     vim.g.XkbSwitchEnabled = 1
+  --   end
+  -- }
+
+  use 'powerman/vim-plugin-ruscmd'
+
+  ----------------------------------------------------}}}
+
 end)
 
 -- vim: ts=2 sts=2 sw=2 tw=80 cc=+1 fen fdm=marker
