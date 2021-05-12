@@ -34,7 +34,7 @@ set autochdir        " set pwd as the dir of the active file
 set termguicolors    " 24 bit color support
 
 set backspace=indent,eol,start  " Allow backspace in insert mode
-set timeout timeoutlen=1500  " Время в мс в течении которого Vim ждёт
+set timeout timeoutlen=1300  " Время в мс в течении которого Vim ждёт
                              "   продолжения многосимвольной команды.
 set ttimeoutlen=50   " Время переключения между режимами (default 50)
 syntax enable        " Включить подсветку синтаксиса
@@ -542,8 +542,8 @@ map <C-p> "+p
 " several rows on the screen, then 'j' key moves you to the next line
 " in the file, but not to the next row on the screen under your
 " previous position as in other editors.  These bindings fixes this.
-nmap j gj
-nmap k gk
+noremap j gj
+noremap k gk
 
 " noremap <C-Left>
 

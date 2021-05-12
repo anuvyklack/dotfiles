@@ -60,7 +60,7 @@ return require('packer').startup(function()
   use 'kshenoy/vim-signature' -- display and navigate marks
   use 'tpope/vim-unimpaired'  -- Different bidirectional motions: switch
                               --   buffers, add blank lines, etc.
-  use 'tomtom/tcomment_vim'   -- comments
+  use 'tomtom/tcomment_vim'   -- Comments. For help use :help tcomment
 
   -- Autopairs for neovim written by lua.
   -- https://github.com/windwp/nvim-autopairs
@@ -110,17 +110,8 @@ return require('packer').startup(function()
   --   branch = 'lua'
   -- }
 
-  -- Which Key
-  use { "folke/which-key.nvim",
-    config = function()
-      require("which-key").setup {
-        -- Your configuration comes here
-        -- or leave it empty to use the default settings.
-      }
-    end
-  }
-
   ----------- Windows and buffers managment ------------
+
   use { 'jlanzarotta/bufexplorer',
     config = function()
       -- Do not go to active window.
@@ -131,6 +122,7 @@ return require('packer').startup(function()
   use 'roxma/vim-window-resize-easy'
 
   -------------------- Movements ----------------------
+
   use { 'easymotion/vim-easymotion',
     config = function() require('plugins_config.easymotion') end
   }
@@ -344,7 +336,7 @@ return require('packer').startup(function()
   -- }
   -- -------------------------------------------------------
 
-  ---------------------- Undo tree ----------------------
+  --------------- Vim additional modules ----------------
 
   -- use { 'mbbill/undotree',  -- visualize undo tree
   --   config = function()
@@ -354,6 +346,15 @@ return require('packer').startup(function()
   -- }
 
   -- use 'simnalamburt/vim-mundo'  -- another undo tree visualizer
+
+  use { "folke/which-key.nvim",
+    config = function()
+      require("which-key").setup {
+        -- Your configuration comes here
+        -- or leave it empty to use the default settings.
+      }
+    end
+  }
 
   -------------------------------------------------------
   
@@ -406,8 +407,7 @@ return require('packer').startup(function()
   --   end
   -- }
 
-  -- WARNING: Extreamly slow down neovim
-  -- use 'powerman/vim-plugin-ruscmd'
+  use 'powerman/vim-plugin-ruscmd'
 
   ----------------------------------------------------}}}
 
