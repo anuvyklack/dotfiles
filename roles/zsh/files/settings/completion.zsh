@@ -153,6 +153,17 @@ zstyle ':completion:*:kill:*'   force-list always
 # Group matches and describe.
 zstyle ':completion:*:*:*:*:*' menu select
 zstyle ':completion:*:matches' group 'yes'
+# Categorize completion suggestions with headings:
+zstyle ':completion:*' group-name ''
+
+# Style the group names
+# ---------------------
+#              underline                      end underline
+#              v                              v
+# %F{yellow}%B%U%{$'\e[3m'%}%d%{$'\e[23m'%}%b%u%f
+#            ^    ^~~~~~~~      ^~~~~~~~~   ^
+#         bold    italic        end italic  end bold
+zstyle ':completion:*' format %F{yellow}%B%{$'\e[3m'%}%d%{$'\e[23m'%}%b%f
 
 # describe options in full
 zstyle ':completion:*:options' description 'yes'
@@ -165,8 +176,6 @@ zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
 zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
 # zstyle ':completion:*:warnings' format $'%{\e[0;31m%}No matches for:%{\e[0m%} %d'
 zstyle ':completion:*:default' list-prompt '%S%M matches%s'
-zstyle ':completion:*' format ' %F{yellow}-- %d --%f'
-zstyle ':completion:*' group-name ''
 zstyle ':completion:*' verbose yes
 
 

@@ -61,7 +61,7 @@ return require('packer').startup(function()
   use 'tpope/vim-unimpaired'  -- Different bidirectional motions: switch
                               --   buffers, add blank lines, etc.
   use 'tomtom/tcomment_vim'   -- Comments. For help use :help tcomment
-
+  
   -- Autopairs for neovim written by lua.
   -- https://github.com/windwp/nvim-autopairs
   use { 'windwp/nvim-autopairs',
@@ -105,10 +105,27 @@ return require('packer').startup(function()
   -- Найденный текст пульсирует
   use { 'inside/vim-search-pulse', disable=true }
 
+  -- -- WARNING Work, but not very stable.
+  -- -- indent-blankline {{{
   -- -- Adds indentation guides to all lines.
   -- use { 'lukas-reineke/indent-blankline.nvim',
-  --   branch = 'lua'
-  -- }
+  --   branch = 'lua',
+  --   ft = {'lua', 'python'},
+  --   config = function()
+  --     -- Filetypes for which this plugin is enabled
+  --     vim.g.indent_blankline_filetype = {'lua', 'python'}
+  --
+  --     vim.g.indent_blankline_char = '│'
+  --     vim.g.indent_blankline_use_treesitter = true
+  --     vim.g.indent_blankline_show_first_indent_level = false
+  --     vim.g.indent_blankline_show_trailing_blankline_indent = false
+  --
+  --     vim.g.indent_blankline_show_current_context = true
+  --     vim.g.indent_blankline_context_highlight_list = {'Error', 'Warning'}
+  --   end
+  -- } --}}}
+
+  -- use 'kyazdani42/nvim-web-devicons'
 
   ----------- Windows and buffers managment ------------
 
@@ -208,7 +225,7 @@ return require('packer').startup(function()
     run = ':TSUpdate',
     config = function() require('plugins_config.treesitter') end
   }
-  
+
   -------------------- Fuzzy finder ---------------------
   use { 'nvim-telescope/telescope.nvim',
     requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'}
@@ -251,7 +268,7 @@ return require('packer').startup(function()
 
   use { 'zinit-zsh/zinit-vim-syntax', ft = 'zsh' } -- zinit syntaxis
   use { 'anuvyklack/vim-dealii-prm', event = 'BufNewFile,BufRead *.prm' }
-
+  
   -------------------- Color scheme ---------------------
   local color_themes = {
     -- gruvbox-material {{{
@@ -327,7 +344,7 @@ return require('packer').startup(function()
     color_themes[theme]()
   end
   -------------------------------------------------------
-
+  
   -- --------------------- Statusline ----------------------
   -- use { 'glepnir/galaxyline.nvim',
   --   branch = 'main',
@@ -338,14 +355,38 @@ return require('packer').startup(function()
 
   --------------- Vim additional modules ----------------
 
-  -- use { 'mbbill/undotree',  -- visualize undo tree
+  -- bufferline / tabline
+  use { 'romgrk/barbar.nvim',
+    requires = 'kyazdani42/nvim-web-devicons',
+    config = function()
+      vim.cmd('source ~/.config/nvim/lua/plugins_config/barbar.vim')
+    end
+  }
+
+  -- use { 'kyazdani42/nvim-tree.lua',
+  --   requires = 'kyazdani42/nvim-web-devicons',
+  --   config = function()
+  --     vim.cmd('source ~/.config/nvim/lua/plugins_config/nvim-tree.vim')
+  --   end
+  -- }
+
+  -- File manager
+  use { 'ms-jpq/chadtree',
+    branch = 'chad',
+    run = 'python3 -m chadtree deps && nvim --headless +"CHADdeps | exit"',
+    cmd = {'CHADopen', 'CHADdeps', 'CHADhelp'}
+  }
+
+  -- -- visualize undo tree
+  -- use { 'mbbill/undotree', 
   --   config = function()
   --     vim.g.undotree_HighlightChangedWithSign = 0
   --     vim.g.undotree_WindowLayout = 2
   --   end
   -- }
 
-  -- use 'simnalamburt/vim-mundo'  -- another undo tree visualizer
+  -- -- another undo tree visualizer
+  -- use 'simnalamburt/vim-mundo' 
 
   use { "folke/which-key.nvim",
     config = function()
@@ -356,8 +397,17 @@ return require('packer').startup(function()
     end
   }
 
+  -- <leader>? : 40-column cheat sheet
+  use 'lifepillar/vim-cheat40'
+
+  use { 'norcalli/nvim-colorizer.lua',
+    config = function()
+      require'colorizer'.setup()
+    end
+  }
+
   -------------------------------------------------------
-  
+
   --                  Lua development                 {{{
   -------------------------------------------------------
   -- The library with all the lua functions you don't want to write twice.
@@ -407,7 +457,7 @@ return require('packer').startup(function()
   --   end
   -- }
 
-  use 'powerman/vim-plugin-ruscmd'
+  -- use 'powerman/vim-plugin-ruscmd'
 
   ----------------------------------------------------}}}
 
