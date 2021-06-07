@@ -1,12 +1,12 @@
---        ███                 ██                    ███
---       ░░██                ░░                    ░░██
--- ██████ ░██ ██   ██  ██████ ██ ██████   ██████    ░██ ██   ██  █████ 
---░██░░░██░██░██  ░██ ██░░░██░██░██░░░██ ██░░░░     ░██░██  ░██ ░░░░░██
---░██  ░██░██░██  ░██░██  ░██░██░██  ░██░░█████     ░██░██  ░██  ██████
---░██████ ░██░██  ░██░░██████░██░██  ░██ ░░░░░██    ░██░██  ░██ ██░░░██
---░██░░░  ░██░░█████  ░░░░░██░██░██  ░██ ██████  ██ ░██░░█████ ░░███████
---░██     ░░  ░░░░░    █████ ░░ ░░   ░░ ░░░░░░  ░░  ░░  ░░░░░   ░░░░░░░ 
---░░                  ░░░░░
+--         ███                 ██                    ███
+--        ░░██                ░░                    ░░██
+--  ██████ ░██ ██   ██  ██████ ██ ██████   ██████    ░██ ██   ██  █████ 
+-- ░██░░░██░██░██  ░██ ██░░░██░██░██░░░██ ██░░░░     ░██░██  ░██ ░░░░░██
+-- ░██  ░██░██░██  ░██░██  ░██░██░██  ░██░░█████     ░██░██  ░██  ██████
+-- ░██████ ░██░██  ░██░░██████░██░██  ░██ ░░░░░██    ░██░██  ░██ ██░░░██
+-- ░██░░░  ░██░░█████  ░░░░░██░██░██  ░██ ██████  ██ ░██░░█████ ░░███████
+-- ░██     ░░  ░░░░░    █████ ░░ ░░   ░░ ░░░░░░  ░░  ░░  ░░░░░   ░░░░░░░ 
+-- ░░                  ░░░░░  
 
 -- Packer instruction
 ---------------------------------------------------------
@@ -41,26 +41,36 @@ end
 vim.cmd [[packadd packer.nvim]]
 
 -- Auto compile when there are changes in plugins.lua
-vim.cmd 'autocmd BufWritePost plugins.lua PackerCompile'
+-- vim.cmd 'autocmd BufWritePost plugins.lua PackerCompile'
+vim.cmd [[
+  augroup Packer
+    autocmd!
+    autocmd BufWritePost plugins.lua PackerCompile
+  augroup end
+]]
 
 require('packer').init{
   display = {
-    open_cmd = '85vnew [packer]'  -- set the width of the packer split
+    open_cmd = '80vnew [packer]'  -- set the width of the packer split
   }
 }
 
-return require('packer').startup(function()
+require('packer').startup(function()
+-- return require('packer').startup(function()
 
   use { 'wbthomason/packer.nvim', opt = true } -- Packer can manage itself
-  
+
   -------------------- Text editing ---------------------
-  
+
   use 'matze/vim-move'        -- перемещение строк и частей строк
   use 'wellle/targets.vim'    -- plugin that provides additional text objects
   use 'kshenoy/vim-signature' -- display and navigate marks
   use 'tpope/vim-unimpaired'  -- Different bidirectional motions: switch
                               --   buffers, add blank lines, etc.
   use 'tomtom/tcomment_vim'   -- Comments. For help use :help tcomment
+  
+  -- Perl style regexp notation for Vim
+  use { 'othree/eregex.vim', disable = true }
   
   -- Autopairs for neovim written by lua.
   -- https://github.com/windwp/nvim-autopairs
@@ -69,12 +79,12 @@ return require('packer').startup(function()
       require('nvim-autopairs').setup()
     end
   }
-
+  
   -- Заключать фрагменты текста в кавычки или скобки.
   use { 'tpope/vim-surround',
     requires = 'tpope/vim-repeat'
   }
-
+  
   -- -- Not yet as usable as tpope/vim-surround.
   -- use {
   --   "blackCauldron7/surround.nvim",
@@ -85,26 +95,26 @@ return require('packer').startup(function()
   --     require "surround".setup {}
   --   end
   -- }
-
+  
   -- -- Подсвечивать и удалять висящие пробелы в конце строк
   -- use { 'ntpeters/vim-better-whitespace',
   --   config = function()
   --     vim.cmd('source ~/.config/nvim/lua/plugins_config/vim-better-whitespace.vim')
   --   end
   -- }
-
+  
   -- Multiple cursors
   -- https://github.com/mg979/vim-visual-multi
   use 'mg979/vim-visual-multi'
-
+  
   -------------------- Visual tweaks --------------------
-
+  
   -- Подсвечивает все такие же слова как и слово под курсором.
   use { 'RRethy/vim-illuminate', disable=true }
-
+   
   -- Найденный текст пульсирует
   use { 'inside/vim-search-pulse', disable=true }
-
+  
   -- -- WARNING Work, but not very stable.
   -- -- indent-blankline {{{
   -- -- Adds indentation guides to all lines.
@@ -124,26 +134,26 @@ return require('packer').startup(function()
   --     vim.g.indent_blankline_context_highlight_list = {'Error', 'Warning'}
   --   end
   -- } --}}}
-
+        
   -- use 'kyazdani42/nvim-web-devicons'
-
-  ----------- Windows and buffers managment ------------
-
+  
+  ------------ Windows and buffers managment ------------
+  
   use { 'jlanzarotta/bufexplorer',
     config = function()
       -- Do not go to active window.
       vim.g.bufExplorerFindActive = 0
     end
   }
-
+  
   use 'roxma/vim-window-resize-easy'
-
-  -------------------- Movements ----------------------
-
+  
+  ---------------------- Movements ----------------------
+  
   use { 'easymotion/vim-easymotion',
     config = function() require('plugins_config.easymotion') end
   }
-
+  
   -- Smooth scroll                   
   -- https://github.com/psliwka/vim-smoothie
   use { 'psliwka/vim-smoothie',
@@ -151,14 +161,14 @@ return require('packer').startup(function()
       -- Time (in milliseconds) between subseqent screen/cursor postion updates.
       -- Lower value produces smoother animation.
       vim.g.smoothie_update_interval = 20
-
+  
       -- Base scrolling speed (in lines per second), to be taken into account by
       -- the velocity calculation algorithm.  Can be decreased to achieve slower
       -- (and easier to follow) animation.
       vim.g.smoothie_base_speed = 7
     end
   }
-
+  
     -- -- Clever-f
     -- use { 'rhysd/clever-f.vim',
     --   config = function()
@@ -171,100 +181,126 @@ return require('packer').startup(function()
 
   -- use 'chaoren/vim-wordmotion'  -- More useful word motions for Vim
 
-  -----------------------------------------------------
-
+  -------------------------------------------------------
+                                             
   --                LSP and Completion                {{{
   -------------------------------------------------------
 
-
   -- For lsp the following has been working pretty well for me
-  -- Nvim-lspconfig (for loading language servers)
+  -- nvim-lspconfig (for loading language servers)
   -- nvim-compe (for completion)
   -- lsp-trouble (for viewing info)
   -- And then come-tabnine as a tabnine source for compe + lspsaga for cool icons.
   -- Its definitely not a unified experience, but it isn't very hard to put
   -- together,
-
+  
   -- You're probably better-served using compile_commands.json which can be
   -- autogenerated in multiple ways.
   --
-  -- If you use CMake, you can -DCMAKE_EXPORT_COMPILE_COMMANDS=1 when generating
-  -- build files to generate the compile_commands.json, or if you use regular
-  -- Make, there's a tool called bear that'll hook onto make to generate it for
-  -- you.
+  -- If you use CMake, you can '-D CMAKE_EXPORT_COMPILE_COMMANDS=1' when
+  -- generating build files to generate the compile_commands.json, or if you use
+  -- regular Make, there's a tool called bear that'll hook onto make to generate
+  -- it for you.
+  
+  use { 'neovim/nvim-lspconfig',
+    config = function() require('plugins_config.lspconfig') end
+  }
+  
+  -- -- Adds the missing :LspInstall <language> command
+  -- -- to conveniently install language servers.
+  -- use 'kabouzeid/nvim-lspinstall'
 
-  -- use { 'neovim/nvim-lspconfig',
+  -- use { 'RishabhRD/nvim-lsputils',
+  --   requires = 'RishabhRD/popfix',
   --   config = function()
-  --     -- require'lspconfig'.pyright.setup{}
+  --     vim.lsp.handlers['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
+  --     vim.lsp.handlers['textDocument/references'] = require'lsputil.locations'.references_handler
+  --     vim.lsp.handlers['textDocument/definition'] = require'lsputil.locations'.definition_handler
+  --     vim.lsp.handlers['textDocument/declaration'] = require'lsputil.locations'.declaration_handler
+  --     vim.lsp.handlers['textDocument/typeDefinition'] = require'lsputil.locations'.typeDefinition_handler
+  --     vim.lsp.handlers['textDocument/implementation'] = require'lsputil.locations'.implementation_handler
+  --     vim.lsp.handlers['textDocument/documentSymbol'] = require'lsputil.symbols'.document_handler
+  --     vim.lsp.handlers['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
   --   end
-  -- }
+  -- } 
+
+  use { 'glepnir/lspsaga.nvim',
+    config = function()
+      require('plugins_config.lspsaga')
+    end
+  }
+
+  -- use 'nvim-lua/diagnostic-nvim'
 
   -- use { 'nvim-lua/completion-nvim' }
-
+  
   -- use { 'haorenW1025/completion-nvim',
   --   opt = true,
   --   requires = { {'hrsh7th/vim-vsnip', opt = true},
   --                {'hrsh7th/vim-vsnip-integ', opt = true} }
   -- }
 
-  -- use 'neovim/nvim-lspconfig' 
-  -- use 'nvim-lua/diagnostic-nvim'
-  -- use 'nvim-lua/completion-nvim'
   -- use 'nvim-lua/lsp_extensions.nvim'
   -- use 'steelsojka/completion-buffers'
   -- use 'tjdevries/nlua.nvim'
+  
 
   ----------------------------------------------------}}}
-
+  
   --------------------- Treesitter ----------------------
   use { 'nvim-treesitter/nvim-treesitter',
     requires = {
       'nvim-treesitter/nvim-treesitter-refactor',
-      'nvim-treesitter/nvim-treesitter-textobjects'
+      'nvim-treesitter/nvim-treesitter-textobjects',
+      'nvim-treesitter/playground'
     },
     run = ':TSUpdate',
     config = function() require('plugins_config.treesitter') end
   }
-
+  
   -------------------- Fuzzy finder ---------------------
   use { 'nvim-telescope/telescope.nvim',
     requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'}
   }
-
+  
   -------------------- IDE features ---------------------
-
+  
   use 'tpope/vim-apathy'  -- Make 'gf' keybinding work in defferent filetypes.
                           -- For instructions of what it can do more look:
                           -- https://github.com/tpope/vim-apathy
                           -- and
                           -- :help include-search
-
+  
   -- use 'wellle/context.vim'   -- Vscode breadcrumbs analog
   -- use 'majutsushi/tagbar'    -- список тегов в текущем файле
   -- use 'liuchengxu/vista.vim' -- View and search LSP symbols and tags.
-
+  
   -- Asynchronous build and test dispatcher
   use { 'tpope/vim-dispatch',
     cmd = {'Dispatch', 'Make', 'Focus', 'Start'}
   }
-
+  
   -- use 'junegunn/gv.vim'  -- A git commit browser in Vim.
-
+  
   -- use { 'lewis6991/gitsigns.nvim',
   --   requires = 'nvim-lua/plenary.nvim' ,
   --   config = function()
   --     require('gitsigns').setup()
   --   end
   -- }
-
+  
   ---------- Syntaxes and programming languages ----------
-
-  use {'sheerun/vim-polyglot', -- Подсветка синтаксисов для разных языков.
+  
+  -- Подсветка синтаксисов для разных языков.
+  use { 'sheerun/vim-polyglot',
     setup = function()  -- run before plugin load
       -- This variable should be declared before polyglot is loaded!
-      vim.g.polyglot_disabled = 'markdown'
+      -- vim.g.polyglot_disabled = 'markdown'
+      vim.g.polyglot_disabled = {'markdown', 'gitignore'}
     end
   }
+
+  use 'SirJson/fzf-gitignore'
 
   use { 'zinit-zsh/zinit-vim-syntax', ft = 'zsh' } -- zinit syntaxis
   use { 'anuvyklack/vim-dealii-prm', event = 'BufNewFile,BufRead *.prm' }
@@ -281,17 +317,17 @@ return require('packer').startup(function()
           -- mix      : the mean of the other two;
           -- original : the original gruvbox palette.
           vim.g.gruvbox_material_palette = 'mix'
-
+  
           -- Set contrast.
           -- available values: 'hard', 'medium'(default), 'soft'
           vim.g.gruvbox_material_background = 'medium'
           vim.g.gruvbox_material_enable_bold = 1
           vim.g.gruvbox_material_enable_italic = 1
-
+  
           -- Available values: 'auto', 'red', 'orange', 'yellow',
           -- 'green', 'aqua', 'blue', 'purple'
           vim.g.gruvbox_material_cursor = 'blue'
-
+  
           vim.cmd 'colorscheme gruvbox-material'
         end
       }
@@ -333,13 +369,13 @@ return require('packer').startup(function()
       }
     end, --}}}
   }
-
+  
   local theme = 'gruvbox-material'
   -- local theme = 'melange'
   -- local theme = 'mellow'
   -- local theme = 'moonshine'
   -- local theme = 'srcery'
-
+  
   if color_themes[theme] then
     color_themes[theme]()
   end
@@ -352,9 +388,9 @@ return require('packer').startup(function()
   --   requires = {'kyazdani42/nvim-web-devicons'}
   -- }
   -- -------------------------------------------------------
-
+  
   --------------- Vim additional modules ----------------
-
+  
   -- bufferline / tabline
   use { 'romgrk/barbar.nvim',
     requires = 'kyazdani42/nvim-web-devicons',
@@ -362,21 +398,7 @@ return require('packer').startup(function()
       vim.cmd('source ~/.config/nvim/lua/plugins_config/barbar.vim')
     end
   }
-
-  -- use { 'kyazdani42/nvim-tree.lua',
-  --   requires = 'kyazdani42/nvim-web-devicons',
-  --   config = function()
-  --     vim.cmd('source ~/.config/nvim/lua/plugins_config/nvim-tree.vim')
-  --   end
-  -- }
-
-  -- File manager
-  use { 'ms-jpq/chadtree',
-    branch = 'chad',
-    run = 'python3 -m chadtree deps && nvim --headless +"CHADdeps | exit"',
-    cmd = {'CHADopen', 'CHADdeps', 'CHADhelp'}
-  }
-
+  
   -- -- visualize undo tree
   -- use { 'mbbill/undotree', 
   --   config = function()
@@ -384,10 +406,10 @@ return require('packer').startup(function()
   --     vim.g.undotree_WindowLayout = 2
   --   end
   -- }
-
+  
   -- -- another undo tree visualizer
   -- use 'simnalamburt/vim-mundo' 
-
+  
   use { "folke/which-key.nvim",
     config = function()
       require("which-key").setup {
@@ -396,15 +418,49 @@ return require('packer').startup(function()
       }
     end
   }
-
+  
   -- <leader>? : 40-column cheat sheet
   use 'lifepillar/vim-cheat40'
+  
+  -- TODO Need to rewrite in lua.
+  -- use { 'camspiers/lens.vim',
+  --   requires = 'camspiers/animate.vim',
+  --   config = function()
+  --     vim.cmd('source ~/.config/nvim/lua/plugins_config/lens.vim')
+  --   end
+  -- }
+  
+  -- -- foldtext customization
+  -- use 'scr1pt0r/crease.vim' 
 
   use { 'norcalli/nvim-colorizer.lua',
+    ft = {'vim', 'lua', 'conf'},
     config = function()
       require'colorizer'.setup()
     end
   }
+
+  -------------------------------------------------------
+  
+  -------------------- File manager ---------------------
+  
+  use { 'kyazdani42/nvim-tree.lua',
+    requires = 'kyazdani42/nvim-web-devicons',
+    config = function()
+      vim.cmd('source ~/.config/nvim/lua/plugins_config/nvim-tree.vim')
+    end
+  }
+  
+  -- use { 'ms-jpq/chadtree',
+  --   branch = 'chad',
+  --   run = 'python3 -m chadtree deps && nvim --headless +"CHADdeps | exit"',
+  --   cmd = {'CHADopen', 'CHADdeps', 'CHADhelp'}
+  -- }
+
+  -- -- Total Commander inspired file manager
+  -- use { 'ripxorip/bolt.nvim',
+  --   run = ':UpdateRemotePlugins'
+  -- }
 
   -------------------------------------------------------
 
@@ -418,6 +474,14 @@ return require('packer').startup(function()
   -- use 'euclidianAce/BetterLua.vim' -- Better Lua syntax highlighting
   ----------------------------------------------------}}}
 
+  --                       Vifm                       {{{
+  -------------------------------------------------------
+  use { "vifm/vifm.vim",
+    -- TODO Open issue to packer: help tags not generated automaticaly.
+    run = ':helptags ALL', 
+  }
+  ----------------------------------------------------}}}
+
   --                 Tmux integration                {{{
   ------------------------------------------------------
   use {
@@ -425,10 +489,10 @@ return require('packer').startup(function()
     -- 'christoomey/vim-tmux-navigator',  -- original
 
     config = function()
-      -- Activate autoupdate on exit
+      -- Activate autoupdate on exit.
       vim.g.tmux_navigator_save_on_switch = 0
 
-      -- Disable vim->tmux navigation when the Vim pane is zoomed in tmux
+      -- Disable vim->tmux navigation when the Vim pane is zoomed in tmux.
       vim.g.tmux_navigator_disable_when_zoomed = 1
     end
   }
@@ -457,7 +521,7 @@ return require('packer').startup(function()
   --   end
   -- }
 
-  -- use 'powerman/vim-plugin-ruscmd'
+  use 'powerman/vim-plugin-ruscmd'
 
   ----------------------------------------------------}}}
 

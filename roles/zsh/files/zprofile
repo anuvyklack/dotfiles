@@ -150,13 +150,14 @@ READNULLCMD='less'
 # ========================================================================
 
 # export EDITOR VISUAL
-if whence nvim > /dev/null 2>&1; then
+# if whence nvim > /dev/null 2>&1; then
+if (( $+commands[nvim] )); then
   export EDITOR='nvim'
+  export VISUAL="$EDITOR"
+  export DIFFPROG='nvim -d'
 else
   export EDITOR='vim'
 fi
-
-export VISUAL="$EDITOR"
 
 export PAGER='less'
 
@@ -284,13 +285,17 @@ export ls_colors=(
 
 # Bat
 # ========================================================================
-export BAT_PAGER="less ${LESS}"
-# export BAT_PAGER="less -RF"
+if (( $+commands[bat] )); then
+  export BAT_PAGER="less ${LESS}"
+  # export BAT_PAGER="less -RF"
+fi
 
 
 # Ripgrep
 # ========================================================================
-export RIPGREP_CONFIG_PATH=$HOME/.config/rg/config
+if (( $+commands[rg] )); then
+  export RIPGREP_CONFIG_PATH=$HOME/.config/rg/config
+fi
 
 # Par (paragraph formating)
 # ========================================================================
@@ -321,7 +326,9 @@ export PARINIT='rTbgqR B=.,?_A_a Q=_s>|'
 
 # CMake options
 # ========================================================================
-export CMAKE_BUILD_PARALLEL_LEVEL=7
+if (( $+commands[cmake] )); then
+  export CMAKE_BUILD_PARALLEL_LEVEL=7
+fi
 
 # PuDB (Python debugger)
 # ========================================================================

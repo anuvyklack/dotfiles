@@ -1,4 +1,43 @@
-﻿if exists('g:fvim_loaded')
+﻿"           ██           ██   ██                ██
+"          ░░           ░░   ░██               ░░
+"   ██████  ██  ██████   ██ ██████     ██    ██ ██ ██████████
+"  ██░░░██ ░██ ░██░░░██ ░██░░░██░     ░██   ░██░██░░██░░██░░██
+" ░██  ░██ ░██ ░██  ░██ ░██  ░██      ░░██ ░██ ░██ ░██ ░██ ░██
+" ░░██████ ░██ ░██  ░██ ░██  ░██       ░░████  ░██ ░██ ░██ ░██
+"  ░░░░░██ ░██ ░██  ░██ ░██  ░░███  ██  ░░██   ░██ ███ ░██ ░██
+"   █████  ░░  ░░   ░░  ░░    ░░░  ░░    ░░    ░░ ░░░  ░░  ░░
+"  ░░░░░  
+
+echom "ginit.vim sourced"
+
+" Neovide {{{
+if exists('g:neovide')
+
+    " xrandr --query | grep -A 1 connected | grep -v connected
+
+    " xrandr | grep  " connected\|\*"
+    " return the resolution of the avtive monitorc
+
+    " xdpyinfo  | grep -oP "dimensions:\s+\K\S+"
+    " returns the sum of resolutions
+
+    " " Check the current monitor resolution if it equals to 4K.
+    " if system('xdpyinfo  | grep -oP "dimensions:\s+\K\S+"') == "5120x2880\n"
+    "     echom '5120x2880'
+    " endif
+
+    " lua << EOF
+    " local monitor_resolution = vim.fn.system [[xdpyinfo  | grep -oP 'dimensions:\s+\K\S+']]
+    " print(monitor_resolution == '5120x2880\n')
+    " EOF
+
+    " set guifont=Liga\ Inconsolata\ LGC\ NF\ OT:h32
+
+"}}}
+
+" Fvim {{{
+elseif exists('g:fvim_loaded')
+
     " good old 'set guifont' compatibility
     " set guifont=Fira\ Code:h15.4
     " set guifont=FiraCode\ NF:h15.4
@@ -24,7 +63,10 @@
     nnoremap <silent> <C-ScrollWheelUp> :set guifont=+<CR>
     nnoremap <silent> <C-ScrollWheelDown> :set guifont=-<CR>
     nnoremap <A-CR> :FVimToggleFullScreen<CR>
-else " This means, we are in nvim-qt
+"}}}
+
+" Neovim Qt {{{
+else " This means, we are in neovim-qt
 
     call GuiWindowMaximized(1)
     GuiTabline 0
@@ -36,7 +78,7 @@ else " This means, we are in nvim-qt
     " GuiFont! FiraCode NF:h12
     " GuiFont! InconsolataLGC NF:h12
     " GuiFont! Inconsolata LGC:h12
-    GuiFont! Liga Inconsolata LGC NF:h12
+    " GuiFont! Liga Inconsolata LGC NF:h12
 
     " linespace = 3  " Расстояние между строками
 
@@ -45,4 +87,6 @@ else " This means, we are in nvim-qt
 
     " floating font size will be supported in next version (current is 0.2.11 on 09.07.2019)
     " guifont! liga inconsolata lgc:h11.5
-endif
+
+endif "}}}
+

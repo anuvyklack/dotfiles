@@ -163,6 +163,7 @@ zstyle ':completion:*' group-name ''
 # %F{yellow}%B%U%{$'\e[3m'%}%d%{$'\e[23m'%}%b%u%f
 #            ^    ^~~~~~~~      ^~~~~~~~~   ^
 #         bold    italic        end italic  end bold
+#
 zstyle ':completion:*' format %F{yellow}%B%{$'\e[3m'%}%d%{$'\e[23m'%}%b%f
 
 # describe options in full

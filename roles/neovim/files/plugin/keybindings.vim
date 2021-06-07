@@ -97,7 +97,6 @@ nnoremap <silent> <C-L> :TmuxNavigateRight<cr>
 " nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
 " -------------------------------------------------}}}
 
-
 nnoremap <silent> gb :call ChooseBuffer()<CR>
 function! ChooseBuffer()  "{{{
     " Количество открытых буферов

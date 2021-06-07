@@ -4,5 +4,8 @@ tags*
 **/neovim/files/.netrwhist
 **/neovim/files/plugin/packer_compiled.vim
 
+**/vifm/**/vifm-help.txt
+**/vifm/**/vifminfo.json
+
 __pycache__/
 **/ranger/**/__init__.py

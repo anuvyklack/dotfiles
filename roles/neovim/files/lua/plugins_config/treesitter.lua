@@ -1,10 +1,15 @@
+-- HACK This file is loaded after nvim-treesitter plugin.
+
 require('nvim-treesitter.configs').setup {
-  ensure_installed = {
-    'bash', 'bibtex', 'c', 'c_sharp', 'clojure', 'comment', 'cpp', 'css',
-    'fennel', 'go', 'haskell', 'html', 'javascript', 'json', 'jsonc',
-    'julia', 'kotlin', 'latex', 'lua', 'ocaml', 'ocaml_interface', 'python',
-    'regex', 'rust', 'teal', 'toml', 'typescript', 'query', 'yaml', 'zig'
-  },
+
+  ensure_installed = "maintained",
+
+  -- ensure_installed = {
+  --   'bash', 'bibtex', 'c', 'comment', 'cpp', 'css', 'fennel', 'go', 'haskell',
+  --   'html', 'javascript', 'json', 'jsonc', 'julia', 'kotlin', 'latex', 'lua',
+  --   'python', 'regex', 'rust', 'teal', 'toml', 'typescript', 'query', 'yaml',
+  --   'zig'
+  -- },
 
   highlight = { enable = true,
                 use_languagetree = true },
@@ -21,40 +26,33 @@ require('nvim-treesitter.configs').setup {
       }
   },
 
+  playground = {
+    enable = true,
+    disable = {},
+    updatetime = 25, -- Debounced time for highlighting nodes in the playground
+                     --  from source code.
+    persist_queries = false, -- Whether the query persists across vim sessions.
+    keybindings = {
+      toggle_query_editor = 'o',
+      toggle_hl_groups = 'i',
+      toggle_injected_languages = 't',
+      toggle_anonymous_nodes = 'a',
+      toggle_language_display = 'I',
+      focus_language = 'f',
+      unfocus_language = 'F',
+      update = 'R',
+      goto_node = '<cr>',
+      show_help = '?',
+    },
+  },
+
+  textobjects = require("keybindings").treesitter_textobjects()
+
   -- refactor = {
   --   smart_rename = {enable = true, keymaps = {smart_rename = "grr"}},
   --   highlight_definitions = {enable = true}
   --   -- highlight_current_scope = { enable = true }
   -- },
-
-  -- textobjects = {
-  --   select = {
-  --     enable = true,
-  --     keymaps = {
-  --       ['iF'] = {
-  --         python = '(function_definition) @function',
-  --         cpp = '(function_definition) @function',
-  --         c = '(function_definition) @function',
-  --         java = '(method_declaration) @function'
-  --       },
-  --       -- or you use the queries from supported languages with textobjects.scm
-  --       ['af'] = '@function.outer',
-  --       ['if'] = '@function.inner',
-  --       ['aC'] = '@class.outer',
-  --       ['iC'] = '@class.inner',
-  --       ['ac'] = '@conditional.outer',
-  --       ['ic'] = '@conditional.inner',
-  --       ['ae'] = '@block.outer',
-  --       ['ie'] = '@block.inner',
-  --       ['al'] = '@loop.outer',
-  --       ['il'] = '@loop.inner',
-  --       ['is'] = '@statement.inner',
-  --       ['as'] = '@statement.outer',
-  --       ['ad'] = '@comment.outer',
-  --       ['am'] = '@call.outer',
-  --       ['im'] = '@call.inner'
-  --     }
-  --   }
-  -- }
-
 }
+
+-- print( require("keybindings").treesitter_textobjects() )

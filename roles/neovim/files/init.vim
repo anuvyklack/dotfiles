@@ -48,11 +48,6 @@ set exrc    " Allow vim search local configuratin files in project filders.
 set secure  " Disallows the use of :autocmd, shell and write commands in
             "   local exrc files.
 
-" ------ Settings that unnecessary in Neovim ---------
-" set history=10000  " Store lots of :cmdline history.
-" set encoding=utf-8
-" ----------------------------------------------------
-
 " }}}
 
 " Python support                                                    {{{
@@ -91,7 +86,7 @@ if has('wsl')
 endif
 " }}}
 
-"  Indentation                                                      {{{
+" Indentation                                                      {{{
 " =====================================================================
 set autoindent     " Use the current indentation when creating a new line
                    " in Insert mode, both through normal Enter or o/O.
@@ -103,99 +98,8 @@ set softtabstop=4
 set shiftwidth=4   " Количество пробелов на которое будет сдвинута
                    " строка командами >> или <<.
 
-filetype plugin indent on
-         " Is a short form of these commands:
-         "
-         "     filetype on
-         "     filetype plugin on
-         "     filetype indent on
-         "
-         " The first command turns on filetype detection for Vim to help set
-         " syntax highlighting and other options. The plugin part will load
-         " plugins for specific filetype if they exist. The last bit will
-         " load indent file for specific filetype if they exist too.
-         "
-         " For example, if you want to activate certain plugins for only
-         " Python language, then you can create a file
-         " ~/.vim/ftplugin/python.vim. Put all the plugins and commands you
-         " want specifically for Python inside that file.
-         "
-         " A good practice is to separate the indent configuration inside
-         " another file (~/.vim/indent/python.vim).  However, I usually just
-         " put the indents inside the plugin file.
-
 " Show invisible symbols. Display tabs and trailing spaces visually
 set list listchars=tab:\ \ ,trail:· ",eol:¶ ",eol:¤
-
-" }}}
-
-" Folds                                                             {{{
-" =====================================================================
-set foldenable         " fold by default
-set foldmethod=marker   " fold based on markers
-" set foldmethod=indent   " fold based on indent
-
-" set foldnestmax=3       " deepest fold is 3 levels (only for sintax and indent)
-
-set foldtext=CustomFoldText('·')
-
-function! CustomFoldText(string) "{{{
-    " Idea by:
-    " http://gregsexton.org/2011/03/27/improving-the-text-displayed-in-a-vim-fold.html
-
-    " get first non-blank line
-    let fs = v:foldstart
-    if getline(fs) =~ '^\s*$'
-      let fs = nextnonblank(fs + 1)
-    endif
-
-    if fs > v:foldend
-        let line = getline(v:foldstart)
-    else
-        let line = substitute(getline(fs), '^\s*', '', '')
-        let line = substitute(line, '\t', repeat(' ', &tabstop), 'g')
-    endif
-
-    " extract the part that defines the beginning of the comment string
-    let pat  = matchstr(&l:commentstring, '^\V\.\{-}\ze%s\m')
-
-    " remove leading comments from line
-    let line = substitute(line, '^\s*'.pat.'\s*', '', '')
-
-    " remove foldmarker from line
-    let pat  = '\s*\%('. pat. '\)\?\s*'. split(&l:fmr, ',')[0]. '\s*\d*'
-    let line = substitute(line, pat, '', '')
-
-    if strlen(line) != 0
-        let line = ' '. line .' '
-        " let line = '| '. line .' |'
-    endif
-
-    let foldLevelStr = '+'. repeat(a:string, strlen(v:folddashes))
-
-    " Size of the colummn with numbers of string (number column size).
-    let nu = (&number ? strlen(string(line('$'))) + 5 : 4)
-    let w = get(g:, 'custom_foldtext_max_width', winwidth(0)) - &foldcolumn - nu
-
-    " let w = get(g:, 'custom_foldtext_max_width', winwidth(0)) - &foldcolumn - (&number ? 8 : 4)
-    let foldSize = 1 + v:foldend - v:foldstart
-    let foldSizeStr = " " . foldSize . " lines "
-    let lineCount = line("$")
-
-    " try
-    "     let foldPercentage = printf("[%.1f", (foldSize*1.0)/lineCount*100) . "%] "
-    " catch /^Vim\%((\a\+)\)\=:E806/	" E806: Using Float as String
-    "     let foldPercentage = printf("[of %d lines] ", lineCount)
-    " endtry
-
-    let foldPercentage = ''
-
-    let expansionString = repeat(a:string, w - strdisplaywidth(foldSizeStr.line.foldLevelStr.foldPercentage))
-
-    " return foldLevelStr . '|' . line . '|' . expansionString . foldSizeStr . foldPercentage
-    return foldLevelStr . line . expansionString . foldSizeStr . foldPercentage
-
-endfunction "}}}
 
 " }}}
 
@@ -316,7 +220,7 @@ set helplang=ru  " Помощь на русском языке
 
 " ================= Visual Tweaks ===================
 
-set wrap           " Wrap lines
+set nowrap           " Wrap lines
 set cmdheight=1    " Make command line one line high
 set colorcolumn=+1 " Показывать рулетку в следующей колонке после textwidth
 set mousehide      " Hide the mouse when typing text
@@ -337,9 +241,39 @@ set guicursor+=i-ci-ve:ver25-Cursor2/lCursor2,r-cr:hor20,o:hor50
 set splitbelow
 set splitright
 
-"  Plugins                                         {{{
-" ====================================================
+"          Settings that unnecessary in Neovim         {{{
+" --------------------------------------------------------
+" set history=10000  " Store lots of :cmdline history.
+"                    " defaults to 10000 (the maximum)
+" set encoding=utf-8
+
+" filetype plugin indent on
+"        " Is a short form of these commands:
+"        " 
+"        "     filetype on
+"        "     filetype plugin on
+"        "     filetype indent on
+"        " 
+"        " The first command turns on filetype detection for Vim to help set
+"        " syntax highlighting and other options. The plugin part will load
+"        " plugins for specific filetype if they exist. The last bit will
+"        " load indent file for specific filetype if they exist too.
+"        " 
+"        " For example, if you want to activate certain plugins for only
+"        " Python language, then you can create a file
+"        " ~/.vim/ftplugin/python.vim. Put all the plugins and commands you
+"        " want specifically for Python inside that file.
+"        " 
+"        " A good practice is to separate the indent configuration inside
+"        " another file (~/.vim/indent/python.vim).  However, I usually just
+"        " put the indents inside the plugin file.
+" ----------------------------------------------------}}}
+
+"                        Plugins                       {{{
+" ========================================================
 set loadplugins
+
+lua require('load-queries')
 lua require('plugins')
 
 " if has('unix')
@@ -347,11 +281,10 @@ lua require('plugins')
 " elseif has('win32')
 "     source ~\AppData\Local\nvim\plugins.vim
 " endif
+" =====================================================}}}
 
-"==================================================}}}
-
-"             Autocommands and Functions           {{{
-" ====================================================
+"               Autocommands and Functions             {{{
+" ========================================================
 
 " https://www.bobbywlindsey.com/2017/07/30/vim-functions/
 " convert rows of numbers or text (as if pasted from excel column) to a tuple
@@ -410,13 +343,13 @@ autocmd VimResized * wincmd =
 " autocmd WinEnter * if &previewwindow | wincmd L | endif
 
 
-" Auto define the suitable foldcolumn value
-augroup AutoSetFoldColumn
-    autocmd!
-    autocmd BufRead * let b:maxFoldLevel = MaxFoldLevel()
-    autocmd WinEnter,BufWinEnter,VimResized * call SetFoldColumn()
-    autocmd User MyCustomCloseWindow call SetFoldColumn()
-augroup END
+" " Auto define the suitable foldcolumn value
+" augroup AutoSetFoldColumn
+"     autocmd!
+"     autocmd BufRead * let b:maxFoldLevel = MaxFoldLevel()
+"     autocmd WinEnter,BufWinEnter,VimResized * call SetFoldColumn()
+"     autocmd User MyCustomCloseWindow call SetFoldColumn()
+" augroup END
 
 function! SetFoldColumn() "{{{
     " echom '-----------'
@@ -531,6 +464,8 @@ au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeou
 " а использовать значение по умолчанию
 " ========================================================
 
+lua require('keybindings')
+
 " Fix writing :W to save
 command! W w
 
@@ -538,12 +473,20 @@ command! W w
 vnoremap <silent> <C-c> "+y :let @*=@+<CR>
 map <C-p> "+p
 
-" If cursor is inside very long line in the file than wraps around
-" several rows on the screen, then 'j' key moves you to the next line
-" in the file, but not to the next row on the screen under your
-" previous position as in other editors.  These bindings fixes this.
-noremap j gj
-noremap k gk
+
+lua << EOF
+-- Dealing with word wrap:
+-- If cursor is inside very long line in the file than wraps around
+-- several rows on the screen, then 'j' key moves you to the next line
+-- in the file, but not to the next row on the screen under your
+-- previous position as in other editors.  These bindings fixes this.
+vim.api.nvim_set_keymap('n', 'k', "v:count == 0 ? 'gk' : 'k'", {noremap = true, expr = true, silent = true})
+vim.api.nvim_set_keymap('n', 'j', "v:count == 0 ? 'gj' : 'j'", {noremap = true, expr = true, silent = true})
+EOF
+
+" nnoremap j gj
+" nnoremap k gk
+
 
 " noremap <C-Left>
 
@@ -714,6 +657,5 @@ fu! ToggleKeyboardLayout() "{{{
 endf "}}}
 
 " }}}
-
 
 " vim: fen fdm=marker number tw=76 cc=+1

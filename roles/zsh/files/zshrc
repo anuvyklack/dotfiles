@@ -87,7 +87,7 @@ autoload -Uz _zinit
 
 # Programs and utilities {{{
 
-zinit ice id-as"exa" from"gh-r" mv"exa-* -> $ZPFX/bin/exa"
+zinit ice id-as"exa" from"gh-r" mv"bin/exa -> $ZPFX/bin/exa" 
 zinit light ogham/exa
 
 # zinit ice from"gh-r" as"program" mv"direnv* -> direnv" atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' pick"direnv"
@@ -344,7 +344,6 @@ zinit light esc/conda-zsh-completion
 zstyle ":conda_zsh_completion:*" use-groups true
 
 # pip zsh completion {{{
-
 function _pip_completion {
   local words cword
   read -Ac words
@@ -355,36 +354,42 @@ function _pip_completion {
 }
 compctl -K _pip_completion pip
 compctl -K _pip_completion pip3
-
 # }}}
 
 # zinit ice lucid id-as"auto" as"completion" blockf
 # zinit snippet OMZ::plugins/fd/_fd
 
+if (( $+commands[vifm] )); then
+  zinit ice id-as"vifm-completion" mv"vifm-completion -> _vifm" as"completion"
+  zinit snippet https://github.com/vifm/vifm/blob/master/data/shell-completion/zsh/_vifm
+fi
+
+if (( $+commands[exa] )); then
+  zinit ice id-as"exa-completion" mv"exa-completion -> _exa" as"completion"
+  zinit snippet https://github.com/ogham/exa/blob/master/completions/zsh/_exa
+fi
+
 # buku bookmark manager completion
-if whence buku > /dev/null 2>&1;
-then
+# if whence buku > /dev/null 2>&1; then
+if (( $+commands[buku] )); then
   zinit ice id-as"buku-completion" mv"buku-completion -> _buku" as"completion"
   zinit snippet https://github.com/jarun/buku/blob/master/auto-completion/zsh/_buku
 fi
 
 # notes (cli notebook) completion
-if whence notes > /dev/null 2>&1
-then
+if (( $+commands[notes] )); then
   zinit ice id-as"notes-cli-completion" mv"notes-cli-completion -> _notes" as"completion"
   zinit snippet https://github.com/rhysd/notes-cli/blob/master/completions/zsh/_notes
 fi
 
 # dnote (cli notebook) completion
-if whence dnote > /dev/null 2>&1
-then
+if (( $+commands[dnote] )); then
   zinit ice as"completion"
   zinit snippet OMZP::dnote/_dnote
 fi
 
 # cppman completion
-if whence cppman > /dev/null 2>&1
-then
+if (( $+commands[cppman] )); then
   zinit ice id-as"cppman-completion" mv"cppman-completion -> _cppman" as"completion"
   zinit snippet https://github.com/aitjcize/cppman/blob/master/misc/completions/cppman.zsh
 fi
@@ -746,8 +751,7 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # Using bfs utility for directory searching.
 # https://github.com/tavianator/bfs
-if whence bfs > /dev/null 2>&1
-then
+if (( $+commands[bfs] )); then
   # # don't show hidden folders
   # export FZF_ALT_C_COMMAND="bfs -type d -nohidden -L -print 2> /dev/null"
 
@@ -809,10 +813,7 @@ fzf-file-widget() {
 # nnn {{{
 
 # cd into last dir on quit nnn {{{
-
-if whence nnn > /dev/null 2>&1;
-then
-
+if (( $+commands[nnn] )); then
   # # Copy original 'quitcd' function. I heavy modified it, so comment this block.
   # zinit ice id-as"nnn_quitcd" as"null" \
   #           mv"nnn_quitcd -> $ZDOTDIR/functions/n"
@@ -824,7 +825,6 @@ then
       zle accept-line
   }
   zle -N nnn_quitcd
-
 fi
 
 # }}}
@@ -921,8 +921,6 @@ bindkey -M isearch " " magic-space
 
 # }}}
 
-alias ed='emacs --with-profile doom'
-
 # Filesystem aliases
 alias ..=' cd ..'
 alias ...=' cd ../..'
@@ -934,9 +932,6 @@ ialias -g L='| less'
 ialias cls=clear
 
 ialias z=_zlua
-
-alias wse='wajig search '
-alias wsh='wajig show '
 
 # Пингуем один раз вместо бесконечности.
 ialias ping='ping -c 1'
@@ -957,6 +952,8 @@ ialias rm='nocorrect rm -v'
 # если они отсутствуют.
 ialias mkdir='nocorrect mkdir -vp'
 
+alias grep='grep --color=auto'
+
 # alias l='ls -lAh --color=auto --group-directories-first'
 alias ls='ls --color=auto --group-directories-first'
 
@@ -966,33 +963,24 @@ alias ls='ls --color=auto --group-directories-first'
 # alias lsd='ls -ld *(-/DN)'  # вывод только каталогов
 # alias lsa='ls -ld .*'  # вывog тoльko dot-фaйлoв
 
-ialias lsd='command lsd --group-dirs=first --blocks=permission,size,date,name --date=relative --icon=always --color=always -lF'
-ialias lt='commmand lsd --tree'
-
-# exa {{{
-
-exa_current_ver="$(exa -v | awk -F v '{print $2}')"
-
-# Когда номер версии будет больше чем 0.9.0 должны появиться опции:
-# --no-user, --no-time и прочие. Для этого добавленная проверка
-# номера версии.
-autoload is-at-least
-if is-at-least 0.9.1 $exa_current_ver
-then
-  ialias ll='command exa --group-directories-first -lF --color=always --git --no-user'
-else
-  # ialias ll='exa --group-directories-first -lF --git --color=always --header --icons'
-  # ialias ll='command exa --group-directories-first --lF --git --color=always --header'
-  ialias ll='command exa --group-directories-first -lF --git --color=always'
-  # ialias ls='command exa --group-directories-first -F'
+if (( $+commands[lsd] )); then
+  ialias lsd='command lsd --group-dirs=first --blocks=permission,size,date,name --date=relative --icon=always --color=always -lF'
+  ialias lt='commmand lsd --tree'
 fi
 
-# }}}
+if (( $+commands[exa] )); then
+  # Когда номер версии будет больше чем 0.9.0 должны появиться опции:
+  # --no-user, --no-time и прочие. Для этого добавленная проверка
+  # номера версии.
+  alias ll='exa -lF --group-directories-first --git --no-user'
+  # alias ll='exa --group-directories-first -lF --color=always --git --no-user --icons'
+fi
 
 ialias tree='tree -I .git -I .github'
 
-if whence nvim > /dev/null 2>&1; then
+if (( $+commands[nvim] )); then
   ialias vim='nvim'
+  ialias neovide="neovide --multiGrid --geometry=340x120"
 fi
 
 # alias history="history -35"  # упрощение вывода истории команд
@@ -1043,6 +1031,8 @@ alias b='buku'
 
 # ialias qimgv="QT_SCALE_FACTOR="1.5" qimgv"
 
+alias ed='emacs --with-profile doom'
+
 # }}}
 
 # Initializing completion system {{{
@@ -1064,7 +1054,7 @@ zinit cdreplay -q
 
 compdef _gnu_generic update-alternatives
 
-if whence lsd > /dev/null 2>&1; then
+if (( $+commands[lsd] )); then
   compdef _gnu_generic lsd
 fi
 
