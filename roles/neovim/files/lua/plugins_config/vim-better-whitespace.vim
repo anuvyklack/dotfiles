@@ -34,3 +34,4 @@ let g:better_whitespace_guicolor='lightcyan'
 " let g:better_whitespace_guicolor='lightmagenta'
 " let g:better_whitespace_guicolor='magenta'
 
+echom 'Test'

@@ -115,8 +115,9 @@ endfunction
 
 " nmap <leader>vw <Plug>(wiki-index)
 
-" " Показать syntax group для участка кода, а также цвет этой группы.
-" " Удобно при создании своей цветовой схемы
+" Показать syntax group для участка кода, а также цвет этой группы.
+" Удобно при создании своей цветовой схемы
+nnoremap <C-g> :TSHighlightCapturesUnderCursor<CR>
 " nnoremap <C-g> :call SyntaxAttr()<CR>
 
 " vim: foldenable tw=76 colorcolumn=+1 fdm=marker

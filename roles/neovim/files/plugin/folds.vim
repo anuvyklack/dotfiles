@@ -2,101 +2,101 @@
 " https://github.com/AdamWagner/stackline/issues/42#issuecomment-696817874
 
 
-set fillchars=fold:•
 set foldmethod=marker   " fold based on markers
+set foldcolumn=3
 " set foldlevelstart=0
-" set foldnestmax=3       " deepest fold is 3 levels (only for sintax and indent)
+" set foldnestmax=3     " deepest fold is 3 levels (only for sintax and indent)
+
+set fillchars=fold:•
 set foldtext=CustomFoldText('•')
 
 function! CustomFoldText(string) "{{{
-
-  " Get first non-blank line.
-  let line_num = v:foldstart
-  while getline(fs) =~ '^\s*$'  " if line consists only from spaces
-    let line_num = nextnonblank(line_num + 1)
-  endwhile
-
-  " If fold is emty, get the first line.
-  if line_num >= v:foldend
+    " Get first non-blank line.
     let line_num = v:foldstart
-  endif
+    while getline(fs) =~ '^\s*$'  " if line consists only from spaces
+      let line_num = nextnonblank(line_num + 1)
+    endwhile
 
-  " The number of indentation. 
-  " All tabs count as spaces with respect to '&tabstop'.
-  let indent_num = indent(line_num)
+    " If fold is emty, get the first line.
+    if line_num >= v:foldend
+      let line_num = v:foldstart
+    endif
 
-  " Get the line content, removing all whitespaces 
-  " from the beginning and the end of the line.
-  let line = trim(getline(line_num)) 
+    " The number of indentation. 
+    " All tabs count as spaces with respect to '&tabstop'.
+    let indent_num = indent(line_num)
 
-  " Construct the list from '&commentstring' string using '%s' as separator,
-  " and get the first element from the list.
-  "   This list construction works the next way. The tipical '&commentstring'
-  " conten looks like:
-  "     commentstring=/*%s*/    (cpp example)
-  " It consiste of different comment strings separeted by '%s' symbols.
-  let comment_str = split(&commentstring, '%s')[0]  
-  " If the line starts from the first element in the obtained list (i.e. line
-  " starts with the comment sign), then ...
-  if match(line, '^'.comment_str) != -1
-    " ... add its length to the 'indent_num' variable.
-    let indent_num = indent_num + len(comment_str)
-  endif
+    " Get the line content, removing all whitespaces 
+    " from the beginning and the end of the line.
+    let line = trim(getline(line_num)) 
 
-  " Remove all comment signs.
-  let line = substitute(line, join(split(&commentstring, '%s'), '\|'), '', 'g')
-                           "  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                           "  In this command we construct from this string: 
-                           "      '/*%s*/'   (cpp example) 
-                           "  the next one: 
-                           "      '/*\|*/'
-                           "  which is Vim pattern.
+    " Construct the list from '&commentstring' string using '%s' as separator,
+    " and get the first element from the list.
+    "   This list construction works the next way. The tipical '&commentstring'
+    " conten looks like:
+    "     commentstring=/*%s*/    (cpp example)
+    " It consiste of different comment strings separeted by '%s' symbols.
+    let comment_str = split(&commentstring, '%s')[0]  
+    " If the line starts from the first element in the obtained list (i.e. line
+    " starts with the comment sign), then ...
+    if match(line, '^'.comment_str) != -1
+      " ... add its length to the 'indent_num' variable.
+      let indent_num = indent_num + len(comment_str)
+    endif
 
-  " Remove all foldmarkers signs.
-  let line = substitute(line, join(split(&foldmarker, ','), '\d\?\|'), '', 'g')
+    " Remove all comment signs.
+    let line = substitute(line, join(split(&commentstring, '%s'), '\|'), '', 'g')
+                             "  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                             "  In this command we construct from this string: 
+                             "      '/*%s*/'   (cpp example) 
+                             "  the next one: 
+                             "      '/*\|*/'
+                             "  which is Vim pattern.
 
-  let indent_num = indent_num + match(line, '\S')
+    " Remove all foldmarkers signs.
+    let line = substitute(line, join(split(&foldmarker, ','), '\d\?\|'), '', 'g')
 
-  " Convert indentation level number into indentation string.
-  if indent_num > 0
-    let indent_str = repeat(a:string, indent_num-1) . ' '
-  else
-    let indent_str = ''
-  endif
+    let indent_num = indent_num + match(line, '\S')
 
-  " Remove all whitespaces from the beginning and the end of the line.
-  " And add one at the end to separate line content from the fold signs: 
-  " i.e. to get this:
-  "     fold text ••••••••••••••••••••••••••
-  " not this:
-  "     fold text•••••••••••••••••••••••••••
-  let line = trim(line) . ' '
+    " Convert indentation level number into indentation string.
+    if indent_num > 0
+      let indent_str = repeat(a:string, indent_num-1) . ' '
+    else
+      let indent_str = ''
+    endif
 
-  " The number of folded lines.
-  let fold_size_num = 1 + v:foldend - v:foldstart
-  let fold_size_str = " " . fold_size_num . " lines "
+    " Remove all whitespaces from the beginning and the end of the line.
+    " And add one at the end to separate line content from the fold signs: 
+    " i.e. to get this:
+    "     fold text ••••••••••••••••••••••••••
+    " not this:
+    "     fold text•••••••••••••••••••••••••••
+    let line = trim(line) . ' '
 
-  " Size of line numbers colummn 
-  let nu = (&number ? len(string(line('$'))) : 0)
+    " The number of folded lines.
+    let fold_size_num = 1 + v:foldend - v:foldstart
+    let fold_size_str = " " . fold_size_num . " lines "
 
-  " " Try to get the value from the 'g:custom_foldtext_max_width' variable. If
-  " " it doesn't exists, get the width of the current window. Substitute from
-  " " this value the widths of the foldcolumn and line number column.
-  " let w = get(g:, 'custom_foldtext_max_width', winwidth(0)) - &foldcolumn - nu
+    " Size of line numbers colummn 
+    let nu = (&number ? len(string(line('$'))) : 0)
 
-  " let lineCount = line("$")
-  " try
-  "   let foldPercentage = printf("[%.1f", (foldSize*1.0)/lineCount*100) . "%] "
-  " catch /^Vim\%((\a\+)\)\=:E806/	" E806: Using Float as String
-  "   let foldPercentage = printf("[of %d lines] ", lineCount)
-  " endtry
+    " " Try to get the value from the 'g:custom_foldtext_max_width' variable. If
+    " " it doesn't exists, get the width of the current window. Substitute from
+    " " this value the widths of the foldcolumn and line number column.
+    " let w = get(g:, 'custom_foldtext_max_width', winwidth(0)) - &foldcolumn - nu
+
+    " let lineCount = line("$")
+    " try
+    "   let foldPercentage = printf("[%.1f", (foldSize*1.0)/lineCount*100) . "%] "
+    " catch /^Vim\%((\a\+)\)\=:E806/	" E806: Using Float as String
+    "   let foldPercentage = printf("[of %d lines] ", lineCount)
+    " endtry
 
 
-  let expansion_str = repeat(a:string, winwidth(0) - &foldcolumn - nu - 7 -
-                                     \ strdisplaywidth(indent_str.line.fold_size_str))
+    let expansion_str = repeat(a:string, winwidth(0) - &foldcolumn - nu - 7 -
+                                       \ strdisplaywidth(indent_str.line.fold_size_str))
 
-  return indent_str . line . expansion_str . fold_size_str
-
+    return indent_str . line . expansion_str . fold_size_str
 endfunction "}}}
 
 

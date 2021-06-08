@@ -15,12 +15,13 @@ local on_attach = function(client, bufnr)
     require("keybindings").lspconfig(bufnr)
 end
 
--- Use a loop to conveniently call 'setup' on multiple servers and
--- map buffer local keybindings when the language server attaches
-local servers = { "pyright" }
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup { on_attach = on_attach }
-end
+
+-- -- Use a loop to conveniently call 'setup' on multiple servers and
+-- -- map buffer local keybindings when the language server attaches
+-- local servers = { "pyright" }
+-- for _, lsp in ipairs(servers) do
+--   nvim_lsp[lsp].setup { on_attach = on_attach }
+-- end
 
 
 -- A list of available options:
@@ -40,6 +41,13 @@ nvim_lsp.ccls.setup {
 
 -- nvim_lsp.pyright.setup{}
 
-
+-- vim.fn.sign_define("LspDiagnosticsSignError",
+--     {text = "", texthl = "GruvboxRed"})
+-- vim.fn.sign_define("LspDiagnosticsSignWarning",
+--     {text = "", texthl = "GruvboxYellow"})
+-- vim.fn.sign_define("LspDiagnosticsSignInformation",
+--     {text = "", texthl = "GruvboxBlue"})
+-- vim.fn.sign_define("LspDiagnosticsSignHint",
+--     {text = "", texthl = "GruvboxAqua"})
 
 -- vim: ts=2 sts=2 sw=2 tw=80 cc=+1 fen fdm=marker

@@ -1,6 +1,5 @@
 [
  (compound_statement)
- (struct_specifier)
  (comment)
  (preproc_if)
  (preproc_elif)
