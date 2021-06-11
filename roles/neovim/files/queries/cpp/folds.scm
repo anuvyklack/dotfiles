@@ -6,7 +6,5 @@
  (preproc_else)
  (field_declaration_list)
  (namespace_definition)
- (try_statement)
- (catch_clause)
 ] @fold
 

@@ -14,7 +14,7 @@ let g:nvim_tree_auto_close = 1   " Closes the tree when it's the last window.
 let g:nvim_tree_quit_on_open = 0 " Closes the tree when you open a file.
 
 " Allows the cursor to be updated when entering a buffer.
-let g:nvim_tree_follow = 1        
+let g:nvim_tree_follow = 0
 
 " Hides files and folders starting with a dot.
 let g:nvim_tree_hide_dotfiles = 1

@@ -40,6 +40,7 @@ set ttimeoutlen=50   " Время переключения между режим
 syntax enable        " Включить подсветку синтаксиса
 
 " set completeopt-=preview  " Not to show preview window on complection
+set completeopt=menuone,noselect
 
 set title
 set titlestring=%t  " tile

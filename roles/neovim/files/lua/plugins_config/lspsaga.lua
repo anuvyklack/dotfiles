@@ -70,9 +70,10 @@ require('lspsaga').init_lsp_saga {
   },
 
   finder_action_keys = {
-    open = 'o', 
+    -- open = 'o', -- original
+    open = '<Enter>', 
     vsplit = 's', split = 'i', 
-    quit = 'q', -- quit can be a table
+    quit = {'q', '<Esc>'}, -- quit can be a table
     scroll_down = '<C-f>', scroll_up = '<C-b>' 
   },
 
