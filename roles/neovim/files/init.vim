@@ -107,7 +107,7 @@ set list listchars=tab:\ \ ,trail:· ",eol:¶ ",eol:¤
 " Formating text                                   {{{
 " ====================================================
 
-set formatoptions=tcqj  " The behavior of 'gw' command. 
+set formatoptions=tcqj  " The behavior of 'gw' command.
                         " Default value is 'tcqj'
 
 set joinspaces " Put two spaces after period.
@@ -157,6 +157,7 @@ set pumheight=15  " Количество строк во всплывающем 
 " =================== Scrolling ======================
 
 set scrolloff=0  " Start scrolling when we're n lines away from margins
+setlocal scrolloff=0 " https://github.com/karb94/neoscroll.nvim/issues/28
 
 set sidescrolloff=1 " Сколько колонок должно остаться до конца экрана,
                     " чтобы Vim начал прокручивать экран вбок.
@@ -225,7 +226,7 @@ set nowrap           " Wrap lines
 set cmdheight=1    " Make command line one line high
 set colorcolumn=+1 " Показывать рулетку в следующей колонке после textwidth
 set mousehide      " Hide the mouse when typing text
-set cursorline     " выделять строку, на которой находится курсор
+" set cursorline     " выделять строку, на которой находится курсор
 
 " set guicursor=a:blinkon100  " Turn on cursor blinking
 
@@ -250,21 +251,21 @@ set splitright
 
 " filetype plugin indent on
 "        " Is a short form of these commands:
-"        " 
+"        "
 "        "     filetype on
 "        "     filetype plugin on
 "        "     filetype indent on
-"        " 
+"        "
 "        " The first command turns on filetype detection for Vim to help set
 "        " syntax highlighting and other options. The plugin part will load
 "        " plugins for specific filetype if they exist. The last bit will
 "        " load indent file for specific filetype if they exist too.
-"        " 
+"        "
 "        " For example, if you want to activate certain plugins for only
 "        " Python language, then you can create a file
 "        " ~/.vim/ftplugin/python.vim. Put all the plugins and commands you
 "        " want specifically for Python inside that file.
-"        " 
+"        "
 "        " A good practice is to separate the indent configuration inside
 "        " another file (~/.vim/indent/python.vim).  However, I usually just
 "        " put the indents inside the plugin file.
@@ -274,7 +275,6 @@ set splitright
 " ========================================================
 set loadplugins
 
-lua require('load-queries')
 lua require('plugins')
 
 " if has('unix')
@@ -621,6 +621,7 @@ cnoremap <C-l> <Right>
 command! I edit $MYVIMRC
 " открыть файл с плагинами
 if has('unix')
+    " command! P edit ~/.config/nvim/plugin/plugins.lua
     command! P edit ~/.config/nvim/lua/plugins.lua
 endif
 

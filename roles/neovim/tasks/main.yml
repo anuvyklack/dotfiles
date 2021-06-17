@@ -4,9 +4,9 @@
   apt:
     name:
       - curl
-      - par  # Paragraph formating utility for vim / neovim
+      - par  # Paragraph formating utility for vim
       - neovim
-      # - python3-pynvim  # looks like it is autoinstalling in Ubnntu
+      # - python3-pynvim  # looks like it is autoinstalling in Ubuntu
     state: present
     force_apt_get: yes  # Force usage of apt-get instead of aptitude
     update_cache: yes

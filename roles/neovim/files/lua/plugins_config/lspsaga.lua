@@ -74,7 +74,7 @@ require('lspsaga').init_lsp_saga {
     open = '<Enter>', 
     vsplit = 's', split = 'i', 
     quit = {'q', '<Esc>'}, -- quit can be a table
-    scroll_down = '<C-f>', scroll_up = '<C-b>' 
+    -- scroll_down = '<C-f>', scroll_up = '<C-b>' 
   },
 
   rename_action_keys = {

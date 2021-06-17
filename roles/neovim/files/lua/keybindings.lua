@@ -8,8 +8,8 @@
 --  ░░   ░░  ░░░░░    █████      ░░░░░░  ░░ ░░   ░░  ░░░░░░ ░░ ░░   ░░   █████ ░░░░░░
 --                   ░░░░░                                              ░░░░░
 
-local is_module_available = require("utility").is_module_available
 -- Using as: 'if is_module_available("menu") then require("menu") end'
+local is_module_available = require("utility").is_module_available
 
 -- All functions that need to be exported should go in this table.
 local _M = {}
@@ -55,38 +55,38 @@ function _M.lspconfig (bufnr)
     -- Lspsaga {{{
 
     -- lsp provider to find the cursor word definition and reference
-    buf_set_keymap("n", "gd", ":Lspsaga lsp_finder<CR>", opts)
+    buf_set_keymap("n", "gd", "<cmd>Lspsaga lsp_finder<CR>", opts)
 
     -- code action
-    buf_set_keymap("n", "<leader>ca", ":Lspsaga code_action<CR>", opts)
-    buf_set_keymap("v", "<leader>ca", ":<C-U>Lspsaga range_code_action<CR>", opts)
+    buf_set_keymap("n", "<leader>ca", "<cmd>Lspsaga code_action<CR>", opts)
+    buf_set_keymap("v", "<leader>ca", "<cmd><C-U>Lspsaga range_code_action<CR>", opts)
 
     -- rename
-    -- buf_set_keymap("n", "gr", ":Lspsaga rename<CR>", opts)
-    buf_set_keymap("n", "<leader>rn", ":Lspsaga rename<CR>", opts)
+    -- buf_set_keymap("n", "gr", "<cmd>Lspsaga rename<CR>", opts)
+    buf_set_keymap("n", "<leader>rn", "<cmd>Lspsaga rename<CR>", opts)
 
     -- preview definition
-    buf_set_keymap("n", "<leader>pd", ":Lspsaga preview_definition<CR>", opts)
+    buf_set_keymap("n", "<leader>pd", "<cmd>Lspsaga preview_definition<CR>", opts)
 
     -- hover doc
-    buf_set_keymap("n", "K", ":Lspsaga hover_doc<CR>", opts)
+    buf_set_keymap("n", "K", "<cmd>Lspsaga hover_doc<CR>", opts)
 
     -- show signature help
-    buf_set_keymap("n", "<C-k>", ":Lspsaga signature_help<CR>", opts)
+    buf_set_keymap("n", "<C-k>", "<cmd>Lspsaga signature_help<CR>", opts)
 
     -- Show Diagnostics
-    -- buf_set_keymap("n", "<leader>e", ":Lspsaga show_line_diagnostics<CR>", opts)
+    -- buf_set_keymap("n", "<leader>e", "<cmd>Lspsaga show_line_diagnostics<CR>", opts)
     -- only show diagnostic if cursor is over the area
     buf_set_keymap("n", "<leader>cc", "<cmd>lua require'lspsaga.diagnostic'.show_cursor_diagnostics()<CR>", opts)
 
     -- jump diagnostic
-    buf_set_keymap("n", "]e", ":Lspsaga diagnostic_jump_next<CR>", opts)
-    buf_set_keymap("n", "[e", ":Lspsaga diagnostic_jump_prev<CR>", opts)
+    buf_set_keymap("n", "]e", "<cmd>Lspsaga diagnostic_jump_next<CR>", opts)
+    buf_set_keymap("n", "[e", "<cmd>Lspsaga diagnostic_jump_prev<CR>", opts)
 
 
-    -- scroll down / up inside different preview windows
-    buf_set_keymap("n", "<C-f>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>", opts)
-    buf_set_keymap("n", "<C-b>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>", opts)
+    -- -- scroll down / up inside different preview windows
+    -- buf_set_keymap("n", "<C-f>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>", opts)
+    -- buf_set_keymap("n", "<C-b>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>", opts)
 
     --}}}
 
@@ -149,6 +149,26 @@ function _M.treesitter_textobjects()
     }, --}}}
   }
 end
+
+-- Hop (easymotion) {{{
+function _M.hop()
+  local set_keymap = vim.api.nvim_set_keymap
+  local opts = { noremap=true, silent=false }
+
+  set_keymap('n', ';w', "<cmd>HopWord<CR>", opts)
+  set_keymap('v', ';w', "<cmd>HopWord<CR>", opts)
+  set_keymap('n', ';b', "<cmd>HopWord<CR>", opts)
+  set_keymap('v', ';b', "<cmd>HopWord<CR>", opts)
+
+  set_keymap('n', ';j', "<cmd>HopLine<CR>", opts)
+  set_keymap('n', ';k', "<cmd>HopLine<CR>", opts)
+  set_keymap('v', ';j', "<cmd>HopLine<CR>", opts)
+  set_keymap('v', ';k', "<cmd>HopLine<CR>", opts)
+
+  set_keymap('n', 's', "<cmd>HopChar1<CR>", opts)
+  set_keymap('v', 's', "<cmd>HopChar1<CR>", opts)
+
+end -- }}}
 
 
 return _M
