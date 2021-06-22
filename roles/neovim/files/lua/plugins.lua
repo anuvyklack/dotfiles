@@ -40,14 +40,14 @@ if fn.empty( fn.glob(install_path) ) > 0 then
 end
 vim.cmd [[packadd packer.nvim]]
 
--- Auto compile when there are changes in plugins.lua
--- vim.cmd 'autocmd BufWritePost plugins.lua PackerCompile'
-vim.cmd [[
-  augroup Packer
-    autocmd!
-    autocmd BufWritePost plugins.lua PackerCompile
-  augroup end
-]]
+-- -- Auto compile when there are changes in plugins.lua
+-- -- vim.cmd 'autocmd BufWritePost plugins.lua PackerCompile'
+-- vim.cmd [[
+--   augroup Packer
+--     autocmd!
+--     autocmd BufWritePost plugins.lua PackerCompile
+--   augroup end
+-- ]]
 
 require('packer').init{
   display = {
@@ -70,7 +70,9 @@ require('packer').startup(function()
 
   -- Comments {{{
 
-  use 'tomtom/tcomment_vim'   -- Comments. For help use :help tcomment
+  use {'tomtom/tcomment_vim',   -- Comments. For help use :help tcomment
+    config = function() require('plugins_config/tcomment') end
+  }
 
   -- use { 'winston0410/commented.nvim',
   --   config = function()
@@ -87,9 +89,7 @@ require('packer').startup(function()
   -- https://github.com/windwp/nvim-autopairs
   use { 'windwp/nvim-autopairs',
     as = 'autopairs',
-    config = function()
-      require('nvim-autopairs').setup()
-    end
+    config = function() require('nvim-autopairs').setup() end
   }
 
   -- Surround {{{
@@ -121,19 +121,8 @@ require('packer').startup(function()
   }
 
   use { 'kevinhwang91/nvim-hlslens',
-    config = function()
-      local set_keymap = vim.api.nvim_set_keymap
-      local opts = { noremap=true, silent=true }
-
-      set_keymap('n', 'n', "<Cmd>execute('normal! '.v:count1.'n')<CR><Cmd>lua require('hlslens').start()<CR>", opts)
-      set_keymap('n', 'N', "<Cmd>execute('normal! '.v:count1.'N')<CR><Cmd>lua require('hlslens').start()<CR>", opts)
-
-      set_keymap('n', '*', "*<Cmd>lua require('hlslens').start()<CR>", opts)
-      set_keymap('n', '#', "#<Cmd>lua require('hlslens').start()<CR>", opts)
-
-      set_keymap('n', 'g*', "g*<Cmd>lua require('hlslens').start()<CR>", opts)
-      set_keymap('n', 'g#', "g#<Cmd>lua require('hlslens').start()<CR>", opts)
-    end
+    as = 'hlslens',
+    config = function() require('plugins_config/hlslens') end
   }
 
   -- Подсвечивать и удалять висящие пробелы в конце строк
@@ -180,6 +169,8 @@ require('packer').startup(function()
 
   ------------ Windows and buffers managment ------------
 
+  -- use 'matbme/JABS.nvim'
+
   use { 'jlanzarotta/bufexplorer',
     config = function()
       -- Do not go to active window.
@@ -208,23 +199,23 @@ require('packer').startup(function()
 
   -- Smooth scroll {{{
 
-  -- -- https://github.com/psliwka/vim-smoothie
-  -- use { 'psliwka/vim-smoothie',
-  --   config = function()
-  --     -- Time (in milliseconds) between subseqent screen/cursor postion updates.
-  --     -- Lower value produces smoother animation.
-  --     vim.g.smoothie_update_interval = 20
-  --     --
-  --     -- Base scrolling speed (in lines per second), to be taken into account by
-  --     -- the velocity calculation algorithm.  Can be decreased to achieve slower
-  --     -- (and easier to follow) animation.
-  --     vim.g.smoothie_base_speed = 7
-  --   end
-  -- }
-
-  use { 'karb94/neoscroll.nvim',
-    config = function() require('plugins_config/neoscroll') end
+  -- https://github.com/psliwka/vim-smoothie
+  use { 'psliwka/vim-smoothie',
+    config = function()
+      -- Time (in milliseconds) between subseqent screen/cursor postion updates.
+      -- Lower value produces smoother animation.
+      vim.g.smoothie_update_interval = 20
+      --
+      -- Base scrolling speed (in lines per second), to be taken into account by
+      -- the velocity calculation algorithm.  Can be decreased to achieve slower
+      -- (and easier to follow) animation.
+      vim.g.smoothie_base_speed = 7
+    end
   }
+
+  -- use { 'karb94/neoscroll.nvim',
+  --   config = function() require('plugins_config/neoscroll') end
+  -- }
 
   -- }}}
 
@@ -313,6 +304,14 @@ require('packer').startup(function()
   -- use 'nvim-lua/lsp_extensions.nvim'
   -- use 'steelsojka/completion-buffers'
   -- use 'tjdevries/nlua.nvim'
+  ----------------------------------------------------}}}
+
+  --           DAP (Debug Adapter Protocol)           {{{
+  -------------------------------------------------------
+
+  use { "rcarriga/nvim-dap-ui",
+    requires = "mfussenegger/nvim-dap"
+  }
 
   ----------------------------------------------------}}}
 
@@ -321,9 +320,10 @@ require('packer').startup(function()
     requires = {
       'nvim-treesitter/nvim-treesitter-refactor',
       'nvim-treesitter/nvim-treesitter-textobjects',
+      'RRethy/nvim-treesitter-textsubjects',
       'nvim-treesitter/playground',
       'p00f/nvim-ts-rainbow',
-      'romgrk/nvim-treesitter-context'
+      'romgrk/nvim-treesitter-context',
     },
     run = ':TSUpdate',
     config = function() require('plugins_config/treesitter') end
@@ -362,14 +362,14 @@ require('packer').startup(function()
 
   ---------- Syntaxes and programming languages ----------
 
-  -- Подсветка синтаксисов для разных языков.
-  use { 'sheerun/vim-polyglot',
-    setup = function()  -- run before plugin load
-      -- This variable should be declared before polyglot is loaded!
-      -- vim.g.polyglot_disabled = 'markdown'
-      vim.g.polyglot_disabled = {'markdown', 'gitignore'}
-    end
-  }
+  -- -- Подсветка синтаксисов для разных языков.
+  -- use { 'sheerun/vim-polyglot',
+  --   setup = function()  -- run before plugin load
+  --     -- This variable should be declared before polyglot is loaded!
+  --     -- vim.g.polyglot_disabled = 'markdown'
+  --     vim.g.polyglot_disabled = {'markdown', 'gitignore'}
+  --   end
+  -- }
 
   use 'SirJson/fzf-gitignore'
 
@@ -459,9 +459,9 @@ require('packer').startup(function()
     end, --}}}
   }
 
-  -- local theme = 'gruvbox-material'
+  local theme = 'gruvbox-material'
   -- local theme = 'tokyonight'
-  local theme = 'melange'
+  -- local theme = 'melange'
   -- local theme = 'mellow'
   -- local theme = 'moonshine'
   -- local theme = 'srcery'
@@ -510,8 +510,11 @@ require('packer').startup(function()
   use { "folke/which-key.nvim",
     config = function()
       require("which-key").setup {
-        -- Your configuration comes here
-        -- or leave it empty to use the default settings.
+        spelling = {
+          enabled = true,  -- Enabling this will show WhichKey when pressing z=
+                           --   to select spelling suggestions.
+          suggestions = 20, -- How many suggestions should be shown in the list?
+        },
       }
     end
   }

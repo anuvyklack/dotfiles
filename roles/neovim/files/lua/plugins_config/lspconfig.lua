@@ -11,7 +11,7 @@ local on_attach = function(client, bufnr)
     --Enable completion triggered by <c-x><c-o>
     buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-    require('lsp_signature').on_attach()
+    -- require('lsp_signature').on_attach()
     -- require('virtualtypes').on_attach()
     require 'illuminate'.on_attach(client)
 

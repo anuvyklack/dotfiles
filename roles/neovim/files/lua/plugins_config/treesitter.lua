@@ -48,13 +48,21 @@ require('nvim-treesitter.configs').setup {
 
   textobjects = require("keybindings").treesitter_textobjects(),
 
+  textsubjects = {
+    enable = true,
+    keymaps = {
+      ['.'] = 'textsubjects-smart',
+      [';'] = 'textsubjects-big',
+    }
+  },
+
   rainbow = {
     enable = true,
-    -- Highlight also non-parentheses delimiters, 
+    -- Highlight also non-parentheses delimiters,
     --   boolean or table: lang -> boolean
-    extended_mode = true, 
+    extended_mode = true,
     -- Do not enable for files with more than 1000 lines, int
-    max_file_lines = 1000, 
+    max_file_lines = 1000,
   }
 
   -- refactor = {
