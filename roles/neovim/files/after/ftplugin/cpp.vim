@@ -2,7 +2,7 @@ setlocal foldcolumn=3
 " set foldnestmax=3  " deepest fold is 3 levels (only for sintax and indent)
 
 " Use treesitter base folding.
-setlocal foldmethod=expr  
+setlocal foldmethod=expr
 setlocal foldexpr=nvim_treesitter#foldexpr()
 
 " setlocal fillchars=fold:•
@@ -21,18 +21,18 @@ function! CppFoldText(string) "{{{
           \ '\\brief',
           \ ]
 
-    " The number of indentation. All tabs count as spaces 
+    " The number of indentation. All tabs count as spaces
     " with respect to &tabstop.
-    " let indent_num = indent(v:foldstart) 
+    " let indent_num = indent(v:foldstart)
     let indent_str = repeat(a:string, indent(v:foldstart))
 
     " The number of folded lines.
     let fold_size_num = 1 + v:foldend - v:foldstart
     let fold_size_str = " " . fold_size_num . " lines "
-  
+
     " Remove all whitespaces from the beginning and the end of the line.
     let line = trim(getline(v:foldstart))
-    
+
     " Take cake of Doxygen comments.
     if match(line, '^/\*\*$') != -1 " If line match to Doxygen comment line.
         let second_line = trim(getline(v:foldstart + 1))
@@ -50,24 +50,23 @@ function! CppFoldText(string) "{{{
         " let last_line = substitute(last_line, '//.*$', '', '')
         let last_line = substitute(last_line, ';.*$', '', '')
         let line = line . '...' . last_line
-    else 
+    else
     endif
-  
+
     " Remove stop tokens from line,
     let line = substitute(line, join(foldtext_stop_words, '\|'), '', 'g')
     let line = substitute(line, '\v\s+', ' ', 'g')
 
     " let line = line . '...' . close_bracket
-  
-    " Size of line numbers colummn 
+
+    " Size of line numbers colummn
     let nu = (&number ? len(string(line('$'))) : 0)
-  
-    let expansion_str = 
-        \repeat(a:string, 
+
+    let expansion_str =
+        \repeat(a:string,
         \       winwidth(0) - &foldcolumn - nu - 7 -
         \       strdisplaywidth(indent_str . line . fold_size_str)
         \      )
-  
+
     return indent_str . line . expansion_str . fold_size_str
 endfunction "}}}
-

@@ -55,7 +55,7 @@ require('packer').init{
   }
 }
 
-require('packer').startup(function()
+require('packer').startup(function(use)
 -- return require('packer').startup(function()
 
   use { 'wbthomason/packer.nvim', opt = true } -- Packer can manage itself
@@ -120,10 +120,10 @@ require('packer').startup(function()
     end
   }
 
-  use { 'kevinhwang91/nvim-hlslens',
-    as = 'hlslens',
-    config = function() require('plugins_config/hlslens') end
-  }
+  -- use { 'kevinhwang91/nvim-hlslens',
+  --   as = 'hlslens',
+  --   config = function() require('plugins_config/hlslens') end
+  -- }
 
   -- Подсвечивать и удалять висящие пробелы в конце строк
   use { 'ntpeters/vim-better-whitespace',
@@ -188,7 +188,7 @@ require('packer').startup(function()
   -- }
 
   use { 'phaazon/hop.nvim',
-    as = 'hop',
+    as = 'easymotion_hop',
     config = function()
       require'hop'.setup {
         winblend = 30
@@ -245,7 +245,16 @@ require('packer').startup(function()
   -- together,
 
   use { 'neovim/nvim-lspconfig',
+    as = 'lspconfig',
+    requires = {
+      -- Adds the missing :LspInstall <language> command
+      -- to conveniently install language servers.
+      { "kabouzeid/nvim-lspinstall", as = 'lspinstall'},
+      -- Setup for lua and plugins development.
+      "folke/lua-dev.nvim"
+    },
     config = function() require('plugins_config/lspconfig') end
+    -- config = function() require('plugins_config/lspconfig-test') end
   }
 
   use { 'glepnir/lspsaga.nvim',
@@ -253,10 +262,6 @@ require('packer').startup(function()
     -- branch = 'finder-preview-fixes',
     config = function() require('plugins_config/lspsaga') end
   }
-
-  -- -- Adds the missing :LspInstall <language> command
-  -- -- to conveniently install language servers.
-  -- use 'kabouzeid/nvim-lspinstall'
 
   -- use { "folke/trouble.nvim",
   --   requires = "kyazdani42/nvim-web-devicons",
@@ -298,32 +303,35 @@ require('packer').startup(function()
   -- use { "liuchengxu/vista.vim" }
 
   use { "ahmedkhalf/lsp-rooter.nvim",
-    config = function() require("lsp-rooter").setup () end
+    config = function() require("lsp-rooter").setup() end
   }
+
+  -- use 'airblade/vim-rooter'
 
   -- use 'nvim-lua/lsp_extensions.nvim'
   -- use 'steelsojka/completion-buffers'
   -- use 'tjdevries/nlua.nvim'
+
+
   ----------------------------------------------------}}}
 
   --           DAP (Debug Adapter Protocol)           {{{
   -------------------------------------------------------
-
   use { "rcarriga/nvim-dap-ui",
     requires = "mfussenegger/nvim-dap"
   }
-
   ----------------------------------------------------}}}
 
   --------------------- Treesitter ----------------------
   use { 'nvim-treesitter/nvim-treesitter',
+    as = 'treesitter',
     requires = {
-      'nvim-treesitter/nvim-treesitter-refactor',
-      'nvim-treesitter/nvim-treesitter-textobjects',
-      'RRethy/nvim-treesitter-textsubjects',
-      'nvim-treesitter/playground',
-      'p00f/nvim-ts-rainbow',
-      'romgrk/nvim-treesitter-context',
+      {'nvim-treesitter/nvim-treesitter-refactor',    as = 'treesitter-refactor'},
+      {'nvim-treesitter/nvim-treesitter-textobjects', as = 'treesitter-textobjects'},
+      {'RRethy/nvim-treesitter-textsubjects',         as = 'treesitter-textsubjects'},
+      {'nvim-treesitter/playground',                  as = 'treesitter-playground'},
+      {'p00f/nvim-ts-rainbow',                        as = 'treesitter-rainbow'},
+      {'romgrk/nvim-treesitter-context',              as = 'treesitter-context'},
     },
     run = ':TSUpdate',
     config = function() require('plugins_config/treesitter') end
@@ -362,24 +370,26 @@ require('packer').startup(function()
 
   ---------- Syntaxes and programming languages ----------
 
-  -- -- Подсветка синтаксисов для разных языков.
-  -- use { 'sheerun/vim-polyglot',
-  --   setup = function()  -- run before plugin load
-  --     -- This variable should be declared before polyglot is loaded!
-  --     -- vim.g.polyglot_disabled = 'markdown'
-  --     vim.g.polyglot_disabled = {'markdown', 'gitignore'}
-  --   end
-  -- }
+  -- Подсветка синтаксисов для разных языков.
+  use { 'sheerun/vim-polyglot',
+    setup = function()  -- run before plugin load
+      -- This variable should be declared before polyglot is loaded!
+      -- vim.g.polyglot_disabled = 'markdown'
+      vim.g.polyglot_disabled = {'markdown', 'gitignore'}
+    end
+  }
 
   use 'SirJson/fzf-gitignore'
 
-  use { 'zinit-zsh/zinit-vim-syntax', ft = 'zsh' } -- zinit syntaxis
+  use 'Neui/cmakecache-syntax.vim'
+  -- use { 'zinit-zsh/zinit-vim-syntax', ft = 'zsh' } -- zinit syntaxis
   use { 'anuvyklack/vim-dealii-prm', event = 'BufNewFile,BufRead *.prm' }
 
   -------------------- Color scheme ---------------------
   local color_themes = {
     -- gruvbox-material {{{
     ['gruvbox-material'] = function()
+    -- ['gruvbox-material'] = function()
       use {
         'sainnhe/gruvbox-material',
         config = function()
@@ -547,9 +557,7 @@ require('packer').startup(function()
 
   use { 'kyazdani42/nvim-tree.lua',
     requires = 'kyazdani42/nvim-web-devicons',
-    config = function()
-      vim.cmd('source ~/.config/nvim/lua/plugins_config/nvim-tree.vim')
-    end
+    config = function() require('plugins_config/nvim-tree') end
   }
 
   -- use { 'ms-jpq/chadtree',
@@ -565,14 +573,13 @@ require('packer').startup(function()
 
   -------------------------------------------------------
 
-  --                  Lua development                 {{{
-  -------------------------------------------------------
-  -- The library with all the lua functions you don't want to write twice.
-  -- use { 'nvim-lua/plenary.nvim', opt = false }
-
+  -- --                  Lua development                 {{{
+  -- -----------------------------------------------------
+  --
   -- use { 'tjdevries/nlua.nvim' }
-
+  --
   -- use 'euclidianAce/BetterLua.vim' -- Better Lua syntax highlighting
+
   ----------------------------------------------------}}}
 
   --                       Vifm                       {{{

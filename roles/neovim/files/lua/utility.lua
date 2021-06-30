@@ -1,8 +1,8 @@
 
-local _M = {}
+local M = {}
 
 -- Check if lua module is available.
-function _M.is_module_available(name)
+function M.is_module_available(name)
   if package.loaded[name] then
     return true
   else
@@ -19,16 +19,15 @@ end
 
 
 -- Check if file exists.
-function _M.is_file_exists(path)
+function M.is_file_exists(path)
   local f=io.open(path,"r")
-  if f~=nil then 
-    io.close(f) 
-    return true 
-  else 
-    return false 
+  if f~=nil then
+    io.close(f)
+    return true
+  else
+    return false
   end
 end
 
 
-return _M
-
+return M

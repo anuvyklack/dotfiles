@@ -9,6 +9,4 @@ require('neoscroll').setup {
   -- easing_function = "quintic"
   -- easing_function = "circular"
   -- easing_function = "sine"
-
 }
-

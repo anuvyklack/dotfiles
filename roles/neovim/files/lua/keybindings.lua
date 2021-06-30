@@ -11,10 +11,8 @@
 -- Using as: 'if is_module_available("menu") then require("menu") end'
 local is_module_available = require("utility").is_module_available
 local wk = require("which-key")
-local keymap = require("which-key").register
 
--- All functions that need to be exported should go in this table.
-local _M = {}
+local M = {} -- All functions that need to be exported should go in this table.
 
 -- -- Dealing with word wrap:
 -- -- If cursor is inside very long line in the file than wraps around
@@ -24,8 +22,8 @@ local _M = {}
 -- vim.api.nvim_set_keymap('n', 'k', "v:count == 0 ? 'gk' : 'k'", {noremap = true, expr = true, silent = true})
 -- vim.api.nvim_set_keymap('n', 'j', "v:count == 0 ? 'gj' : 'j'", {noremap = true, expr = true, silent = true})
 
-
-function _M.lspconfig (bufnr)
+-- LSP {{{
+function M.lspconfig (bufnr)
 
     local function buf_set_keymap(mode, lhs, description, rhs, ...)
         vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, ...)
@@ -35,13 +33,14 @@ function _M.lspconfig (bufnr)
     -- Mappings options.
     local opts = { noremap=true, silent=false }
 
-    -- Default lspconfig bindings {{{
+    -- Lspconfig bindings {{{
 
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     buf_set_keymap( 'n', '<F2>', 'LSP go to definition', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
     buf_set_keymap( 'n', '<S-F2>', 'LSP go to declaration', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
 
-    -- buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+    buf_set_keymap('n', 'K', 'LSP Hover doc', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+
     -- buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
     -- buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
     -- buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
@@ -54,7 +53,7 @@ function _M.lspconfig (bufnr)
     -- buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
     -- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
 
-    buf_set_keymap('n', '<leader>e', 'LSP show line diagnostics', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+    buf_set_keymap('n', '<leader>e', 'LSP Show errors', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
 
     -- buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
     -- buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
@@ -85,8 +84,8 @@ function _M.lspconfig (bufnr)
     -- preview definition
     buf_set_keymap("n", "<leader>pd", "LSP preview definition", "<cmd>Lspsaga preview_definition<CR>", opts)
 
-    -- hover doc
-    buf_set_keymap("n", "K", "LSP hover doc", "<cmd>Lspsaga hover_doc<CR>", opts)
+    -- -- hover doc
+    -- buf_set_keymap("n", "K", "LSP hover doc", "<cmd>Lspsaga hover_doc<CR>", opts)
 
     -- show signature help
     buf_set_keymap("n", "<C-k>", "LSP show signature help", "<cmd>Lspsaga signature_help<CR>", opts)
@@ -107,11 +106,10 @@ function _M.lspconfig (bufnr)
 
     --}}}
 
-end
+end --}}}
 
-
--- Treesitter textobjects
-function _M.treesitter_textobjects()
+-- Treesitter {{{
+function M.treesitter_textobjects()
   return {
     select = { --{{{
       enable = true,
@@ -165,10 +163,10 @@ function _M.treesitter_textobjects()
       },
     }, --}}}
   }
-end
+end --}}}
 
--- Hop (easymotion) {{{
-function _M.hop()
+-- Hop (Easymotion) {{{
+function M.hop()
   -- local set_keymap = vim.api.nvim_set_keymap
 
   local function set_keymap(mode, lhs, description, rhs, ...)
@@ -178,20 +176,29 @@ function _M.hop()
 
   local opts = { noremap=true, silent=false }
 
-  set_keymap('n', ';w', 'Easymotion forward word', "<cmd>HopWord<CR>", opts)
-  set_keymap('v', ';w', 'easymotion forward word', "<cmd>HopWord<CR>", opts)
-  set_keymap('n', ';b', 'Easymotion bacward word', "<cmd>HopWord<CR>", opts)
-  set_keymap('v', ';b', 'Easymotion bacward word', "<cmd>HopWord<CR>", opts)
+  set_keymap('n', ';w', 'Easymotion forward word', "<cmd>HopWordAC<CR>", opts)
+  set_keymap('v', ';w', 'easymotion forward word', "<cmd>HopWordAC<CR>", opts)
+  set_keymap('n', ';b', 'Easymotion bacward word', "<cmd>HopWordBC<CR>", opts)
+  set_keymap('v', ';b', 'Easymotion bacward word', "<cmd>HopWordBC<CR>", opts)
 
-  set_keymap('n', ';j', "Easymotion line up",   "<cmd>HopLine<CR>", opts)
-  set_keymap('n', ';k', "Easymotion line down", "<cmd>HopLine<CR>", opts)
-  set_keymap('v', ';j', "Easymotion line up",   "<cmd>HopLine<CR>", opts)
-  set_keymap('v', ';k', "Easymotion line down", "<cmd>HopLine<CR>", opts)
+  set_keymap('n', ';j', "Easymotion line up",   "<cmd>HopLineAC<CR>", opts)
+  set_keymap('v', ';j', "Easymotion line up",   "<cmd>HopLineAC<CR>", opts)
+  set_keymap('n', ';k', "Easymotion line down", "<cmd>HopLineBC<CR>", opts)
+  set_keymap('v', ';k', "Easymotion line down", "<cmd>HopLineBC<CR>", opts)
 
   set_keymap('n', 's', "Easymotion char",  "<cmd>HopChar1<CR>", opts)
   set_keymap('v', 's', "Easymotion char", "<cmd>HopChar1<CR>", opts)
 
 end -- }}}
 
+-- nvim-tree {{{
+function M.nvim_tree()
+  local tree_cb = require'nvim-tree.config'.nvim_tree_callback
+  vim.g.nvim_tree_bindings = {
+      ['?'] = tree_cb("toggle_help")  -- help UI
+  }
+end --}}}
 
-return _M
+return M
+
+-- vim: ts=2 sts=2 sw=2 tw=80 cc=+1 fen fdm=marker

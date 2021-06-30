@@ -1,0 +1,6 @@
+---
+- name: Symlink vifm config files
+  file:
+    src: "{{ role_path }}/files"
+    dest: "{{ home }}/.config/vifm"
+    state: link
