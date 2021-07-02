@@ -16,7 +16,7 @@ local function set_ft_query(ft, type)
 
   local list_parsers = require("vim.treesitter.health").list_parsers
 
-  for i, parser in pairs(list_parsers()) do
+  for _, parser in pairs(list_parsers()) do
     if string.find(parser, ft) then
       local query = vim.fn.join(vim.fn.readfile(path), "\n")
       require("vim.treesitter.query").set_query(ft, type, query)

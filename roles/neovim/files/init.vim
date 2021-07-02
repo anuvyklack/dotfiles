@@ -271,19 +271,6 @@ set splitright
 "        " put the indents inside the plugin file.
 " ----------------------------------------------------}}}
 
-"                        Plugins                       {{{
-" ========================================================
-set loadplugins
-
-lua require('plugins')
-
-" if has('unix')
-"     source ~/.config/nvim/plugins.vim
-" elseif has('win32')
-"     source ~\AppData\Local\nvim\plugins.vim
-" endif
-" =====================================================}}}
-
 "               Autocommands and Functions             {{{
 " ========================================================
 

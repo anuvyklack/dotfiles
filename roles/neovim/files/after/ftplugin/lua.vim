@@ -1,32 +1,20 @@
 " " Make 'gf' vim keybinding work on `lua requare('module.foo')` statements.
 " " For this, we need to add `.lua` extension to search name. And add `lua/`
-" " directory on current level to path.
+" " directory in '~/.config/nvim/lua' to path.
 " " Taken from here:
 " " https://www.reddit.com/r/vim/comments/apce2p/gf_for_lua/
 "
-" " Resolves 'foo' as 'foo.lua'.
-" setlocal suffixesadd=.lua
+" " Set in Neovim by default
+" " setlocal suffixesadd=.lua " Resolves 'foo' as 'foo.lua'.
 "
-" " Taken from :help includeexpr,
-" " resolves 'modules.foo' as 'modules/foo'.
+" " Substitute '.' with '/' to resolve 'modules.foo' as 'modules/foo'.
+" " See :help includeexpr.
 " setlocal includeexpr=substitute(v:fname,'\\.','/','g')
 "
-" " Now you can do 'gf' with the cursor on `modules.foo`.
+" exec "setlocal path+=" . stdpath("config") . "/lua"
 "
+" setlocal keywordprg=":help"
 "
-" " Let's add a crude ':help include-search' support to the mix.
-"
-" " Tells Vim what an 'include' looks like
-" setlocal include=require
-"
-" " Tells Vim what a 'definition' looks like
-" setlocal define=function
-"
-" " Now you can do ':ilist <keyword>', '[<C-d>' with the cursor on <keyword>,
-" " and so on.
-
-set keywordprg=":help"
-
-" Use treesitter base folding.
-setlocal foldmethod=expr
-setlocal foldexpr=nvim_treesitter#foldexpr()
+" " Use treesitter base folding.
+" setlocal foldmethod=expr
+" setlocal foldexpr=nvim_treesitter#foldexpr()

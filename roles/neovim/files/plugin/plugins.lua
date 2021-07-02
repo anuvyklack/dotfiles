@@ -8,37 +8,26 @@
 -- ░██     ░░  ░░░░░    █████ ░░ ░░   ░░ ░░░░░░  ░░  ░░  ░░░░░   ░░░░░░░
 -- ░░                  ░░░░░
 
--- Packer instruction
----------------------------------------------------------
--- You must run this or `PackerSync` whenever you make
--- changes to your plugin configuration.
--- :PackerCompile
---
--- Only install missing plugins.
--- :PackerInstall
---
--- Update and install plugins.
--- :PackerUpdate
---
--- Remove any disabled or unused plugins.
--- :PackerClean
---
--- Performs `PackerClean` and then `PackerUpdate`.
--- :PackerSync
---
--- Loads opt plugin immediately.
--- :PackerLoad completion-nvim ale
----------------------------------------------------------
+-- --------------  ----------------------------------------------
+-- :PackerCompile  You must run this or `PackerSync` whenever you
+--                    make changes to your plugin configuration.
+-- :PackerInstall  Only install missing plugins.
+-- :PackerUpdate   Update and install plugins.
+-- :PackerClean    Remove any disabled or unused plugins.
+-- :PackerSync     Performs `PackerClean` then `PackerUpdate`
+--                     and `PackerCompile` at the end.
+-- --------------  ----------------------------------------------
 
 local fn = vim.fn
 local execute = vim.api.nvim_command
 
 -- Auto install packer.nvim if not exists
-local install_path = fn.stdpath('data')..'/site/pack/packer/opt/packer.nvim'
-if fn.empty( fn.glob(install_path) ) > 0 then
-  execute('!git clone https://github.com/wbthomason/packer.nvim '..install_path)
+local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+
+if fn.empty(fn.glob(install_path)) > 0 then
+  fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', install_path})
+  execute 'packadd packer.nvim'
 end
-vim.cmd [[packadd packer.nvim]]
 
 -- -- Auto compile when there are changes in plugins.lua
 -- -- vim.cmd 'autocmd BufWritePost plugins.lua PackerCompile'
@@ -49,16 +38,16 @@ vim.cmd [[packadd packer.nvim]]
 --   augroup end
 -- ]]
 
+-- Packer settings
 require('packer').init{
   display = {
-    open_cmd = '80vnew [packer]'  -- set the width of the packer split
+    open_cmd = '80vnew [packer]',  -- set the width of the packer split
   }
 }
 
-require('packer').startup(function(use)
--- return require('packer').startup(function()
 
-  use { 'wbthomason/packer.nvim', opt = true } -- Packer can manage itself
+return require('packer').startup(function()
+  use 'wbthomason/packer.nvim' -- Packer can manage itself
 
   -------------------- Text editing ---------------------
 
@@ -71,7 +60,9 @@ require('packer').startup(function(use)
   -- Comments {{{
 
   use {'tomtom/tcomment_vim',   -- Comments. For help use :help tcomment
-    config = function() require('plugins_config/tcomment') end
+    as = 'tcomment',
+    config = function() require('plugins_config.tcomment') end
+    -- config = function() require('plugins_config/tcomment') end
   }
 
   -- use { 'winston0410/commented.nvim',
@@ -135,7 +126,7 @@ require('packer').startup(function(use)
 
   -- Multiple cursors
   -- https://github.com/mg979/vim-visual-multi
-  use 'mg979/vim-visual-multi'
+  use { 'mg979/vim-visual-multi', as = 'multiple-cursors'}
 
   -------------------- Visual tweaks --------------------
 
@@ -173,12 +164,11 @@ require('packer').startup(function(use)
 
   use { 'jlanzarotta/bufexplorer',
     config = function()
-      -- Do not go to active window.
-      vim.g.bufExplorerFindActive = 0
+      vim.g.bufExplorerFindActive = 0 -- Do not go to active window.
     end
   }
 
-  use 'roxma/vim-window-resize-easy'
+  use { 'roxma/vim-window-resize-easy', as = 'window-resize-easy' }
 
   ---------------------- Movements ----------------------
 
@@ -188,7 +178,7 @@ require('packer').startup(function(use)
   -- }
 
   use { 'phaazon/hop.nvim',
-    as = 'easymotion_hop',
+    as = 'easymotion-hop',
     config = function()
       require'hop'.setup {
         winblend = 30
@@ -249,17 +239,18 @@ require('packer').startup(function(use)
     requires = {
       -- Adds the missing :LspInstall <language> command
       -- to conveniently install language servers.
-      { "kabouzeid/nvim-lspinstall", as = 'lspinstall'},
+      {"kabouzeid/nvim-lspinstall", as = 'lspinstall'},
+
       -- Setup for lua and plugins development.
-      "folke/lua-dev.nvim"
+      {"folke/lua-dev.nvim", as = 'lua-dev'}
     },
     config = function() require('plugins_config/lspconfig') end
-    -- config = function() require('plugins_config/lspconfig-test') end
   }
 
   use { 'glepnir/lspsaga.nvim',
   -- use { "jasonrhansen/lspsaga.nvim",
     -- branch = 'finder-preview-fixes',
+    as = 'lspsaga',
     config = function() require('plugins_config/lspsaga') end
   }
 
@@ -279,6 +270,7 @@ require('packer').startup(function(use)
 
   -- Icons in completion menu.
   use { "onsails/lspkind-nvim",
+    as = 'lspkind',
     config = function() require('plugins_config/lspkind-nvim') end
   }
 
@@ -292,17 +284,19 @@ require('packer').startup(function(use)
 
   -- Lsp signature hint when you type.
   use { "ray-x/lsp_signature.nvim",
+    as = 'lsp-signature',
     config = function()
       require('lsp_signature').on_attach()
     end
   }
 
-  use { 'jubnzv/virtual-types.nvim' }
+  use { 'jubnzv/virtual-types.nvim', as = 'virtual-types' }
 
-  use { 'simrat39/symbols-outline.nvim' }
+  use { 'simrat39/symbols-outline.nvim', as = 'symbols-outline' }
   -- use { "liuchengxu/vista.vim" }
 
   use { "ahmedkhalf/lsp-rooter.nvim",
+    as = 'lsp-rooter',
     config = function() require("lsp-rooter").setup() end
   }
 
@@ -317,9 +311,8 @@ require('packer').startup(function(use)
 
   --           DAP (Debug Adapter Protocol)           {{{
   -------------------------------------------------------
-  use { "rcarriga/nvim-dap-ui",
-    requires = "mfussenegger/nvim-dap"
-  }
+  use { "mfussenegger/nvim-dap", as = 'dap' }
+  use { "rcarriga/nvim-dap-ui",  as = 'dap-ui' }
   ----------------------------------------------------}}}
 
   --------------------- Treesitter ----------------------
@@ -339,16 +332,17 @@ require('packer').startup(function(use)
 
   -------------------- Fuzzy finder ---------------------
   use { 'nvim-telescope/telescope.nvim',
+    as = 'telescope',
     requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'}
   }
 
   -------------------- IDE features ---------------------
 
-  use 'tpope/vim-apathy'  -- Make 'gf' keybinding work in different filetypes.
-                          -- For instructions of what it can do more look:
-                          -- https://github.com/tpope/vim-apathy
-                          -- and
-                          -- :help include-search
+  -- use 'tpope/vim-apathy'  -- Make 'gf' keybinding work in different filetypes.
+  --                         -- For instructions of what it can do more look:
+  --                         -- https://github.com/tpope/vim-apathy
+  --                         -- and
+  --                         -- :help include-search
 
   -- use 'wellle/context.vim'   -- Vscode breadcrumbs analog
   -- use 'majutsushi/tagbar'    -- список тегов в текущем файле
@@ -381,9 +375,13 @@ require('packer').startup(function(use)
 
   use 'SirJson/fzf-gitignore'
 
-  use 'Neui/cmakecache-syntax.vim'
+  use { 'Neui/cmakecache-syntax.vim', as = 'syntax-cmakecache'}
   -- use { 'zinit-zsh/zinit-vim-syntax', ft = 'zsh' } -- zinit syntaxis
-  use { 'anuvyklack/vim-dealii-prm', event = 'BufNewFile,BufRead *.prm' }
+
+  use { 'anuvyklack/vim-dealii-prm',
+    as = 'syntax-dealii-prm',
+    -- event = 'BufNewFile,BufRead *.prm'
+  }
 
   -------------------- Color scheme ---------------------
   local color_themes = {
@@ -494,6 +492,7 @@ require('packer').startup(function(use)
   -- bufferline / tabline
 
   use { 'romgrk/barbar.nvim',
+    as = 'barbar-tabline',
     requires = 'kyazdani42/nvim-web-devicons',
     config = function()
       -- vim.cmd('source ~/.config/nvim/lua/plugins_config/barbar.vim')
@@ -518,6 +517,7 @@ require('packer').startup(function(use)
   -- use 'simnalamburt/vim-mundo'
 
   use { "folke/which-key.nvim",
+    as = 'which-key',
     config = function()
       require("which-key").setup {
         spelling = {
@@ -530,7 +530,7 @@ require('packer').startup(function(use)
   }
 
   -- <leader>? : 40-column cheat sheet
-  use 'lifepillar/vim-cheat40'
+  use { 'anuvyklack/vim-cheat40', as = 'cheat40' } -- my fork
 
   -- TODO Need to rewrite in lua.
   -- use { 'camspiers/lens.vim',
@@ -573,9 +573,20 @@ require('packer').startup(function(use)
 
   -------------------------------------------------------
 
-  -- --                  Lua development                 {{{
-  -- -----------------------------------------------------
-  --
+  --                Plugins development               {{{
+  -----------------------------------------------------
+
+  use { "rafcamlet/nvim-luapad",
+    -- as = 'luapad',
+    config = function()
+      vim.cmd [[
+        command! LuaAttach lua require('luapad').attach()
+        command! LuaDetach lua require('luapad').detach()
+        command! LuaToggle lua require('luapad').toggle()
+      ]]
+    end
+  }
+
   -- use { 'tjdevries/nlua.nvim' }
   --
   -- use 'euclidianAce/BetterLua.vim' -- Better Lua syntax highlighting
@@ -585,6 +596,7 @@ require('packer').startup(function(use)
   --                       Vifm                       {{{
   -------------------------------------------------------
   use { "vifm/vifm.vim",
+    as = 'vifm',
     -- TODO Open issue to packer: help tags not generated automaticaly.
     run = ':helptags ALL',
   }
@@ -605,8 +617,8 @@ require('packer').startup(function(use)
     end
   }
 
-  use { 'tmux-plugins/vim-tmux-focus-events', disable=true }
-  use { 'tmux-plugins/vim-tmux', disable=true }
+  -- use 'tmux-plugins/vim-tmux-focus-events'
+  -- use 'tmux-plugins/vim-tmux'
   ---------------------------------------------------}}}
 
   --                      Pandoc                      {{{
@@ -635,4 +647,4 @@ require('packer').startup(function(use)
 
 end)
 
--- vim: ts=2 sts=2 sw=2 tw=80 cc=+1 fen fdm=marker
+-- vim: fdm=marker

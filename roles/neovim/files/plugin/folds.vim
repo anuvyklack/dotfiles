@@ -22,13 +22,13 @@ function! CustomFoldText(string) "{{{
       let line_num = v:foldstart
     endif
 
-    " The number of indentation. 
+    " The number of indentation.
     " All tabs count as spaces with respect to '&tabstop'.
     let indent_num = indent(line_num)
 
-    " Get the line content, removing all whitespaces 
+    " Get the line content, removing all whitespaces
     " from the beginning and the end of the line.
-    let line = trim(getline(line_num)) 
+    let line = trim(getline(line_num))
 
     " Construct the list from '&commentstring' string using '%s' as separator,
     " and get the first element from the list.
@@ -36,7 +36,7 @@ function! CustomFoldText(string) "{{{
     " conten looks like:
     "     commentstring=/*%s*/    (cpp example)
     " It consiste of different comment strings separeted by '%s' symbols.
-    let comment_str = split(&commentstring, '%s')[0]  
+    let comment_str = split(&commentstring, '%s')[0]
     " If the line starts from the first element in the obtained list (i.e. line
     " starts with the comment sign), then ...
     if match(line, '^'.comment_str) != -1
@@ -47,9 +47,9 @@ function! CustomFoldText(string) "{{{
     " Remove all comment signs.
     let line = substitute(line, join(split(&commentstring, '%s'), '\|'), '', 'g')
                              "  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                             "  In this command we construct from this string: 
-                             "      '/*%s*/'   (cpp example) 
-                             "  the next one: 
+                             "  In this command we construct from this string:
+                             "      '/*%s*/'   (cpp example)
+                             "  the next one:
                              "      '/*\|*/'
                              "  which is Vim pattern.
 
@@ -66,7 +66,7 @@ function! CustomFoldText(string) "{{{
     endif
 
     " Remove all whitespaces from the beginning and the end of the line.
-    " And add one at the end to separate line content from the fold signs: 
+    " And add one at the end to separate line content from the fold signs:
     " i.e. to get this:
     "     fold text ••••••••••••••••••••••••••
     " not this:
@@ -77,7 +77,7 @@ function! CustomFoldText(string) "{{{
     let fold_size_num = 1 + v:foldend - v:foldstart
     let fold_size_str = " " . fold_size_num . " lines "
 
-    " Size of line numbers colummn 
+    " Size of line numbers colummn
     let nu = (&number ? len(string(line('$'))) : 0)
 
     " " Try to get the value from the 'g:custom_foldtext_max_width' variable. If
@@ -125,7 +125,7 @@ endfunction "}}}
 "       \ 'abort',
 "       \ ]
 "
-" let g:crease_foldtext = {  
+" let g:crease_foldtext = {
 "       \ 'default': '%{CreaseIndent()}%{FoldTxt()} %{IsMod()} %{Cmmtd()} %= %{CountFoldText()}%l '.g:lines_label.' %f%f%f%f',
 "       \}
 
