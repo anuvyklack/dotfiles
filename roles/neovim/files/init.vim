@@ -361,8 +361,8 @@ function! SetFoldColumn() "{{{
         " Или другими словами, это означает, что с прошлой проверки буфер в
         " окне не поменялся.
         " С w:wwid всё тоже самое, только она хранит значение ширины окна.
-        if getwinvar(window, 'bufnr') == winbufnr(window)  &&
-         \ getwinvar(window, 'wwid') == winwidth(window)
+        if getwinvar(window, 'bufnr') == winbufnr(window) &&
+        \  getwinvar(window, 'wwid')  == winwidth(window)
             " echom 'Win '. window .' scip check'
             continue
         else

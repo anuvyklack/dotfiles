@@ -57,6 +57,9 @@ return require('packer').startup(function()
   use 'tpope/vim-unimpaired'    -- Different bidirectional motions: switch
                                 --   buffers, add blank lines, etc.
 
+  -- Until https://github.com/neovim/neovim/pull/13823 will be merged.
+  use 'tjdevries/astronauta.nvim'
+
   -- Comments {{{
 
   use {'tomtom/tcomment_vim',   -- Comments. For help use :help tcomment
@@ -573,11 +576,11 @@ return require('packer').startup(function()
 
   -------------------------------------------------------
 
-  --                Plugins development               {{{
+  --              Lua plugins development             {{{
   -----------------------------------------------------
 
   use { "rafcamlet/nvim-luapad",
-    -- as = 'luapad',
+    as = 'luapad',
     config = function()
       vim.cmd [[
         command! LuaAttach lua require('luapad').attach()
@@ -588,8 +591,9 @@ return require('packer').startup(function()
   }
 
   -- use { 'tjdevries/nlua.nvim' }
-  --
-  -- use 'euclidianAce/BetterLua.vim' -- Better Lua syntax highlighting
+
+  -- -- Better Lua syntax highlighting
+  -- use { 'euclidianAce/BetterLua.vim', as = 'syntax-BetterLua' }
 
   ----------------------------------------------------}}}
 

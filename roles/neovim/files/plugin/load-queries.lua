@@ -1,7 +1,7 @@
 -- WARNING This file must be loaded before nvim-treesitter plugin.
 
 -- Function that checks if file exists.
-local is_file_exists = require("utility").is_file_exists
+local is_file_exists = require("util").is_file_exists
 
 
 -- Manually load treesitter queries to overload the default ones.
