@@ -47,24 +47,24 @@ nnoremap <silent> <Space>bl :BufferOrderByLanguage<CR>
 
 " -------------------------------------------------}}}
 
-"                     Telescope                    {{{
-" ----------------------------------------------------
-nnoremap <leader>ff <cmd>Telescope find_files<cr>
-nnoremap <leader>fg <cmd>Telescope live_grep<cr>
-nnoremap <leader>fb <cmd>Telescope buffers<cr>
-nnoremap <leader>fh <cmd>Telescope help_tags<cr>
-" -------------------------------------------------}}}
+" "                     Telescope                    {{{
+" " ----------------------------------------------------
+" nnoremap <leader>ff <cmd>Telescope find_files<cr>
+" nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+" nnoremap <leader>fb <cmd>Telescope buffers<cr>
+" nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+" " -------------------------------------------------}}}
 
-"              Easymotion key bindings             {{{
-" ----------------------------------------------------
-map  ; <Plug>(easymotion-prefix)
-nmap s <Plug>(easymotion-bd-f)
-xmap s <Plug>(easymotion-bd-f)
-omap s <Plug>(easymotion-bd-f)
-nmap ;w <Plug>(easymotion-w)
-nmap ;b <Plug>(easymotion-b)
-nmap ;l <Plug>(easymotion-lineanywhere)
-" -------------------------------------------------}}}
+" "              Easymotion key bindings             {{{
+" " ----------------------------------------------------
+" map  ; <Plug>(easymotion-prefix)
+" nmap s <Plug>(easymotion-bd-f)
+" xmap s <Plug>(easymotion-bd-f)
+" omap s <Plug>(easymotion-bd-f)
+" nmap ;w <Plug>(easymotion-w)
+" nmap ;b <Plug>(easymotion-b)
+" nmap ;l <Plug>(easymotion-lineanywhere)
+" " -------------------------------------------------}}}
 
 "                     Easy-Align                   {{{
 " ----------------------------------------------------

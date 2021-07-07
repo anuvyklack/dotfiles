@@ -35,6 +35,8 @@ g.nvim_tree_tab_open = 1
 -- Resize the tree to its saved width when opening a file.
 g.nvim_tree_auto_resize = 1 -- 1 by default
 
+g.nvim_tree_disable_netrw = 0
+
 -- Append a trailing slash to folder names.
 g.nvim_tree_add_trailing = 0
 
@@ -80,7 +82,7 @@ g.nvim_tree_icons = {
   default = '',
   symlink = '',
   git = {
-    unstaged  = "•", --   ✗ 
+    unstaged  = "•", --   ✗  
     staged    = "", -- ✓   ﯂  
     unmerged  = "",
     renamed   = "", --  

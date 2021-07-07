@@ -59,6 +59,9 @@ local lsp_settings = {
       }
     }
   }),
+  vim = {
+    on_attach = on_attach,
+  },
   ccls = {
     -- A list of ccls available options:
     -- https://github.com/MaskRay/ccls/wiki/Customization#initialization-options

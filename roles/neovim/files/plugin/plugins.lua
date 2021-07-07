@@ -76,8 +76,8 @@ return require('packer').startup(function()
 
   -- }}}
 
-  -- Perl style regexp notation for Vim
-  use { 'othree/eregex.vim', disable = true }
+  -- -- Perl style regexp notation for Vim
+  -- use  'othree/eregex.vim'
 
   -- Autopairs for neovim written by lua.
   -- https://github.com/windwp/nvim-autopairs
@@ -172,6 +172,16 @@ return require('packer').startup(function()
   }
 
   use { 'roxma/vim-window-resize-easy', as = 'window-resize-easy' }
+
+  use { 'simeji/winresizer',
+    config = function()
+      vim.g.winresizer_vert_resize  =	1
+      vim.g.winresizer_horiz_resize =	1
+    end
+  }
+
+  -- use 'zhaocai/GoldenView.Vim'
+  use {'RobertAudi/GoldenView.vim', opt = true}
 
   ---------------------- Movements ----------------------
 
@@ -312,11 +322,11 @@ return require('packer').startup(function()
 
   ----------------------------------------------------}}}
 
-  --           DAP (Debug Adapter Protocol)           {{{
-  -------------------------------------------------------
-  use { "mfussenegger/nvim-dap", as = 'dap' }
-  use { "rcarriga/nvim-dap-ui",  as = 'dap-ui' }
-  ----------------------------------------------------}}}
+  -- --           DAP (Debug Adapter Protocol)           {{{
+  -- -------------------------------------------------------
+  -- use { "mfussenegger/nvim-dap", as = 'dap' }
+  -- use { "rcarriga/nvim-dap-ui",  as = 'dap-ui' }
+  -- ----------------------------------------------------}}}
 
   --------------------- Treesitter ----------------------
   use { 'nvim-treesitter/nvim-treesitter',
@@ -336,7 +346,8 @@ return require('packer').startup(function()
   -------------------- Fuzzy finder ---------------------
   use { 'nvim-telescope/telescope.nvim',
     as = 'telescope',
-    requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'}
+    requires = {'nvim-lua/popup.nvim', 'nvim-lua/plenary.nvim'},
+    config = function() require('plugins_config/telescope') end
   }
 
   -------------------- IDE features ---------------------
@@ -562,6 +573,8 @@ return require('packer').startup(function()
     requires = 'kyazdani42/nvim-web-devicons',
     config = function() require('plugins_config/nvim-tree') end
   }
+
+  -- use 'tpope/vim-vinegar'
 
   -- use { 'ms-jpq/chadtree',
   --   branch = 'chad',

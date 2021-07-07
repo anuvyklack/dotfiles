@@ -47,6 +47,7 @@ end
 ---@param opts table
 function M.set_keymap(mode, lhs, description, rhs, opts)
   vim.api.nvim_set_keymap(mode, lhs, rhs, opts)
+
   if M.is_module_available("which-key") then
     require("which-key").register{
       [lhs] = { description, mode = mode}
@@ -64,10 +65,23 @@ end
 ---@param opts table
 function M.buf_set_keymap(bufnr, mode, lhs, description, rhs, opts)
   vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts)
+
   if M.is_module_available("which-key") then
     require("which-key").register{
       [lhs] = { description, mode = mode, buffer = bufnr }
     }
+  end
+end
+
+
+-- Returns `require("which-key")` object if available, else return empty table.
+---@return 'require("which-key") or {}'
+function M.which_key()
+  if M.is_module_available("which-key") then
+    return require("which-key")
+  else
+    -- TODO Add metatable which will catch the call of unexisting item.
+    return {}
   end
 end
 

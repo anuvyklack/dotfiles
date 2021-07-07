@@ -88,7 +88,7 @@ function! CustomFoldText(string) "{{{
     " let lineCount = line("$")
     " try
     "   let foldPercentage = printf("[%.1f", (foldSize*1.0)/lineCount*100) . "%] "
-    " catch /^Vim\%((\a\+)\)\=:E806/	" E806: Using Float as String
+    " catch /^Vim\%((\a\+)\)\=:E806/    " E806: Using Float as String
     "   let foldPercentage = printf("[of %d lines] ", lineCount)
     " endtry
 
@@ -103,14 +103,14 @@ endfunction "}}}
 " " The main part of text that will be put in fold text.
 " function! FoldText(foldtext_stop_words) abort " {{{
 "   return trim(substitute(
-" 	\ getline(v:foldstart),
-" 	\ '\V\C'
-" 	\ . join(split(&commentstring, '%s'), '\|') . '\|'
-" 	\ . join(split(&foldmarker, ','), '\d\?\|') . '\|'
-" 	\ . join(a:foldtext_stop_words, '\|') . '\|',
-" 	\ '',
-" 	\ 'g'
-" 	\ ))
+"   \ getline(v:foldstart),
+"   \ '\V\C'
+"   \ . join(split(&commentstring, '%s'), '\|') . '\|'
+"   \ . join(split(&foldmarker, ','), '\d\?\|') . '\|'
+"   \ . join(a:foldtext_stop_words, '\|') . '\|',
+"   \ '',
+"   \ 'g'
+"   \ ))
 " endfunction " }}}
 "
 " " let g:fold_label = ' '

@@ -608,8 +608,8 @@ cnoremap <C-l> <Right>
 command! I edit $MYVIMRC
 " открыть файл с плагинами
 if has('unix')
-    " command! P edit ~/.config/nvim/plugin/plugins.lua
-    command! P edit ~/.config/nvim/lua/plugins.lua
+    command! P edit ~/.config/nvim/plugin/plugins.lua
+    " command! P edit ~/.config/nvim/lua/plugins.lua
 endif
 
 " Включать и выклюяать проверку орфографии

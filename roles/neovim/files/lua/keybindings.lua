@@ -11,6 +11,7 @@
 local M = {} -- All functions that need to be exported should go in this table.
 local buf_set_keymap = require("util").buf_set_keymap
 local set_keymap     = require("util").set_keymap
+local which_key      = require('util').which_key()
 
 
 -- -- Dealing with word wrap:
@@ -20,6 +21,36 @@ local set_keymap     = require("util").set_keymap
 -- -- previous position as in other editors.  These bindings fixes this.
 -- vim.api.nvim_set_keymap('n', 'k', "v:count == 0 ? 'gk' : 'k'", {noremap = true, expr = true, silent = true})
 -- vim.api.nvim_set_keymap('n', 'j', "v:count == 0 ? 'gj' : 'j'", {noremap = true, expr = true, silent = true})
+
+-- Hop (Easymotion) {{{
+function M.hop()
+  local opts = { noremap=true, silent=false }
+
+  set_keymap('n', ';w', 'Easymotion forward word', "<cmd>HopWordAC<CR>", opts)
+  set_keymap('v', ';w', 'easymotion forward word', "<cmd>HopWordAC<CR>", opts)
+  set_keymap('n', ';b', 'Easymotion bacward word', "<cmd>HopWordBC<CR>", opts)
+  set_keymap('v', ';b', 'Easymotion bacward word', "<cmd>HopWordBC<CR>", opts)
+
+  set_keymap('n', ';j', "Easymotion line up",   "<cmd>HopLineAC<CR>", opts)
+  set_keymap('v', ';j', "Easymotion line up",   "<cmd>HopLineAC<CR>", opts)
+  set_keymap('n', ';k', "Easymotion line down", "<cmd>HopLineBC<CR>", opts)
+  set_keymap('v', ';k', "Easymotion line down", "<cmd>HopLineBC<CR>", opts)
+
+  set_keymap('n', 's', "Easymotion char", "<cmd>HopChar1<CR>", opts)
+  set_keymap('v', 's', "Easymotion char", "<cmd>HopChar1<CR>", opts)
+
+end -- }}}
+
+-- Telescope {{{
+function M.telescope()
+  local opts = { noremap=true, silent=false }
+
+  set_keymap('n', '<leader>ff', 'Telescope: Find files', '<cmd>Telescope find_files<cr>', opts)
+  set_keymap('n', '<leader>fg', 'Telescope: Live grep',  '<cmd>Telescope live_grep<cr>',  opts)
+  set_keymap('n', '<leader>fb', 'Telescope: Buffers',    '<cmd>Telescope buffers<cr>',    opts)
+  set_keymap('n', '<leader>fh', 'Telescope: Help tags',  '<cmd>Telescope help_tags<cr>',  opts)
+
+end -- }}}
 
 -- LSP {{{
 function M.lspconfig (bufnr)
@@ -59,43 +90,43 @@ function M.lspconfig (bufnr)
   -- Lspsaga {{{
 
   -- lsp provider to find the cursor word definition and reference
-  buf_set_keymap("n", "gd", 'LSP show line diagnostics', "<cmd>Lspsaga lsp_finder<CR>", opts)
+  buf_set_keymap(bufnr, "n", "gd", 'LSP show line diagnostics', "<cmd>Lspsaga lsp_finder<CR>", opts)
 
   -- code action
-  wk.register({ ['<leader>c'] = {name = 'LSP code action'}  }, {mode = 'n'})
+  which_key.register({ ['<leader>c'] = {name = 'LSP code action'}  }, {mode = 'n'})
 
   -- wk.register({ ['<leader>c'] = {name = 'LSP Code action'}  }, {mode = 'n'})
   -- wk.register({ ['<leader>c'] = {name = 'LSP Code action'}  }, {mode = 'v'})
 
-  buf_set_keymap("n", "<leader>ca", 'LSP code action', '<cmd>Lspsaga code_action<CR>', opts)
-  buf_set_keymap("v", "<leader>ca", 'LSP range code action', "<cmd><C-U>Lspsaga range_code_action<CR>", opts)
+  buf_set_keymap(bufnr, "n", "<leader>ca", 'LSP code action', '<cmd>Lspsaga code_action<CR>', opts)
+  buf_set_keymap(bufnr, "v", "<leader>ca", 'LSP range code action', "<cmd><C-U>Lspsaga range_code_action<CR>", opts)
 
   -- rename
-  buf_set_keymap("n",         "gr", "LSP rename", "<cmd>Lspsaga rename<CR>", opts)
-  buf_set_keymap("n", "<leader>rn", "LSP rename", "<cmd>Lspsaga rename<CR>", opts)
+  buf_set_keymap(bufnr, "n",         "gr", "LSP rename", "<cmd>Lspsaga rename<CR>", opts)
+  buf_set_keymap(bufnr, "n", "<leader>rn", "LSP rename", "<cmd>Lspsaga rename<CR>", opts)
 
   -- preview definition
-  buf_set_keymap("n", "<leader>pd", "LSP preview definition", "<cmd>Lspsaga preview_definition<CR>", opts)
+  buf_set_keymap(bufnr, "n", "<leader>pd", "LSP preview definition", "<cmd>Lspsaga preview_definition<CR>", opts)
 
   -- -- hover doc
-  -- buf_set_keymap("n", "K", "LSP hover doc", "<cmd>Lspsaga hover_doc<CR>", opts)
+  -- buf_set_keymap(bufnr, "n", "K", "LSP hover doc", "<cmd>Lspsaga hover_doc<CR>", opts)
 
   -- show signature help
-  buf_set_keymap("n", "<C-k>", "LSP show signature help", "<cmd>Lspsaga signature_help<CR>", opts)
+  buf_set_keymap(bufnr, "n", "<C-k>", "LSP show signature help", "<cmd>Lspsaga signature_help<CR>", opts)
 
   -- Show Diagnostics
   -- buf_set_keymap("n", "<leader>e", "<cmd>Lspsaga show_line_diagnostics<CR>", opts)
   -- only show diagnostic if cursor is over the area
-  buf_set_keymap("n", "<leader>cc", "LSP show diagnostic", "<cmd>lua require'lspsaga.diagnostic'.show_cursor_diagnostics()<CR>", opts)
+  buf_set_keymap(bufnr, "n", "<leader>cc", "LSP show diagnostic", "<cmd>lua require'lspsaga.diagnostic'.show_cursor_diagnostics()<CR>", opts)
 
   -- -- jump diagnostic
-  -- buf_set_keymap("n", "]e", "<cmd>Lspsaga diagnostic_jump_next<CR>", opts)
-  -- buf_set_keymap("n", "[e", "<cmd>Lspsaga diagnostic_jump_prev<CR>", opts)
+  -- buf_set_keymap(bufnr, "n", "]e", "<cmd>Lspsaga diagnostic_jump_next<CR>", opts)
+  -- buf_set_keymap(bufnr, "n", "[e", "<cmd>Lspsaga diagnostic_jump_prev<CR>", opts)
 
 
   -- -- scroll down / up inside different preview windows
-  -- buf_set_keymap("n", "<C-f>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>", opts)
-  -- buf_set_keymap("n", "<C-b>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>", opts)
+  -- buf_set_keymap(bufnr, "n", "<C-f>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>", opts)
+  -- buf_set_keymap(bufnr, "n", "<C-b>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>", opts)
 
   --}}}
 
@@ -157,25 +188,6 @@ function M.treesitter_textobjects()
     }, --}}}
   }
 end --}}}
-
--- Hop (Easymotion) {{{
-function M.hop()
-  local opts = { noremap=true, silent=false }
-
-  set_keymap('n', ';w', 'Easymotion forward word', "<cmd>HopWordAC<CR>", opts)
-  set_keymap('v', ';w', 'easymotion forward word', "<cmd>HopWordAC<CR>", opts)
-  set_keymap('n', ';b', 'Easymotion bacward word', "<cmd>HopWordBC<CR>", opts)
-  set_keymap('v', ';b', 'Easymotion bacward word', "<cmd>HopWordBC<CR>", opts)
-
-  set_keymap('n', ';j', "Easymotion line up",   "<cmd>HopLineAC<CR>", opts)
-  set_keymap('v', ';j', "Easymotion line up",   "<cmd>HopLineAC<CR>", opts)
-  set_keymap('n', ';k', "Easymotion line down", "<cmd>HopLineBC<CR>", opts)
-  set_keymap('v', ';k', "Easymotion line down", "<cmd>HopLineBC<CR>", opts)
-
-  set_keymap('n', 's', "Easymotion char",  "<cmd>HopChar1<CR>", opts)
-  set_keymap('v', 's', "Easymotion char", "<cmd>HopChar1<CR>", opts)
-
-end -- }}}
 
 -- nvim-tree {{{
 function M.nvim_tree()
