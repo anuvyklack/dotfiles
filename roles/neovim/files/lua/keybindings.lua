@@ -58,13 +58,15 @@ function M.lspconfig (bufnr)
   -- Mappings options.
   local opts = { noremap=true, silent=false }
 
+  which_key.register({ ['<leader>l'] = {name = 'LSP'}  }, {mode = 'n'})
+
   -- Lspconfig bindings {{{
 
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap(bufnr, 'n', '<F2>', 'LSP go to definition', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap(bufnr, 'n', '<S-F2>', 'LSP go to declaration', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap(bufnr, 'n', '<F2>', 'LSP: go to definition', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap(bufnr, 'n', '<S-F2>', 'LSP: go to declaration', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
 
-  buf_set_keymap(bufnr, 'n', 'K', 'LSP Hover doc', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap(bufnr, 'n', 'K', 'LSP: Hover doc', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
 
   -- buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
   -- buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
@@ -72,13 +74,13 @@ function M.lspconfig (bufnr)
   -- buf_set_keymap(bufnr, 'n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
   -- buf_set_keymap(bufnr, 'n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
 
-  buf_set_keymap(bufnr, 'n', '<leader>D', 'LSP Type definition', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap(bufnr, 'n', '<leader>lt', 'Type definition', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
 
   -- buf_set_keymap(bufnr, 'n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   -- buf_set_keymap(bufnr, 'n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   -- buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
 
-  buf_set_keymap(bufnr, 'n', '<leader>e', 'LSP Show errors', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap(bufnr, 'n', '<leader>le', 'Show errors', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
 
   -- buf_set_keymap(bufnr, 'n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
   -- buf_set_keymap(bufnr, 'n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
@@ -90,34 +92,31 @@ function M.lspconfig (bufnr)
   -- Lspsaga {{{
 
   -- lsp provider to find the cursor word definition and reference
-  buf_set_keymap(bufnr, "n", "gd", 'LSP show line diagnostics', "<cmd>Lspsaga lsp_finder<CR>", opts)
+  buf_set_keymap(bufnr, "n", "<leader>le", 'show line diagnostics', "<cmd>Lspsaga lsp_finder<CR>", opts)
 
-  -- code action
-  which_key.register({ ['<leader>c'] = {name = 'LSP code action'}  }, {mode = 'n'})
+  -- wk.register({ ['<leader>c'] = {name = 'LSP: Code action'}  }, {mode = 'n'})
+  -- wk.register({ ['<leader>c'] = {name = 'LSP: Code action'}  }, {mode = 'v'})
 
-  -- wk.register({ ['<leader>c'] = {name = 'LSP Code action'}  }, {mode = 'n'})
-  -- wk.register({ ['<leader>c'] = {name = 'LSP Code action'}  }, {mode = 'v'})
-
-  buf_set_keymap(bufnr, "n", "<leader>ca", 'LSP code action', '<cmd>Lspsaga code_action<CR>', opts)
-  buf_set_keymap(bufnr, "v", "<leader>ca", 'LSP range code action', "<cmd><C-U>Lspsaga range_code_action<CR>", opts)
+  buf_set_keymap(bufnr, "n", "<leader>lc", 'Code action', '<cmd>Lspsaga code_action<CR>', opts)
+  buf_set_keymap(bufnr, "v", "<leader>lc", 'LSP: Range code action', "<cmd><C-U>Lspsaga range_code_action<CR>", opts)
 
   -- rename
-  buf_set_keymap(bufnr, "n",         "gr", "LSP rename", "<cmd>Lspsaga rename<CR>", opts)
-  buf_set_keymap(bufnr, "n", "<leader>rn", "LSP rename", "<cmd>Lspsaga rename<CR>", opts)
+  buf_set_keymap(bufnr, "n",         "gr", "Rename", "<cmd>Lspsaga rename<CR>", opts)
+  buf_set_keymap(bufnr, "n", "<leader>lr", "Rename", "<cmd>Lspsaga rename<CR>", opts)
 
   -- preview definition
-  buf_set_keymap(bufnr, "n", "<leader>pd", "LSP preview definition", "<cmd>Lspsaga preview_definition<CR>", opts)
+  buf_set_keymap(bufnr, "n", "<leader>ld", "Preview definition", "<cmd>Lspsaga preview_definition<CR>", opts)
 
   -- -- hover doc
-  -- buf_set_keymap(bufnr, "n", "K", "LSP hover doc", "<cmd>Lspsaga hover_doc<CR>", opts)
+  -- buf_set_keymap(bufnr, "n", "K", "Hover doc", "<cmd>Lspsaga hover_doc<CR>", opts)
 
   -- show signature help
-  buf_set_keymap(bufnr, "n", "<C-k>", "LSP show signature help", "<cmd>Lspsaga signature_help<CR>", opts)
+  buf_set_keymap(bufnr, "n", "<C-k>", "LSP: Show sinature help", "<cmd>Lspsaga signature_help<CR>", opts)
 
   -- Show Diagnostics
-  -- buf_set_keymap("n", "<leader>e", "<cmd>Lspsaga show_line_diagnostics<CR>", opts)
+  buf_set_keymap(bufnr, "n", "<leader>le", "Show diagnostic", "<cmd>Lspsaga show_line_diagnostics<CR>", opts)
   -- only show diagnostic if cursor is over the area
-  buf_set_keymap(bufnr, "n", "<leader>cc", "LSP show diagnostic", "<cmd>lua require'lspsaga.diagnostic'.show_cursor_diagnostics()<CR>", opts)
+  -- buf_set_keymap(bufnr, "n", "<leader>le", "Show diagnostic", "<cmd>lua require'lspsaga.diagnostic'.show_cursor_diagnostics()<CR>", opts)
 
   -- -- jump diagnostic
   -- buf_set_keymap(bufnr, "n", "]e", "<cmd>Lspsaga diagnostic_jump_next<CR>", opts)
