@@ -1,12 +1,6 @@
 " The very nice expample is after link:
 " https://github.com/AdamWagner/stackline/issues/42#issuecomment-696817874
 
-
-set foldmethod=marker   " fold based on markers
-set foldcolumn=2
-" set foldlevelstart=0
-" set foldnestmax=3     " deepest fold is 3 levels (only for sintax and indent)
-
 set fillchars=fold:•
 set foldtext=CustomFoldText('•')
 

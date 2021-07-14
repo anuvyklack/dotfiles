@@ -6,7 +6,7 @@
 " ░░██████ ░██ ░██  ░██ ░██  ░██       ░░████  ░██ ░██ ░██ ░██
 "  ░░░░░██ ░██ ░██  ░██ ░██  ░░███  ██  ░░██   ░██ ███ ░██ ░██
 "   █████  ░░  ░░   ░░  ░░    ░░░  ░░    ░░    ░░ ░░░  ░░  ░░
-"  ░░░░░  
+"  ░░░░░
 
 echom "ginit.vim sourced"
 
@@ -63,6 +63,7 @@ elseif exists('g:fvim_loaded')
     nnoremap <silent> <C-ScrollWheelUp> :set guifont=+<CR>
     nnoremap <silent> <C-ScrollWheelDown> :set guifont=-<CR>
     nnoremap <A-CR> :FVimToggleFullScreen<CR>
+
 "}}}
 
 " Neovim Qt {{{
@@ -89,4 +90,3 @@ else " This means, we are in neovim-qt
     " guifont! liga inconsolata lgc:h11.5
 
 endif "}}}
-

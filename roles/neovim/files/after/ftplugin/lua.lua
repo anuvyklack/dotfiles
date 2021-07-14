@@ -1,8 +1,8 @@
 vim.o.textwidth = 80
 
-vim.o.tabstop     = 2
-vim.o.softtabstop = 2
-vim.o.shiftwidth  = 2
+vim.o.tabstop     = 3
+vim.o.softtabstop = 3
+vim.o.shiftwidth  = 3
 
 -- Make 'gf' vim keybinding work on `lua requare('module.foo')` statements.
 -- For this, we need to add `.lua` extension to search name. And add `lua/`

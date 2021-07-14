@@ -51,6 +51,17 @@ set secure  " Disallows the use of :autocmd, shell and write commands in
 
 " }}}
 
+" Folding                                                            {{{
+" ======================================================================
+
+set foldmethod=marker  " fold based on markers
+set foldcolumn=2
+" set foldlevelstart=0 " 0: to always start editing with all folds closed
+set foldnestmax=5   " deepest fold is 3 levels (only for sintax and indent)
+set foldminlines=5  " minimum lines required to create fold
+
+" }}}
+
 " Python support                                                    {{{
 " =====================================================================
 set pyxversion=3
@@ -646,5 +657,19 @@ fu! ToggleKeyboardLayout() "{{{
 endf "}}}
 
 " }}}
+
+
+" set noequalalways
+" augroup ReduceNoise
+"     autocmd!
+"     " Automatically resize active split to 85 width
+"     autocmd WinEnter * :call ResizeSplits()
+" augroup END
+"
+" function! ResizeSplits()
+"     set winwidth=80
+"     wincmd =
+" endfunction
+
 
 " vim: fen fdm=marker number tw=76 cc=+1

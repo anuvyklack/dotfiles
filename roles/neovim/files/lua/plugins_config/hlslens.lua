@@ -13,6 +13,6 @@ set_keymap('n', 'g*', "g*<Cmd>lua require('hlslens').start()<CR>", opts)
 set_keymap('n', 'g#', "g#<Cmd>lua require('hlslens').start()<CR>", opts)
 
 wk.register({
-  ["g*"] = "which_key_ignore",
-  ["g#"] = "which_key_ignore",
+   ["g*"] = "which_key_ignore",
+   ["g#"] = "which_key_ignore",
 })

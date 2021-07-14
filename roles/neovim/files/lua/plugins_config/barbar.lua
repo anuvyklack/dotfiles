@@ -21,3 +21,5 @@ vim.g.bufferline = {
   -- Sets the maximum padding width with which to surround each tab.
   maximum_padding = 4,
 }
+
+require('keybindings').barbar()

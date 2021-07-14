@@ -1,15 +1,15 @@
 require('lspkind').init({
-    -- enables text annotations
-    with_text = false,
+   -- enables text annotations
+   with_text = false,
 
-    -- default symbol map
-    -- can be either 'default' or
-    -- 'codicons' for codicon preset (requires vscode-codicons font installed)
-    --
-    -- default: 'default'
-    preset = 'codicons',
+   -- default symbol map
+   -- can be either 'default' or
+   -- 'codicons' for codicon preset (requires vscode-codicons font installed)
+   --
+   -- default: 'default'
+   preset = 'codicons',
 
-    symbol_map = {
+   symbol_map = {
       Text = '',
       Buffer = '',
       Method = 'ƒ',
@@ -31,5 +31,5 @@ require('lspkind').init({
       EnumMember = '',
       Constant = '',
       Struct = ''
-    },
+   },
 })
