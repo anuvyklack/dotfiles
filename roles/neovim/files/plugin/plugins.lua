@@ -79,7 +79,7 @@ return require('packer').startup(function()
    -- -- Perl style regexp notation for Vim
    -- use  'othree/eregex.vim'
 
-   -- Autopairs for neovim written by lua.
+   -- Autopairs for neovim written in lua.
    -- https://github.com/windwp/nvim-autopairs
    use { 'windwp/nvim-autopairs',
       as = 'autopairs',
