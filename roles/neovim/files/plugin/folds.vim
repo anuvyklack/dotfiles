@@ -1,7 +1,7 @@
 " The very nice expample is after link:
 " https://github.com/AdamWagner/stackline/issues/42#issuecomment-696817874
 
-set fillchars=fold:•
+set fillchars+=fold:•
 set foldtext=CustomFoldText('•')
 
 function! CustomFoldText(string) "{{{
@@ -16,7 +16,7 @@ function! CustomFoldText(string) "{{{
       let line_num = v:foldstart
     endif
 
-    " The number of indentation.
+    " Get the number of indentation.
     " All tabs count as spaces with respect to '&tabstop'.
     let indent_num = indent(line_num)
 
@@ -26,26 +26,26 @@ function! CustomFoldText(string) "{{{
 
     " Construct the list from '&commentstring' string using '%s' as separator,
     " and get the first element from the list.
-    "   This list construction works the next way. The tipical '&commentstring'
-    " conten looks like:
+    "   This list construction works the next way.
+    " The tipical '&commentstring' conten looks like:
     "     commentstring=/*%s*/    (cpp example)
     " It consiste of different comment strings separeted by '%s' symbols.
     let comment_str = split(&commentstring, '%s')[0]
     " If the line starts from the first element in the obtained list (i.e. line
     " starts with the comment sign), then ...
-    if match(line, '^'.comment_str) != -1
+    if match(line, '^' . comment_str) != -1
       " ... add its length to the 'indent_num' variable.
       let indent_num = indent_num + len(comment_str)
     endif
 
     " Remove all comment signs.
     let line = substitute(line, join(split(&commentstring, '%s'), '\|'), '', 'g')
-                             "  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                             "  In this command we construct from this string:
-                             "      '/*%s*/'   (cpp example)
-                             "  the next one:
-                             "      '/*\|*/'
-                             "  which is Vim pattern.
+    "                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    "                           In this command we construct from this string:
+    "                               '/*%s*/'   (cpp example)
+    "                           the next one:
+    "                               '/*\|*/'
+    "                           which is Vim pattern.
 
     " Remove all foldmarkers signs.
     let line = substitute(line, join(split(&foldmarker, ','), '\d\?\|'), '', 'g')
@@ -54,7 +54,7 @@ function! CustomFoldText(string) "{{{
 
     " Convert indentation level number into indentation string.
     if indent_num > 0
-      let indent_str = repeat(a:string, indent_num-1) . ' '
+      let indent_str = repeat(a:string, indent_num - 1) . ' '
     else
       let indent_str = ''
     endif
@@ -63,7 +63,7 @@ function! CustomFoldText(string) "{{{
     " And add one at the end to separate line content from the fold signs:
     " i.e. to get this:
     "     fold text ••••••••••••••••••••••••••
-    " not this:
+    " but not this:
     "     fold text•••••••••••••••••••••••••••
     let line = trim(line) . ' '
 
@@ -73,6 +73,8 @@ function! CustomFoldText(string) "{{{
 
     " Size of line numbers colummn
     let nu = (&number ? len(string(line('$'))) : 0)
+
+    " Calculate the number of folded lines as a percentage of the whole buffer. {{{
 
     " " Try to get the value from the 'g:custom_foldtext_max_width' variable. If
     " " it doesn't exists, get the width of the current window. Substitute from
@@ -86,9 +88,13 @@ function! CustomFoldText(string) "{{{
     "   let foldPercentage = printf("[of %d lines] ", lineCount)
     " endtry
 
+    " }}}
 
-    let expansion_str = repeat(a:string, winwidth(0) - &foldcolumn - nu - 7 -
-                                       \ strdisplaywidth(indent_str.line.fold_size_str))
+    let expansion_str =
+    \    repeat(a:string,
+    \           winwidth(0) - &foldcolumn - nu - 7 -
+    \           strdisplaywidth(indent_str . line . fold_size_str)
+    \          )
 
     return indent_str . line . expansion_str . fold_size_str
 endfunction "}}}

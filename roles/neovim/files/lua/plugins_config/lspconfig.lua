@@ -1,13 +1,15 @@
+-- List of manually installed language servers.
+local manually_installed_servers = {
+   -- "ccls"
+}
+
+
 local lspconfig = require('lspconfig')
 
--- List of manually installed language servers.
-local manually_installed_servers = { "ccls" }
-
--- Adds the missing :LspInstall <language> command.
-require('lspinstall').setup()
+require('lspinstall').setup() -- Adds the missing :LspInstall <language> command.
 
 -- Use an on_attach function to map the needed keys after
--- the language server attaches to the current buffer.
+
 ---@param bufnr number
 local function on_attach (client, bufnr)
 
@@ -18,9 +20,13 @@ local function on_attach (client, bufnr)
    -- Enable completion triggered by <c-x><c-o>
    buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-   require('lsp_signature').on_attach()
+   require('lsp_signature').on_attach({
+      -- Array of extra characters that will trigger signature completion.
+      extra_trigger_chars = {"(", ","}
+   })
+
    -- require('virtualtypes').on_attach()
-   require 'illuminate'.on_attach(client)
+   require('illuminate').on_attach(client)
 
    -- Load lsp keybindings.
    require("keybindings").lspconfig(bufnr)
@@ -38,6 +44,9 @@ local lsp_settings = {
                diagnostics = {
                   -- Get the language server to recognize the `use` global.
                   globals = {"use"},
+               },
+               completion = {
+                  showParams = false
                },
                -- runtime = {
                --     -- Tell the language server which version of Lua you're
@@ -62,6 +71,9 @@ local lsp_settings = {
    vim = {
       on_attach = on_attach,
    },
+   cpp = { -- clangd
+      on_attach = on_attach,
+   },
    ccls = {
       -- A list of ccls available options:
       -- https://github.com/MaskRay/ccls/wiki/Customization#initialization-options
@@ -76,6 +88,14 @@ local lsp_settings = {
          }
       }
    },
+   cmake = {
+      on_attach = on_attach,
+      -- default_config = {
+         init_options = {
+            buildDirectory = "build-Debug"
+         }
+      -- },
+   },
    pyright = {
       on_attach = {
          on_attach,
@@ -84,12 +104,15 @@ local lsp_settings = {
    }
 }
 
--- The list of used serves.
+
 local servers = require('lspinstall').installed_servers()
 
--- Add the content of the 'manually_installed_servers' list
--- to the 'servers' list.
-table.insert(servers, unpack(manually_installed_servers))
+-- if table is not empty
+if next(manually_installed_servers) then
+   -- Add the content of the 'manually_installed_servers'
+   -- list to the 'servers' list.
+   table.insert(servers, unpack(manually_installed_servers))
+end
 
 
 local function setup_lsp_servers()
@@ -100,7 +123,6 @@ local function setup_lsp_servers()
 end
 setup_lsp_servers()
 
-
 -- Automatically reload after `:LspInstall <server>`
 -- so we don't have to restart neovim.
 require('lspinstall').post_install_hook = function()
@@ -108,6 +130,3 @@ require('lspinstall').post_install_hook = function()
    -- Triggers the FileType autocmd that starts the server.
    vim.cmd("bufdo e")
 end
-
-
--- vim: ts=2 sts=2 sw=2 tw=80 cc=+1 fen

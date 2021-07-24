@@ -55,10 +55,14 @@ set secure  " Disallows the use of :autocmd, shell and write commands in
 " ======================================================================
 
 set foldmethod=marker  " fold based on markers
-set foldcolumn=2
+set foldcolumn=auto:3
 " set foldlevelstart=0 " 0: to always start editing with all folds closed
 set foldnestmax=5   " deepest fold is 3 levels (only for sintax and indent)
 set foldminlines=5  " minimum lines required to create fold
+set foldopen=block,hor,mark,jump,percent,quickfix,search,tag,undo
+" set foldopen=all
+
+" set fillchars=foldclose:,foldopen:   "  
 
 " }}}
 
@@ -349,99 +353,99 @@ autocmd VimResized * wincmd =
 "     autocmd WinEnter,BufWinEnter,VimResized * call SetFoldColumn()
 "     autocmd User MyCustomCloseWindow call SetFoldColumn()
 " augroup END
-
-function! SetFoldColumn() "{{{
-    " echom '-----------'
-    " для всех окон
-    for window in range(1, winnr('$'))
-
-        " Maximum fold level for buffer in window
-        let mfl = getbufvar(winbufnr(window), 'maxFoldLevel')
-
-        " If max fold level is 0, scip such window.
-        if mfl == 0
-            " echom 'win '. window .' mfl==0'
-            call setwinvar(window, "&foldcolumn", 0)
-            continue
-        endif
-
-        " Переменная w:bufnr хранит номер буфера открытого в данном окне.
-        " Если такой переменной не существует, эта функция (SetFoldColumn)
-        " создаст её.  Если значение этой пременной равно номеру буфера
-        " открытого в данном окне, то текущая итерация цикла пропускается.
-        " Или другими словами, это означает, что с прошлой проверки буфер в
-        " окне не поменялся.
-        " С w:wwid всё тоже самое, только она хранит значение ширины окна.
-        if getwinvar(window, 'bufnr') == winbufnr(window) &&
-        \  getwinvar(window, 'wwid')  == winwidth(window)
-            " echom 'Win '. window .' scip check'
-            continue
-        else
-            let w:bufnr = winbufnr(window)
-            let w:wwid  = winwidth(window)
-        endif
-
-        " textwidth for window
-        let tw = getbufvar(winbufnr(window), '&textwidth')
-
-        " Size of the column with numbers of lines.
-        " '+1' is because there is always one space between column with line
-        " numbers and the beginning of the text.
-        let nu = (&number ?  strlen(string(line('$'))) + 1 : 0)
-
-        " If window in narrower than textwidth + size of the number
-        " column, then skip such window.
-        if winwidth(window) <= (tw + nu)
-            " echom 'win '.window.' width <= tw + nu'
-            call setwinvar(window, "&foldcolumn", 0)
-            continue
-        endif
-
-        " Required foldcolumn size
-        let fdcSize = (mfl>1 ? mfl+1 : mfl)
-
-        " The difference between the width of the window and
-        " the textwidth in this window.
-        let delta = abs(winwidth(window) - tw - nu)
-
-        " Finale foldcolumn size
-        let fdc = (fdcSize > delta ? delta : fdcSize)
-
-        call setwinvar(window, "&foldcolumn", fdc)
-
-        " echom 'win '. window .' fdc='. fdc
-
-    endfor
-endfunction "}}}
-
-function! MaxFoldLevel() "{{{
-    " Retrun a number which is the maximum fold level of the current file.
-
-    let winview = winsaveview()  " save window and cursor positions
-
-    " open all nested folds
-    norm zR
-    1  " Jump to the first line of the buffer
-    let position = line('.')
-    let mfl = foldlevel(position)  " mfl: max fold level
-
-    " jump to the next fold if exists
-    norm zj
-
-    while line('.') != position
-        if foldlevel(position) > mfl
-            let mfl = foldlevel(position)
-        endif
-        let position = line('.')
-        norm zj
-    endwhile
-
-    " close all nested folds back
-    norm zM
-    call winrestview(winview)  " restore the window and cursor positions
-
-    return mfl
-endfunction "}}}
+"
+" function! SetFoldColumn() "{{{
+"     " echom '-----------'
+"     " для всех окон
+"     for window in range(1, winnr('$'))
+"
+"         " Maximum fold level for buffer in window
+"         let mfl = getbufvar(winbufnr(window), 'maxFoldLevel')
+"
+"         " If max fold level is 0, scip such window.
+"         if mfl == 0
+"             " echom 'win '. window .' mfl==0'
+"             call setwinvar(window, "&foldcolumn", 0)
+"             continue
+"         endif
+"
+"         " Переменная w:bufnr хранит номер буфера открытого в данном окне.
+"         " Если такой переменной не существует, эта функция (SetFoldColumn)
+"         " создаст её.  Если значение этой пременной равно номеру буфера
+"         " открытого в данном окне, то текущая итерация цикла пропускается.
+"         " Или другими словами, это означает, что с прошлой проверки буфер в
+"         " окне не поменялся.
+"         " С w:wwid всё тоже самое, только она хранит значение ширины окна.
+"         if getwinvar(window, 'bufnr') == winbufnr(window) &&
+"         \  getwinvar(window, 'wwid')  == winwidth(window)
+"             " echom 'Win '. window .' scip check'
+"             continue
+"         else
+"             let w:bufnr = winbufnr(window)
+"             let w:wwid  = winwidth(window)
+"         endif
+"
+"         " textwidth for window
+"         let tw = getbufvar(winbufnr(window), '&textwidth')
+"
+"         " Size of the column with numbers of lines.
+"         " '+1' is because there is always one space between column with line
+"         " numbers and the beginning of the text.
+"         let nu = (&number ?  strlen(string(line('$'))) + 1 : 0)
+"
+"         " If window in narrower than textwidth + size of the number
+"         " column, then skip such window.
+"         if winwidth(window) <= (tw + nu)
+"             " echom 'win '.window.' width <= tw + nu'
+"             call setwinvar(window, "&foldcolumn", 0)
+"             continue
+"         endif
+"
+"         " Required foldcolumn size
+"         let fdcSize = (mfl>1 ? mfl+1 : mfl)
+"
+"         " The difference between the width of the window and
+"         " the textwidth in this window.
+"         let delta = abs(winwidth(window) - tw - nu)
+"
+"         " Finale foldcolumn size
+"         let fdc = (fdcSize > delta ? delta : fdcSize)
+"
+"         call setwinvar(window, "&foldcolumn", fdc)
+"
+"         " echom 'win '. window .' fdc='. fdc
+"
+"     endfor
+" endfunction "}}}
+"
+" function! MaxFoldLevel() "{{{
+"     " Retrun a number which is the maximum fold level of the current file.
+"
+"     let winview = winsaveview()  " save window and cursor positions
+"
+"     " open all nested folds
+"     norm zR
+"     1  " Jump to the first line of the buffer
+"     let position = line('.')
+"     let mfl = foldlevel(position)  " mfl: max fold level
+"
+"     " jump to the next fold if exists
+"     norm zj
+"
+"     while line('.') != position
+"         if foldlevel(position) > mfl
+"             let mfl = foldlevel(position)
+"         endif
+"         let position = line('.')
+"         norm zj
+"     endwhile
+"
+"     " close all nested folds back
+"     norm zM
+"     call winrestview(winview)  " restore the window and cursor positions
+"
+"     return mfl
+" endfunction "}}}
 
 
 " Tmux windows names
@@ -658,6 +662,8 @@ endf "}}}
 
 " }}}
 
+
+" set winwidth=80
 
 " set noequalalways
 " augroup ReduceNoise

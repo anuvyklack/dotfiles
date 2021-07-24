@@ -97,8 +97,8 @@ function M.lspconfig (bufnr)
    -- wk.register({ ['<leader>c'] = {name = 'LSP: Code action'}  }, {mode = 'n'})
    -- wk.register({ ['<leader>c'] = {name = 'LSP: Code action'}  }, {mode = 'v'})
 
-   buf_set_keymap(bufnr, "n", "<leader>lc", 'Code action', '<cmd>Lspsaga code_action<CR>', opts)
-   buf_set_keymap(bufnr, "v", "<leader>lc", 'LSP: Range code action', "<cmd><C-U>Lspsaga range_code_action<CR>", opts)
+   buf_set_keymap(bufnr, "n", "<leader>la", 'Code action', '<cmd>Lspsaga code_action<CR>', opts)
+   buf_set_keymap(bufnr, "v", "<leader>la", 'LSP: Range code action', "<cmd><C-U>Lspsaga range_code_action<CR>", opts)
 
    -- rename
    buf_set_keymap(bufnr, "n",         "gr", "Rename", "<cmd>Lspsaga rename<CR>", opts)
@@ -130,6 +130,19 @@ function M.lspconfig (bufnr)
    --}}}
 
 end --}}}
+
+-- nvim-compe {{{
+function M.nvim_compe()
+
+   local opts = {noremap = true, silent = true, expr = true}
+
+   vim.api.nvim_set_keymap('i', '<C-Space>', "compe#complete()",              opts)
+   -- vim.api.nvim_set_keymap('i', '<CR>',      "compe#confirm('<CR>')",         opts)
+   vim.api.nvim_set_keymap('i', '<C-e>',     "compe#close('<C-e>')",          opts)
+   vim.api.nvim_set_keymap('i', '<C-f>',     "compe#scroll({ 'delta': +4 })", opts)
+   vim.api.nvim_set_keymap('i', '<C-d>',     "compe#scroll({ 'delta': -4 })", opts)
+
+end -- }}}
 
 -- Treesitter {{{
 function M.treesitter_textobjects()

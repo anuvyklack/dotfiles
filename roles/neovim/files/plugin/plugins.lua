@@ -1,4 +1,3 @@
---         ███                 ██                    ███
 --        ░░██                ░░                    ░░██
 --  ██████ ░██ ██   ██  ██████ ██ ██████   ██████    ░██ ██   ██  █████
 -- ░██░░░██░██░██  ░██ ██░░░██░██░██░░░██ ██░░░░     ░██░██  ░██ ░░░░░██
@@ -64,7 +63,6 @@ return require('packer').startup(function()
 
    use { 'tomtom/tcomment_vim',   -- Comments. For help use :help tcomment
       as = 'tcomment',
-      config = function() require('plugins_config.tcomment') end
       -- config = function() require('plugins_config/tcomment') end
    }
 
@@ -79,12 +77,18 @@ return require('packer').startup(function()
    -- -- Perl style regexp notation for Vim
    -- use  'othree/eregex.vim'
 
-   -- Autopairs for neovim written in lua.
-   -- https://github.com/windwp/nvim-autopairs
+   -- Autopairs {{{
    use { 'windwp/nvim-autopairs',
       as = 'autopairs',
-      config = function() require('nvim-autopairs').setup() end
+      config = function()
+         require('nvim-autopairs').setup()
+         require("nvim-autopairs.completion.compe").setup({
+            map_cr = true, -- map <CR> on insert mode
+            map_complete = true -- It will auto insert `(` after select function or method item.
+         })
+      end
    }
+   -- }}}
 
    -- Surround {{{
 
@@ -210,7 +214,8 @@ return require('packer').startup(function()
 
    -- use {'ggandor/lightspeed.nvim', }
 
-   -- Smooth scroll {{{
+   --                   Smooth scroll                  {{{
+   -------------------------------------------------------
 
    -- https://github.com/psliwka/vim-smoothie
    use { 'psliwka/vim-smoothie',
@@ -230,7 +235,7 @@ return require('packer').startup(function()
    --    config = function() require('plugins_config/neoscroll') end
    -- }
 
-   -- }}}
+   ----------------------------------------------------}}}
 
    -- -- Clever-f
    -- use { 'rhysd/clever-f.vim',
@@ -277,10 +282,10 @@ return require('packer').startup(function()
       config = function() require('plugins_config/lspsaga') end
    }
 
-   -- use { "folke/trouble.nvim",
-   --    requires = "kyazdani42/nvim-web-devicons",
-   --    config = function() require('plugins_config/trouble') end
-   -- }
+   use { "folke/trouble.nvim",
+      requires = "kyazdani42/nvim-web-devicons",
+      config = function() require('plugins_config/trouble') end
+   }
 
    -- use 'nvim-lua/diagnostic-nvim'
 
@@ -306,16 +311,15 @@ return require('packer').startup(function()
    -- }}}
 
    -- Lsp signature hint when you type.
-   use { "ray-x/lsp_signature.nvim",
-      as = 'lsp-signature',
-      config = function()
-         require('lsp_signature').on_attach()
-      end
-   }
+   use { "ray-x/lsp_signature.nvim", as = 'lsp-signature' }
 
    use { 'jubnzv/virtual-types.nvim', as = 'virtual-types' }
 
-   use { 'simrat39/symbols-outline.nvim', as = 'symbols-outline' }
+   use { 'anuvyklack/symbols-outline.nvim',
+      as = 'symbols-outline',
+      config = function() require('plugins_config/symbols-outline') end
+   }
+
    -- use { "liuchengxu/vista.vim" }
 
    use { "ahmedkhalf/lsp-rooter.nvim",
@@ -437,6 +441,10 @@ return require('packer').startup(function()
                -- Available values: 'auto', 'red', 'orange', 'yellow',
                -- 'green', 'aqua', 'blue', 'purple'
                vim.g.gruvbox_material_cursor = 'blue'
+               -- vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
+               vim.g.gruvbox_material_diagnostic_virtual_text = 'grey'
+               vim.g.gruvbox_material_current_word = 'grey background'
+               vim.g.gruvbox_material_better_performance = 1
 
                vim.cmd 'colorscheme gruvbox-material'
                vim.cmd('source ~/.config/nvim/lua/plugins_config/gruvbox-material.vim')
@@ -505,6 +513,18 @@ return require('packer').startup(function()
    if color_themes[theme] then
       color_themes[theme]()
    end
+
+   use { 'folke/lsp-colors.nvim',
+      config = function()
+         require("lsp-colors").setup({
+           Error       = "#db4b4b",
+           Warning     = "#e0af68",
+           Information = "#0db9d7",
+           Hint        = "#10B981"
+         })
+      end
+   }
+
    -------------------------------------------------------
 
    -- --------------------- Statusline ----------------------
@@ -555,6 +575,10 @@ return require('packer').startup(function()
             },
          }
       end
+   }
+
+   use { "kevinhwang91/nvim-bqf",
+      as = "better-quickfix"
    }
 
    -- <leader>? : 40-column cheat sheet
@@ -663,16 +687,16 @@ return require('packer').startup(function()
    -- use 'tmux-plugins/vim-tmux'
    ---------------------------------------------------}}}
 
-   --                      Pandoc                      {{{
-   -------------------------------------------------------
-   use { 'vim-pandoc/vim-pandoc',
-      ft = {'markdown', 'pandoc'},
-      requires = {'vim-pandoc/vim-pandoc-syntax', opt = true},
-      config = function()
-         vim.cmd('source ~/.config/nvim/lua/plugins_config/pandoc.vim')
-      end
-   }
-   ----------------------------------------------------}}}
+   -- --                      Pandoc                      {{{
+   -- -------------------------------------------------------
+   -- use { 'vim-pandoc/vim-pandoc',
+   --    ft = {'markdown', 'pandoc'},
+   --    requires = {'vim-pandoc/vim-pandoc-syntax', opt = true},
+   --    config = function()
+   --       vim.cmd('source ~/.config/nvim/lua/plugins_config/pandoc.vim')
+   --    end
+   -- }
+   -- ----------------------------------------------------}}}
 
    --          Русский язык (Switch language)          {{{
    -------------------------------------------------------

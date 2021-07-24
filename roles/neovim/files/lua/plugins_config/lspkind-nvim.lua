@@ -24,10 +24,10 @@ require('lspkind').init({
    --    
    --        
    --                  
-   --      
+   --     
    --         
    --              ﬦ ﴫ
-   -- 﫻      車濫櫓 綠
+   -- 﫻      車濫櫓綠
    -- ﮆ 不 便 礪ﮋ 了
    --  ﰟ   
    -- 卑 喝 慎 ﲋ ﰪ    
@@ -47,32 +47,32 @@ require('lspkind').init({
    --
 
    symbol_map = {
-      Text          = '', --             ﮝ
+      Text          = '', --             ﮝ 
       Buffer        = '', --
       Method        = 'ƒ', -- ƒ
       Function      = '', --   
       Constructor   = '', --  
       Field         = "", --      
       Variable      = '', -- 
-      Class         = '', --    囹
-      Interface     = '', --   
+      Class         = '', --   
+      Interface     = '', --           﫻  
       Module        = '', -- 
       Property      = '襁',--  襁
       Unit          = '', --  
       Value         = '', -- 
       Enum          = '烈',-- 烈
-      Keyword       = '', -- 
+      Keyword       = '', --    
       Snippet       = '﬌', -- ﬌
       Color         = '', -- 
       File          = '', -- 
-      Reference     = "", --  
+      Reference     = "", --   
       Folder        = '', -- 
-      EnumMember    = '', -- 
+      EnumMember    = '', --    
       Constant      = '', -- 
-      Struct        = '', -- 
+      Struct        = '', --    
       Event         = "", -- 
-      Operator      = "",
-      TypeParameter = "",
+      Operator      = "", -- 璉         喝 
+      TypeParameter = "𝙏", -- 𝙏
    },
 
    -- -- override preset symbols
