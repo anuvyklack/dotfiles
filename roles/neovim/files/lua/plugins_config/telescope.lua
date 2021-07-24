@@ -1,4 +1,7 @@
-require('telescope').setup{
+local available, telescope = pcall(require, "telescope")
+if not available then return end
+
+telescope.setup{
    defaults = {
       prompt_prefix = " ",
       selection_caret = " ", --  卑 喝   

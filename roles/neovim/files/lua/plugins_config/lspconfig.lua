@@ -6,7 +6,8 @@ local manually_installed_servers = {
 
 local lspconfig = require('lspconfig')
 
-require('lspinstall').setup() -- Adds the missing :LspInstall <language> command.
+local lspinstall_available, lspinstall = pcall(require, "lspinstall")
+lspinstall.setup() -- Adds the missing :LspInstall <language> command.
 
 -- Use an on_attach function to map the needed keys after
 
@@ -105,7 +106,10 @@ local lsp_settings = {
 }
 
 
-local servers = require('lspinstall').installed_servers()
+local servers = {}
+if lspinstall_available then
+   servers = lspinstall.installed_servers()
+end
 
 -- if table is not empty
 if next(manually_installed_servers) then
@@ -125,8 +129,10 @@ setup_lsp_servers()
 
 -- Automatically reload after `:LspInstall <server>`
 -- so we don't have to restart neovim.
-require('lspinstall').post_install_hook = function()
-   setup_lsp_servers()
-   -- Triggers the FileType autocmd that starts the server.
-   vim.cmd("bufdo e")
+if lspinstall_available then
+   lspinstall.post_install_hook = function()
+      setup_lsp_servers()
+      -- Triggers the FileType autocmd that starts the server.
+      vim.cmd("bufdo e")
+   end
 end

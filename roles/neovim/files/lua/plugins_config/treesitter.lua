@@ -1,15 +1,15 @@
 -- HACK This file is loaded after nvim-treesitter plugin.
 
-require('nvim-treesitter.configs').setup {
+local available, treesitter_config = pcall(require, "nvim-treesitter.configs")
+if not available then return end
 
-   ensure_installed = "maintained",
+treesitter_config.setup {
 
-   -- ensure_installed = {
-   --   'bash', 'bibtex', 'c', 'comment', 'cpp', 'css', 'fennel', 'go', 'haskell',
-   --   'html', 'javascript', 'json', 'jsonc', 'julia', 'kotlin', 'latex', 'lua',
-   --   'python', 'regex', 'rust', 'teal', 'toml', 'typescript', 'query', 'yaml',
-   --   'zig'
-   -- },
+   -- ensure_installed = "maintained",
+   ensure_installed = {
+      'bash', 'comment', 'c', 'cpp', 'fennel', 'go', 'html', 'json',
+      'latex', 'lua', 'python', 'regex', 'rust', 'toml', 'query', 'yaml',
+   },
 
    highlight = { enable = true,
                  use_languagetree = true },

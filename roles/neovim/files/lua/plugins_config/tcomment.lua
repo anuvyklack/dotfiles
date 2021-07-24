@@ -1,6 +1,7 @@
-local wk = require("which-key")
+local available, whick_key = pcall(require, "which-key")
+if not available then return end
 
-wk.register({
-    ['gc'] = {name = "Comments"},
+whick_key.register({
+    ['gc'] = { name = "Comments" },
     ['gcc'] = "Current line"
 })

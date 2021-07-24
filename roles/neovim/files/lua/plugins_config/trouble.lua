@@ -1,4 +1,7 @@
-require("trouble").setup {
+local available, trouble = pcall(require, "trouble")
+if not available then return end
+
+trouble.setup {
    position = "bottom", -- bottom, top, left, right
    height = 10,  -- height of the trouble list when position is top or bottom
    width = 50,   -- width of the list when position is left or right

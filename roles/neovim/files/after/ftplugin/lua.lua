@@ -29,10 +29,9 @@ vim.wo.foldexpr   = "nvim_treesitter#foldexpr()"
 
 --------------------- Keybindings ---------------------
 
-local buf_set_keymap = require("util").buf_set_keymap
-local opt = {noremap=true, silent=false}
+local buf_map = require("util").buf_map
 
-buf_set_keymap(0, 'n', 'gK', 'Show :help', 'K', opt)
-buf_set_keymap(0, 'v', 'gK', 'Show :help', 'K', opt)
+buf_map(0, 'n', 'gK', 'Show :help', 'K')
+buf_map(0, 'v', 'gK', 'Show :help', 'K')
 
 -------------------------------------------------------

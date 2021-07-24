@@ -1,3 +1,4 @@
+--         ███                 ██                    ███
 --        ░░██                ░░                    ░░██
 --  ██████ ░██ ██   ██  ██████ ██ ██████   ██████    ░██ ██   ██  █████
 -- ░██░░░██░██░██  ░██ ██░░░██░██░██░░░██ ██░░░░     ░██░██  ░██ ░░░░░██
@@ -20,11 +21,12 @@
 local fn = vim.fn
 local execute = vim.api.nvim_command
 
+-- setup Packer {{{
 -- Auto install packer.nvim if not exists
 local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
 
 if fn.empty(fn.glob(install_path)) > 0 then
-   fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', install_path})
+   fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', '--depth', '1', install_path})
    execute 'packadd packer.nvim'
 end
 
@@ -40,21 +42,33 @@ end
 -- Packer settings
 require('packer').init{
    display = {
-      open_cmd = '80vnew [packer]',  -- set the width of the packer split
+      -- open_cmd = '80vnew [packer]',  -- set the width of the packer split
+      open_fn = function()
+         -- return require("packer.util").float({border = "rounded"})
+         return require("packer.util").float()
+      end,
+      working_sym = '', --      plugin being installed/updated
+      error_sym = '',   -- plugin with an error in installation/updating
+      done_sym = '',    --   plugin which has completed installation/updating
+      --       ﯇ 
+      --  
+   },
+   git = {
+      clone_timeout = 600  -- timeout, in seconds, for git clones
    }
 }
-
+-- }}}
 
 return require('packer').startup(function()
    use 'wbthomason/packer.nvim' -- Packer can manage itself
 
    -------------------- Text editing ---------------------
 
-   use 'matze/vim-move'          -- перемещение строк и частей строк
-   use 'wellle/targets.vim'      -- plugin that provides additional text objects
-   use 'kshenoy/vim-signature'   -- display and navigate marks
-   use 'tpope/vim-unimpaired'    -- Different bidirectional motions: switch
-                                 --   buffers, add blank lines, etc.
+   use 'matze/vim-move'         -- перемещение строк и частей строк
+   use 'wellle/targets.vim'     -- plugin that provides additional text objects
+   use 'kshenoy/vim-signature'  -- display and navigate marks
+   use 'tpope/vim-unimpaired'   -- Different bidirectional motions: switch
+                                --   buffers, add blank lines, etc.
 
    -- Until https://github.com/neovim/neovim/pull/13823 will be merged.
    use 'tjdevries/astronauta.nvim'
@@ -264,13 +278,17 @@ return require('packer').startup(function()
 
    use { 'neovim/nvim-lspconfig',
       as = 'lspconfig',
+      after = 'lspinstall',
       requires = {
          -- Adds the missing :LspInstall <language> command
          -- to conveniently install language servers.
-         {"kabouzeid/nvim-lspinstall", as = 'lspinstall'},
+         {"kabouzeid/nvim-lspinstall",
+            as = 'lspinstall'},
 
          -- Setup for lua and plugins development.
-         {"folke/lua-dev.nvim", as = 'lua-dev'}
+         {"folke/lua-dev.nvim",
+            as = 'lua-dev',
+            after = 'lspinstall'}
       },
       config = function() require('plugins_config/lspconfig') end
    }
@@ -284,6 +302,7 @@ return require('packer').startup(function()
 
    use { "folke/trouble.nvim",
       requires = "kyazdani42/nvim-web-devicons",
+      cmd = {'Trouble', 'TroubleToggle'},
       config = function() require('plugins_config/trouble') end
    }
 
@@ -346,12 +365,18 @@ return require('packer').startup(function()
    use { 'nvim-treesitter/nvim-treesitter',
       as = 'treesitter',
       requires = {
-         {'nvim-treesitter/nvim-treesitter-refactor',    as = 'treesitter-refactor'},
-         {'nvim-treesitter/nvim-treesitter-textobjects', as = 'treesitter-textobjects'},
-         {'RRethy/nvim-treesitter-textsubjects',         as = 'treesitter-textsubjects'},
-         {'nvim-treesitter/playground',                  as = 'treesitter-playground'},
-         {'p00f/nvim-ts-rainbow',                        as = 'treesitter-rainbow'},
-         {'romgrk/nvim-treesitter-context',              as = 'treesitter-context'},
+         {'nvim-treesitter/nvim-treesitter-refactor',
+            as = 'treesitter-refactor'},
+         {'nvim-treesitter/nvim-treesitter-textobjects',
+            as = 'treesitter-textobjects'},
+         {'RRethy/nvim-treesitter-textsubjects',
+            as = 'treesitter-textsubjects'},
+         {'nvim-treesitter/playground',
+            as = 'treesitter-playground'},
+         {'p00f/nvim-ts-rainbow',
+            as = 'treesitter-rainbow'},
+         {'romgrk/nvim-treesitter-context',
+            as = 'treesitter-context'},
       },
       run = ':TSUpdate',
       config = function() require('plugins_config/treesitter') end
@@ -365,7 +390,9 @@ return require('packer').startup(function()
          'nvim-lua/plenary.nvim',
          -- 'famiu/bufdelete.nvim'
       },
-      config = function() require('plugins_config/telescope') end
+      config = function() require('plugins_config/telescope') end,
+      cmd = 'Telescope',
+      keys = {'<leader>f'}
    }
 
    -------------------- IDE features ---------------------
@@ -422,6 +449,7 @@ return require('packer').startup(function()
       -- ['gruvbox-material'] = function()
          use {
             'sainnhe/gruvbox-material',
+            after = 'treesitter',
             config = function()
                vim.o.background = 'dark'
                -- vim.o.background = 'light'
@@ -601,6 +629,10 @@ return require('packer').startup(function()
       config = function()
          require'colorizer'.setup()
       end
+   }
+
+   use { 'tweekmonster/startuptime.vim',
+      cmd = "StartupTime"
    }
 
    -------------------------------------------------------
