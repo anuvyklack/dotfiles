@@ -1,7 +1,6 @@
 #!/bin/sh
 
 # Распаковывать архивы командой 'extract <file>'
-
 extract ()
 {
   if [ -f $1 ] ; then

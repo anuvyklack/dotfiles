@@ -59,14 +59,14 @@ color()
     cyan|c)     echo "$lc${b};36$rc${@}$reset" ;;
     white|w)    echo "$lc${b};37$rc${@}$reset" ;;
 
-    bright-black|B)    echo "$lc${b};90$rc${@}$reset" ;;
-    bright-red|R)      echo "$lc${b};91$rc${@}$reset" ;;
-    bright-green|G)    echo "$lc${b};92$rc${@}$reset" ;;
-    bright-yellow|Y)   echo "$lc${b};93$rc${@}$reset" ;;
-    bright-blue|Bl)    echo "$lc${b};94$rc${@}$reset" ;;
-    bright-magenta|M)  echo "$lc${b};95$rc${@}$reset" ;;
-    bright-cyan|C)     echo "$lc${b};96$rc${@}$reset" ;;
-    bright-white|W)    echo "$lc${b};97$rc${@}$reset" ;;
+    Black|bright-black|B)      echo "$lc${b};90$rc${@}$reset" ;;
+    Red|bright-red|R)          echo "$lc${b};91$rc${@}$reset" ;;
+    Green|bright-green|G)      echo "$lc${b};92$rc${@}$reset" ;;
+    Yellow|bright-yellow|Y)    echo "$lc${b};93$rc${@}$reset" ;;
+    Blue|bright-blue|Bl)       echo "$lc${b};94$rc${@}$reset" ;;
+    Magenta|bright-magenta|M)  echo "$lc${b};95$rc${@}$reset" ;;
+    Cyan|bright-cyan|C)        echo "$lc${b};96$rc${@}$reset" ;;
+    White|bright-white|W)      echo "$lc${b};97$rc${@}$reset" ;;
 
     *)  echo "$lc${b};38;5;$(( ${color} ))$rc${@}$reset" ;;
   esac

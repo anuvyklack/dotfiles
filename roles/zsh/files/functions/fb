@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Buku bookmark manager fuzzy search
-
 fb() {
 
   # save newline separated string into an array

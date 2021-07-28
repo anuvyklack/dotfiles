@@ -1,7 +1,7 @@
 #!/bin/bash
 
-man() {
-
+man()
+{
     WIDTH=80
     if (( WIDTH > COLUMNS )); then
         WIDTH=$COLUMNS
@@ -34,5 +34,4 @@ man() {
     # LESS_TERMCAP_ue=$(printf "\e[0m") \
     # LESS_TERMCAP_us=$(printf "\e[1;32m") \
     # man "$@"
-
 }
