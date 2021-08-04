@@ -416,5 +416,4 @@ alias sr=' source ranger'
 
 # }}}
 
-# vim: fdm=marker nonumber
-
+# vim: fdm=marker

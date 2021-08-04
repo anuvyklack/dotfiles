@@ -44,8 +44,8 @@ require('packer').init{
    display = {
       -- open_cmd = '80vnew [packer]',  -- set the width of the packer split
       open_fn = function()
-         -- return require("packer.util").float({border = "rounded"})
-         return require("packer.util").float()
+         return require("packer.util").float({border = "rounded"})
+         -- return require("packer.util").float()
       end,
       working_sym = '', --      plugin being installed/updated
       error_sym = '',   -- plugin with an error in installation/updating
@@ -124,7 +124,7 @@ return require('packer').startup(function()
 
    -- }}}
 
-   -- improved * action
+   -- Improved * keybinding action.
    use { 'haya14busa/vim-asterisk',
       as = 'asterisk',
       setup = function()
@@ -278,7 +278,6 @@ return require('packer').startup(function()
 
    use { 'neovim/nvim-lspconfig',
       as = 'lspconfig',
-      after = 'lspinstall',
       requires = {
          -- Adds the missing :LspInstall <language> command
          -- to conveniently install language servers.
@@ -287,8 +286,7 @@ return require('packer').startup(function()
 
          -- Setup for lua and plugins development.
          {"folke/lua-dev.nvim",
-            as = 'lua-dev',
-            after = 'lspinstall'}
+            as = 'lua-dev'}
       },
       config = function() require('plugins_config/lspconfig') end
    }
@@ -420,6 +418,10 @@ return require('packer').startup(function()
    --       require('gitsigns').setup()
    --    end
    -- }
+
+   use { 'TimUntersberger/neogit',
+      requires = 'nvim-lua/plenary.nvim'
+   }
 
    ---------- Syntaxes and programming languages ----------
 

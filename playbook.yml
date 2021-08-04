@@ -28,13 +28,9 @@
       tags:
         - kitty
 
-    - role: ripgrep
+    - role: cli-tools
       tags:
-        - ripgrep
-
-    - role: bat
-      tags:
-        - bat
+        - cli-tools
 
     - role: zsh
       tags:
@@ -77,9 +73,9 @@
       tags:
         - vivaldi
 
-    - role: foliate
-      tags:
-        - foliate
+    # - role: foliate
+    #   tags:
+    #     - foliate
 
     # - role: nnn
     #   tags:

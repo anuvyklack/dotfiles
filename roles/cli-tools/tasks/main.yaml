@@ -1,0 +1,19 @@
+---
+
+- name: symlink ripgrep config files
+  file:
+    src: "{{ role_path }}/files/ripgrep"
+    dest: "{{ home }}/.config/rg"
+    state: link
+
+- name: symlink topgrade config files
+  file:
+    src: "{{ role_path }}/files/topgrade.toml"
+    dest: "{{ home }}/.config/topgrade.toml"
+    state: link
+
+- name: symlink bat config files
+  file:
+    src: "{{ role_path }}/files/bat"
+    dest: "{{ home }}/.config/bat"
+    state: link

@@ -10,8 +10,8 @@ fi
 # The home dir of current script
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-# # if command -v conda && conda env list | grep -q ansible; then
-# if command -v conda >/dev/null 2>&1 \
+# # if whence conda && conda env list | grep -q ansible; then
+# if whence conda >/dev/null 2>&1 \
 #    && \
 #    conda env list | grep -q ansible
 # then
@@ -19,9 +19,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # fi
 
 # -x - True if file exists and is executable.
-if ! [ -x "$(command -v ansible)" ]; then
+if ! [ -x "$(which ansible)" ]; then
   sudo apt-get install ansible
   ansible-galaxy collection install community.general
 fi
 
-ansible-playbook -i $DIR/hosts $DIR/dotfiles.yml --ask-become-pass --tags $tags
+ansible-playbook -i $DIR/hosts.ini $DIR/playbook.yml --ask-become-pass --tags $tags

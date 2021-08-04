@@ -74,6 +74,19 @@ local lsp_settings = {
    },
    cpp = { -- clangd
       on_attach = on_attach,
+      cmd = {
+         vim.env.HOME .. "/.local/share/nvim/lspinstall/cpp/clangd/bin/clangd",
+         -- "--compile-commands-dir=debug",
+         "--background-index",
+         "--suggest-missing-includes",
+         "--pch-storage=memory",
+         "--cross-file-rename",
+         -- "--completion-style=detailed", -- One completion item for each semantically
+         --                                -- distinct completion, with full type information.
+         "--completion-style=bundled", -- Similar completion items (e.g. function
+                                       -- overloads) are combined. Type information
+                                       -- shown where possible.
+      },
    },
    ccls = {
       -- A list of ccls available options:
@@ -102,6 +115,10 @@ local lsp_settings = {
          on_attach,
          -- require('lsp_signature').on_attach  -- type hints
       }
+   },
+   bash = {
+      on_attach = on_attach,
+      filetypes = { "sh", "zsh" }
    }
 }
 

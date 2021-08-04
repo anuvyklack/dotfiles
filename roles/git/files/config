@@ -4,8 +4,20 @@
 [core]
     editor = nvim
     autocrlf = false
-    pager = diff-so-fancy | less  # use options from $LESS environment variable
-    # pager = diff-so-fancy | less --tabs=4 -F -i -M -R -S
+[pager]
+    diff = delta
+    log = delta
+    reflog = delta
+    show = delta
+[delta]
+    plus-style = "syntax #012800"
+    minus-style = "syntax #340001"
+    syntax-theme = Monokai Extended
+    navigate = true
+    line-numbers = true
+    side-by-side = false
+[interactive]
+    diffFilter = delta --color-only
 [alias]
     unstage = reset HEAD --
     graph = log --decorate --all --oneline --graph

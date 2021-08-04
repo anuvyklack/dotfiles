@@ -12,12 +12,12 @@ setlocal foldcolumn=3
 setlocal foldmethod=expr
 setlocal foldexpr=nvim_treesitter#foldexpr()
 
-" setlocal fillchars=fold:•
-" setlocal foldtext=CppFoldText('•')
+setlocal fillchars+=fold:•
+setlocal foldtext=CppFoldText('•')
 
-" use 'space' as fold char
-setlocal fillchars+=fold:\  " the backslash escapes the space char
-setlocal foldtext=CppFoldText('\ ')
+" " use 'space' as fold char
+" setlocal fillchars+=fold:\  " the backslash escapes the space char
+" setlocal foldtext=CppFoldText('\ ')
 
 " My custom fold string.
 function! CppFoldText(string) "{{{
@@ -28,9 +28,20 @@ function! CppFoldText(string) "{{{
         \   '\\brief',
         \ ]
 
-    " Get the number of indentations of the first line of fold text and make
-    " the string consists of fill characters with length equal to this number.
-    let indent_str = repeat(a:string, indent(v:foldstart))
+    " " Get the number of indentations of the first line of fold text and make
+    " " the string consists of fill characters with length equal to this number.
+    " let indent_str = repeat(a:string, indent(v:foldstart))
+
+    " Get the number of indentations of the first line of fold text.
+    " All tabs count as spaces with respect to '&tabstop' option.
+    let indent_num = indent(v:foldstart)
+
+    " Convert indentation level number into indentation string.
+    if indent_num > 0
+      let indent_str = repeat(a:string, indent_num - 1) . ' '
+    else
+      let indent_str = ''
+    endif
 
     " The number of folded lines.
     let fold_size_num = 1 + v:foldend - v:foldstart
@@ -41,7 +52,7 @@ function! CppFoldText(string) "{{{
 
     " Take cake of Doxygen comments.
     if match(line, '^/\*\*$') != -1 " If line match to Doxygen comment line.
-    "                 ^~
+    "                 ^^---------------
     "                 escaping asterisk
         let second_line = trim(getline(v:foldstart + 1))
         let second_line = substitute(second_line, '^\*\s*', '', '')
@@ -63,6 +74,14 @@ function! CppFoldText(string) "{{{
     " Remove stop tokens from line,
     let line = substitute(line, join(foldtext_stop_words, '\|'), '', 'g')
     let line = substitute(line, '\v\s+', ' ', 'g')
+
+    " And add one at space the end to separate
+    " line content from the fold signs:
+    " i.e. to get this:
+    "     fold text •••••
+    " but not this:
+    "     fold text••••••
+    let line = line . ' '
 
     " Size of line numbers colummn
     let nu = (&number ? len(string(line('$'))) : 0)

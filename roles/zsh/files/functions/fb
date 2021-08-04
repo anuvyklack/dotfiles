@@ -16,7 +16,8 @@ fb() {
   set +f  # equal to: setopt RCS
 
   # open each website
-  for i in "${website[@]}"; do
+  for i in "${website[@]}"
+  do
     index="$(echo "$i" | awk '{print $1}')"
     buku -p "$index"
     # buku -o "$index"

@@ -1,5 +1,4 @@
 #!/usr/bin/env zsh
-
 #                                       ███ ██ ███
 #                                      ██░ ░░ ░░██
 #      ██████ ██████  ██████  █████   ░██   ██ ░██   █████
@@ -24,8 +23,8 @@ export WORDCHARS='*?[]~=&;!#$%^(){}<>'
 # $IS_WSL env. variable existed in the older version in WSL 1, while
 # $WSL_DISTRO_NAME variable exists in the current version in WSL 2.
 # -n : true if length of string is non-zero.
-if [[ -n "$IS_WSL" || -n "$WSL_DISTRO_NAME" ]]; then
-  # We are in wsl!
+if [[ -n "$IS_WSL" || -n "$WSL_DISTRO_NAME" ]]
+then  # We are in wsl!
   export WINDOWS_HOST_IP=$(awk '/nameserver/ {print $2}' /etc/resolv.conf)
   export WINDOWS_USER="$(cmd.exe /C "echo %USERNAME%" 2>/dev/null | tr -d '\r')"
 else
@@ -36,13 +35,15 @@ fi
 # ========================================================================
 
 # Broot {{{
-if [[ -s "~/.config/broot/launcher/bash/br" ]]; then
+if [[ -s "~/.config/broot/launcher/bash/br" ]]
+then
     source ~/.config/broot/launcher/bash/br
 fi
 # }}}
 
 # Homebrew {{{
-if whence /home/linuxbrew/.linuxbrew/bin/brew > /dev/null 2>&1; then
+if whence /home/linuxbrew/.linuxbrew/bin/brew > /dev/null 2>&1
+then
 
   local BREWCACHE="$HOME/.cache/Homebrew/brewenv.zsh"
 
@@ -151,7 +152,8 @@ READNULLCMD='less'
 
 # export EDITOR VISUAL
 # if whence nvim > /dev/null 2>&1; then
-if (( $+commands[nvim] )); then
+if (( $+commands[nvim] ))
+then
   export EDITOR='nvim'
   export VISUAL="$EDITOR"
   export DIFFPROG='nvim -d'
@@ -164,7 +166,8 @@ export PAGER='less'
 
 # Browser
 # ========================================================================
-if [[ -f /opt/vivaldi/vivaldi ]]; then
+if [[ -f /opt/vivaldi/vivaldi ]]
+then
   export BROWSER='/opt/vivaldi/vivaldi'
 fi
 
@@ -172,7 +175,8 @@ fi
 # Language
 # ========================================================================
 
-# if [[ -z "$LANG" ]]; then
+# if [[ -z "$LANG" ]]
+# then
 #     export LANG='en_US.UTF-8'
 #     export LANGUAGE=en_US.UTF-8
 # fi
@@ -220,7 +224,8 @@ export LESS='-i -M -R -S -z-3'
 
 # Set the Less input preprocessor.
 # Try both `lesspipe` and `lesspipe.sh` as either might exist on a system.
-if (( $#commands[(i)lesspipe(|.sh)] )); then
+if (( $#commands[(i)lesspipe(|.sh)] ))
+then
   export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
 fi
 
@@ -285,7 +290,8 @@ export ls_colors=(
 
 # Bat
 # ========================================================================
-if (( $+commands[bat] )); then
+if (( $+commands[bat] ))
+then
   export BAT_PAGER="less ${LESS}"
   # export BAT_PAGER="less -RF"
 fi
@@ -293,7 +299,8 @@ fi
 
 # Ripgrep
 # ========================================================================
-if (( $+commands[rg] )); then
+if (( $+commands[rg] ))
+then
   export RIPGREP_CONFIG_PATH=$HOME/.config/rg/config
 fi
 
@@ -326,7 +333,8 @@ export PARINIT='rTbgqR B=.,?_A_a Q=_s>|'
 
 # CMake options
 # ========================================================================
-if (( $+commands[cmake] )); then
+if (( $+commands[cmake] ))
+then
   export CMAKE_BUILD_PARALLEL_LEVEL=7
 fi
 
@@ -347,7 +355,8 @@ export DEAL_II_DIR=~/software/dealii-9.3.0/build
 # Intel-MKL
 # ========================================================================
 
-if [[ -s /opt/intel/mkl/bin/mklvars.sh ]]; then
+if [[ -s /opt/intel/mkl/bin/mklvars.sh ]]
+then
     source /opt/intel/mkl/bin/mklvars.sh intel64
     export MKL_THREADING_LAYER=GNU
 fi
