@@ -269,10 +269,10 @@ setopt hash_list_all     # Whenever a command completion is attempted,
 
 # Jobs
 setopt long_list_jobs    # List jobs in the long format by default.
-setopt auto_resume       # Attempt to resume existing job before creating
+setopt auto_resume       #   Attempt to resume existing job before creating
                          # a new process.
 setopt notify            # Report status of background jobs immediately.
-unsetopt bg_nice         # Don't run all background jobs at a lower
+unsetopt bg_nice         #   Don't run all background jobs at a lower
                          # priority.
 unsetopt hup             # Don't kill jobs on shell exit.
 unsetopt check_jobs      # Don't report on jobs when shell exit.
@@ -285,8 +285,8 @@ CORRECT_IGNORE_FILE='.*'
 SPROMPT="Ошибка! ввести %r вместо %R? ([Y]es/[N]o/[E]dit/[A]bort) "
 
 
-# This logic comes from an old version of zim. Essentially, bracketed-paste was
-# added as a requirement of url-quote-magic in 5.1, but in 5.1.1 bracketed
+# This logic comes from an old version of zim. Essentially, bracketed-paste
+# was added as a requirement of url-quote-magic in 5.1, but in 5.1.1 bracketed
 # paste had a regression. Additionally, 5.2 added bracketed-paste-url-magic
 # which is generally better than url-quote-magic so we load that when possible.
 autoload -Uz is-at-least
@@ -318,17 +318,20 @@ zle -N edit-command-line
 
 case $TERM in
     (xterm*|rxvt*)
-        function _set_title() {
+        function _set_title()
+        {
             printf '%s' $'\e]0;'
             printf '%s' "$*"
             printf '%s' $'\a'
         }
 
-        function _reset_title() {
+        function _reset_title()
+        {
             _set_title ${(%):-"%n@%m: %~"}
         }
 
-        function _set_command_title() {
+        function _set_command_title()
+        {
             _set_title "${(%):-"%n@%m:"}" "$1"
         }
 
@@ -1184,7 +1187,10 @@ source /home/anuvyklack/.config/broot/launcher/bash/br
 
 export HISTFILE=$HOME/.cache/zsh/zsh_history
 export MCFLY_KEY_SCHEME=vim
+export MCFLY_FUZZY=true
+export MCFLY_RESULTS=30
 eval "$(mcfly init zsh)"
+bindkey '^R' mcfly-history-widget
 
 
 #==========================================================

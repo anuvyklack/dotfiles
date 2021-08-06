@@ -2,7 +2,10 @@
 assume_yes = true
 
 # Disable specific steps - same options as the command line flag
-disable = ["emacs"]
+disable = ["emacs", "vim"]
+
+# Ignore failures for these steps
+ignore_failures = ["git_repos"]
 
 # Run only specific steps - same options as the command line flag
 # only = ["tmux"]
