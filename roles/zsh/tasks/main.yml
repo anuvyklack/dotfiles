@@ -9,7 +9,7 @@
       - unzip
       - git
       - bfs
-      - lua5.4
+      # - lua5.4
       - zsh
     state: present
     update_cache: yes
@@ -71,4 +71,3 @@
   with_filetree: "{{ files }}/bin"
   loop_control:
     label: "{{ zshdir }}/bin/{{ item.path }}"
-

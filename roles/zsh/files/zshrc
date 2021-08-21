@@ -105,7 +105,7 @@ _show_title
 
 # }}}
 
-# Shell core settings {{{
+# Core settings {{{
 
 # 'declare' is the same as 'typeset'.
 # -A  - The names refer to associative array parameters.
@@ -453,6 +453,10 @@ zvm_after_init_commands+=(
   "zvm_bindkey viins '^R' mcfly-history-widget"
 )
 # }}}
+
+# znap source ohmyzsh/ohmyzsh plugins/universalarchive
+# github_completion universalarchive \
+#   'https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/universalarchive/_universalarchive'
 
 #――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  WARNING: This two plugins should be last in this order!
