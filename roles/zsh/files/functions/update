@@ -2,75 +2,79 @@
 
 update()
 {
-  topgrade
+    topgrade
+    print
 
-  print
-
-  # clean apt cache {{{
-  string="―― $(date +%H:%M:%S) - Clean apt cache and unused packages "
-  print ${(r:80::―:)string}
-
-  sudo apt autoremove --yes
-  sudo apt autoclean --yes
-
-  print
-  # }}}
-
-  # conda {{{
-  if (( $+commands[conda] ))
-  then
-
-    # Remember the current conda environment if any.
-    if [[ -n $CONDA_DEFAULT_ENV ]]
-    then
-        local conda_env=$CONDA_DEFAULT_ENV
-    fi
-
-    string="―― $(date +%H:%M:%S) - conda "
+    # clean apt cache {{{
+    string="―― $(date +%H:%M:%S) - Clean apt cache and unused packages "
     print ${(r:80::―:)string}
 
-    print Updating $(color green bold 'base') environment.
+    sudo apt autoremove --yes
+    sudo apt autoclean --yes
 
-    conda activate base
-    conda update conda --yes
-    conda update --all --yes
+    print
+    # }}}
 
-    # echo ''
-    # echo -e '\e[32;1mconda \e[37;1mupdating \e[33;1mnvim \e[0m'
-    #
-    # conda activate nvim
-    # conda update --all --yes
+    # conda {{{
+    if (( $+commands[conda] ))
+    then
+        # Remember the current conda environment if any.
+        if [[ -n $CONDA_DEFAULT_ENV ]]
+        then
+            local conda_env=$CONDA_DEFAULT_ENV
+        fi
 
-    # Clear cache
-    print Cleaning $(color yellow bold 'cache').
-    conda clean --all --yes
+        string="―― $(date +%H:%M:%S) - conda "
+        print ${(r:80::―:)string}
 
-    # # Restore conda environment
-    # if [[ -n conda_env ]]
-    # then
-    #     conda activate $conda_env
-    # else
-    #     conda deactivate
-    # fi
+        print Updating $(color green bold 'base') environment.
 
-    conda deactivate
+        conda activate base
+        conda update conda --yes
+        conda update --all --yes
 
-    echo
-  fi
-  # }}}
+        # echo ''
+        # echo -e '\e[32;1mconda \e[37;1mupdating \e[33;1mnvim \e[0m'
+        #
+        # conda activate nvim
+        # conda update --all --yes
 
-  # tmux plugins {{{
-  string="―― $(date +%H:%M:%S) - tmux plugins "
-  print ${(r:80::―:)string}
+        # Clear cache
+        print Cleaning $(color yellow bold 'cache').
+        conda clean --all --yes
 
-  TMUX_PLUGIN_MANAGER="${HOME}/.local/share/tmux/plugins/tpm/bin/update_plugins"
-  if [[ -s $TMUX_PLUGIN_MANAGER ]]
-  then
-    $TMUX_PLUGIN_MANAGER all
-  fi
-  # }}}
+        # # Restore conda environment
+        # if [[ -n conda_env ]]
+        # then
+        #     conda activate $conda_env
+        # else
+        #     conda deactivate
+        # fi
 
-  unset string
+        conda deactivate
+
+        echo
+    fi
+    # }}}
+
+    # tmux plugins {{{
+    string="―― $(date +%H:%M:%S) - tmux plugins "
+    print ${(r:80::―:)string}
+
+    TMUX_PLUGIN_MANAGER="${HOME}/.local/share/tmux/plugins/tpm/bin/update_plugins"
+    if [[ -s $TMUX_PLUGIN_MANAGER ]]
+    then
+        $TMUX_PLUGIN_MANAGER all
+    fi
+
+    print
+    # }}}
+
+    string="―― $(date +%H:%M:%S) - Update zsh-snap plugins "
+    print ${(r:80::―:)string}
+    znap pull
+
+    unset string
 }
 
-# vim: ft=zsh
+# vim: tw=75 ts=4 sw=4 fdm=marker ft=zsh

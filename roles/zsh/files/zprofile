@@ -35,18 +35,25 @@ fi
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Paths
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+# Ensure path arrays do not contain duplicates.
+typeset -gU cdpath fpath mailpath path
 
-# Broot {{{
-if [[ -s "~/.config/broot/launcher/bash/br" ]]
-then
-    source ~/.config/broot/launcher/bash/br
-fi
-# }}}
+# Set the list of directories that Zsh searches for programs.
+path+=(
+  /usr/local/{bin,sbin}
+  /opt/visit/bin
+  /opt/ParaView-5.8.1/bin
+)
+
+# # Set the list of directories that cd searches.
+# cdpath=(
+#   $HOME/.config
+#   $cdpath
+# )
 
 # Homebrew {{{
 if whence /home/linuxbrew/.linuxbrew/bin/brew > /dev/null 2>&1
 then
-
   local BREWCACHE="$HOME/.cache/Homebrew/brewenv.zsh"
 
   if [[ ! -s $BREWCACHE(#q.md-7N) ]]
@@ -57,95 +64,13 @@ then
 
   # Enable completion for brew and programs installes with brew.
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
-
 fi
 # }}}
-
-# Put Miniconda after Homebrew to make minicondas python be earlier in the $PATH.
-# Miniconda {{{
-
-# if is cache load cache
-# elsif no cache make cache
-# fi
-
-setopt LOCAL_OPTIONS EXTENDED_GLOB GLOB_DOTS
-
-local CONDACACHE="$HOME/.cache/zsh/conda.zsh"
-
-# Существует файл, который был модифицирован в течении 7 последних дней:
-# -----  ---------------------------------------------
-# (#q…)  glob qualifier
-#     .  regular file
-#  md-7  was modified within last 7 days
-#     N  don't raise an error if nothing will be found
-# -----  ---------------------------------------------
-
-# Файл $COONDACACHE существует, был модифицирован не более 7 дней назад
-# и он моложе чем файл .zprofile.
-if [[ -s $CONDACACHE(#q.md-7N) && $CONDACACHE -nt "$(readlink -- ~/.config/zsh/.zprofile)" ]]
-then
-    source $CONDACACHE
-else
-    # Make ~/.cache/zsh folder if it doesn't exist.
-    [[ -d ~/.cache/zsh ]] || mkdir -pv ~/.cache/zsh
-
-    local PATH_TO_CONDA_INSTALL="/opt/miniconda3"
-    # local PATH_TO_CONDA_INSTALL="$HOME/.miniconda"
-
-    $PATH_TO_CONDA_INSTALL/bin/conda shell.zsh hook >! $CONDACACHE 2> /dev/null
-
-    if [ ! $? -eq 0 ]
-    then
-        if [ -f "$PATH_TO_CONDA_INSTALL/etc/profile.d/conda.sh" ]
-        then
-            . "$PATH_TO_CONDA_INSTALL/etc/profile.d/conda.sh"
-        else
-            export PATH="$PATH_TO_CONDA_INSTALL/bin:$PATH"
-        fi
-    fi
-
-    source $CONDACACHE
-
-    # # >>> conda initialize >>>
-    # __conda_setup="$($PATH_TO_CONDA_INSTALL/bin/conda 'shell.zsh' 'hook' 2> /dev/null)"
-    # if [ $? -eq 0 ]; then
-    #     eval "$__conda_setup"
-    # else
-    #     if [ -f "$PATH_TO_CONDA_INSTALL/etc/profile.d/conda.sh" ]; then
-    #         . "$PATH_TO_CONDA_INSTALL/etc/profile.d/conda.sh"
-    #     else
-    #         export PATH="$PATH_TO_CONDA_INSTALL/bin:$PATH"
-    #     fi
-    # fi
-    # unset __conda_setup
-    # # <<< conda initialize <<<
-
-fi
-
-# }}}
-
-# Ensure path arrays do not contain duplicates.
-typeset -gU cdpath fpath mailpath path
-
-# # Set the list of directories that cd searches.
-# cdpath=(
-#   $HOME/.config
-#   $cdpath
-# )
-
-# Set the list of directories that Zsh searches for programs.
-path=(
-  /usr/local/{bin,sbin}
-  $path
-  /opt/visit/bin
-  /opt/ParaView-5.8.1/bin
-)
 
 
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Zsh
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-
 # Переменная READNULLCMD определяет команду, которая будет вызвана, если
 # перенаправление stdin использовать без ввода команды: `< file.txt`.
 READNULLCMD='less'
@@ -191,7 +116,6 @@ fi
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Man
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-
 export MANWIDTH=80  # The width of the text column in the man.
 
 # Tie together the scalar $MANPATH and the array $manpath
@@ -210,8 +134,8 @@ typeset -gU manpath
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 # Set the default Less options.
-# Mouse-wheel scrolling has been disabled  -X and -F (exit if the content fits
-# on one screen) to enable it.
+# Mouse-wheel scrolling has been disabled  -X and -F (exit if the content
+# fits on one screen) to enable it.
 
 #  -F    Exit if the content fits on one screen
 #  -g    Highlights just the current match of any searched string.
@@ -371,7 +295,6 @@ export DEAL_II_DIR=~/software/dealii-9.3.0/build
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Intel-MKL
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-
 if [[ -s /opt/intel/mkl/bin/mklvars.sh ]]
 then
     source /opt/intel/mkl/bin/mklvars.sh intel64

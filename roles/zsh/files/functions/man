@@ -3,7 +3,8 @@
 man()
 {
     WIDTH=80
-    if (( WIDTH > COLUMNS )); then
+    if (( WIDTH > COLUMNS ))
+    then
         WIDTH=$COLUMNS
     fi
 

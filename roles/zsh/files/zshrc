@@ -9,208 +9,118 @@
 # ░░  ░░░░░░ ░░░░░░  ░░   ░░ ░░░     ░░░░░
 
 # Setting autoloaded functions from my local library {{{
-# We load them here because we use 'color' function later to style output.
-my_zsh_functions=${ZDOTDIR}/functions
-fpath=($my_zsh_functions $fpath)
-[[ -d "$my_zsh_functions" ]] && autoload -Uz $(ls $my_zsh_functions)
-unset my_zsh_functions
+# I load them here because use 'color' function later to style output.
+local my_zsh_functions=${ZDOTDIR}/functions
+fpath+=($my_zsh_functions)
+if [[ -d "$my_zsh_functions" ]]
+then
+  autoload -Uz $(ls $my_zsh_functions)
+fi
 # }}}
 
-# Legacy color codes variables {{{
-
-RESET="\e[0m"
-
-RED="\e[00;31m"
-GREEN="\e[00;32m"
-YELLOW="\e[00;33m"
-BLUE="\e[00;34m"
-PURPLE="\e[00;35m"
-CYAN="\e[00;36m"
-GRAY="\e[00;37m"
-
-BOLD_RED="\e[01;31m"
-BOLD_GREEN="\e[01;32m"
-BOLD_YELLOW="\e[01;33m"
-BOLD_BLUE="\e[01;34m"
-BOLD_PURPLE="\e[01;35m"
-BOLD_CYAN="\e[01;36m"
-BOLD_WHITE="\e[01;37m"
-
-BRIGHT_RED="\e[01;91m"
-BRIGHT_GREEN="\e[01;92m"
-BRIGHT_YELLOW="\e[01;93m"
-BRIGHT_BLUE="\e[01;94m"
-BRIGHT_PURPLE="\e[01;95m"
-BRIGHT_CYAN="\e[01;96m"
-BRIGHT_WHITE="\e[01;97m"
-
-# }}}
-
-# Install absent applications {{{
-# -------------------------------
-# This block should be before Powerlevel10k install prompt
-# in order to retain the ability to make a selection if needed.
-
-if ! (( $+commands[rg] ))
-then
-  # Fill the string up to 80 symbols with '―' char to the right.
-  string="―― Installing $(color blue 'ripgrep') "; print ${(r:80::―:)string}
-  echo
-  bin install https://github.com/BurntSushi/ripgrep
-  echo
-fi
-
-if ! (( $+commands[bat] ))
-then
-  string="―― Installing $(color blue 'bat') "; print ${(r:80::―:)string}
-  echo
-  bin install https://github.com/sharkdp/bat
-  echo
-  echo -e "\$ $(color green 'bat') cache --build"
-  bat cache --build
-  echo
-fi
-
-if ! (( $+commands[exa] ))
-then
-  string="―― Installing $(color Yellow 'exa') "; print ${(r:80::―:)string}
-  echo
-  bin install https://github.com/ogham/exa
-  echo
-fi
-
-if ! (( $+commands[fzf] ))
-then
-  string="―― Installing $(color Yellow 'fzf') "; print ${(r:80::―:)string}
-  echo
-  bin install https://github.com/junegunn/fzf
-  echo
-fi
-
-if ! (( $+commands[zoxide] ))
-then
-  string="―― Installing $(color Magenta 'zoxide') "; print ${(r:80::―:)string}
-  echo
-  bin install https://github.com/ajeetdsouza/zoxide
-  echo
-fi
-
-if ! (( $+commands[delta] ))
-then
-  string="―― Installing $(color green 'delta') "; print ${(r:80::―:)string}
-  echo
-  bin install https://github.com/dandavison/delta
-  echo
-fi
-
-if ! (( $+commands[topgrade] ))
-then
-  string="―― Installing $(color red 'topgrade') "; print ${(r:80::―:)string}
-  echo
-  bin install https://github.com/r-darwish/topgrade
-  echo
-fi
-
-if ! (( $+commands[dust] ))
-then
-  string="―― Installing $(color yellow 'dust') "; print ${(r:80::―:)string}
-  echo
-  bin install https://github.com/bootandy/dust
-  echo
-fi
-
-if ! (( $+commands[duf] ))
-then
-  string="―― Installing $(color blue 'duf') "; print ${(r:80::―:)string}
-  echo
-  bin install https://github.com/muesli/duf
-  echo
-fi
-
-if ! (( $+commands[broot] ))
-then
-  string="―― Installing $(color red 'broot') "; print ${(r:80::―:)string}
-  echo
-  bin install https://github.com/Canop/broot
-  echo
-fi
-
-if ! (( $+commands[mcfly] ))
-then
-  string="―― Installing $(color Magenta 'mcfly') "; print ${(r:80::―:)string}
-  echo
-  bin install https://github.com/cantino/mcfly
-  echo
-else
-  export HISTFILE=$HOME/.cache/zsh/zsh_history
-  eval "$(mcfly init zsh)"
-fi
-
-unset string
-# }}}
+# (( $+commands[bin] )) || install_missing_programs
+install_missing_programs
 
 # Powerlevel10k instant prompt {{{
-
+# --------------------------------
 # Enable Powerlevel10k instant prompt. Should stay close to the top of
 # ~/.config/zsh/.zshrc.  Initialization code that may require console input
 # (password prompts, [y/n] confirmations, etc.) must go above this block,
 # everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 then
+  # Suppress the warining about console output during zsh initialization.
+  typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
-
 # }}}
 
-# Zinit plugin manager invocation {{{
+# Zsh-snap plugin manager invocation {{{
 
-# Setup array with zinit environment variables
-# --------------------------------------------
 # 'declare' is the same as 'typeset'.
-# -A :: The names refer to associative array parameters.
-declare -A ZINIT
-ZINIT[HOME_DIR]="$HOME/.local/share/zinit"
-ZINIT[BIN_DIR]="$ZINIT[HOME_DIR]/bin"
-export ZPFX="$ZINIT[HOME_DIR]/polaris"
+# -A  - The names refer to associative array parameters.
+declare -A ZSH_SNAP
+ZSH_SNAP[HOME_DIR]="$HOME/.local/share/znap/zsh-snap"
+ZSH_SNAP[PLUGINS_DIR]="$HOME/.local/share/znap"
+ZSH_SNAP[BIN]="$ZSH_SNAP[HOME_DIR]/znap.zsh"
+ZSH_SNAP[EVAL]=$HOME/.cache/zsh-snap/eval
+ZSH_SNAP[FPATH]=$HOME/.cache/zsh-snap/fpath
 
-# Source zinit. Install if it's absent. These lines must be at the very
-# begining of the file. The order of plugins loading matters.
-if [[ ! -s "$ZINIT[BIN_DIR]/zinit.zsh" ]]
-then
-  # git clone --depth=1 https://github.com/zdharma/zinit.git ~/.zinit/bin
-  git clone --depth=1 https://github.com/zdharma/zinit.git $ZINIT[BIN_DIR]
-  source "$ZINIT[BIN_DIR]/zinit.zsh"
-  zinit self-update
-  mkdir -p $ZPFX/{bin,man/man1}
-else
-  source "$ZINIT[BIN_DIR]/zinit.zsh"
+if [[ ! -s $ZSH_SNAP[BIN] ]]; then
+  git clone --depth=1 'https://github.com/marlonrichert/zsh-snap.git' $ZSH_SNAP[HOME_DIR]
 fi
 
-# zinit light zinit-zsh/z-a-patch-dl
+source $ZSH_SNAP[BIN]
 
-# # The lines attach Zplugin completion "on-the-fly" to already initialized
-# # completion system. They need to be added if zinit is sourced after
-# # "autoload -Uz compinit && compinit".
-# autoload -Uz _zinit
-# (( ${+_comps} )) && _comps[zinit]=_zinit
+# Do not auto compile functions in my folder, because
+# I compile them later into one lybrary file..
+zstyle ':znap:*' auto-compile-ignore "${my_zsh_functions}/*"
+# }}}
+
+# Prompt {{{
+THEME=powerlevel10k
+# THEME=geometry
+
+case $THEME in
+  powerlevel10k)
+    [[ -f ~/.config/zsh/themes/p10k.zsh ]] &&
+      source ~/.config/zsh/themes/p10k.zsh
+
+    znap source romkatv/powerlevel10k
+    ;;
+  geometry)
+    # https://github.com/geometry-zsh/geometry
+    GEOMETRY_COLOR_DIR=152
+
+    # GEOMETRY_PROMPT=(geometry_status geometry_path) # redefine left prompt
+    # GEOMETRY_RPROMPT+=(geometry_exec_time pwd)      # append exec_time and pwd right prompt
+
+    znap prompt geometry-zsh/geometry
+    ;;
+esac
+unset THEME
+# }}}
+
+# Terminal title {{{
+# Heavy inspired by: https://github.com/zpm-zsh/title
+_show_title()
+{
+  # print -Pn "\033]0;${PROMPT_TITLE:-"$USER@$HOST"}\007"
+  print -Pn "\033]0;${PROMPT_TITLE}\007"
+}
+
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd _show_title
+_show_title
+
+# # PROMPT_TITLE='$USER@$HOST $PWD'  # default
+#
+# # Полный путь до текущей директории. Подстроку эквивалентную `$HOME`
+# # заменяем на тильду. Ковычки дожны быть одинарными. С двойными заголовок
+# # не обновляется при смене директории.
+# # PROMPT_TITLE='${PWD/#${HOME}/~}'
+#
+# PROMPT_TITLE=''
 
 # }}}
 
-# Programs and utilities {{{
+# Shell core settings {{{
 
-# zinit ice from"gh-r" as"program" mv"direnv* -> direnv" atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' pick"direnv"
-# zinit light direnv/direnv
-# if [ -f "$HOME/.zinit/plugins/direnv---direnv/zhook.zsh" ]
-# then
-#   . "$HOME/.zinit/plugins/direnv---direnv/zhook.zsh"
-# fi
+# 'declare' is the same as 'typeset'.
+# -A  - The names refer to associative array parameters.
+declare -A ZSH
 
-# }}}
+ZSH[cache]="$HOME/.cache/zsh"
+ZSH[completions]="$ZSH[cache]/completions"
+ZSH[scripts]="$ZSH[cache]/scripts"
 
-# General settings {{{
+[ -d $ZSH[completions] ] || mkdir -p $ZSH[completions]
+[ -d $ZSH[scripts] ] || mkdir -p $ZSH[scripts]
 
-# Report time stats of commands running longer than 20 sec
-# REPORTTIME=20
+
+REPORTTIME=8             # Report time stats of commands running longer
+                         # than 8 sec.
 
 setopt extended_glob     # Because someday i will learn advanced pattern
                          # matching.
@@ -252,10 +162,10 @@ unsetopt clobber         # With this option the `>` redirection, if file
 setopt interactive_comments  # Allow comments even in interactive shells.
 
 setopt nomatch
-# unsetopt nomatch         # DON'T YOU YELL AT ME WHEN YOU CAN'T FIND A MATCH
-#                          # THAT'S YOUR PROBLEM, NOT MINE
+# unsetopt nomatch         # DON'T YOU YELL AT ME WHEN YOU CAN'T FIND A MATCH.
+#                          # THAT'S YOUR PROBLEM, NOT MINE.
 
-unsetopt beep            # Seriously why does this shit even exist
+unsetopt beep            # Seriously why does this shit even exist.
 
 setopt combining_chars   # Combine zero-length punctuation characters
                          # (accents) with the base character.
@@ -270,513 +180,107 @@ setopt hash_list_all     # Whenever a command completion is attempted,
 # Jobs
 setopt long_list_jobs    # List jobs in the long format by default.
 setopt auto_resume       #   Attempt to resume existing job before creating
-                         # a new process.
+# a new process.
 setopt notify            # Report status of background jobs immediately.
 unsetopt bg_nice         #   Don't run all background jobs at a lower
-                         # priority.
+# priority.
 unsetopt hup             # Don't kill jobs on shell exit.
 unsetopt check_jobs      # Don't report on jobs when shell exit.
 
-
-setopt correct_all       # Корректировка ввода
+setopt correct_all       # Correct the spelling of all arguments in a line.
 CORRECT_IGNORE_FILE='.*'
 
 # Если в слове есть ошибка, предложить исправить её:
 SPROMPT="Ошибка! ввести %r вместо %R? ([Y]es/[N]o/[E]dit/[A]bort) "
 
-
-# This logic comes from an old version of zim. Essentially, bracketed-paste
-# was added as a requirement of url-quote-magic in 5.1, but in 5.1.1 bracketed
-# paste had a regression. Additionally, 5.2 added bracketed-paste-url-magic
-# which is generally better than url-quote-magic so we load that when possible.
-autoload -Uz is-at-least
-if [[ ${ZSH_VERSION} != 5.1.1 && ${TERM} != "dumb" ]]
-then
-  if is-at-least 5.2
-  then
-    autoload -Uz bracketed-paste-url-magic
-    zle -N bracketed-paste bracketed-paste-url-magic
-  else
-    if is-at-least 5.1
-    then
-      autoload -Uz bracketed-paste-magic
-      zle -N bracketed-paste bracketed-paste-magic
-    fi
-  fi
-  autoload -Uz url-quote-magic
-  zle -N self-insert url-quote-magic
-fi
-
-
-# Allow command line editing in an external editor.
-autoload -Uz edit-command-line
-zle -N edit-command-line
-
-# Window title {{{
-# adjust title of xterm compatible terminal
-# see http://www.faqs.org/docs/Linux-mini/Xterm-Title.html
-
-case $TERM in
-    (xterm*|rxvt*)
-        function _set_title()
-        {
-            printf '%s' $'\e]0;'
-            printf '%s' "$*"
-            printf '%s' $'\a'
-        }
-
-        function _reset_title()
-        {
-            _set_title ${(%):-"%n@%m: %~"}
-        }
-
-        function _set_command_title()
-        {
-            _set_title "${(%):-"%n@%m:"}" "$1"
-        }
-
-        add-zsh-hook precmd _reset_title
-        add-zsh-hook preexec _set_command_title
-        ;;
-esac
-
-# }}}
-
-# }}}
-
 source $ZDOTDIR/settings/history.zsh
-source $ZDOTDIR/settings/completion.zsh
-
-# Output coloring {{{
-
-# # After cloning and renewal repository construct from 'LS_COLORS' file
-# # (using 'dircolors --sh') the proper $LS_COLORS environment variable and
-# # wright it into 'c.zsh' file. Execute this file at plugin loading.
-# #
-# zinit ice atclone"dircolors --sh LS_COLORS > clrs.zsh" \
-#           atpull'%atclone' pick"clrs.zsh" nocompile'!' \
-#           atload'zstyle ":completion:*" list-colors “${(s.:.)LS_COLORS}”'
-# zinit light trapd00r/LS_COLORS
-
-# eval `dircolors --sh $ZDOTDIR/dircolors/moonshine`
-# eval `dircolors --sh $ZDOTDIR/dircolors/LS_COLORS`
-# eval `dircolors --sh $ZDOTDIR/dircolors/jellybeans`
-# eval `dircolors --sh $ZDOTDIR/dircolors/dracula`
-
-# # One-darke scheme will be enable with vivid version > v0.6.0
-# export LS_COLORS="$(vivid generate one-dark)"
-# export LS_COLORS="$(vivid generate ayu)"
-# export LS_COLORS="$(vivid generate molokai)"
-
-# }}}
-
-# Prompt {{{
-
-# Possible choices: mycustom spaceship pure geometry
-# THEME=pure
-# THEME=spaceship
-# THEME=geometry
-THEME=powerlevel10k
-
-case $THEME in
-    mycustom)
-        source $ZDOTDIR/themes/my_custom_theme.zsh
-        ;;
-    spaceship)
-        source $ZDOTDIR/themes/spaceship.zsh
-        zinit ice depth:1
-        zinit light denysdovhan/spaceship-prompt
-        # Without calling this function the indicator
-        # of Vi mode doesn't change.
-        spaceship_vi_mode_enable
-        ;;
-    pure)
-        # https://github.com/sindresorhus/pure
-        source $ZDOTDIR/themes/pure.zsh
-        zinit ice depth=1 pick"async.zsh" src"pure.zsh"
-        zinit light sindresorhus/pure
-        ;;
-    powerlevel10k)
-        # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
-        [[ ! -f ~/.config/zsh/themes/p10k.zsh ]] || source ~/.config/zsh/themes/p10k.zsh
-
-        zinit ice id-as"auto" depth=1
-        zinit light romkatv/powerlevel10k
-        ;;
-    geometry)
-        # https://github.com/geometry-zsh/geometry
-        GEOMETRY_COLOR_DIR=152
-
-        # GEOMETRY_PROMPT=(geometry_status geometry_path) # redefine left prompt
-        # GEOMETRY_RPROMPT+=(geometry_exec_time pwd)      # append exec_time and pwd right prompt
-
-        # zinit ice wait"0" lucid atload"geometry::prompt"
-        zinit light geometry-zsh/geometry
-        ;;
-esac
-unset THEME
-
-# }}}
-
-# Terminal title {{{
-
-# Heavy inspired by: https://github.com/zpm-zsh/title
-# zinit ice lucid id-as"auto"
-# zinit light zpm-zsh/title
-
-_show_title(){
-  # print -Pn "\033]0;${PROMPT_TITLE:-"$USER@$HOST"}\007"
-  print -Pn "\033]0;${PROMPT_TITLE}\007"
-}
-
-autoload -Uz add-zsh-hook
-add-zsh-hook precmd _show_title
-_show_title
-
-# PROMPT_TITLE='$USER@$HOST $PWD'  # default
-
-# Полный путь до текущей директории. ПОдстроку эквивалентную `$HOME`
-# заменяем на тильду. Ковычки дожны быть одинарными. С двойными заголовок
-# не обновляется при смене директории.
-# PROMPT_TITLE='${PWD/#${HOME}/~}'
-
-PROMPT_TITLE=''
 
 # }}}
 
 # Completions {{{
 
-zinit ice id-as"auto" lucid blockf
-zinit light zsh-users/zsh-completions
+source $ZDOTDIR/settings/completion.zsh
 
-# conda completion
-zinit ice id-as"auto" lucid blockf
-zinit light esc/conda-zsh-completion
-zstyle ":conda_zsh_completion:*" use-groups true
+fpath+=(
+  $ZSH[completions]
+  ~[zsh-users/zsh-completions]/src
+)
 
-# pip zsh completion {{{
-function _pip_completion {
-  local words cword
-  read -Ac words
-  read -cn cword
-  reply=( $( COMP_WORDS="$words[*]" \
-             COMP_CWORD=$(( cword-1 )) \
-             PIP_AUTO_COMPLETE=1 $words[1] 2>/dev/null ))
-}
-compctl -K _pip_completion pip
-compctl -K _pip_completion pip3
+github_completion exa 'https://github.com/ogham/exa/blob/master/completions/zsh/_exa'
+github_completion vifm 'https://github.com/vifm/vifm/blob/master/data/shell-completion/zsh/_vifm'
+github_completion cppman 'https://github.com/aitjcize/cppman/blob/master/misc/completions/cppman.zsh'
+
+# conda completion {{{
+znap install esc/conda-zsh-completion
+
+# zstyle ":conda_zsh_completion:*" use-groups true
+
+# # Display unnamed environments and prefixes of environments.
+# zstyle ":conda_zsh_completion:*" show-unnamed true
+
+# # display environments autocompletion sorted in creation order
+# zstyle ":conda_zsh_completion:*" sort-envs-by-time true
+
 # }}}
 
-# zinit ice lucid id-as"auto" as"completion" blockf
+znap eval pip-completion "pip completion --zsh"
+
+if (( $+commands[pipx] )) && (( $+commands[register-python-argcomplete3] )); then
+  znap eval pipx-completion "register-python-argcomplete3 pipx"
+fi
+
+compdef _gnu_generic update-alternatives
+
 # zinit snippet OMZ::plugins/fd/_fd
 
-if (( $+commands[vifm] ))
-then
-  zinit ice id-as"vifm-completion" mv"vifm-completion -> _vifm" as"completion"
-  zinit snippet https://github.com/vifm/vifm/blob/master/data/shell-completion/zsh/_vifm
-fi
-
-if (( $+commands[exa] ))
-then
-  zinit ice id-as"exa-completion" mv"exa-completion -> _exa" as"completion"
-  zinit snippet https://github.com/ogham/exa/blob/master/completions/zsh/_exa
-fi
-
-# buku bookmark manager completion
-# if whence buku > /dev/null 2>&1; then
-if (( $+commands[buku] ))
-then
-  zinit ice id-as"buku-completion" mv"buku-completion -> _buku" as"completion"
-  zinit snippet https://github.com/jarun/buku/blob/master/auto-completion/zsh/_buku
-fi
-
-# notes (cli notebook) completion
-if (( $+commands[notes] ))
-then
-  zinit ice id-as"notes-cli-completion" mv"notes-cli-completion -> _notes" as"completion"
-  zinit snippet https://github.com/rhysd/notes-cli/blob/master/completions/zsh/_notes
-fi
-
-# dnote (cli notebook) completion
-if (( $+commands[dnote] ))
-then
-  zinit ice as"completion"
-  zinit snippet OMZP::dnote/_dnote
-fi
-
-# cppman completion
-if (( $+commands[cppman] ))
-then
-  zinit ice id-as"cppman-completion" mv"cppman-completion -> _cppman" as"completion"
-  zinit snippet https://github.com/aitjcize/cppman/blob/master/misc/completions/cppman.zsh
-fi
-
 # }}}
 
-# Plugins {{{
+# Plugins and programs {{{
 
-# Zsh-Autosuggestions {{{
-
-# http://zdharma.org/zinit/wiki/INTRODUCTION/
-#
-# Autosuggestions uses precmd hook, which is being called right after
-# processing zshrc (right before the first prompt). Turbo mode will wait 1
-# second after that, so precmd will not be installed and thus not called
-# at that first prompt. This makes autosuggestions inactive at the first
-# prompt.  However the given atload Ice-mod fixes this, it calls the
-# same function that precmd would, right after loading autosuggestions,
-# resulting in exactly the same behavior of the plugin.
-#
-# The ice lucid causes the under-prompt message saying Loaded
-# zsh-users/zsh-autosuggestions that normally appears for every
-# Turbo-loaded plugin to not show.
-
-zinit ice lucid id-as"auto" atload'_zsh_autosuggest_start'
-zinit light zsh-users/zsh-autosuggestions
+# zsh-autosuggestions {{{2
+znap source zsh-users/zsh-autosuggestions
 
 export ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd history completion)
 export ZSH_AUTOSUGGEST_USE_ASYNC=1  # suggestions will be fetched asynchronously
-# }}}
 
-# # Автодополнение путей с использованием fzf для команды cd
-# zinit ice wait"1" lucid
-# zinit light changyuheng/zsh-interactive-cd
-
-# zinit light softmoth/zsh-vim-mode
-
-# lf (file manager) {{{
-if (( $+commands[lf] ))
-then
-  # lf completion
-  zinit ice id-as"lf-completion" mv"lf-completion -> _lf" as"completion"
-  zinit snippet https://github.com/gokcehan/lf/blob/master/etc/lf.zsh
-
-  zinit ice id-as"lfcd.sh" as"null" mv"lfcd.sh -> $ZDOTDIR/functions/lfcd"
-  zinit snippet https://github.com/gokcehan/lf/blob/master/etc/lfcd.sh
-
-  # # <Ctrl-o> - use lf to switch directories.
-  bindkey -s '^o' 'lfcd\n'
-  # bindkey -s '^o' 'lfcd^m'
-fi
-# }}}
-
-# z.lua {{{
-
-zinit ice id-as"auto"
-zinit light skywind3000/z.lua
-
-# Where to store the datafile
-export _ZL_DATA=${HOME}/.cache/zlua
-
-# }}}
-
-# Deer: Alt-K to navigate through file system in zsh prompt like in ranger {{{
-zinit ice lucid id-as"auto" pick'deer'
-zinit light Vifon/deer
-
-zle -N deer
-bindkey '\ek' deer
-# }}}
-
-# }}}
-
-# WSL {{{
-
-# $IS_WSL env. variable existed in the older version in WSL 1, while
-# $WSL_DISTRO_NAME variable exists in the current version in WSL 2.
-if [[ -n "$IS_WSL" || -n "$WSL_DISTRO_NAME" ]]
-then  # We are in wsl!
-
-  # UI settings                                                        {{{
-
-  # Run VcXsrv X-Server on windows side
-  # ------------------------------------------------------------------------
-  # Command line keys description:
-  # https://gist.github.com/stowler/9921780
-  # MSI GS63VR 7RF laptop has monitor with 141 dpi.
-  # ------------------------------------------------------------------------
-  # -ac  disable access control restrictions
-  (cmd.exe /C "C:\Users\artyu\scoop\apps\vcxsrv\current\vcxsrv.exe" :0 -silent-dup-error -multiwindow -nowgl -ac -dpi 141 &> /dev/null &)
-  # (cmd.exe /C "C:\Users\artyu\scoop\apps\vcxsrv\current\vcxsrv.exe" :0 -silent-dup-error -multiwindow -nowgl -ac -dpi 141 -xkblayout us,ru -xkboptions grp:alt_shift_toggle &> /dev/null &)
-  # (cmd.exe /C "C:\Users\artyu\scoop\apps\vcxsrv\current\vcxsrv.exe" :0 -silent-dup-error -multiwindow -nowgl -ac -dpi 141 -xkblayout us,ru -xkboptions grp:shift_ctrl_toggle &> /dev/null &)
-  # (cmd.exe /C "C:\Users\artyu\scoop\apps\vcxsrv\current\vcxsrv.exe" :0 -silent-dup-error -multiwindow -nowgl -ac -dpi auto &> /dev/null &)
-
-  # export QT_SCALE_FACTOR=1
-  # export GDK_SCALE=2         # скейлинг элементов
-  # export GDK_DPI_SCALE=1.25  # скейлинг шрифтов
-
-  # For X-server
-  # The format of this command is actually [host]:<display>.[screen] where [host]
-  # refers to a network host name.  Each host can have multiple display.
-  # ------------------------------------------------------------------------
-  # export DISPLAY=127.0.0.1:0.0         # for WSL 1
-  export DISPLAY=${WINDOWS_HOST_IP}:0.0  # for WSL 2
-
-  # Toggling between two keyboard layouts:
-  # English (US) and Russian in x11 apps.
-  # setxkbmap us,ru -option grp:shift_ctrl_toggle
-  # setxkbmap us,ru -option grp:shift_ctrl_toggle
-
-  # }}}
-
-else
-  # We are not in wsl!
-fi
-# }}}
-
-
-# Functions                                                            {{{
-# ========================================================================
-
-# Bash 'help' function analog {{{
-# unalias run-help
-autoload run-help
-# HELPDIR=/usr/share/zsh/"${ZSH_VERSION}"/help
-HELPDIR=/usr/share/zsh/help # in Pop_OS
-# }}}
-
-# fc -W  -  write file to history
-# fc -R  -  read history from file
-delete_line_from_history ()  # {{{
+# Speed up pasting w/ autosuggest
+# https://github.com/zsh-users/zsh-autosuggestions/issues/238
+pasteinit()
 {
-    # Delete from the history file all entries of the current zle buffer
-    # content.
-
-    # sed -i "/$BUFFER/d" $HISTFILE
-    rsync $HISTFILE "$HISTFILE.old"
-    grep -v -xF $BUFFER "$HISTFILE.old" >! $HISTFILE
-    rm "$HISTFILE.old" > /dev/null 2>&1
-
-    zle kill-buffer
+  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
+  zle -N self-insert url-quote-magic
 }
-zle -N delete_line_from_history
-bindkey '^[f' delete_line_from_history  # Alt + F
-# bindkey '\ef' delete_line_from_history  # Alt + F
-# }}}
 
-run_ranger()  # {{{
+pastefinish()
 {
-    zle .reset-prompt
-    BUFFER=" source ranger && clear -x"
-    zle accept-line
+  zle -N self-insert $OLD_SELF_INSERT
 }
-zle -N run_ranger
-# }}}
 
-# }}}
+zstyle :bracketed-paste-magic paste-init pasteinit
+zstyle :bracketed-paste-magic paste-finish pastefinish
 
-# Key bindings                                                       {{{1
-# =======================================================================
+# Clear suggestions on paste
+# https://github.com/zsh-users/zsh-autosuggestions/issues/351
+ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
 
-source $ZDOTDIR/settings/vi-mode.zsh
-
-# Нормальное поведение клавиш (не как в vi и emacs). {{{2
-
-# # create a zkbd compatible hash;
-# # to add other keys to this hash, see: man 5 terminfo
-# typeset -g -A key
-#
-# key[Home]="${terminfo[khome]}"
-# key[End]="${terminfo[kend]}"
-# key[Insert]="${terminfo[kich1]}"
-# key[Backspace]="${terminfo[kbs]}"
-# key[Delete]="${terminfo[kdch1]}"
-# key[Up]="${terminfo[kcuu1]}"
-# key[Down]="${terminfo[kcud1]}"
-# key[Left]="${terminfo[kcub1]}"
-# key[Right]="${terminfo[kcuf1]}"
-# key[PageUp]="${terminfo[kpp]}"
-# key[PageDown]="${terminfo[knp]}"
-# key[ShiftTab]="${terminfo[kcbt]}"
-#
-# # Нормальное поведение клавиш (не как в vi и emacs).
-# [[ -n "${key[Home]}"     ]]  && bindkey  "${key[Home]}"     beginning-of-line
-# [[ -n "${key[End]}"      ]]  && bindkey  "${key[End]}"      end-of-line
-# [[ -n "${key[Insert]}"   ]]  && bindkey  "${key[Insert]}"   overwrite-mode
-# [[ -n "${key[Delete]}"   ]]  && bindkey  "${key[Delete]}"   delete-char
-# [[ -n "${key[Up]}"       ]]  && bindkey  "${key[Up]}"       up-line-or-history
-# [[ -n "${key[Down]}"     ]]  && bindkey  "${key[Down]}"     down-line-or-history
-# [[ -n "${key[Left]}"     ]]  && bindkey  "${key[Left]}"     backward-char
-# [[ -n "${key[Right]}"    ]]  && bindkey  "${key[Right]}"    forward-char
-# [[ -n "${key[PageUp]}"   ]]  && bindkey  "${key[PageUp]}"   beginning-of-buffer-or-history
-# [[ -n "${key[PageDown]}" ]]  && bindkey  "${key[PageDown]}" end-of-buffer-or-history
-#
-# # Finally, make sure the terminal is in application mode, when zle is
-# # active. Only then are the values from $terminfo valid.
-# if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
-#   autoload -Uz add-zle-hook-widget
-#   function zle_application_mode_start {
-#     echoti smkx
-#   }
-#   function zle_application_mode_stop {
-#     echoti rmkx
-#   }
-#   add-zle-hook-widget -Uz zle-line-init zle_application_mode_start
-#   add-zle-hook-widget -Uz zle-line-finish zle_application_mode_stop
-# fi
 # }}}2
 
-# Если в пустой командной строке набрать любые символы и начать
-# просматривать историю команд клавишами Up и Down, то из буфера будут
-# извлекаться только те, имена которых начинаются с этого набора символов.
-bindkey "^[OA" .up-line-or-search
-bindkey "^[OB" .down-line-or-search
+# znap source changyuheng/zsh-interactive-cd
 
-# <C-Left> - backward-word
-# <C-Right> - forward-word
-bindkey "^[[1;5D" .backward-word
-bindkey "^[[1;5C" .forward-word
-
-bindkey "^[[1;3D" .beginning-of-line
-bindkey "^[[1;3C" .end-of-line
-
-bindkey '^[[H'    .beginning-of-line  # [Home] - beginning of line
-bindkey '^[[F'    .end-of-line        # [End] - end of line
-
-# Use backtick for accept zsh-autosuggestions
-bindkey \` autosuggest-accept
-
-bindkey "^K" history-substring-search-up
-bindkey "^J" history-substring-search-down
-
-bindkey '\e[3~' delete-char    # del
-bindkey ';5D'   backward-word  # ctrl+left
-bindkey ';5C'   forward-word   # ctrl+right
-
-
-# # allow ctrl+a and ctrl+e to move to beginning/end of line
-# bindkey '^a' beginning-of-line
-# bindkey '^e' end-of-line
-
-# show man page of current command with alt+h
-bindkey '\eh' run-help
-
-# ctrl+left, ctrl+right to go to next word
-# alt+left, alt+right to go to next word
-bindkey '^[[1;5D' backward-word
-bindkey '^[[1;5C' forward-word
-bindkey '^[[1;3D' backward-word
-bindkey '^[[1;3C' forward-word
-
-# Gets the nth argument from the last command by pressing Alt+1, Alt+2, ... Alt+5
-bindkey -s '\e1' "!:0-0 \t"
-bindkey -s '\e2' "!:1-1 \t"
-bindkey -s '\e3' "!:2-2 \t"
-bindkey -s '\e4' "!:3-3 \t"
-bindkey -s '\e5' "!:4-4 \t"
-
-# bindkey '^r' history-incremental-search-backward
-# bindkey '^s' history-incremental-search-forward
-
-# Launch Ranger and cd to the last directory after closing it
-bindkey '^O' run_ranger
-# bindkey '^O' nnn_quitcd
-
-# }}}1
+# mcfly {{{
+if (( $+commands[mcfly] ))
+then
+  export HISTFILE=$HOME/.cache/zsh/zsh_history
+  export MCFLY_KEY_SCHEME=vim
+  export MCFLY_FUZZY=true
+  export MCFLY_RESULTS=30
+  znap eval mcfly 'mcfly init zsh'
+fi
+# }}}
 
 # fzf {{{
 
-# ---------------------------------------------------------------------- #
+#――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――#
 # fzf keybindings for Zsh                                                #
 # -----------------------                                                #
 # CTRL-R - Paste the selected command from history into the command line #
@@ -793,42 +297,34 @@ bindkey '^O' run_ranger
 # ---------                                                              #
 # mark <name> - register a new mark to the current directory             #
 # CTRL-F - fzf-marks                                                     #
-# ---------------------------------------------------------------------- #
+#――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――#
+
+# znap source junegunn/fzf shell/key-bindings.zsh
 
 # fzf keybindings
-zinit ice id-as"fzf-key-bindings.zsh"
-zinit snippet https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh
+github_file $ZSH[scripts]/fzf-key-bindings.zsh 'https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh'
+source $ZSH[scripts]/fzf-key-bindings.zsh
 
-# fzf completions script
-zinit ice id-as"fzf-completion.zsh"
-zinit snippet https://github.com/junegunn/fzf/blob/master/shell/completion.zsh
+# # use fzf for completion
+# github_file $ZSH[scripts]/fzf-completion.zsh 'https://github.com/junegunn/fzf/blob/master/shell/completion.zsh'
+# source $ZSH[scripts]/fzf-completion.zsh
 
 # fzf man
-zinit ice id-as"fzf-man" as"null" mv"fzf-man -> $ZPFX/man/man1/fzf.1"
-zinit snippet https://github.com/junegunn/fzf/blob/master/man/man1/fzf.1
+github_file $HOME/.local/share/man/man1/fzf.1 'https://github.com/junegunn/fzf/blob/master/man/man1/fzf.1'
 
-# fzf-marks {{{
+# # fzf-marks {{{
+# github_file $ZSH[scripts]/fzf-marks.zsh 'https://github.com/urbainvaes/fzf-marks/blob/master/fzf-marks.plugin.zsh'
+# source $ZSH[scripts]/fzf-marks.zsh
+#
+# export FZF_MARKS_FILE="${HOME}/.cache/zsh/fzf-marks"
+#
+# export FZF_MARKS_JUMP='^f'  # Ctrl-f
+# bindkey ${FZF_MARKS_JUMP:-'^g'} fzm
+# # }}}
 
-zinit ice lucid id-as"fzf-marks"
-zinit snippet https://github.com/urbainvaes/fzf-marks/blob/master/fzf-marks.plugin.zsh
-
-export FZF_MARKS_FILE="${HOME}/.cache/zsh/fzf-marks"
-
-export FZF_MARKS_JUMP='^f'  # Ctrl-f
-bindkey ${FZF_MARKS_JUMP:-'^g'} fzm
-
-# }}}
-
-# fzf.vim  Needed to enable fzf in vim/neovim.
-zinit ice wait"2" lucid id-as"auto" as"null"
-zinit snippet https://github.com/junegunn/fzf/blob/master/plugin/fzf.vim
-
-# # Enable if fzf installed with apt.
-# # Documentation is at: /usr/share/doc/fzf/README.Debian
-# if [[ -s "/usr/share/doc/fzf/examples/key-bindings.zsh" ]]; then
-#   source /usr/share/doc/fzf/examples/key-bindings.zsh
-# fi
-
+# # fzf.vim  Needed to enable fzf in vim/neovim.
+# zinit ice wait"2" lucid id-as"auto" as"null"
+# zinit snippet https://github.com/junegunn/fzf/blob/master/plugin/fzf.vim
 
 export FZF_DEFAULT_OPTS='--height 75% --layout=reverse --border'
 # export FZF_DEFAULT_OPTS='--height 75% --layout=reverse --border --preview="head -30 {}"'
@@ -913,100 +409,149 @@ fzf-file-widget() {
 
 # }}}
 
-# nnn {{{
-if (( $+commands[nnn] ))
+# zoxide {{{
+if (( $+commands[zoxide] ))
 then
-
-  # cd into last dir on quit nnn {{{
-
-  # # Copy original 'quitcd' function. I heavy modified it, so comment this block.
-  # zinit ice id-as"nnn_quitcd" as"null" \
-  #           mv"nnn_quitcd -> $ZDOTDIR/functions/n"
-  # zinit snippet https://github.com/jarun/nnn/blob/master/misc/quitcd/quitcd.bash_zsh
-
-  nnn_quitcd()
-  {
-    zle .reset-prompt
-    BUFFER=" n && clear -x"
-    zle accept-line
-  }
-  zle -N nnn_quitcd
-  # }}}
-
-  # nnn bookmarks pairs
-  export NNN_BMS='d:~/Documents;D:~/Downloads/'
-
-  # options to nnn binary
-  # ------------------------------------
-  # -e : text in $VISUAL/$EDITOR/vi
-  # -E : use EDITOR for undetached edits
-  # -r : use advcpmv patched cp, mv
-  # -x : notis, sel to system clipboard
-  # ------------------------------------
-  # export NNN_OPTS="eErx"
-  export NNN_OPTS="eEx"
-
-  # context (tabs) colors
-  export NNN_COLORS='4321'
-
-  # file-specific colors
-  # export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'  # original
-  export NNN_FCOLORS='c1e20402006033f7c6d6ab01'
-
-  # FIFO to write hovered file path to
-  export NNN_FIFO='/tmp/nnn.fifo'
-
-  # plugins
-  # export NNN_PLUG='f:finder;o:fzopen;p:mocplay;d:diffs;t:nmount;v:imgview'
-  export NNN_PLUG='v:preview-tabbed'
-
+  _ZO_ECHO=1
+  znap eval zoxide 'zoxide init zsh'
 fi
 # }}}
 
-# Aliaces                                                              {{{
-# ========================================================================
+# # broot {{{
+# if [[ -s "~/.config/broot/launcher/bash/br" ]]
+# then
+#     source ~/.config/broot/launcher/bash/br
+# fi
+# # }}}
 
-# Expand aliaces in command line.
-# https://blog.sebastian-daschner.com/entries/zsh-aliases
-#
+# conda {{{
+local -A CONDA
+CONDA[home]="/opt/miniconda3"
+CONDA[version]=$($CONDA[home]/bin/conda --version)
+
+znap eval conda "${CONDA[home]}/bin/conda shell.zsh hook  # $CONDA[version]"
+# }}}
+
+# vim mode {{{
+znap source jeffreytse/zsh-vi-mode
+# znap source softmoth/zsh-vim-mode
+
+ZVM_VI_SURROUND_BINDKEY=classic
+
+# cursor {{{
+
+# ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_UNDERLINE
+ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+
+ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_UNDERLINE
+# ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+
+# }}}
+
+zvm_after_init_commands+=(
+  # <C-R> - fussy search in history with mcfly.
+  "zvm_bindkey viins '^R' mcfly-history-widget"
+)
+# }}}
+
+#――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+#  WARNING: This two plugins should be last in this order!
+#――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+znap source zsh-users/zsh-syntax-highlighting
+
+znap source zsh-users/zsh-history-substring-search
+#――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+# }}}
+
+# Functions {{{
+
+# Bash 'help' function analog {{{
+
+# unalias run-help
+autoload run-help
+
+# HELPDIR=/usr/share/zsh/"${ZSH_VERSION}"/help
+HELPDIR=/usr/share/zsh/help  # in Pop_OS
+# }}}
+
+run_ranger()  # {{{
+{
+  zle .reset-prompt
+  # BUFFER=" source ranger && clear -x"
+  BUFFER=" source ranger"
+  zle accept-line
+}
+zle -N run_ranger
+# }}}
+
+# }}}
+
+# Key bindings {{{
+
+# Use backtick for accept zsh-autosuggestions
+bindkey \` autosuggest-accept
+
+bindkey "^K" history-substring-search-up
+bindkey "^J" history-substring-search-down
+
+# show man page of current command with alt+h
+bindkey '\eh' run-help
+
+# Gets the n-th argument from the last command
+# by pressing Alt+1, Alt+2, ... Alt+5.
+bindkey -s '\e1' "!:0-0 \t"
+bindkey -s '\e2' "!:1-1 \t"
+bindkey -s '\e3' "!:2-2 \t"
+bindkey -s '\e4' "!:3-3 \t"
+bindkey -s '\e5' "!:4-4 \t"
+
+# <C-O> - Launch Ranger and cd to the last directory after closing it.
+bindkey '^O' run_ranger
+
+# <C-R> - Fussy search in history with mcfly.
+bindkey '^R' mcfly-history-widget
+
+# }}}
+
+# Aliaces {{{
+
+# Expand aliaces                                                       {{{
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 # Define three types of aliaces:
 # alias  - will be expanded into full command with wightspace after
 # balias - will be expanded without wightspace after
 # ialias - won't be expanded
-
-# Expand aliaces {{{
-
-# balias {{{3
+#
+# -------------------------------------------------------
+# https://blog.sebastian-daschner.com/entries/zsh-aliases
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 # Blank aliases
 typeset -a baliases
 baliases=()
 
-balias()
+balias() # {{{
 {
   alias $@
   args="$@"
   args=${args%%\=*}
   baliases+=(${args##* })
-}
+} # }}}
 
-# ialiases {{{3
-
-# ignored aliases
+# Ignored aliases
 typeset -a ialiases
 ialiases=()
 
-ialias()
+ialias() # {{{
 {
   alias $@
   args="$@"
   args=${args%%\=*}
   ialiases+=(${args##* })
-}
+} # }}}
 
-# }}}3
-
-# functionality
+# Functionality
 expand-alias-space() # {{{
 {
   [[ $LBUFFER =~ "\<(${(j:|:)baliases})\$" ]]; insertBlank=$?
@@ -1026,13 +571,9 @@ zle -N expand-alias-space
 bindkey " " expand-alias-space
 bindkey -M isearch " " magic-space
 
-# }}}
+#――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――}}}
 
-# Filesystem aliases
-alias ..=' cd ..'
-alias ...=' cd ../..'
-alias ....=" cd ../../.."
-alias .....=" cd ../../../.."
+ialias :q='exit'
 
 ialias -g L='| less'
 
@@ -1040,73 +581,43 @@ ialias cls='clear'      # clear the screen
 
 ialias help='run-help'  # Bash 'help' function analog.
 
-ialias z='_zlua'
-
-# Пингуем один раз вместо бесконечности.
-ialias ping='ping -c 1'
-
-# # Use neovim for vim if present.
-# whence nvim >/dev/null && ialias vim="nvim" vimdiff="nvim -d"
-
-ialias :q='exit'
-# ialias mv='nocorrect mv -vi'  # переименование-перемещение c пogтвepжgeнueм
-ialias mv='nocorrect mv -v'
-ialias cp='nocorrect cp -viR'  # рекурсивное копирование с подтверждением
-# ialias rm='nocorrect rm -vi'  # удаление с подтверждением
-ialias rm='nocorrect rm -v'
-# alias rmf='nocorrect rm -f'  # принудительное удаление
-# alias rmrf='nocorrect rm -fR' # принудительное рекурсивное удаление
-
-# Создание каталогов без коррекции и со всеми родительскими каталогами,
-# если они отсутствуют.
-ialias mkdir='nocorrect mkdir -vp'
-
-alias grep='grep --color=auto'
-
-# alias l='ls -lAh --color=auto --group-directories-first'
-alias ls='ls --color=auto --group-directories-first'
-
-# alias ls='ls -F'  # вывод символов типов файлов
-# alias ll='ls -l'  # вывog в gлuннoм фopмaтe
-# alias la='ls -A'  # вывog всех файлов, кромe . u ..
-# alias lsd='ls -ld *(-/DN)'  # вывод только каталогов
-# alias lsa='ls -ld .*'  # вывog тoльko dot-фaйлoв
-
-if (( $+commands[lsd] ))
-then
-  ialias lsd='command lsd --group-dirs=first --blocks=permission,size,date,name --date=relative --icon=always --color=always -lF'
-  ialias lt='commmand lsd --tree'
-fi
-
-if (( $+commands[exa] ))
-then
-  # Когда номер версии будет больше чем 0.9.0 должны появиться опции:
-  # --no-user, --no-time и прочие. Для этого добавленная проверка
-  # номера версии.
-  alias ll='exa -lF --group-directories-first --git --no-user'
-  # alias ll='exa --group-directories-first -lF --color=always --git --no-user --icons'
-fi
+ialias ping='ping -c 1' # Пингуем один раз вместо бесконечности.
 
 ialias tree='tree -I .git -I .github'
 
-if (( $+commands[nvim] ))
-then
-  ialias vim='nvim'
-  ialias neovide="neovide --multiGrid --geometry=340x120"
-fi
+ialias mv='nocorrect mv -v'
+ialias cp='nocorrect cp -vR'  # рекурсивное копирование
+ialias rm='nocorrect rm -v'
+ialias grep='grep --color=auto'
+ialias wget='wget -c'  # автоматическое продолжение при разрыве соединения
 
-# alias history="history -35"  # упрощение вывода истории команд
+# Создание каталогов без коррекции и со всеми
+# родительскими каталогами, если они отсутствуют.
+ialias mkdir='nocorrect mkdir -vp'
 
-# вывод свободного и использованного дискового пространства в
-# "гуманистическом" представлении
+# Вывод свободного и использованного дискового пространства в
+# "гуманистическом" представлении.
 ialias df='df -h'
 ialias du='du -h'
 
-# Показать свободное место на диске
-alias disk='df -h | grep -P "F|[A-Z]:"'
+if (( $+commands[exa] )); then
+  # -F / --classify
+  # --no-user
+  # --no-time
+  # --icons
+  # --color=always
+  alias ls='exa -F --group-directories-first'
+  alias ll='exa -lF --group-directories-first --git'
+else
+  alias ls='ls --color=auto --group-directories-first'
+fi
 
-ialias wget='wget -c'  # автоматическое продолжение при разрыве соединения
-ialias vw=' nvim -c WikiIndex'  # open wiki
+# Use neovim for vim if present.
+if (( $+commands[nvim] )); then
+  ialias vim="nvim"
+  ialias vimdiff="nvim -d"
+  ialias neovide="neovide --multiGrid --geometry=340x120"
+fi
 
 # In Debian and its derivatives in package ‘fd-find’ the executable
 # and the associated manpage were renamed from ‘fd’ to ‘fdfind’.
@@ -1121,86 +632,11 @@ alias gc='git checkout'
 alias gd='git diff'
 alias -g random='-m curl -s http://whatthecommit.com/index.txt'
 
-alias cdh='back_in_history'
-
 # Lists the ten most used commands.
 ialias history-stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
 
-# ialias atom='atom --force-device-scale-factor=1.1'
-
-# ialias b='buku --suggest'
-alias b='buku'
-
-# alias -s {avi,mpeg,mpg,mov,m2v}=mplayer
-# alias -s {odt,doc,sxw,rtf}=openoffice.org
-# autoload -U pick-web-browser
-# alias -s {html,htm}=chromium
-
-# # tmux
-# alias t="tmux"
-# alias ta="t a -t"
-# alias tls="t ls"
-# alias tn="t new -t"
-
-# ialias qimgv="QT_SCALE_FACTOR="1.5" qimgv"
-
-alias ed='emacs --with-profile doom'
-
 # }}}
 
-# Initializing completion system {{{
+unset my_zsh_functions
 
-# This line initialized completion system and should be at the end of the
-# file after loading all plugin and all "zstyle ':completion:*'" options.
-autoload -Uz compinit; compinit
-
-# Run all the `compdef's saved before `compinit` call (`compinit' declares
-# the `compdef' function, so it cannot be used until `compinit` is ran;
-# Zplugin solves this via intercepting the `compdef'-calls and storing them
-# for later use with `zinit cdreplay'). `-q` is for quiet.
-zinit cdreplay -q
-
-
-# `compdef _gnu_generic myCommand` will parse output of `myCommand --help`
-# and use that for autocompletions.
-# Example: compdef _gnu_generic bat
-
-compdef _gnu_generic update-alternatives
-
-if (( $+commands[lsd] ))
-then
-  compdef _gnu_generic lsd
-fi
-
-# # Generate completion for `bat` utility
-# # `&!` is to make command silently run in the backgound
-# if whence bat > /dev/null 2>&1
-# then
-# # compdef _gnu_generic bat &!
-#   compdef _gnu_generic bat
-# fi
-
-# }}}
-
-
-source /home/anuvyklack/.config/broot/launcher/bash/br
-
-export HISTFILE=$HOME/.cache/zsh/zsh_history
-export MCFLY_KEY_SCHEME=vim
-export MCFLY_FUZZY=true
-export MCFLY_RESULTS=30
-eval "$(mcfly init zsh)"
-bindkey '^R' mcfly-history-widget
-
-
-#==========================================================
-#  WARNING: This two plugins should be last in this order!
-#==========================================================
-zinit ice silent id-as"auto" atload"zpcompinit; zpcdreplay"
-zinit light zsh-users/zsh-syntax-highlighting
-
-zinit ice lucid id-as"auto"
-zinit light zsh-users/zsh-history-substring-search
-#==========================================================
-
-# vim: tw=75 fdm=marker ts=2 sw=2
+# vim: tw=75 ts=2 sw=2 fdm=marker

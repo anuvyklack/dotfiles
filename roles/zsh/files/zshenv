@@ -13,16 +13,18 @@
 
 export ZDOTDIR=~/.config/zsh
 
-# On Ubuntu the `compinit` function is called in '/etc/zshrc', what is not
-# really helping.
+#---------------------------------------------------------------------------------
 # https://blog.patshead.com/2011/04/improve-your-oh-my-zsh-startup-time-maybe.html
+#---------------------------------------------------------------------------------
+# On Ubuntu the `compinit` function is called in '/etc/zsh/zshrc'.
+# We want to disable this behavior according to the comment in that file.
 skip_global_compinit=1
 
+#-------------------------------------------------------------------
 # https://github.com/sorin-ionescu/prezto/blob/master/runcoms/zshenv
+#-------------------------------------------------------------------
 # Ensure that a non-login, non-interactive shell has a defined environment.
 if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]
 then
   source "${ZDOTDIR:-$HOME}/.zprofile"
 fi
-
-. "$HOME/.cargo/env"

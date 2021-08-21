@@ -51,7 +51,8 @@ BRIGHT_WHITE="\e[01;97m"
 # This block should be before Powerlevel10k install prompt
 # in order to retain the ability to make a selection if needed.
 
-if ! (( $+commands[rg] )); then
+if ! (( $+commands[rg] ))
+then
   # Fill the string up to 80 symbols with '―' char to the right.
   string="―― Installing $(color blue 'ripgrep') "; print ${(r:80::―:)string}
   echo
@@ -59,9 +60,9 @@ if ! (( $+commands[rg] )); then
   echo
 fi
 
-if ! (( $+commands[bat] )); then
+if ! (( $+commands[bat] ))
+then
   string="―― Installing $(color blue 'bat') "; print ${(r:80::―:)string}
-  unset string
   echo
   bin install https://github.com/sharkdp/bat
   echo
@@ -70,38 +71,82 @@ if ! (( $+commands[bat] )); then
   echo
 fi
 
-if ! (( $+commands[exa] )); then
+if ! (( $+commands[exa] ))
+then
   string="―― Installing $(color Yellow 'exa') "; print ${(r:80::―:)string}
-  unset string
   echo
   bin install https://github.com/ogham/exa
   echo
 fi
 
-if ! (( $+commands[zoxide] )); then
-  string="―― Installing $(color Magenta 'zoxide') "; print ${(r:80::―:)string}
-  unset string
-  echo
-  bin install https://github.com/ajeetdsouza/zoxide
-  echo
-fi
-
-if ! (( $+commands[fzf] )); then
+if ! (( $+commands[fzf] ))
+then
   string="―― Installing $(color Yellow 'fzf') "; print ${(r:80::―:)string}
-  unset string
   echo
   bin install https://github.com/junegunn/fzf
   echo
 fi
 
-if ! (( $+commands[topgrade] )); then
+if ! (( $+commands[zoxide] ))
+then
+  string="―― Installing $(color Magenta 'zoxide') "; print ${(r:80::―:)string}
+  echo
+  bin install https://github.com/ajeetdsouza/zoxide
+  echo
+fi
+
+if ! (( $+commands[delta] ))
+then
+  string="―― Installing $(color green 'delta') "; print ${(r:80::―:)string}
+  echo
+  bin install https://github.com/dandavison/delta
+  echo
+fi
+
+if ! (( $+commands[topgrade] ))
+then
   string="―― Installing $(color red 'topgrade') "; print ${(r:80::―:)string}
-  unset string
   echo
   bin install https://github.com/r-darwish/topgrade
   echo
 fi
 
+if ! (( $+commands[dust] ))
+then
+  string="―― Installing $(color yellow 'dust') "; print ${(r:80::―:)string}
+  echo
+  bin install https://github.com/bootandy/dust
+  echo
+fi
+
+if ! (( $+commands[duf] ))
+then
+  string="―― Installing $(color blue 'duf') "; print ${(r:80::―:)string}
+  echo
+  bin install https://github.com/muesli/duf
+  echo
+fi
+
+if ! (( $+commands[broot] ))
+then
+  string="―― Installing $(color red 'broot') "; print ${(r:80::―:)string}
+  echo
+  bin install https://github.com/Canop/broot
+  echo
+fi
+
+if ! (( $+commands[mcfly] ))
+then
+  string="―― Installing $(color Magenta 'mcfly') "; print ${(r:80::―:)string}
+  echo
+  bin install https://github.com/cantino/mcfly
+  echo
+else
+  export HISTFILE=$HOME/.cache/zsh/zsh_history
+  eval "$(mcfly init zsh)"
+fi
+
+unset string
 # }}}
 
 # Powerlevel10k instant prompt {{{
@@ -110,7 +155,8 @@ fi
 # ~/.config/zsh/.zshrc.  Initialization code that may require console input
 # (password prompts, [y/n] confirmations, etc.) must go above this block,
 # everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
+then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
@@ -129,8 +175,8 @@ export ZPFX="$ZINIT[HOME_DIR]/polaris"
 
 # Source zinit. Install if it's absent. These lines must be at the very
 # begining of the file. The order of plugins loading matters.
-if [[ ! -s "$ZINIT[BIN_DIR]/zinit.zsh" ]]; then
-  # git clone --depth=1 https://github.com/zdharma/zinit.git ~/.zinit/bin
+if [[ ! -s "$ZINIT[BIN_DIR]/zinit.zsh" ]]
+then
   git clone --depth=1 https://github.com/zdharma/zinit.git $ZINIT[BIN_DIR]
   source "$ZINIT[BIN_DIR]/zinit.zsh"
   zinit self-update
@@ -153,17 +199,14 @@ fi
 
 # zinit ice from"gh-r" as"program" mv"direnv* -> direnv" atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' pick"direnv"
 # zinit light direnv/direnv
-# if [ -f "$HOME/.zinit/plugins/direnv---direnv/zhook.zsh" ]; then
+# if [ -f "$HOME/.zinit/plugins/direnv---direnv/zhook.zsh" ]
+# then
 #   . "$HOME/.zinit/plugins/direnv---direnv/zhook.zsh"
 # fi
 
-# A special plugin to install diff-so-fancy
-zinit ice wait"2" id-as"diff-so-fancy" lucid as"program" pick"bin/git-dsf"
-zinit light zdharma/zsh-diff-so-fancy
-
 # }}}
 
-# General settings {{{
+# Shell core settings {{{
 
 # Report time stats of commands running longer than 20 sec
 # REPORTTIME=20
@@ -225,10 +268,10 @@ setopt hash_list_all     # Whenever a command completion is attempted,
 
 # Jobs
 setopt long_list_jobs    # List jobs in the long format by default.
-setopt auto_resume       # Attempt to resume existing job before creating
+setopt auto_resume       #   Attempt to resume existing job before creating
                          # a new process.
 setopt notify            # Report status of background jobs immediately.
-unsetopt bg_nice         # Don't run all background jobs at a lower
+unsetopt bg_nice         #   Don't run all background jobs at a lower
                          # priority.
 unsetopt hup             # Don't kill jobs on shell exit.
 unsetopt check_jobs      # Don't report on jobs when shell exit.
@@ -241,17 +284,20 @@ CORRECT_IGNORE_FILE='.*'
 SPROMPT="Ошибка! ввести %r вместо %R? ([Y]es/[N]o/[E]dit/[A]bort) "
 
 
-# This logic comes from an old version of zim. Essentially, bracketed-paste was
-# added as a requirement of url-quote-magic in 5.1, but in 5.1.1 bracketed
+# This logic comes from an old version of zim. Essentially, bracketed-paste
+# was added as a requirement of url-quote-magic in 5.1, but in 5.1.1 bracketed
 # paste had a regression. Additionally, 5.2 added bracketed-paste-url-magic
 # which is generally better than url-quote-magic so we load that when possible.
 autoload -Uz is-at-least
-if [[ ${ZSH_VERSION} != 5.1.1 && ${TERM} != "dumb" ]]; then
-  if is-at-least 5.2; then
+if [[ ${ZSH_VERSION} != 5.1.1 && ${TERM} != "dumb" ]]
+then
+  if is-at-least 5.2
+  then
     autoload -Uz bracketed-paste-url-magic
     zle -N bracketed-paste bracketed-paste-url-magic
   else
-    if is-at-least 5.1; then
+    if is-at-least 5.1
+    then
       autoload -Uz bracketed-paste-magic
       zle -N bracketed-paste bracketed-paste-magic
     fi
@@ -271,17 +317,20 @@ zle -N edit-command-line
 
 case $TERM in
     (xterm*|rxvt*)
-        function _set_title() {
+        function _set_title()
+        {
             printf '%s' $'\e]0;'
             printf '%s' "$*"
             printf '%s' $'\a'
         }
 
-        function _reset_title() {
+        function _reset_title()
+        {
             _set_title ${(%):-"%n@%m: %~"}
         }
 
-        function _set_command_title() {
+        function _set_command_title()
+        {
             _set_title "${(%):-"%n@%m:"}" "$1"
         }
 
@@ -347,8 +396,10 @@ case $THEME in
         zinit light sindresorhus/pure
         ;;
     powerlevel10k)
-        # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
-        [[ ! -f ~/.config/zsh/themes/p10k.zsh ]] || source ~/.config/zsh/themes/p10k.zsh
+        # To customize prompt, run `p10k configure` or edit
+        # ~/.config/zsh/.p10k.zsh.
+        [[ -f ~/.config/zsh/themes/p10k.zsh ]] &&
+            source ~/.config/zsh/themes/p10k.zsh
 
         zinit ice id-as"auto" depth=1
         zinit light romkatv/powerlevel10k
@@ -385,7 +436,7 @@ _show_title
 
 # PROMPT_TITLE='$USER@$HOST $PWD'  # default
 
-# Полный путь до текущей директории. ПОдстроку эквивалентную `$HOME`
+# Полный путь до текущей директории. Подстроку эквивалентную `$HOME`
 # заменяем на тильду. Ковычки дожны быть одинарными. С двойными заголовок
 # не обновляется при смене директории.
 # PROMPT_TITLE='${PWD/#${HOME}/~}'
@@ -420,37 +471,43 @@ compctl -K _pip_completion pip3
 # zinit ice lucid id-as"auto" as"completion" blockf
 # zinit snippet OMZ::plugins/fd/_fd
 
-if (( $+commands[vifm] )); then
+if (( $+commands[vifm] ))
+then
   zinit ice id-as"vifm-completion" mv"vifm-completion -> _vifm" as"completion"
   zinit snippet https://github.com/vifm/vifm/blob/master/data/shell-completion/zsh/_vifm
 fi
 
-if (( $+commands[exa] )); then
+if (( $+commands[exa] ))
+then
   zinit ice id-as"exa-completion" mv"exa-completion -> _exa" as"completion"
   zinit snippet https://github.com/ogham/exa/blob/master/completions/zsh/_exa
 fi
 
 # buku bookmark manager completion
 # if whence buku > /dev/null 2>&1; then
-if (( $+commands[buku] )); then
+if (( $+commands[buku] ))
+then
   zinit ice id-as"buku-completion" mv"buku-completion -> _buku" as"completion"
   zinit snippet https://github.com/jarun/buku/blob/master/auto-completion/zsh/_buku
 fi
 
 # notes (cli notebook) completion
-if (( $+commands[notes] )); then
+if (( $+commands[notes] ))
+then
   zinit ice id-as"notes-cli-completion" mv"notes-cli-completion -> _notes" as"completion"
   zinit snippet https://github.com/rhysd/notes-cli/blob/master/completions/zsh/_notes
 fi
 
 # dnote (cli notebook) completion
-if (( $+commands[dnote] )); then
+if (( $+commands[dnote] ))
+then
   zinit ice as"completion"
   zinit snippet OMZP::dnote/_dnote
 fi
 
 # cppman completion
-if (( $+commands[cppman] )); then
+if (( $+commands[cppman] ))
+then
   zinit ice id-as"cppman-completion" mv"cppman-completion -> _cppman" as"completion"
   zinit snippet https://github.com/aitjcize/cppman/blob/master/misc/completions/cppman.zsh
 fi
@@ -480,6 +537,28 @@ zinit light zsh-users/zsh-autosuggestions
 
 export ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd history completion)
 export ZSH_AUTOSUGGEST_USE_ASYNC=1  # suggestions will be fetched asynchronously
+
+# Speed up pasting w/ autosuggest {{{
+# https://github.com/zsh-users/zsh-autosuggestions/issues/238
+pasteinit()
+{
+  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
+  zle -N self-insert url-quote-magic
+  ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste) # Clear suggestions on paste
+}
+
+pastefinish()
+{
+  zle -N self-insert $OLD_SELF_INSERT
+}
+
+zstyle :bracketed-paste-magic paste-init pasteinit
+zstyle :bracketed-paste-magic paste-finish pastefinish
+# }}}
+
+# https://github.com/zsh-users/zsh-autosuggestions/issues/351
+export ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
+
 # }}}
 
 # # Автодополнение путей с использованием fzf для команды cd
@@ -489,8 +568,8 @@ export ZSH_AUTOSUGGEST_USE_ASYNC=1  # suggestions will be fetched asynchronously
 # zinit light softmoth/zsh-vim-mode
 
 # lf (file manager) {{{
-if (( $+commands[lf] )); then
-
+if (( $+commands[lf] ))
+then
   # lf completion
   zinit ice id-as"lf-completion" mv"lf-completion -> _lf" as"completion"
   zinit snippet https://github.com/gokcehan/lf/blob/master/etc/lf.zsh
@@ -501,7 +580,6 @@ if (( $+commands[lf] )); then
   # # <Ctrl-o> - use lf to switch directories.
   bindkey -s '^o' 'lfcd\n'
   # bindkey -s '^o' 'lfcd^m'
-
 fi
 # }}}
 
@@ -529,8 +607,8 @@ bindkey '\ek' deer
 
 # $IS_WSL env. variable existed in the older version in WSL 1, while
 # $WSL_DISTRO_NAME variable exists in the current version in WSL 2.
-if [[ -n "$IS_WSL" || -n "$WSL_DISTRO_NAME" ]]; then
-  # We are in wsl!
+if [[ -n "$IS_WSL" || -n "$WSL_DISTRO_NAME" ]]
+then  # We are in wsl!
 
   # UI settings                                                        {{{
 
@@ -574,10 +652,12 @@ fi
 # ========================================================================
 
 # Bash 'help' function analog {{{
+
 # unalias run-help
 autoload run-help
+
 # HELPDIR=/usr/share/zsh/"${ZSH_VERSION}"/help
-HELPDIR=/usr/share/zsh/help # in Pop_OS
+HELPDIR=/usr/share/zsh/help  # in Pop_OS
 # }}}
 
 # fc -W  -  write file to history
@@ -667,17 +747,6 @@ source $ZDOTDIR/settings/vi-mode.zsh
 bindkey "^[OA" .up-line-or-search
 bindkey "^[OB" .down-line-or-search
 
-# <C-Left> - backward-word
-# <C-Right> - forward-word
-bindkey "^[[1;5D" .backward-word
-bindkey "^[[1;5C" .forward-word
-
-bindkey "^[[1;3D" .beginning-of-line
-bindkey "^[[1;3C" .end-of-line
-
-bindkey '^[[H'    .beginning-of-line  # [Home] - beginning of line
-bindkey '^[[F'    .end-of-line        # [End] - end of line
-
 # Use backtick for accept zsh-autosuggestions
 bindkey \` autosuggest-accept
 
@@ -696,12 +765,14 @@ bindkey ';5C'   forward-word   # ctrl+right
 # show man page of current command with alt+h
 bindkey '\eh' run-help
 
-# ctrl+left, ctrl+right to go to next word
-# alt+left, alt+right to go to next word
-bindkey '^[[1;5D' backward-word
-bindkey '^[[1;5C' forward-word
-bindkey '^[[1;3D' backward-word
-bindkey '^[[1;3C' forward-word
+bindkey '^[[1;5D' .backward-word      # Ctrl+Left  - next word
+bindkey '^[[1;5C' .forward-word       # Ctrl+Right - previous word
+
+bindkey "^[[1;3D" .beginning-of-line  # Alt+Left  - begining of line
+bindkey "^[[1;3C" .end-of-line        # Alt+Right - end of line
+
+bindkey '^[[H'    .beginning-of-line  # [Home] - beginning of line
+bindkey '^[[F'    .end-of-line        # [End]  - end of line
 
 # Gets the nth argument from the last command by pressing Alt+1, Alt+2, ... Alt+5
 bindkey -s '\e1' "!:0-0 \t"
@@ -713,7 +784,7 @@ bindkey -s '\e5' "!:4-4 \t"
 # bindkey '^r' history-incremental-search-backward
 # bindkey '^s' history-incremental-search-forward
 
-# Launch Ranger and cd to the last directory after closing it
+# Launch Ranger and cd to the last directory after closing it.
 bindkey '^O' run_ranger
 # bindkey '^O' nnn_quitcd
 
@@ -795,7 +866,8 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # Using bfs utility for directory searching.
 # https://github.com/tavianator/bfs
-if (( $+commands[bfs] )); then
+if (( $+commands[bfs] ))
+then
   # # don't show hidden folders
   # export FZF_ALT_C_COMMAND="bfs -type d -nohidden -L -print 2> /dev/null"
 
@@ -815,9 +887,11 @@ fzf-history-widget()
     sort -k2 -k1rn | uniq -f 1 | sort -r -n |
     FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} $FZF_DEFAULT_OPTS -n2..,.. --tiebreak=index --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)) )
   local ret=$?
-  if [ -n "$selected" ]; then
+  if [ -n "$selected" ]
+  then
     num=$selected[1]
-    if [ -n "$num" ]; then
+    if [ -n "$num" ]
+    then
       zle vi-fetch-history -n $num
     fi
   fi
@@ -834,7 +908,8 @@ fzf-history-widget()
 fzf-file-widget() {
 
   # If $PWD is not root ('/') add '/' char to make path valid.
-  if [ ${PWD} = '/' ]; then
+  if [ ${PWD} = '/' ]
+  then
     local fzf_full_path="/$(__fsel)"
   else
     local fzf_full_path="${PWD}/$(__fsel)"
@@ -855,7 +930,8 @@ fzf-file-widget() {
 # }}}
 
 # nnn {{{
-if (( $+commands[nnn] )); then
+if (( $+commands[nnn] ))
+then
 
   # cd into last dir on quit nnn {{{
 
@@ -864,10 +940,11 @@ if (( $+commands[nnn] )); then
   #           mv"nnn_quitcd -> $ZDOTDIR/functions/n"
   # zinit snippet https://github.com/jarun/nnn/blob/master/misc/quitcd/quitcd.bash_zsh
 
-  nnn_quitcd() {
-      zle .reset-prompt
-      BUFFER=" n && clear -x"
-      zle accept-line
+  nnn_quitcd()
+  {
+    zle .reset-prompt
+    BUFFER=" n && clear -x"
+    zle accept-line
   }
   zle -N nnn_quitcd
   # }}}
@@ -949,11 +1026,13 @@ ialias()
 expand-alias-space() # {{{
 {
   [[ $LBUFFER =~ "\<(${(j:|:)baliases})\$" ]]; insertBlank=$?
-  if [[ ! $LBUFFER =~ "\<(${(j:|:)ialiases})\$" ]]; then
+  if [[ ! $LBUFFER =~ "\<(${(j:|:)ialiases})\$" ]]
+  then
     zle _expand_alias
   fi
   zle self-insert
-  if [[ "$insertBlank" = "0" ]]; then
+  if [[ "$insertBlank" = "0" ]]
+  then
     zle backward-delete-char
   fi
 } # }}}
@@ -979,8 +1058,7 @@ ialias help='run-help'  # Bash 'help' function analog.
 
 ialias z='_zlua'
 
-# Пингуем один раз вместо бесконечности.
-ialias ping='ping -c 1'
+ialias ping='ping -c 1'  # Пингуем один раз вместо бесконечности.
 
 # # Use neovim for vim if present.
 # whence nvim >/dev/null && ialias vim="nvim" vimdiff="nvim -d"
@@ -1009,12 +1087,14 @@ alias ls='ls --color=auto --group-directories-first'
 # alias lsd='ls -ld *(-/DN)'  # вывод только каталогов
 # alias lsa='ls -ld .*'  # вывog тoльko dot-фaйлoв
 
-if (( $+commands[lsd] )); then
+if (( $+commands[lsd] ))
+then
   ialias lsd='command lsd --group-dirs=first --blocks=permission,size,date,name --date=relative --icon=always --color=always -lF'
   ialias lt='commmand lsd --tree'
 fi
 
-if (( $+commands[exa] )); then
+if (( $+commands[exa] ))
+then
   # Когда номер версии будет больше чем 0.9.0 должны появиться опции:
   # --no-user, --no-time и прочие. Для этого добавленная проверка
   # номера версии.
@@ -1024,7 +1104,8 @@ fi
 
 ialias tree='tree -I .git -I .github'
 
-if (( $+commands[nvim] )); then
+if (( $+commands[nvim] ))
+then
   ialias vim='nvim'
   ialias neovide="neovide --multiGrid --geometry=340x120"
 fi
@@ -1044,7 +1125,8 @@ ialias vw=' nvim -c WikiIndex'  # open wiki
 
 # In Debian and its derivatives in package ‘fd-find’ the executable
 # and the associated manpage were renamed from ‘fd’ to ‘fdfind’.
-if [[ $(grep -Es '^ID_LIKE=.*(?:ubuntu|debian)' /etc/os-release) ]]; then
+if [[ $(grep -Es '^ID_LIKE=.*(?:ubuntu|debian)' /etc/os-release) ]]
+then
   ialias fd=fdfind
 fi
 
@@ -1100,19 +1182,15 @@ zinit cdreplay -q
 
 compdef _gnu_generic update-alternatives
 
-if (( $+commands[lsd] )); then
+if (( $+commands[lsd] ))
+then
   compdef _gnu_generic lsd
 fi
 
-# # Generate completion for `bat` utility
-# # `&!` is to make command silently run in the backgound
-# if whence bat > /dev/null 2>&1
-# then
-# # compdef _gnu_generic bat &!
-#   compdef _gnu_generic bat
-# fi
-
 # }}}
+
+
+# source /home/anuvyklack/.config/broot/launcher/bash/br
 
 #==========================================================
 #  WARNING: This two plugins should be last in this order!

@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-n ()
+n()
 {
     # Block nesting of nnn in subshells
     if [ -n $NNNLVL ] && [ "${NNNLVL:-0}" -ge 1 ]
