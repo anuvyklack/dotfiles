@@ -16,17 +16,17 @@ install_missing_programs()
 
     # Create config file
     bin_config_file="$HOME/.config/bin/config.json";
-    mkdir --parents $bin_config_file:h  # create parent directories
-    if ! [ -s $bin_config_file ];
+    mkdir --parents $bin_config_file:h  # Create parent directories of config file.
+    if ! [ -s $bin_config_file ]
     then
-      echo '{'                                             > $bin_config_file;
-      echo "    \"default_path\" : \"$HOME/.local/bin\"," >> $bin_config_file;
-      echo '    "bins": {}'                               >> $bin_config_file;
-      echo '}'                                            >> $bin_config_file;
+      echo '{'                                             > $bin_config_file
+      echo "    \"default_path\" : \"$HOME/.local/bin\"," >> $bin_config_file
+      echo '    "bins": {}'                               >> $bin_config_file
+      echo '}'                                            >> $bin_config_file
     fi
 
-    # Install bin.
-    if ! [ $(/tmp/bin list | grep github.com/marcosnils/bin) ]
+    # Install bin
+   if ! [ $(/tmp/bin list | grep github.com/marcosnils/bin) ]
     then
       /tmp/bin install github.com/marcosnils/bin
     fi
@@ -77,7 +77,9 @@ install_missing_programs()
     echo
     bin install https://github.com/ajeetdsouza/zoxide
     echo
-  fi # }}}
+  fi
+  # github_file $ZSH[scripts]/fzf-key-bindings.zsh 'https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh'
+  # }}}
   # delta {{{
   if ! (( $+commands[delta] ))
   then

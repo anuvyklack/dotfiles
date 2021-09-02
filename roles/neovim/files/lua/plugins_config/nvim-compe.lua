@@ -33,7 +33,8 @@ require('compe').setup {
       -- vsnip = true;
       -- ultisnips = true;
       -- luasnip = true;
-      orgmode = true
+      orgmode = true,
+      neorg = true
    };
 }
 

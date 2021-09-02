@@ -20,6 +20,11 @@ set trash
             " location.  I recommend not changing this until you are familiar
             " with vifm.  This probably shouldn't be an option.
 
+set trashdir=~/.cache/vifm
+            " Set the vifm trash directory.
+            " If set to `~/.local/share/Trash` the "standard" trash directory
+            " will be used.
+
 set history=100
             " This is how many directories to store in the directory history.
 
@@ -62,7 +67,7 @@ set nohlsearch
 set incsearch
             " Use increment searching (search while typing)
 
-set scrolloff=4
+set scrolloff=0
             " Try to leave some space from cursor to upper/lower border.
 
 set lsoptions=transposed
@@ -73,7 +78,7 @@ if !has('win')
                 " Don't do too many requests to slow file systems.
 endif
 
-set timefmt=%d/%m/%y\ %H:%M
+set timefmt=%d-%m-%y\ %H:%M
             " Format for displaying time in file list.
             " See man date or man strftime for details.
 
@@ -93,7 +98,7 @@ set vifminfo=dhistory,savedirs,chistory,state,tui,shistory,
 " ------------------------------------------------------------------------------
 
 " :mark mark /full/directory/path [filename]
-mark b ~/bin/
+" mark b ~/bin/
 mark h ~/
 
 " ------------------------------------------------------------------------------
@@ -218,8 +223,14 @@ filextype {*.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm},<image/*>
         \ gpicview %c,
         \ {View in shotwell}
         \ shotwell,
-fileviewer {*.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm},<image/*>
-         \ identify %f
+        \ {View in qimgv}
+        \ qimgv %c &
+" fileviewer {*.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm},<image/*>
+"          \ identify %f
+fileviewer <image/*>
+    \ vifmimg draw %px %py %pw %ph %c
+    \ %pc
+    \ vifmimg clear
 
 " OpenRaster
 filextype *.ora
@@ -497,6 +508,3 @@ nnoremap zh :set dotfiles!<cr>
 
 
 " vim: filetype=vifm : tw=80
-
-
-

@@ -13,7 +13,6 @@ hi link NormalFloat Pmenu
 
 " -------------------- Easymotion -----------------------
 
-" Easymotion
 highlight EasyMotionTarget guifg=#ff1414 gui=bold
 highlight EasyMotionTarget2First guifg=#ffb912 gui=bold
 highlight EasyMotionTarget2Second guifg=#cf9200
@@ -25,6 +24,15 @@ highlight EasyMotionTarget2Second guifg=#cf9200
 " highlight EasyMotionTarget guifg=#ff0000 gui=bold
 " highlight EasyMotionTarget2First guifg=#ffb400 gui=bold
 " highlight EasyMotionTarget2Second guifg=#b98300
+
+" ----------------- Hop (Easymotion) --------------------
+
+highlight HopNextKey   guifg=#ff007c gui=bold
+highlight HopNextKey1  guifg=#00b7d1 gui=bold
+" highlight HopNextKey1  guifg=#0095a8 gui=bold
+highlight HopNextKey2  guifg=#00a3ba
+highlight HopUnmatched guifg=#aaaaaa
+
 
 " ------------------ Color brackets ---------------------
 

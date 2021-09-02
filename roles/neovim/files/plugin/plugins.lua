@@ -8,15 +8,15 @@
 -- ░██     ░░  ░░░░░    █████ ░░ ░░   ░░ ░░░░░░  ░░  ░░  ░░░░░   ░░░░░░░
 -- ░░                  ░░░░░
 
--- --------------  ----------------------------------------------
--- :PackerCompile  You must run this or `PackerSync` whenever you
---                    make changes to your plugin configuration.
--- :PackerInstall  Only install missing plugins.
--- :PackerUpdate   Update and install plugins.
--- :PackerClean    Remove any disabled or unused plugins.
--- :PackerSync     Performs `PackerClean` then `PackerUpdate`
---                     and `PackerCompile` at the end.
--- --------------  ----------------------------------------------
+-- -------------- ------------------------------------------------
+-- :PackerCompile | You must run this or `PackerSync` whenever you
+--                  make changes to your plugin configuration.
+-- :PackerInstall | Only install missing plugins.
+-- :PackerUpdate  | Update and install plugins.
+-- :PackerClean   | Remove any disabled or unused plugins.
+-- :PackerSync    | Performs `PackerClean` then `PackerUpdate`
+--                  and `PackerCompile` at the end.
+-- -------------- ------------------------------------------------
 
 local fn = vim.fn
 local execute = vim.api.nvim_command
@@ -446,15 +446,13 @@ return require('packer').startup(function()
 
    -------------------- Color scheme ---------------------
    local color_themes = {
-      -- gruvbox-material {{{
-      ['gruvbox-material'] = function()
-      -- ['gruvbox-material'] = function()
+      -- gruvbox-material-dark {{{
+      ['gruvbox-material-dark'] = function()
          use {
             'sainnhe/gruvbox-material',
             after = 'treesitter',
             config = function()
                vim.o.background = 'dark'
-               -- vim.o.background = 'light'
 
                -- Set the color palette used in this color scheme.
                -- material : material palette with soft contrast;
@@ -465,6 +463,39 @@ return require('packer').startup(function()
                -- Set contrast.
                -- available values: 'hard', 'medium'(default), 'soft'
                vim.g.gruvbox_material_background = 'medium'
+               vim.g.gruvbox_material_enable_bold = 1
+               vim.g.gruvbox_material_enable_italic = 1
+
+               -- Available values: 'auto', 'red', 'orange', 'yellow',
+               -- 'green', 'aqua', 'blue', 'purple'
+               vim.g.gruvbox_material_cursor = 'blue'
+               -- vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
+               vim.g.gruvbox_material_diagnostic_virtual_text = 'grey'
+               vim.g.gruvbox_material_current_word = 'grey background'
+               vim.g.gruvbox_material_better_performance = 1
+
+               vim.cmd 'colorscheme gruvbox-material'
+               vim.cmd('source ~/.config/nvim/lua/plugins_config/gruvbox-material.vim')
+            end
+         }
+      end, --}}}
+      -- gruvbox-material-light {{{
+      ['gruvbox-material-light'] = function()
+         use {
+            'sainnhe/gruvbox-material',
+            after = 'treesitter',
+            config = function()
+               vim.o.background = 'light'
+
+               -- Set the color palette used in this color scheme.
+               -- material : material palette with soft contrast;
+               -- mix      : the mean of the other two;
+               -- original : the original gruvbox palette.
+               vim.g.gruvbox_material_palette = 'mix'
+
+               -- Set contrast.
+               -- available values: 'hard', 'medium'(default), 'soft'
+               vim.g.gruvbox_material_background = 'soft'
                vim.g.gruvbox_material_enable_bold = 1
                vim.g.gruvbox_material_enable_italic = 1
 
@@ -533,7 +564,8 @@ return require('packer').startup(function()
       end, --}}}
    }
 
-   local theme = 'gruvbox-material'
+   local theme = 'gruvbox-material-dark'
+   -- local theme = 'gruvbox-material-light'
    -- local theme = 'tokyonight'
    -- local theme = 'melange'
    -- local theme = 'mellow'
@@ -682,16 +714,39 @@ return require('packer').startup(function()
 
    ----------------------------------------------------}}}
 
-   --                      Orgmode                     {{{
-   -------------------------------------------------------
-   use {'kristijanhusak/orgmode.nvim',
-      config = function()
-         require('orgmode').setup{
-            org_hide_emphasis_markers = true,
-         }
-      end
-   }
-   ----------------------------------------------------}}}
+--                      Orgmode                     {{{
+-------------------------------------------------------
+
+-- use { 'kristijanhusak/orgmode.nvim',
+--    config = function()
+--       require('orgmode').setup{
+--          org_hide_emphasis_markers = true,
+--       }
+--    end
+-- }
+
+use { 'vhyrro/neorg',
+   requires = "nvim-lua/plenary.nvim",
+   after = "treesitter",
+   branch = 'unstable',
+   setup = function()
+      -- WARNING Temporary code block until neorg treesitter module
+      --         will be merged into `nvim-treesitter` repository.
+      local parser_configs = require('nvim-treesitter.parsers').get_parser_configs()
+
+      parser_configs.norg = {
+         install_info = {
+            url = 'https://github.com/vhyrro/tree-sitter-norg',
+            -- files = { "src/parser.c" },
+            files  = { 'src/parser.c', 'src/scanner.cc' },
+            branch = 'main'
+         },
+      }
+   end,
+   config = function() require('plugins_config/neorg') end
+}
+
+----------------------------------------------------}}}
 
    --                       Vifm                       {{{
    -------------------------------------------------------

@@ -1,8 +1,8 @@
 # https://thevaluable.dev/zsh-completion-guide-examples/
 
-#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Shell completion settings
-#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 # For more information open 'man zshoptions'. Search for “Completion”.
 
 setopt menu_complete    # При множестве вариатнов подстановки по нажатию
@@ -132,8 +132,9 @@ zstyle ':completion:*' insert-tab false
 # Autocomplete options for cd instead of directory stack
 zstyle ':completion:*' complete-options true
 
-# In which order sort files on completion.
-zstyle ':completion:*' file-sort modification
+# # In which order sort files on completion.
+# Possible values: size, link, time, modification, access.
+zstyle ':completion:*' file-sort alphabetically
 
 # # provide .. as a completion
 # zstyle ':completion:*' special-dirs ..
