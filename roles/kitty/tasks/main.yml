@@ -1,36 +1,125 @@
 ---
-- name: install kitty (apt)
+
+# - name: install kitty (apt)
+#   become: yes
+#   become_user: root
+#   become_method: sudo
+#   apt:
+#     name: kitty
+#     state: present
+#     force_apt_get: yes
+#     update_cache: yes
+#   when: ansible_pkg_mgr == 'apt'
+
+- name: install stow (apt)
   become: yes
   become_user: root
   become_method: sudo
   apt:
-    name: kitty
+    name: stow
     state: present
     force_apt_get: yes
     update_cache: yes
   when: ansible_pkg_mgr == 'apt'
 
+# https://sw.kovidgoyal.net/kitty/binary/
+- name: Download latest kitty release
+  shell:
+    cmd: "curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin dest={{ stow }} launch=n"
+    warn: false  # Do not rise warning about curl.
+
+- name: Delete empty folders in 'kitty.app' directory
+  command:
+    cmd: find -type d -empty -delete
+    chdir: "{{ stow }}/kitty.app"
+
+
+- name: stow kitty application
+  command:
+    cmd: stow -R kitty.app
+    chdir: "{{ stow }}"
+
+
+- name: Make sure kitty config directories exist
+  file:
+    dest: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ home }}/.config/kitty"
+    - "{{ home }}/.config/kitty/color_themes"
+
+# - debug:
+#     var: "{{ item }}"
+#   with_filetree: "{{ role_path }}/files"
+
 - name: Symlink kitty config files
   file:
-    src: "{{ role_path }}/files"
-    dest: "{{ home }}/.config/kitty"
+    src: "{{ role_path }}/files/kitty.conf"
+    dest: "{{ home }}/.config/kitty/kitty.conf"
     state: link
 
-- name: get path to kitty bin
-  shell: "which kitty"
-  # shell: "command -v kitty"
-  register: check_kitty
-  changed_when: No
+# - name: Symlink kitty config files
+#   file:
+#     src: "{{ role_path }}/files/{{ item }}"
+#     dest: "{{ home }}/.config/kitty/{{ item }}"
+#     state: link
+#   loop:
+#     - kitty.conf
+#     - onedark.conf
 
-# - debug: var=check_kitty
+- name: Symlink kitty custom color_themes
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ home }}/.config/kitty/color_themes/{{ item.path }}"
+    state: link
+  with_filetree: "{{ role_path }}/files/color_themes"
+  loop_control:
+    label: "~/.config/kitty/color_themes/{{ item.path }}"
 
-# sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator `which kitty` 50
-# sudo update-alternatives --config x-terminal-emulator
+- name: git clone color themes
+  git:
+    repo: "{{ item.repo }}"
+    dest: "{{ home }}/.config/kitty/color_themes/{{ item.dest }}"
+  loop:
+    - { repo: "https://github.com/kovidgoyal/kitty-themes.git", dest: kitty-themes }
+  loop_control:
+    label: "{{ item.dest }}"
+
+
+- name: git clone kittens
+  git:
+    repo: "{{ item.repo }}"
+    dest: "{{ home }}/.config/kitty/kittens/{{ item.dest }}"
+  loop:
+    - { repo: "https://github.com/yurikhan/kitty-smart-tab.git", dest: kitty-smart-tab }
+  loop_control:
+    label: "{{ item.dest }}"
+
+- name: Symlink kittens files
+  file:
+    src: "{{ home }}/.config/kitty/kittens/{{ item.kitten }}/{{ item.file }}"
+    dest: "{{ home }}/.config/kitty/{{ item.file }}"
+    state: link
+  loop:
+    - { kitten: kitty-smart-tab, file: smart_tab.py }
+  loop_control:
+    label: "{{ item.kitten }}/{{ item.file }}"
+
+
+# - name: get path to kitty bin
+#   shell: "which kitty"  # "command -v kitty"
+#   register: check_kitty
+#   changed_when: No
 #
-- name: "update-alternatives: x-terminal-emulator -> kitty"
-  become: yes
-  community.general.alternatives:
-    name: x-terminal-emulator
-    # link: /usr/bin/x-terminal-emulator
-    path: "{{ check_kitty.stdout }}"
-    priority: 50
+# # - debug: var=check_kitty
+#
+# # sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator $(which kitty) 50
+# # sudo update-alternatives --config x-terminal-emulator
+# #
+# - name: "update-alternatives: x-terminal-emulator -> kitty"
+#   become: yes
+#   community.general.alternatives:
+#     name: x-terminal-emulator
+#     # link: /usr/bin/x-terminal-emulator
+#     path: "{{ check_kitty.stdout }}"
+#     priority: 50

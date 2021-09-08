@@ -1,0 +1,8 @@
+user_name: "{{ ansible_env.USER }}"
+home: "{{ ansible_env.HOME }}"
+ansible_python_interpreter: /usr/bin/python3
+stow: "{{ home }}/.local/stow"
+
+
+# dotfiles_user_home: "{{ '~' | expanduser }}"
+# dotfiles_home: "{{ dotfiles_user_home }}/.dotfiles"
