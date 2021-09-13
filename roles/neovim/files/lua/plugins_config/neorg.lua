@@ -8,7 +8,12 @@ require('neorg').setup {
                my_workspace = "~/neorg"
             }
          }
-      }
+      },
+		["core.norg.completion"] = {
+			config = {
+				engine = "nvim-compe" -- "nvim-cmp"
+			}
+		}
    },
 }
 

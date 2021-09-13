@@ -291,12 +291,12 @@ return require('packer').startup(function()
       config = function() require('plugins_config/lspconfig') end
    }
 
-   use { 'glepnir/lspsaga.nvim',
-   -- use { "jasonrhansen/lspsaga.nvim",
-      -- branch = 'finder-preview-fixes',
-      as = 'lspsaga',
-      config = function() require('plugins_config/lspsaga') end
-   }
+   -- use { 'glepnir/lspsaga.nvim',
+   -- -- use { "jasonrhansen/lspsaga.nvim",
+   --    -- branch = 'finder-preview-fixes',
+   --    as = 'lspsaga',
+   --    config = function() require('plugins_config/lspsaga') end
+   -- }
 
    use { "folke/trouble.nvim",
       requires = "kyazdani42/nvim-web-devicons",
@@ -430,7 +430,7 @@ return require('packer').startup(function()
       setup = function()  -- run before plugin load
          -- This variable should be declared before polyglot is loaded!
          -- vim.g.polyglot_disabled = 'markdown'
-         vim.g.polyglot_disabled = {'markdown', 'gitignore'}
+         vim.g.polyglot_disabled = {'markdown', 'gitignore', 'txt'}
       end
    }
 
@@ -443,6 +443,9 @@ return require('packer').startup(function()
       as = 'syntax-dealii-prm',
       -- event = 'BufNewFile,BufRead *.prm'
    }
+
+   -- Kitty terminal conf file syntax highlight.
+   use { "fladson/vim-kitty", as = 'syntax-kitty-conf'}
 
    -------------------- Color scheme ---------------------
    local color_themes = {
@@ -517,7 +520,7 @@ return require('packer').startup(function()
          use {
             'savq/melange',
             config = function()
-               -- vim.o.background = 'light'
+               vim.o.background = 'light'
                vim.cmd 'colorscheme melange'
             end
          }
@@ -659,7 +662,7 @@ return require('packer').startup(function()
 
    use { 'norcalli/nvim-colorizer.lua',
       as = 'colorizer',
-      ft = {'vim', 'lua', 'conf'},
+      ft = {'vim', 'lua', 'conf', 'tmux', 'kitty'},
       config = function()
          require'colorizer'.setup()
       end
@@ -729,7 +732,7 @@ use { 'vhyrro/neorg',
    requires = "nvim-lua/plenary.nvim",
    after = "treesitter",
    branch = 'unstable',
-   setup = function()
+   setup = function() -- {{{
       -- WARNING Temporary code block until neorg treesitter module
       --         will be merged into `nvim-treesitter` repository.
       local parser_configs = require('nvim-treesitter.parsers').get_parser_configs()
@@ -742,7 +745,7 @@ use { 'vhyrro/neorg',
             branch = 'main'
          },
       }
-   end,
+   end, -- }}}
    config = function() require('plugins_config/neorg') end
 }
 

@@ -49,6 +49,8 @@ set exrc    " Allow vim search local configuratin files in project filders.
 set secure  " Disallows the use of :autocmd, shell and write commands in
             "   local exrc files.
 
+" set virtualedit=all
+
 " }}}
 
 " Folding                                                            {{{
