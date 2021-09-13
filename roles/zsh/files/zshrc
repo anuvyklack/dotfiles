@@ -119,8 +119,8 @@ ZSH[scripts]="$ZSH[cache]/scripts"
 [ -d $ZSH[scripts] ] || mkdir -p $ZSH[scripts]
 
 
-REPORTTIME=8             # Report time stats of commands running longer
-                         # than 8 sec.
+REPORTTIME=20            # Report time stats of commands running longer
+                         # than 20 sec.
 
 setopt extended_glob     # Because someday i will learn advanced pattern
                          # matching.
@@ -314,7 +314,7 @@ bindkey -M isearch " " magic-space
 
 # Plugins and programs {{{
 
-# zsh-autosuggestions {{{2
+# zsh-autosuggestions {{{
 znap source zsh-users/zsh-autosuggestions
 
 export ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd history completion)
@@ -340,7 +340,7 @@ zstyle :bracketed-paste-magic paste-finish pastefinish
 # https://github.com/zsh-users/zsh-autosuggestions/issues/351
 ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
 
-# }}}2
+# }}}
 
 # znap source changyuheng/zsh-interactive-cd
 
@@ -531,7 +531,8 @@ zvm_after_init_commands+=(
 # }}}
 
 # vifm
-znap install cirala/vifmimg  # Image previews using Überzug for Vifm
+# znap install cirala/vifmimg  # Image previews using Überzug for Vifm
+znap install anuvyklack/vifmimg  # Image previews using Überzug for Vifm
 ialias vifm="vifmrun ."
 
 # znap source ohmyzsh/ohmyzsh plugins/universalarchive
@@ -599,6 +600,12 @@ bindkey '^R' mcfly-history-widget
 # }}}
 
 # Aliaces {{{
+
+# Filesystem aliases
+alias ..=' cd ..'
+alias ...=' cd ../..'
+alias ....=' cd ../../..'
+alias .....=' cd ../../../..'
 
 ialias :q='exit'
 
