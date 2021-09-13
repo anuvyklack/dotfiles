@@ -1,0 +1,100 @@
+" Reset all styles first
+highlight clear
+
+" #14A37F
+
+" #C7B399
+highlight Win         gui=none          guifg=#D2BEA5  guibg=#282828
+" highlight Win         gui=none          guifg=#989A94  guibg=default
+
+highlight Border      gui=bold          guifg=default  guibg=#A89984
+highlight StatusLine  gui=bold          guifg=#000000  guibg=#C7B399
+highlight TopLine     gui=bold          guifg=#282828  guibg=#C7B399
+" highlight TopLine     gui=bold          guifg=#282828  guibg=#BEAA90
+highlight TopLineSel  gui=bold          guifg=#282828  guibg=#C7B399
+
+highlight AuxWin      gui=none          guifg=#C7B399  guibg=#2A9FCB
+
+"highlight OtherWin   cterm=none         ctermfg=223      ctermbg=236
+
+" #689d6a
+" #77a779
+" #87b189
+
+" highlight Directory   gui=bold          guifg=#D8A657  guibg=default
+highlight Directory   gui=bold          guifg=#D19E60  guibg=default
+" highlight Directory   gui=bold          guifg=#D1A166  guibg=default
+
+" highlight Directory  gui=bold          guifg=#78BFA8  guibg=default
+" highlight Directory  gui=bold          guifg=#77a779  guibg=default
+" highlight Directory  gui=bold          guifg=#689D6A  guibg=default
+" highlight Directory  gui=bold          guifg=#95BCAA  guibg=default
+" highlight Directory  gui=bold          guifg=#A9D389  guibg=default
+" highlight Directory  gui=bold          guifg=#83A598  guibg=default
+
+highlight CurrLine    gui=bold,inverse  guifg=default  guibg=default
+highlight OtherLine   gui=bold          guifg=default  guibg=#3C3836
+
+highlight Selected    gui=bold          guifg=#F7F2ED  guibg=#3C3836
+"
+" highlight JobLine
+highlight ErrorMsg    gui=none          guifg=#f76d47  guibg=#292121
+highlight WildMenu    gui=bold    guifg=default  guibg=#D19E60
+
+highlight SuggestBox  gui=bold    guifg=#282828  guibg=#C7B399
+
+highlight CmdLine     gui=none    guifg=#F8E2C8  guibg=#282828
+
+highlight Executable  gui=none    guifg=#B2CF64  guibg=default
+" highlight Executable  gui=none    guifg=#89B482  guibg=default
+
+highlight Link        gui=none    guifg=#E289FC  guibg=default
+" highlight Link        gui=none    guifg=#DD86F7  guibg=default
+
+highlight BrokenLink  gui=inverse guifg=#FF7F74  guibg=#182E16
+highlight HardLink    gui=none    guifg=#A587F7  guibg=default
+
+highlight Device      gui=none    guifg=#ABB2BF  guibg=default
+
+" highlight Fifo        gui=none    guifg=#61AFEF  guibg=default
+" highlight Fifo        gui=none    guifg=#00B4B4  guibg=default
+highlight Fifo        gui=none    guifg=#00D5FF  guibg=default
+
+highlight Socket      gui=none    guifg=#FFCC00  guibg=default
+
+highlight {*.jpg,*.jpeg,*.png,*.gif}
+\                     gui=none  guifg=#8CC5AE  guibg=default
+" \                     gui=none  guifg=#39adb5  guibg=default
+
+highlight {*.webm,*.mp2,*.mpeg,*.mpe,*.mpv,*.ogg,*.mp4,*.m4p,*.m4v,*.avi,*.wmv,*.mov,*.qt,*.flv,*.swf,*.avchd,*.mpg}
+\                    gui=none  guifg=#87A9D4  guibg=default
+
+
+" highlight {*.pdf}   gui=none  guifg=#FF5F58  guibg=default
+" highlight {*.pdf}   gui=none  guifg=#FF6C66  guibg=default
+highlight {*.pdf}     gui=none  guifg=#FA8072  guibg=default
+" highlight {*.pdf}   gui=none  guifg=#FF746E  guibg=default
+" highlight {*.pdf}   gui=none  guifg=#EA6962  guibg=default
+" highlight {*.pdf}   gui=none  guifg=#EB726C  guibg=default
+" highlight {*.pdf}   gui=none  guifg=#D76767  guibg=default
+
+highlight {*.rar,*.zip,*.tar,*.tar.gz,*.gz,*.tgz,*.deb}
+" \                   gui=none  guifg=#FF007B  guibg=default
+" \                   gui=bold  guifg=#FF2D92  guibg=default
+" \                   gui=bold  guifg=#E94694  guibg=default
+\                   gui=bold  guifg=#F54A9B  guibg=default
+
+" #82AAFF
+" #95B1FF
+" highlight {*.lua}   gui=none  guifg=#82aaff guibg=default
+highlight {*.lua}   gui=none  guifg=#95B1FF guibg=default
+
+" #30B0D7
+" #2BACD3
+" #2A9FCB
+" #268bd2
+" #3993D2
+" #3F9EE0
+highlight {*.doc,*.docx}
+\                     gui=none  guifg=#3F9EE0  guibg=default
+" \                     gui=none  guifg=#2BACD3  guibg=default

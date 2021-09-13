@@ -37,20 +37,20 @@ update()
         string="―― $(date +%H:%M:%S) - conda "
         color white bold ${(r:80::―:)string}
 
-        print Updating $(color green bold 'base') environment.
+        print $(color white bold 'Updating') $(color green bold 'base') $(color white bold 'environment')
 
         conda activate base
         conda update conda --yes
         conda update --all --yes
 
         # echo ''
-        # echo -e '\e[32;1mconda \e[37;1mupdating \e[33;1mnvim \e[0m'
+        # print $(color g b 'conda') $(color w 'updating') $(color y b 'nvim')
         #
         # conda activate nvim
         # conda update --all --yes
 
         # Clear cache
-        print Cleaning $(color yellow bold 'cache').
+        print $(color white bold 'Cleaning') $(color yellow bold 'cache')
         conda clean --all --yes
 
         # # Restore conda environment

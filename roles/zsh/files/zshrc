@@ -533,7 +533,6 @@ zvm_after_init_commands+=(
 # vifm
 # znap install cirala/vifmimg  # Image previews using Überzug for Vifm
 znap install anuvyklack/vifmimg  # Image previews using Überzug for Vifm
-ialias vifm="vifmrun ."
 
 # znap source ohmyzsh/ohmyzsh plugins/universalarchive
 # github_completion universalarchive \
@@ -558,6 +557,39 @@ autoload run-help
 
 # HELPDIR=/usr/share/zsh/"${ZSH_VERSION}"/help
 HELPDIR=/usr/share/zsh/help  # in Pop_OS
+# }}}
+
+run_vifm() # {{{
+{
+  zle .reset-prompt
+
+  # local last_locations="$HOME/.cache/vifm/last-locations.json"
+  # local active_pane=$(jq '."active-pane"' "$last_locations")
+  #
+  # case $active_pane in
+  #   0)
+  #     local first_pane='.'
+  #     local second_pane=$(jq -r '.panes[."non-active-pane"] | .ptabs[."active-ptab"] | ."last-location"' "$last_locations")
+  #     ;;
+  #   1)
+  #     local first_pane=$(jq -r '.panes[."non-active-pane"] | .ptabs[."active-ptab"] | ."last-location"' "$last_locations")
+  #     local second_pane='.'
+  #     ;;
+  #   *)
+  #     local first_pane='.'
+  #     local second_pane='.'
+  # esac
+
+  # local first_pane='.'
+  # local second_pane='.'
+  BUFFER=" vifmcd"
+
+  # BUFFER=" vifmcd && clear -x"
+  # BUFFER=" vifmcd ."
+
+  zle accept-line
+}
+zle -N run_vifm
 # }}}
 
 run_ranger() # {{{
@@ -591,8 +623,9 @@ bindkey -s '\e3' "!:2-2 \t"
 bindkey -s '\e4' "!:3-3 \t"
 bindkey -s '\e5' "!:4-4 \t"
 
-# <C-O> - Launch Ranger and cd to the last directory after closing it.
-bindkey '^O' run_ranger
+# <C-o> - Launch Ranger and cd to the last directory after closing it.
+# bindkey '^o' run_ranger
+bindkey '^o' run_vifm
 
 # <C-R> - Fussy search in history with mcfly.
 bindkey '^R' mcfly-history-widget
@@ -668,6 +701,8 @@ alias -g random='-m curl -s http://whatthecommit.com/index.txt'
 
 # Lists the ten most used commands.
 ialias history-stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
+
+# ialias vifm="vifmcd"
 
 # }}}
 

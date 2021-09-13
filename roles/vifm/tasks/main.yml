@@ -1,6 +1,49 @@
 ---
+- name: install vifm (apt)
+  become: yes
+  become_user: root
+  become_method: sudo
+  apt:
+    pkg:
+      # - vifm
+      # - python3-pip
+      - poppler-utils    # pdf
+      - tree
+      - ncurses-term     # true color support
+      - jq               # json
+      - transmission-cli # torrent
+      - antiword         # doc
+      - ffmpegthumbnailer
+      # - catdoc           # doc
+    state: present
+    force_apt_get: yes
+    update_cache: yes
+  when: ansible_pkg_mgr == 'apt'
+
+- name: Make sure all vifm config folders are exist
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - "{{ config }}"
+    - "{{ config }}/colors"
+
 - name: Symlink vifm config files
   file:
-    src: "{{ role_path }}/files"
-    dest: "{{ home }}/.config/vifm"
+    src: "{{ files }}/vifmrc"
+    dest: "{{ config }}/vifmrc"
     state: link
+
+- name: Symlink vifm color themes
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ config }}/colors/{{ item.path }}"
+    state: link
+  with_filetree: "{{ files }}/colors"
+  loop_control:
+    label: "{{ config }}/color/{{ item.path }}"
+
+# - name: git clone color themes
+#   git:
+#     repo: https://github.com/vifm/vifm-colors
+#     dest: "{{ home }}/.config/vifm/colors"

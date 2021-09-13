@@ -1,0 +1,83 @@
+#!/usr/bin/env zsh
+
+# jq '.panes[]' last- locations.json | jq '.ptabs[."active-ptab"]'
+
+vifmcd()
+{
+    emulate -L zsh
+    local -x TERM=xterm-direct
+
+    cleanup() {
+        exec 3>&-
+        command rm "$FIFO_UEBERZUG"
+    }
+
+    local CACHE="$HOME/.cache/vifm"
+    [ ! -d $CACHE ] && mkdir -p $CACHE
+
+    #    ${$} : current process identifier
+    # ${PPID} : parent process identifier
+    export FIFO_UEBERZUG="$CACHE/ueberzug-${$}"
+
+    mkfifo "$FIFO_UEBERZUG"
+    ueberzug layer -s <"$FIFO_UEBERZUG" -p json &
+    exec 3>"$FIFO_UEBERZUG"
+    trap cleanup EXIT
+
+    local tmp="$(mktemp)"
+
+    command vifm --choose-dir=$tmp "$@" 3>&-
+
+    vifmimg clear
+
+    local vifminfo="$HOME/.config/vifm/vifminfo.json"
+    local last_locations="$CACHE/last-locations.json"
+
+    if [ -f "$vifminfo" ]; then
+        # Get last directories in all tabs on all panes.
+        jq '.gtabs[]' $vifminfo | jq 'del(.panes[] | .ptabs[] | .history)' \
+            > "$last_locations"
+    fi
+
+    if [ -f "$tmp" ]; then
+        local dst="$(cat "$tmp")"
+        command rm -f "$tmp"
+
+        if [ -d "$dst" ]; then
+
+            echo $dst
+
+            # Get active pane index (0 or 1).
+            # There is no built-in functionality for this, so this is huck.
+            local active_pane=$(
+                jq '.panes[]' "$last_locations" \
+                | jq '.ptabs[."active-ptab"] | ."last-location"' \
+                | jq --slurp 'to_entries' \
+                | jq --arg x "$dst" '.[] | select(.value == $x) | .key' \
+                | jq --slurp '.[0]' # In case the same path set on both panes.
+            )
+
+            echo $active_pane
+
+            case $active_pane in
+                0)
+                    local non_active_pane=1 ;;
+                1)
+                    local non_active_pane=0 ;;
+                *)
+                    echo 'Error! Active pane index is neither 0 nor 1.'
+                    local active_pane=0
+                    local non_active_pane=1
+                    # exit 1
+            esac
+
+            jq --arg n $active_pane '. + {"active-pane": $n | tonumber}' "$last_locations" \
+            | jq --arg n $non_active_pane '. + {"non-active-pane": $n | tonumber}' \
+            | sponge "$last_locations"
+
+            if [ "$dst" != "$(pwd)" ]; then
+                cd "$dst"
+            fi
+        fi
+    fi
+}

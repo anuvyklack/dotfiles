@@ -141,6 +141,14 @@ install_missing_programs()
     bin install https://github.com/cantino/mcfly
     echo
   fi # }}}
+  # glow {{{
+  if ! (( $+commands[glow] ))
+  then
+    print_title $(color Magenta bold 'glow')
+    echo
+    bin install https://github.com/charmbracelet/glow
+    echo
+  fi # }}}
 
   # print Everything is installed
   unset string

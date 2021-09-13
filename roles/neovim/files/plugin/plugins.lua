@@ -662,7 +662,7 @@ return require('packer').startup(function()
 
    use { 'norcalli/nvim-colorizer.lua',
       as = 'colorizer',
-      ft = {'vim', 'lua', 'conf', 'tmux', 'kitty'},
+      ft = {'vim', 'lua', 'conf', 'tmux', 'kitty', 'vifm'},
       config = function()
          require'colorizer'.setup()
       end

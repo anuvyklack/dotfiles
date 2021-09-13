@@ -40,6 +40,10 @@
       tags:
         - ranger
 
+    - role: vifm
+      tags:
+        - vifm
+
     - role: miniconda
       tags:
         - miniconda
