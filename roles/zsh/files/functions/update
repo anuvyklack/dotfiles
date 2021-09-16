@@ -15,6 +15,16 @@ update()
     print
     # }}}
 
+    # clean flatpak unused {{{
+    string="―― $(date +%H:%M:%S) - Clean flatpak cache and unused packages "
+    print ${(r:80::―:)string}
+
+    flatpak uninstall --unused
+    # flatpak remove --unused
+
+    print
+    # }}}
+
     # conda {{{
     if (( $+commands[conda] ))
     then
