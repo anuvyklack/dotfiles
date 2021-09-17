@@ -37,13 +37,16 @@ install_missing_programs()
       echo '}'                                            >> $bin_config_file
     fi
 
-    # Install bin
-    if ! [ $(/tmp/bin list | grep github.com/marcosnils/bin) ]
-    then
-      /tmp/bin install github.com/marcosnils/bin
-    fi
+    {
+      # Install bin
+      if ! [ $(/tmp/bin list | grep github.com/marcosnils/bin) ]
+      then
+        /tmp/bin install github.com/marcosnils/bin
+      fi
+    } always {
+      rm /tmp/bin
+    }
 
-    rm /tmp/bin
     unset bin_base_version
     unset bin_config_file
     echo
@@ -145,17 +148,38 @@ install_missing_programs()
     bin install https://github.com/cantino/mcfly
     echo
   fi # }}}
-  # glow {{{
-  if ! (( $+commands[glow] ))
+  # btop++ {{{
+  if ! (( $+commands[btop] ))
   then
-    print_title $(color Magenta bold 'glow')
+    print_title $(color red bold 'btop')
     echo
-    bin install https://github.com/charmbracelet/glow
+    bin install https://github.com/aristocratos/btop
     echo
   fi # }}}
+  # # glow {{{
+  # if ! (( $+commands[glow] ))
+  # then
+  #   print_title $(color Magenta bold 'glow')
+  #   echo
+  #   bin install https://github.com/charmbracelet/glow
+  #   echo
+  # fi # }}}
+
+
+  # pipx apps
+  if (( $+commands[pipx] )); then
+    # ueberzug {{{
+    if ! (( $+commands[ueberzug])); then
+      print_title $(color Magenta bold 'ueberzug')
+      echo
+      pipx install ueberzug
+      echo
+    fi # }}}
+  fi
 
   # print Everything is installed
   unset string
 }
+
 
 # vim: tw=75 ts=2 sw=2 fdm=marker

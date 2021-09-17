@@ -201,9 +201,13 @@ function M.treesitter_textobjects()
 end --}}}
 
 -- nvim-tree {{{
+function M.nnn()
+   map('n', '<F3>', 'Open file-explorer', "<cmd>NnnPicker<CR>")
+end --}}}
 
+-- nvim-tree {{{
 function M.nvim_tree()
-   map('n', '<F3>', 'Open lile-explorer', "<cmd>NvimTreeToggle<CR>")
+   map('n', '<F3>', 'Open file-explorer', "<cmd>NvimTreeToggle<CR>")
 
    -- local tree_cb = require'nvim-tree.config'.nvim_tree_callback
    -- vim.g.nvim_tree_bindings = {

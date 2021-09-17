@@ -7,6 +7,12 @@
 "  ░██ ░██  ░██ ░██  ░░███  ██  ░░██   ░██ ███ ░██ ░██
 "  ░░  ░░   ░░  ░░    ░░░  ░░    ░░    ░░ ░░░  ░░  ░░
 
+"-------------------- Nvui GUI -----------------------
+if exists('g:nvui')
+  source ~/.config/nvim/ginit.vim
+endif
+"-----------------------------------------------------
+
 " General Config                                                     {{{
 " ======================================================================
 " Список кодировок для автоматического их определения
@@ -40,7 +46,8 @@ set ttimeoutlen=50   " Время переключения между режим
 syntax enable        " Включить подсветку синтаксиса
 
 " set completeopt-=preview  " Not to show preview window on complection
-set completeopt=menuone,noselect
+" set completeopt=menuone,noselect
+set completeopt=menu,menuone,noselect
 
 set title
 set titlestring=%t  " tile
@@ -59,7 +66,7 @@ set secure  " Disallows the use of :autocmd, shell and write commands in
 set foldmethod=marker  " fold based on markers
 set foldcolumn=auto:3
 " set foldlevelstart=0 " 0: to always start editing with all folds closed
-set foldnestmax=5   " deepest fold is 3 levels (only for sintax and indent)
+set foldnestmax=5   " deepest fold is 5 levels (only for sintax and indent)
 set foldminlines=5  " minimum lines required to create fold
 set foldopen=block,hor,mark,jump,percent,quickfix,search,tag,undo
 " set foldopen=all
@@ -664,7 +671,6 @@ fu! ToggleKeyboardLayout() "{{{
 endf "}}}
 
 " }}}
-
 
 " set winwidth=80
 

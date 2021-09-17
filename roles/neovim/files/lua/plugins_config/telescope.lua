@@ -1,7 +1,7 @@
 local available, telescope = pcall(require, "telescope")
 if not available then return end
 
-telescope.setup{
+telescope.setup({
    defaults = {
       prompt_prefix = " ",
       selection_caret = " ", --  卑 喝   
@@ -80,8 +80,16 @@ telescope.setup{
       },
 
    },
-}
+   extensions = {
+      -- Your extension configuration goes here:
+      -- extension_name = {
+      --   extension_config_key = value,
+      -- }
+      -- please take a look at the readme of the extension you want to configure
+   }
+})
 
+telescope.load_extension('zoxide')
 
 -- local builtin = require('telescope.builtin')
 -- local themes = require('telescope.themes')

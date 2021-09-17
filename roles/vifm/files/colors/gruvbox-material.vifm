@@ -85,8 +85,12 @@ highlight {*.rar,*.zip,*.tar,*.tar.gz,*.gz,*.tgz,*.deb}
 
 " #82AAFF
 " #95B1FF
+" #51A0CF
 " highlight {*.lua}   gui=none  guifg=#82aaff guibg=default
-highlight {*.lua}   gui=none  guifg=#95B1FF guibg=default
+" highlight {*.lua}   gui=none  guifg=#95B1FF guibg=default
+" highlight {*.lua}   gui=none  guifg=#5CB5EB guibg=default
+" highlight {*.lua}   gui=none  guifg=#7ACDFF guibg=default
+highlight {*.lua}   gui=none  guifg=#80CFFF guibg=default
 
 " highlight {*.vim}   gui=none  guifg=#76B46C guibg=default
 " highlight {*.vim}   gui=none  guifg=#8AD17E guibg=default

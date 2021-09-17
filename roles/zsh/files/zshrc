@@ -38,6 +38,8 @@ fi
 
 # Plugin manager invocation {{{
 
+# zsh-snap {{{
+
 # 'declare' is the same as 'typeset'.
 # -A  - The names refer to associative array parameters.
 declare -A ZSH_SNAP
@@ -56,6 +58,14 @@ source $ZSH_SNAP[BIN]
 # Do not auto compile functions in my folder, because
 # I compile them later into one library file.
 zstyle ':znap:*' auto-compile-ignore "${my_zsh_functions}/*"
+# }}}
+
+# gitfile {{{
+
+znap install mohd-akram/ghget
+
+# }}}
+
 # }}}
 
 # Prompt {{{
@@ -227,8 +237,8 @@ znap install esc/conda-zsh-completion
 
 znap eval pip-completion "pip completion --zsh"
 
-if (( $+commands[pipx] )) && (( $+commands[register-python-argcomplete3] )); then
-  znap eval pipx-completion "register-python-argcomplete3 pipx"
+if (( $+commands[pipx] )) && (( $+commands[register-python-argcomplete] )); then
+  znap eval pipx-completion "register-python-argcomplete pipx"
 fi
 
 compdef _gnu_generic update-alternatives
@@ -493,6 +503,67 @@ if (( $+commands[zoxide] )); then
 fi
 # }}}
 
+# nnn {{{
+if (( $+commands[nnn] )); then
+
+  # nnn completion
+  github_completion nnn 'https://github.com/jarun/nnn/blob/master/misc/auto-completion/zsh/_nnn'
+
+  # nnn man
+  gitfile $HOME/.local/share/man/man1/nnn.1 'https://github.com/jarun/nnn/blob/master/nnn.1'
+
+  # plugins
+  # gitfile ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/autojump 'https://github.com/jarun/nnn/blob/master/plugins/autojump'
+
+  # cd into last dir on quit nnn {{{
+  nnn_quitcd()
+  {
+    zle .reset-prompt
+    BUFFER=" n && clear -x"
+    zle accept-line
+  }
+  zle -N nnn_quitcd
+  # }}}
+
+  # nnn bookmarks pairs
+  export NNN_BMS='d:~/Documents;D:~/Downloads/'
+
+  # options to nnn binary
+  # ------------------------------------
+  # -e : text in $VISUAL/$EDITOR/vi
+  # -E : use EDITOR for undetached edits
+  # -r : use advcpmv patched cp, mv
+  # -x : notis, sel to system clipboard
+  # ------------------------------------
+  # export NNN_OPTS="eErx"
+  export NNN_OPTS="eEx"
+
+  # context (tabs) colors
+  export NNN_COLORS='4321'
+
+  # file-specific colors
+  # export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'  # original
+  # export NNN_FCOLORS='c1e20402006033f7c6d6ab01'
+
+  # Onedark
+  BLK='04' CHR='04' DIR='04' EXE='00' REG='00' HARDLINK='00' SYMLINK='06' MISSING='00' ORPHAN='01' FIFO='0F' SOCK='0F' OTHER='02'
+  export NNN_FCOLORS="$BLK$CHR$DIR$EXE$REG$HARDLINK$SYMLINK$MISSING$ORPHAN$FIFO$SOCK$OTHER"
+
+  export NNN_TMPFILE='/tmp/.lastd'  # always cd on quit
+
+  export NNN_ARCHIVE="\\.(7z|a|ace|alz|arc|arj|bz|bz2|cab|cpio|deb|gz|jar|lha|lz|lzh|lzma|lzo|rar|rpm|rz|t7z|tar|tbz|tbz2|tgz|tlz|txz|tZ|tzo|war|xpi|xz|Z|zip)$"
+
+  # FIFO to write hovered file path to
+  export NNN_FIFO='/tmp/nnn.fifo'
+
+  # plugins
+  # export NNN_PLUG='f:finder;o:fzopen;p:mocplay;d:diffs;t:nmount;v:imgview'
+  # export NNN_PLUG='z:autojump;v:preview-tabbed'
+  export NNN_PLUG='z:autojump;w:preview-tui'
+
+fi
+# }}}
+
 # # broot {{{
 # if [[ -s "~/.config/broot/launcher/bash/br" ]]
 # then
@@ -674,8 +745,10 @@ fi
 
 # Git
 alias gs='git status'
+alias gss='git status -s'
 alias gc='git checkout'
 alias gd='git diff'
+alias gg='git graph'
 alias -g random='-m curl -s http://whatthecommit.com/index.txt'
 
 # Lists the ten most used commands.

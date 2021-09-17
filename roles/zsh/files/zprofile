@@ -90,7 +90,7 @@ else
   export EDITOR='vim'
 fi
 
-export PAGER='less'
+export PAGER='less -R'
 
 
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――

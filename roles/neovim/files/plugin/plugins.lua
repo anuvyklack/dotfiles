@@ -96,10 +96,10 @@ return require('packer').startup(function()
       as = 'autopairs',
       config = function()
          require('nvim-autopairs').setup()
-         require("nvim-autopairs.completion.compe").setup({
-            map_cr = true, -- map <CR> on insert mode
-            map_complete = true -- It will auto insert `(` after select function or method item.
-         })
+         -- require("nvim-autopairs.completion.compe").setup({
+         --    map_cr = true, -- map <CR> on insert mode
+         --    map_complete = true -- It will auto insert `(` after select function or method item.
+         -- })
       end
    }
    -- }}}
@@ -193,8 +193,8 @@ return require('packer').startup(function()
 
    -- use { 'simeji/winresizer',
    --   config = function()
-   --     vim.g.winresizer_vert_resize  =	1
-   --     vim.g.winresizer_horiz_resize =	1
+   --     vim.g.winresizer_vert_resize  = 1
+   --     vim.g.winresizer_horiz_resize = 1
    --     vim.g.winresizer_start_key = '<leader>w'
    --
    --     -- require("util").set_keymap('n', '<leader>w', 'Window resize mode',
@@ -265,7 +265,7 @@ return require('packer').startup(function()
 
    -------------------------------------------------------
 
-   --                LSP and Completion                {{{
+   --             LSP, Completion, Snippets            {{{
    -------------------------------------------------------
 
    -- For lsp the following has been working pretty well for me
@@ -281,11 +281,11 @@ return require('packer').startup(function()
       requires = {
          -- Adds the missing :LspInstall <language> command
          -- to conveniently install language servers.
-         {"kabouzeid/nvim-lspinstall",
+         {'kabouzeid/nvim-lspinstall',
             as = 'lspinstall'},
 
          -- Setup for lua and plugins development.
-         {"folke/lua-dev.nvim",
+         {'folke/lua-dev.nvim',
             as = 'lua-dev'}
       },
       config = function() require('plugins_config/lspconfig') end
@@ -298,37 +298,47 @@ return require('packer').startup(function()
    --    config = function() require('plugins_config/lspsaga') end
    -- }
 
-   use { "folke/trouble.nvim",
-      requires = "kyazdani42/nvim-web-devicons",
+   use { 'folke/trouble.nvim',
+      requires = 'kyazdani42/nvim-web-devicons',
       cmd = {'Trouble', 'TroubleToggle'},
       config = function() require('plugins_config/trouble') end
    }
 
    -- use 'nvim-lua/diagnostic-nvim'
 
+   -- Snippets {{{
+
+   -- https://github.com/L3MON4D3/LuaSnip
+   -- https://github.com/L3MON4D3/LuaSnip/blob/master/DOC.md
+   -- https://github.com/L3MON4D3/LuaSnip/wiki/Cool-Snippets#all---pairs
+   -- https://github.com/L3MON4D3/LuaSnip/wiki/Nice-Configs
+   use { 'L3MON4D3/LuaSnip' }
+
+   -- The community driven  collection of snippets.
+   use { 'rafamadriz/friendly-snippets' }
+
+   -- }}}
+
    -- Completion {{{
 
-   -- use { 'nvim-lua/completion-nvim' }  -- has performance issues
-   use { 'hrsh7th/nvim-compe',
-      config = function() require('plugins_config/nvim-compe') end
-   }
-
    -- Icons in completion menu.
-   use { "onsails/lspkind-nvim",
+   use { 'onsails/lspkind-nvim',
       as = 'lspkind',
       config = function() require('plugins_config/lspkind-nvim') end
    }
 
-   -- use { 'haorenW1025/completion-nvim',
-   --    opt = true,
-   --    requires = { {'hrsh7th/vim-vsnip', opt = true},
-   --                 {'hrsh7th/vim-vsnip-integ', opt = true} }
-   -- }
+   use { 'hrsh7th/nvim-cmp',
+      requires = {
+         'hrsh7th/cmp-nvim-lsp',
+         'hrsh7th/cmp-buffer'
+      },
+      config = function() require('plugins_config/nvim-cmp') end
+   }
 
    -- }}}
 
    -- Lsp signature hint when you type.
-   use { "ray-x/lsp_signature.nvim", as = 'lsp-signature' }
+   use { 'ray-x/lsp_signature.nvim', as = 'lsp-signature' }
 
    use { 'jubnzv/virtual-types.nvim', as = 'virtual-types' }
 
@@ -339,9 +349,9 @@ return require('packer').startup(function()
 
    -- use { "liuchengxu/vista.vim" }
 
-   use { "ahmedkhalf/lsp-rooter.nvim",
+   use { 'ahmedkhalf/lsp-rooter.nvim',
       as = 'lsp-rooter',
-      config = function() require("lsp-rooter").setup() end
+      config = function() require('lsp-rooter').setup() end
    }
 
    -- use 'airblade/vim-rooter'
@@ -386,7 +396,8 @@ return require('packer').startup(function()
       requires = {
          'nvim-lua/popup.nvim',
          'nvim-lua/plenary.nvim',
-         -- 'famiu/bufdelete.nvim'
+         -- 'famiu/bufdelete.nvim',
+         'jvgrootveld/telescope-zoxide'
       },
       config = function() require('plugins_config/telescope') end,
       cmd = 'Telescope',
@@ -423,7 +434,7 @@ return require('packer').startup(function()
       requires = 'nvim-lua/plenary.nvim'
    }
 
-   ---------- Syntaxes and programming languages ----------
+   --------- Syntaxes and programming languages ----------
 
    -- Подсветка синтаксисов для разных языков.
    use { 'sheerun/vim-polyglot',
@@ -447,7 +458,10 @@ return require('packer').startup(function()
    -- Kitty terminal conf file syntax highlight.
    use { "fladson/vim-kitty", as = 'syntax-kitty-conf'}
 
-   -------------------- Color scheme ---------------------
+   -------------------------------------------------------
+
+   --                   Color scheme                   {{{
+   -------------------------------------------------------
    local color_themes = {
       -- gruvbox-material-dark {{{
       ['gruvbox-material-dark'] = function()
@@ -581,7 +595,7 @@ return require('packer').startup(function()
 
    use { 'folke/lsp-colors.nvim',
       config = function()
-         require("lsp-colors").setup({
+         require('lsp-colors').setup({
            Error       = "#db4b4b",
            Warning     = "#e0af68",
            Information = "#0db9d7",
@@ -589,8 +603,7 @@ return require('packer').startup(function()
          })
       end
    }
-
-   -------------------------------------------------------
+   ----------------------------------------------------}}}
 
    -- --------------------- Statusline ----------------------
    -- use { 'glepnir/galaxyline.nvim',
@@ -629,10 +642,10 @@ return require('packer').startup(function()
    -- -- another undo tree visualizer
    -- use 'simnalamburt/vim-mundo'
 
-   use { "folke/which-key.nvim",
+   use { 'folke/which-key.nvim',
       as = 'which-key',
       config = function()
-         require("which-key").setup {
+         require('which-key').setup {
             spelling = {
                enabled = true,  -- Enabling this will show WhichKey when pressing z=
                                 --   to select spelling suggestions.
@@ -642,9 +655,19 @@ return require('packer').startup(function()
       end
    }
 
-   use { "kevinhwang91/nvim-bqf",
-      as = "better-quickfix"
+   use { 'gelguy/wilder.nvim',
+      requires = {
+         'roxma/nvim-yarp',
+         'roxma/vim-hug-neovim-rpc'
+      },
+      run = ':UpdateRemotePlugins',
+      -- event = 'CmdlineEnter',
+      config = function()
+         vim.cmd('source ~/.config/nvim/lua/plugins_config/wilder.vim')
+      end
    }
+
+   use { 'kevinhwang91/nvim-bqf', as = 'better-quickfix' }
 
    -- <leader>? : 40-column cheat sheet
    use { 'anuvyklack/vim-cheat40', as = 'cheat40' } -- my fork
@@ -668,38 +691,58 @@ return require('packer').startup(function()
       end
    }
 
+   -- Execute :StartupTime to get an averaged startup profile.
    use { 'tweekmonster/startuptime.vim',
-      cmd = "StartupTime"
+      cmd = 'StartupTime'
    }
 
    -------------------------------------------------------
 
-   -------------------- File manager ---------------------
+   --                   File manager                   {{{
+   -------------------------------------------------------
 
-   use { 'kyazdani42/nvim-tree.lua',
-      requires = 'kyazdani42/nvim-web-devicons',
-      config = function() require('plugins_config/nvim-tree') end
+    -- use { 'kyazdani42/nvim-tree.lua',
+    --    requires = 'kyazdani42/nvim-web-devicons',
+    --    config = function() require('plugins_config/nvim-tree') end
+    -- }
+
+    -- use 'tpope/vim-vinegar'
+
+    -- use { 'ms-jpq/chadtree',
+    --    branch = 'chad',
+    --    run = 'python3 -m chadtree deps && nvim --headless +"CHADdeps | exit"',
+    --    cmd = {'CHADopen', 'CHADdeps', 'CHADhelp'}
+    -- }
+
+    -- -- Total Commander inspired file manager
+    -- use { 'ripxorip/bolt.nvim',
+    --    run = ':UpdateRemotePlugins'
+    -- }
+
+    -- use { 'luukvbaal/nnn.nvim',
+    --    commit = 'ef9fea94065b914c68f7c12a30690884104fdadb',
+    --    config = function() require('plugins_config/nnn-nvim') end
+    -- }
+
+   use { 'mcchrish/nnn.vim',
+      config = function() require('plugins_config/nnn-vim') end
    }
 
-   -- use 'tpope/vim-vinegar'
-
-   -- use { 'ms-jpq/chadtree',
-   --    branch = 'chad',
-   --    run = 'python3 -m chadtree deps && nvim --headless +"CHADdeps | exit"',
-   --    cmd = {'CHADopen', 'CHADdeps', 'CHADhelp'}
+   -- use { 'is0n/fm-nvim',
+   --    config = function() require('plugins_config/fm-nvim') end
    -- }
 
-   -- -- Total Commander inspired file manager
-   -- use { 'ripxorip/bolt.nvim',
-   --    run = ':UpdateRemotePlugins'
-   -- }
+   use { 'vifm/vifm.vim',
+      -- TODO Open issue to packer: help tags not generated automaticaly.
+      run = ':helptags ALL',
+   }
 
-   -------------------------------------------------------
+   ----------------------------------------------------}}}
 
    --              Lua plugins development             {{{
    -------------------------------------------------------
 
-   use { "rafcamlet/nvim-luapad",
+   use { 'rafcamlet/nvim-luapad',
       as = 'luapad',
       config = function()
          vim.cmd [[
@@ -717,48 +760,39 @@ return require('packer').startup(function()
 
    ----------------------------------------------------}}}
 
---                      Orgmode                     {{{
--------------------------------------------------------
+  --                      Orgmode                     {{{
+  -------------------------------------------------------
 
--- use { 'kristijanhusak/orgmode.nvim',
---    config = function()
---       require('orgmode').setup{
---          org_hide_emphasis_markers = true,
---       }
---    end
--- }
+  -- use { 'kristijanhusak/orgmode.nvim',
+  --    config = function()
+  --       require('orgmode').setup{
+  --          org_hide_emphasis_markers = true,
+  --       }
+  --    end
+  -- }
 
-use { 'vhyrro/neorg',
-   requires = "nvim-lua/plenary.nvim",
-   after = "treesitter",
-   branch = 'unstable',
-   setup = function() -- {{{
-      -- WARNING Temporary code block until neorg treesitter module
-      --         will be merged into `nvim-treesitter` repository.
-      local parser_configs = require('nvim-treesitter.parsers').get_parser_configs()
+  use { 'vhyrro/neorg',
+     requires = "nvim-lua/plenary.nvim",
+     after = "treesitter",
+     branch = 'unstable',
+     setup = function() -- {{{
+        -- WARNING Temporary code block until neorg treesitter module
+        --         will be merged into `nvim-treesitter` repository.
+        local parser_configs = require('nvim-treesitter.parsers').get_parser_configs()
 
-      parser_configs.norg = {
-         install_info = {
-            url = 'https://github.com/vhyrro/tree-sitter-norg',
-            -- files = { "src/parser.c" },
-            files  = { 'src/parser.c', 'src/scanner.cc' },
-            branch = 'main'
-         },
-      }
-   end, -- }}}
-   config = function() require('plugins_config/neorg') end
-}
+        parser_configs.norg = {
+           install_info = {
+              url = 'https://github.com/vhyrro/tree-sitter-norg',
+              -- files = { "src/parser.c" },
+              files  = { 'src/parser.c', 'src/scanner.cc' },
+              branch = 'main'
+           },
+        }
+     end, -- }}}
+     config = function() require('plugins_config/neorg') end
+  }
 
-----------------------------------------------------}}}
-
-   --                       Vifm                       {{{
-   -------------------------------------------------------
-   use { "vifm/vifm.vim",
-      as = 'vifm',
-      -- TODO Open issue to packer: help tags not generated automaticaly.
-      run = ':helptags ALL',
-   }
-   ----------------------------------------------------}}}
+  ----------------------------------------------------}}}
 
    --                 Tmux integration                {{{
    ------------------------------------------------------

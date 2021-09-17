@@ -10,8 +10,24 @@
 
 echom "ginit.vim sourced"
 
+" Nvui {{{
+if exists('g:nvui')
+
+    packadd nvui
+
+    set guifont=FiraCode\ Nerd\ Font:h11.7
+    " set guifont=InconsolataLGC\ Nerd\ Font:h11.7
+    " set guifont=Liga\ Inconsolata\ LGC\ NF\ OT:h15.7
+
+
+    " NvuiCmdFontFamily InconsolataLGC Nerd Font
+    " NvuiCmdFontSize 25.0
+    " NvuiScrollAnimationDuration 0.2
+
+"}}}
+
 " Neovide {{{
-if exists('g:neovide')
+elseif exists('g:neovide')
 
     " xrandr --query | grep -A 1 connected | grep -v connected
 
@@ -31,7 +47,10 @@ if exists('g:neovide')
     " print(monitor_resolution == '5120x2880\n')
     " EOF
 
-    " set guifont=Liga\ Inconsolata\ LGC\ NF\ OT:h32
+    set guifont=InconsolataLGC\ Nerd\ Font:h12.5
+
+    " Remember Previous Window Size
+    let neovide_remember_window_size = v:true
 
 "}}}
 
@@ -66,27 +85,29 @@ elseif exists('g:fvim_loaded')
 
 "}}}
 
-" Neovim Qt {{{
-else " This means, we are in neovim-qt
+" " Neovim Qt {{{
+" else " This means, we are in neovim-qt
+"
+"     call GuiWindowMaximized(1)
+"     GuiTabline 0
+"     GuiPopupmenu 0
+"
+"     " Use neovim-qt clipboard
+"     call GuiClipboard()
+"
+"     " GuiFont! FiraCode NF:h12
+"     " GuiFont! InconsolataLGC NF:h12
+"     " GuiFont! Inconsolata LGC:h12
+"     " GuiFont! Liga Inconsolata LGC NF:h12
+"
+"     " linespace = 3  " Расстояние между строками
+"
+"     " let s:fontsize = 11.5
+"     " execute "guifont fira code:h" . s:fontsize
+"
+"     " floating font size will be supported in next version (current is 0.2.11 on 09.07.2019)
+"     " guifont! liga inconsolata lgc:h11.5
+"
+" "}}}
 
-    call GuiWindowMaximized(1)
-    GuiTabline 0
-    GuiPopupmenu 0
-
-    " Use neovim-qt clipboard
-    call GuiClipboard()
-
-    " GuiFont! FiraCode NF:h12
-    " GuiFont! InconsolataLGC NF:h12
-    " GuiFont! Inconsolata LGC:h12
-    " GuiFont! Liga Inconsolata LGC NF:h12
-
-    " linespace = 3  " Расстояние между строками
-
-    " let s:fontsize = 11.5
-    " execute "guifont fira code:h" . s:fontsize
-
-    " floating font size will be supported in next version (current is 0.2.11 on 09.07.2019)
-    " guifont! liga inconsolata lgc:h11.5
-
-endif "}}}
+endif

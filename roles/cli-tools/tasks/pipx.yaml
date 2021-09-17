@@ -1,0 +1,19 @@
+---
+
+- name: Install pip3 (apt)
+  become: yes
+  apt:
+    pkg:
+      # - pipx
+      - python3-pip
+    state: latest
+    update_cache: yes
+
+- name: Install pipx with pip
+  pip:
+    name: "{{ item }}"
+  with_items:
+    - pipx
+    - argcomplete  # for shell completion
+
+# vim: ft=yaml.ansible

@@ -5,21 +5,21 @@ update()
     topgrade
     print
 
+    # update bat {{{
+    string="―― $(date +%H:%M:%S) - Update bat "
+    color white bold ${(r:80::―:)string}
+
+    install_update_bat
+
+    print
+    # }}}
+
     # clean apt cache {{{
     string="―― $(date +%H:%M:%S) - Clean apt cache and unused packages "
     color white bold ${(r:80::―:)string}
 
     sudo apt autoremove --yes
     sudo apt autoclean --yes
-
-    print
-    # }}}
-
-    # update bat {{{
-    string="―― $(date +%H:%M:%S) - Update bat "
-    color white bold ${(r:80::―:)string}
-
-    install_update_bat
 
     print
     # }}}

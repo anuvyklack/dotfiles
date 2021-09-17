@@ -12,6 +12,9 @@
 - name: Install bin
   include: bin.yaml
 
+- name: Install pipx
+  include: pipx.yaml
+
 - name: Symlink bat config files
   file:
     src: "{{ files }}/bat"
