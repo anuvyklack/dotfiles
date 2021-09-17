@@ -7,7 +7,7 @@ update()
 
     # clean apt cache {{{
     string="―― $(date +%H:%M:%S) - Clean apt cache and unused packages "
-    print ${(r:80::―:)string}
+    color white bold ${(r:80::―:)string}
 
     sudo apt autoremove --yes
     sudo apt autoclean --yes
@@ -17,7 +17,7 @@ update()
 
     # clean flatpak unused {{{
     string="―― $(date +%H:%M:%S) - Clean flatpak cache and unused packages "
-    print ${(r:80::―:)string}
+    color white bold ${(r:80::―:)string}
 
     flatpak uninstall --unused
     # flatpak remove --unused
@@ -35,7 +35,7 @@ update()
         fi
 
         string="―― $(date +%H:%M:%S) - conda "
-        print ${(r:80::―:)string}
+        color white bold ${(r:80::―:)string}
 
         print Updating $(color green bold 'base') environment.
 
@@ -69,7 +69,7 @@ update()
 
     # tmux plugins {{{
     string="―― $(date +%H:%M:%S) - tmux plugins "
-    print ${(r:80::―:)string}
+    color white bold ${(r:80::―:)string}
 
     TMUX_PLUGIN_MANAGER="${HOME}/.local/share/tmux/plugins/tpm/bin/update_plugins"
     if [[ -s $TMUX_PLUGIN_MANAGER ]]
@@ -81,7 +81,7 @@ update()
     # }}}
 
     string="―― $(date +%H:%M:%S) - Update zsh-snap plugins "
-    print ${(r:80::―:)string}
+    color white bold ${(r:80::―:)string}
     znap pull
 
     unset string
