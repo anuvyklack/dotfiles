@@ -119,8 +119,8 @@ ZSH[scripts]="$ZSH[cache]/scripts"
 [ -d $ZSH[scripts] ] || mkdir -p $ZSH[scripts]
 
 
-REPORTTIME=20            # Report time stats of commands running longer
-                         # than 20 sec.
+# REPORTTIME=20            # Report time stats of commands running longer
+#                          # than 20 sec.
 
 setopt extended_glob     # Because someday i will learn advanced pattern
                          # matching.
