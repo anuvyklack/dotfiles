@@ -2,9 +2,9 @@
 
 # Code taken from: https://github.com/molovo/color
 
-# ------------------------------------------------------------------
+#-------------------------------------------------------------------
 #  Usage
-# ------------------------------------------------------------------
+#-------------------------------------------------------------------
 # Simple colors:
 #
 #   color black "This string will be black"
@@ -27,7 +27,7 @@
 #
 # Available colors:
 # [0-256] - https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
-# ------------------------------------------------------------------
+#-------------------------------------------------------------------
 
 
 color ()
@@ -42,11 +42,13 @@ color ()
   local reset="${lc}0;${rc}"
 
   case $style in
-    bold|b)           b=1; shift ;;
-    italic|i)         b=2; shift ;;
-    underline|u)      b=4; shift ;;
-    inverse|in)       b=7; shift ;;
-    strikethrough|s)  b=9; shift ;;
+    bold|b)           b=1;            shift ;;
+    faint|f)          b=2;            shift ;;
+    italic|i)         b=3;            shift ;;
+    bold-italic|bi)   b=3${rc}${lc}1; shift ;;
+    underline|u)      b=4;            shift ;;
+    inverse|in)       b=7;            shift ;;
+    strikethrough|s)  b=9;            shift ;;
   esac
 
   case $color in
