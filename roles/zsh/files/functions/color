@@ -38,7 +38,7 @@ color ()
 
   shift
 
-  local lc=$'\e[' rc=m	  # Standard ANSI terminal escape values.
+  local lc=$'\e[' rc=m    # Standard ANSI terminal escape values.
   local reset="${lc}0;${rc}"
 
   case $style in
