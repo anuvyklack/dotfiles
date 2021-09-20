@@ -1,19 +1,21 @@
 ---
+- name: Install bin
+  include: bin.yaml
 
-- name: symlink ripgrep config files
+- name: Symlink ripgrep config files
   file:
-    src: "{{ role_path }}/files/ripgrep"
-    dest: "{{ home }}/.config/rg"
+    src: "{{ files }}/ripgrep"
+    dest: "{{ config }}/rg"
     state: link
 
-- name: symlink topgrade config files
+- name: Symlink topgrade config files
   file:
-    src: "{{ role_path }}/files/topgrade.toml"
-    dest: "{{ home }}/.config/topgrade.toml"
+    src: "{{ files }}/topgrade.toml"
+    dest: "{{ config }}/topgrade.toml"
     state: link
 
-- name: symlink bat config files
+- name: Symlink bat config files
   file:
-    src: "{{ role_path }}/files/bat"
-    dest: "{{ home }}/.config/bat"
+    src: "{{ files }}/bat"
+    dest: "{{ config }}/bat"
     state: link

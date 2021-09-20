@@ -1,0 +1,5 @@
+---
+# Version here does not matter too much, because we later manage bin by itself.
+bin_base_version: 0.7.0
+
+config: "{{ home }}/.config"
