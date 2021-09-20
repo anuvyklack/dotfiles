@@ -24,4 +24,4 @@ if ! [ -x "$(which ansible)" ]; then
   ansible-galaxy collection install community.general
 fi
 
-ansible-playbook -i $DIR/hosts.ini $DIR/playbook.yml --ask-become-pass --tags $tags
+ansible-playbook -i $DIR/hosts.ini $DIR/playbook.yaml --ask-become-pass --tags $tags

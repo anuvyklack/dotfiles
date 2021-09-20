@@ -20,9 +20,9 @@
       tags:
          git
 
-    - role: alacritty
-      tags:
-        - alacritty
+    # - role: alacritty
+    #   tags:
+    #     - alacritty
 
     - role: kitty
       tags:
