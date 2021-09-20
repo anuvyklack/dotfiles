@@ -332,7 +332,7 @@ return require('packer').startup(function()
 
    use { 'jubnzv/virtual-types.nvim', as = 'virtual-types' }
 
-   use { 'anuvyklack/symbols-outline.nvim',
+   use { 'simrat39/symbols-outline.nvim',
       as = 'symbols-outline',
       config = function() require('plugins_config/symbols-outline') end
    }
