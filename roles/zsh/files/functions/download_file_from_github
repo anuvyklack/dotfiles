@@ -15,6 +15,8 @@ download_file_from_github()
     then
         # -O / --output-document
         #                       Specify file to write documents to.
+        # --force-directories : Force creation of directories.
+        #
         wget -O $1 $LINK
 
     elif (( $+commands[curl] ))

@@ -2,11 +2,23 @@
 
 install_missing_programs()
 {
+
+  print_title()
+  {
+    local filler='――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――'
+    string="$(color white bold '―― Installing') $1"
+    # sed 's/\x1b\[[0-9;]*m//g'
+    #        :  strip all ANSI color codes from stirng
+    # wc -m  :  print the character counts
+    string_length=$(echo -n $string | sed 's/\x1b\[[0-9;]*m//g' | wc -m)
+    print $string $(color white bold ${filler:0:-$string_length})
+
+  }
+
   # bin {{{
   if ! (( $+commands[bin] ))
   then
-    # Fill the string up to 80 symbols with '―' char to the right.
-    string="―― Installing $(color green 'bin') "; print ${(r:80::―:)string}
+    print_title $(color green bold 'bin')
 
     emulate -L zsh
 
@@ -26,7 +38,7 @@ install_missing_programs()
     fi
 
     # Install bin
-   if ! [ $(/tmp/bin list | grep github.com/marcosnils/bin) ]
+    if ! [ $(/tmp/bin list | grep github.com/marcosnils/bin) ]
     then
       /tmp/bin install github.com/marcosnils/bin
     fi
@@ -34,11 +46,12 @@ install_missing_programs()
     rm /tmp/bin
     unset bin_base_version
     unset bin_config_file
+    echo
   fi # }}}
   # rg {{{
   if ! (( $+commands[rg] ))
   then
-    string="―― Installing $(color blue 'ripgrep') "; print ${(r:80::―:)string}
+    print_title $(color blue bold 'ripgrep')
     echo
     bin install https://github.com/BurntSushi/ripgrep
     echo
@@ -46,18 +59,18 @@ install_missing_programs()
   # bat {{{
   if ! (( $+commands[bat] ))
   then
-    string="―― Installing $(color blue 'bat') "; print ${(r:80::―:)string}
+    print_title $(color blue bold 'bat')
     echo
     bin install https://github.com/sharkdp/bat
     echo
-    print "\$ $(color green 'bat') cache --build"
+    print \$ $(color green bold 'bat') $(color white bold 'cache --build')
     bat cache --build
     echo
   fi # }}}
   # exa {{{
   if ! (( $+commands[exa] ))
   then
-    string="―― Installing $(color Yellow 'exa') "; print ${(r:80::―:)string}
+    print_title $(color Yellow bold 'exa')
     echo
     bin install https://github.com/ogham/exa
     echo
@@ -65,7 +78,7 @@ install_missing_programs()
   # fzf {{{
   if ! (( $+commands[fzf] ))
   then
-    string="―― Installing $(color Yellow 'fzf') "; print ${(r:80::―:)string}
+    print_title $(color Yellow bold 'fzf')
     echo
     bin install https://github.com/junegunn/fzf
     echo
@@ -73,7 +86,7 @@ install_missing_programs()
   # zoxide {{{
   if ! (( $+commands[zoxide] ))
   then
-    string="―― Installing $(color Magenta 'zoxide') "; print ${(r:80::―:)string}
+    print_title $(color Magenta bold 'zoxide')
     echo
     bin install https://github.com/ajeetdsouza/zoxide
     echo
@@ -83,7 +96,7 @@ install_missing_programs()
   # delta {{{
   if ! (( $+commands[delta] ))
   then
-    string="―― Installing $(color green 'delta') "; print ${(r:80::―:)string}
+    print_title $(color green bold 'delta')
     echo
     bin install https://github.com/dandavison/delta
     echo
@@ -91,7 +104,7 @@ install_missing_programs()
   # topgrade {{{
   if ! (( $+commands[topgrade] ))
   then
-    string="―― Installing $(color red 'topgrade') "; print ${(r:80::―:)string}
+    print_title $(color red bold 'topgrade')
     echo
     bin install https://github.com/r-darwish/topgrade
     echo
@@ -99,7 +112,7 @@ install_missing_programs()
   # dust {{{
   if ! (( $+commands[dust] ))
   then
-    string="―― Installing $(color yellow 'dust') "; print ${(r:80::―:)string}
+    print_title $(color yellow bold 'dust')
     echo
     bin install https://github.com/bootandy/dust
     echo
@@ -107,7 +120,7 @@ install_missing_programs()
   # duf {{{
   if ! (( $+commands[duf] ))
   then
-    string="―― Installing $(color blue 'duf') "; print ${(r:80::―:)string}
+    print_title $(color blue bold 'duf')
     echo
     bin install https://github.com/muesli/duf
     echo
@@ -115,7 +128,7 @@ install_missing_programs()
   # broot {{{
   if ! (( $+commands[broot] ))
   then
-    string="―― Installing $(color red 'broot') "; print ${(r:80::―:)string}
+    print_title $(color red bold 'broot')
     echo
     bin install https://github.com/Canop/broot
     echo
@@ -123,7 +136,7 @@ install_missing_programs()
   # mcfly {{{
   if ! (( $+commands[mcfly] ))
   then
-    string="―― Installing $(color Magenta 'mcfly') "; print ${(r:80::―:)string}
+    print_title $(color Magenta bold 'mcfly')
     echo
     bin install https://github.com/cantino/mcfly
     echo
