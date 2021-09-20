@@ -31,13 +31,13 @@
 - name: Delete empty folders in 'kitty.app' directory
   command:
     cmd: find -type d -empty -delete
-    chdir: "{{ stow }}/kitty.app"
+    chdir: "{{ stow_dir }}/kitty.app"
 
 
 - name: stow kitty application
   command:
     cmd: stow -R kitty.app
-    chdir: "{{ stow }}"
+    chdir: "{{ stow_dir }}"
 
 
 - name: Make sure kitty config directories exist
@@ -45,8 +45,8 @@
     dest: "{{ item }}"
     state: directory
   loop:
-    - "{{ home }}/.config/kitty"
-    - "{{ home }}/.config/kitty/color_themes"
+    - "{{ config }}"
+    - "{{ config }}/color_themes"
 
 # - debug:
 #     var: "{{ item }}"
@@ -54,14 +54,14 @@
 
 - name: Symlink kitty config files
   file:
-    src: "{{ role_path }}/files/kitty.conf"
-    dest: "{{ home }}/.config/kitty/kitty.conf"
+    src: "{{ files }}/kitty.conf"
+    dest: "{{ config }}/kitty.conf"
     state: link
 
 # - name: Symlink kitty config files
 #   file:
-#     src: "{{ role_path }}/files/{{ item }}"
-#     dest: "{{ home }}/.config/kitty/{{ item }}"
+#     src: "{{ files }}/{{ item }}"
+#     dest: "{{ config }}/{{ item }}"
 #     state: link
 #   loop:
 #     - kitty.conf
@@ -70,16 +70,16 @@
 - name: Symlink kitty custom color_themes
   file:
     src: "{{ item.src }}"
-    dest: "{{ home }}/.config/kitty/color_themes/{{ item.path }}"
+    dest: "{{ config }}/color_themes/{{ item.path }}"
     state: link
-  with_filetree: "{{ role_path }}/files/color_themes"
+  with_filetree: "{{ files }}/color_themes"
   loop_control:
     label: "~/.config/kitty/color_themes/{{ item.path }}"
 
 - name: git clone color themes
   git:
     repo: "{{ item.repo }}"
-    dest: "{{ home }}/.config/kitty/color_themes/{{ item.dest }}"
+    dest: "{{ config }}/color_themes/{{ item.dest }}"
   loop:
     - { repo: "https://github.com/kovidgoyal/kitty-themes.git", dest: kitty-themes }
   loop_control:
@@ -89,7 +89,7 @@
 - name: git clone kittens
   git:
     repo: "{{ item.repo }}"
-    dest: "{{ home }}/.config/kitty/kittens/{{ item.dest }}"
+    dest: "{{ config }}/kittens/{{ item.dest }}"
   loop:
     - { repo: "https://github.com/yurikhan/kitty-smart-tab.git", dest: kitty-smart-tab }
   loop_control:
@@ -97,8 +97,8 @@
 
 - name: Symlink kittens files
   file:
-    src: "{{ home }}/.config/kitty/kittens/{{ item.kitten }}/{{ item.file }}"
-    dest: "{{ home }}/.config/kitty/{{ item.file }}"
+    src: "{{ config }}/kittens/{{ item.kitten }}/{{ item.file }}"
+    dest: "{{ config }}/{{ item.file }}"
     state: link
   loop:
     - { kitten: kitty-smart-tab, file: smart_tab.py }
