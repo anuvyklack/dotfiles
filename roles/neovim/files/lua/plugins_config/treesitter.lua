@@ -6,9 +6,10 @@ if not available then return end
 treesitter_config.setup {
 
    -- ensure_installed = "maintained",
+   -- 'yaml'
    ensure_installed = {
       'bash', 'comment', 'c', 'cpp', 'fennel', 'go', 'html', 'json',
-      'latex', 'lua', 'python', 'regex', 'rust', 'toml', 'query', 'yaml',
+      'latex', 'lua', 'python', 'regex', 'rust', 'toml', 'query'
    },
 
    highlight = { enable = true,
