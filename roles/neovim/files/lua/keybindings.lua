@@ -201,13 +201,14 @@ function M.treesitter_textobjects()
 end --}}}
 
 -- nvim-tree {{{
+
 function M.nvim_tree()
    map('n', '<F3>', 'Open lile-explorer', "<cmd>NvimTreeToggle<CR>")
 
-   local tree_cb = require'nvim-tree.config'.nvim_tree_callback
-   vim.g.nvim_tree_bindings = {
-      { key = '?', cb = tree_cb("toggle_help") }  -- help UI
-   }
+   -- local tree_cb = require'nvim-tree.config'.nvim_tree_callback
+   -- vim.g.nvim_tree_bindings = {
+   --    { key = '?', cb = tree_cb("toggle_help") }  -- help UI
+   -- }
 
 end --}}}
 
