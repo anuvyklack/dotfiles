@@ -478,6 +478,7 @@ command! W w
 vnoremap <silent> <C-c> "+y :let @*=@+<CR>
 map <C-p> "+p
 
+map Y y$
 
 " lua << EOF
 " -- Dealing with word wrap:
