@@ -533,6 +533,8 @@ zvm_after_init_commands+=(
 # vifm
 # znap install cirala/vifmimg      # Image previews using Überzug for Vifm
 znap install anuvyklack/vifmimg   # Image previews using Überzug for Vifm
+
+export VIFM_PANE_STRATEGY=left
 znap install anuvyklack/vifmpane
 
 # znap source ohmyzsh/ohmyzsh plugins/universalarchive
@@ -563,31 +565,7 @@ HELPDIR=/usr/share/zsh/help  # in Pop_OS
 run_vifm() # {{{
 {
   zle .reset-prompt
-
-  # local last_locations="$HOME/.cache/vifm/last-locations.json"
-  # local active_pane=$(jq '."active-pane"' "$last_locations")
-  #
-  # case $active_pane in
-  #   0)
-  #     local first_pane='.'
-  #     local second_pane=$(jq -r '.panes[."non-active-pane"] | .ptabs[."active-ptab"] | ."last-location"' "$last_locations")
-  #     ;;
-  #   1)
-  #     local first_pane=$(jq -r '.panes[."non-active-pane"] | .ptabs[."active-ptab"] | ."last-location"' "$last_locations")
-  #     local second_pane='.'
-  #     ;;
-  #   *)
-  #     local first_pane='.'
-  #     local second_pane='.'
-  # esac
-
-  # local first_pane='.'
-  # local second_pane='.'
   BUFFER=" vifmcd"
-
-  # BUFFER=" vifmcd && clear -x"
-  # BUFFER=" vifmcd ."
-
   zle accept-line
 }
 zle -N run_vifm
