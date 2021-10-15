@@ -1,5 +1,9 @@
 #!/usr/bin/env zsh
 
+# Other realizaiton of the same goal:
+# https://www.npmjs.com/package/github-files-fetcher
+# https://github.com/Gyumeijie/github-files-fetcher/blob/master/src/index.js
+
 download_file_from_github()
 {
     # $1 - The full name (with path) of the file to save.
