@@ -12,8 +12,8 @@
       - ncurses-term     # true color support
       - jq               # json
       - transmission-cli # torrent
-      - antiword         # doc
       - ffmpegthumbnailer
+      - antiword         # doc
       # - catdoc           # doc
     state: present
     force_apt_get: yes

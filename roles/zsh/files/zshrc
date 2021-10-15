@@ -251,7 +251,7 @@ _zoxide_zsh_tab_completion()
 # }}}
 
 if (( $+functions[compdef] )); then
-    compdef _zoxide_zsh_tab_completion z 2> /dev/null
+    compdef _zoxide_zsh_tab_completion z 2>/dev/null
 fi
 
 # }}}
