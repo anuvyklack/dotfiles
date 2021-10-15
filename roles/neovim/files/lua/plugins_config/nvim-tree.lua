@@ -121,7 +121,10 @@ require('nvim-tree').setup {
    update_cwd = false,
 
    -- Show lsp diagnostics in the signcolumn.
-   lsp_diagnostics = false,
+   diagnostics = {
+      enable = false,
+      icons = { hint = "", info = "", warning = "", error = "" }
+   },
 
    -- Update the focused file on `BufEnter`, un-collapses the folders
    -- recursively until it finds the file.
