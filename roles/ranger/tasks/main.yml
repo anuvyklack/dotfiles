@@ -1,5 +1,5 @@
 ---
-- name: install ranger (apt)
+- name: Install ranger (apt)
   become: yes
   become_user: root
   become_method: sudo
@@ -13,24 +13,24 @@
     update_cache: yes
   when: ansible_pkg_mgr == 'apt'
 
-- name: pip install packages required for image preview
-  pip:
-    name:
-      - ueberzug
-      - pillow-simd
-    state: latest
+# - name: pip install packages required for image preview
+#   pip:
+#     name:
+#       - ueberzug
+#       - pillow-simd
+#     state: latest
 
-- name: check if ranger config already exists
+- name: Check if ranger config already exists
   find:
-    path: "{{ home }}/.config/ranger"
+    path: "{{ config }}"
   register: ranger_config
 
 # - debug: var=ranger_config
 
-- name: symlink ranger config files
+- name: Symlink ranger config files
   file:
-    src: "{{ role_path }}/files"
-    dest: "{{ home }}/.config/ranger"
+    src: "{{ files }}"
+    dest: "{{ config }}"
     state: link
     force: yes
   # Haven't found any files in ~/.config/ranger dir or
