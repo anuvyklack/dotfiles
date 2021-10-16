@@ -38,6 +38,17 @@
   when: ranger_config.matched == 0
   # check_mode: yes
 
+#-----------------------------------------------------------
+
+- name: "Clone ranger-zoxide plugin"
+  git:
+    repo: 'https://github.com/jchook/ranger-zoxide.git'
+    dest: "{{ config }}/plugins/ranger-zoxide"
+    depth: 1
+    update: yes
+  # register: git_status
+
+#-----------------------------------------------------------
 
 - name: Copy ranger icon
   become: yes

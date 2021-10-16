@@ -9,4 +9,7 @@ tags*
 **/vifm/**/vifminfo.json
 
 __pycache__/
-**/ranger/**/__init__.py
+# **/ranger/**/__init__.py
+**/ranger/files/colorschemes/__init__.py
+**/ranger/files/plugins/__init__.py
+**/ranger/files/plugins/ranger-zoxide
