@@ -1,7 +1,6 @@
 ---
 
-# -------------------------- Install from apt -----------------------------
-
+# # -------------------------- Install from apt -----------------------------
 # - name: install bat (apt)
 #   become: yes
 #   apt:
@@ -15,7 +14,7 @@
 
 - name: Get latest release info
   uri:
-    url: "{{ release }}"
+    url: "{{ bat_release }}"
     body_format: json
     return_content: yes
   register: latest_release
@@ -27,8 +26,8 @@
   set_fact:
     deb_package: "{{ item.name }}"
   loop: "{{ latest_release.json.assets }}"
-  when: item.name | regex_search('bat-musl_.*_amd64\.deb')  # Statically-linked version
-  # when: item.name | regex_search('bat_.*_amd64\.deb')
+  when: item.name | regex_search('bat_.*_amd64\.deb')
+  # when: item.name | regex_search('bat-musl_.*_amd64\.deb')
   loop_control:
     label: "{{ item.name }}"
 
@@ -49,6 +48,8 @@
 
 - name: symlink bat config files
   file:
-    src: "{{ role_path }}/files"
-    dest: "{{ home }}/.config/bat"
+    src: "{{ files }}/bat"
+    dest: "{{ config }}/bat"
     state: link
+
+# vim: ft=yaml.ansible

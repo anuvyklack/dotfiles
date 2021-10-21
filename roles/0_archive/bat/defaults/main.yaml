@@ -1,3 +1,3 @@
 ---
-
-release: https://api.github.com/repos/sharkdp/bat/releases/latest
+config: "{{ home }}/config"
+bat_release: https://api.github.com/repos/sharkdp/bat/releases/latest

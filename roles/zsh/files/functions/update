@@ -15,6 +15,15 @@ update()
     print
     # }}}
 
+    # update bat {{{
+    string="―― $(date +%H:%M:%S) - Update bat "
+    color white bold ${(r:80::―:)string}
+
+    install_update_bat
+
+    print
+    # }}}
+
     # clean flatpak unused {{{
     string="―― $(date +%H:%M:%S) - Clean flatpak cache and unused packages "
     color white bold ${(r:80::―:)string}

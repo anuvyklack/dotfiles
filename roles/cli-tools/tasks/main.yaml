@@ -1,6 +1,22 @@
 ---
+
+- name: Install prerequisites
+  become: yes
+  apt:
+    pkg:
+      - curl
+      - jq
+    state: present
+    update_cache: yes
+
 - name: Install bin
   include: bin.yaml
+
+- name: Symlink bat config files
+  file:
+    src: "{{ files }}/bat"
+    dest: "{{ config }}/bat"
+    state: link
 
 - name: Symlink ripgrep config files
   file:
@@ -12,10 +28,4 @@
   file:
     src: "{{ files }}/topgrade.toml"
     dest: "{{ config }}/topgrade.toml"
-    state: link
-
-- name: Symlink bat config files
-  file:
-    src: "{{ files }}/bat"
-    dest: "{{ config }}/bat"
     state: link

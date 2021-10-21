@@ -1,5 +1,5 @@
 ---
-# Version here does not matter too much, because we later manage bin by itself.
-bin_base_version: 0.7.0
-
 config: "{{ home }}/.config"
+
+# Version here does not matter too much, because later bin will manage itself.
+bin_base_version: 0.8.0

@@ -1,5 +1,4 @@
 ---
-
 - name: remove bin install script
   file:
     name: /tmp/bin
