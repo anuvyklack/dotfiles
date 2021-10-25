@@ -30,20 +30,25 @@
     autoupdate = 1
 [color]
     ui = auto
-[merge]
-    tool = nvimmerge
 [difftool]
     prompt = false
 [diff]
-    tool = nvimdiff
-[difftool "nvimdiff"]
-    cmd = nvim  -R -f -d -c 'wincmd l' $LOCAL $REMOTE
-[mergetool "nvimmerge"]
-    cmd = nvim  -f -d -c 'wincmd l' $LOCAL $MERGED $REMOTE
-    # cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
-
-[diff-so-fancy]
-    stripLeadingSymbols = false
-    rulerWidth = 80
+    tool = bc3
+[difftool "bc3"]
+    trustExitCode = true
+[merge]
+	tool = bc3
+[mergetool "bc3"]
+	trustExitCode = true
+# [diff]
+#     tool = nvimdiff
+# [difftool "nvimdiff"]
+#     cmd = nvim  -R -f -d -c 'wincmd l' $LOCAL $REMOTE
+# [mergetool "nvimmerge"]
+#     cmd = nvim  -f -d -c 'wincmd l' $LOCAL $MERGED $REMOTE
+#     # cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+# [diff-so-fancy]
+#     stripLeadingSymbols = false
+#     rulerWidth = 80
 
 # vim: ft=gitconfig
