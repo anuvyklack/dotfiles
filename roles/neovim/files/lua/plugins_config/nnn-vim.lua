@@ -1,6 +1,8 @@
 local available, nnn = pcall(require, 'nnn')
 if not available then return end
 
+vim.env.NNN_COLORS='3214'
+vim.env.NNN_PLUG = 'z:autojump'
 
 -- local function copy_to_clipboard(lines)
 --    local joined_lines = table.concat(lines, "\n")
