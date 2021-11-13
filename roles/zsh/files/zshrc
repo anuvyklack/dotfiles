@@ -12,14 +12,12 @@
 # I load them here because use 'color' function later to style output.
 local my_zsh_functions=${ZDOTDIR}/functions
 fpath+=($my_zsh_functions)
-if [[ -d "$my_zsh_functions" ]]
-then
-  autoload -Uz $(ls $my_zsh_functions)
+if [[ -d "$my_zsh_functions" ]]; then
+  autoload -Uz $(command ls $my_zsh_functions)
 fi
 # }}}
 
-# (( $+commands[bin] )) || install_missing_programs
-install_missing_programs
+# install_missing_programs
 
 # Powerlevel10k instant prompt {{{
 # --------------------------------
@@ -189,11 +187,10 @@ setopt hash_list_all     # Whenever a command completion is attempted,
 
 # Jobs
 setopt long_list_jobs    # List jobs in the long format by default.
-setopt auto_resume       #   Attempt to resume existing job before creating
-# a new process.
+setopt auto_resume       # Attempt to resume existing job before creating
+                         # a new process.
 setopt notify            # Report status of background jobs immediately.
-unsetopt bg_nice         #   Don't run all background jobs at a lower
-# priority.
+unsetopt bg_nice         # Don't run all background jobs at a lower priority.
 unsetopt hup             # Don't kill jobs on shell exit.
 unsetopt check_jobs      # Don't report on jobs when shell exit.
 
@@ -258,11 +255,11 @@ _zoxide_zsh_tab_completion()
         compadd -U -V z "${(@)completions}"
     fi
 }
-# }}}
 
 if (( $+functions[compdef] )); then
     compdef _zoxide_zsh_tab_completion z 2>/dev/null
 fi
+# }}}
 
 # }}}
 
@@ -322,7 +319,41 @@ bindkey " " expand-alias-space
 bindkey -M isearch " " magic-space
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――}}}
 
+# Functions {{{
+
+# Bash 'help' function analog {{{
+
+# unalias run-help
+autoload run-help
+
+# HELPDIR=/usr/share/zsh/"${ZSH_VERSION}"/help
+HELPDIR=/usr/share/zsh/help  # in Pop_OS
+# }}}
+
+run_vifm() # {{{
+{
+  zle .reset-prompt
+  BUFFER=" vifmcd"
+  zle accept-line
+}
+zle -N run_vifm
+# }}}
+
+run_ranger() # {{{
+{
+  zle .reset-prompt
+  # BUFFER=" source ranger && clear -x"
+  BUFFER=" source ranger"
+  zle accept-line
+}
+zle -N run_ranger
+# }}}
+
+# }}}
+
 # Plugins and programs {{{
+
+znap source Aloxaf/fzf-tab
 
 # zsh-autosuggestions {{{
 znap source zsh-users/zsh-autosuggestions
@@ -352,39 +383,59 @@ ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
 
 # }}}
 
-# znap source changyuheng/zsh-interactive-cd
+# vim mode {{{
 
-# mcfly {{{
-if (( $+commands[mcfly] ))
-then
-  export HISTFILE=$HOME/.cache/zsh/zsh_history
-  export MCFLY_KEY_SCHEME=vim
-  export MCFLY_FUZZY=true
-  export MCFLY_RESULTS=30
-  znap eval mcfly 'mcfly init zsh'
-fi
+# Do the initialization when the script is sourced (i.e. Initialize instantly).
+# ZVM_INIT_MODE=sourcing
+
+znap source jeffreytse/zsh-vi-mode
+
+ZVM_VI_SURROUND_BINDKEY=classic
+ZVM_READKEY_ENGINE=$ZVM_READKEY_ENGINE_DEFAULT
+
+# cursor {{{
+
+# ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_UNDERLINE
+ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+
+ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_UNDERLINE
+# ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+
 # }}}
+
+# zvm_after_init_commands+=(
+#   # <C-R> - fussy search in history with mcfly.
+#   "zvm_bindkey viins '^R' mcfly-history-widget"
+# )
+
+ zvm_after_init_commands+=(
+  zvm_after_keybindings
+)
+
+# }}}
+
+# znap source changyuheng/zsh-interactive-cd
 
 # fzf {{{
 
-#――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――#
-# fzf keybindings for Zsh                                                #
-# -----------------------                                                #
-# CTRL-R - Paste the selected command from history into the command line #
-# CTRL-T - Paste the selected file path(s) into the command line         #
-# ALT-C  - cd into the selected directory                                #
-#                                                                        #
-# fzf completion for Zsh                                                 #
-# ----------------------                                                 #
-# Fuzzy completion for files and directories can be triggered if the     #
-# word before the cursor ends with the trigger sequence which is by      #
-# default **.                                                            #
-#                                                                        #
-# fzf-marks                                                              #
-# ---------                                                              #
-# mark <name> - register a new mark to the current directory             #
-# CTRL-F - fzf-marks                                                     #
-#――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――#
+# ╭────────────────────────────────────────────────────────────────────────╮
+# │ fzf keybindings for Zsh                                                │
+# │ ───────────────────────                                                │
+# │ CTRL-R - Paste the selected command from history into the command line │
+# │ CTRL-T - Paste the selected file path(s) into the command line         │
+# │ ALT-C  - cd into the selected directory                                │
+# │                                                                        │
+# │ fzf completion for Zsh                                                 │
+# │ ──────────────────────                                                 │
+# │ Fuzzy completion for files and directories can be triggered if the     │
+# │ word before the cursor ends with the trigger sequence which is by      │
+# │ default **.                                                            │
+# │                                                                        │
+# │ fzf-marks                                                              │
+# │ ─────────                                                              │
+# │ mark <name> - register a new mark to the current directory             │
+# │ CTRL-F - fzf-marks                                                     │
+# ╰────────────────────────────────────────────────────────────────────────╯
 
 # znap source junegunn/fzf shell/key-bindings.zsh
 
@@ -418,14 +469,14 @@ export FZF_DEFAULT_OPTS='--height 75% --layout=reverse --border'
 
 # Using ripgrep with fzf.
 # (I've tried fd, but ripgrep is faster.)
-# -------------------------------------------------------------------
+# ────────────────────────────────────────────────────────────────────
 # --files: List files that would be searched but do not search.
 # --no-ignore: Do not respect .gitignore, etc...
 # --hidden: Search hidden files and folders.
 # --follow: Follow symlinks.
 # -g or --glob: Additional conditions for search (in this case ignore
 #               everything in the .git/ folder).
-# -------------------------------------------------------------------
+# ────────────────────────────────────────────────────────────────────
 # export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*" 2> /dev/null'
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}" 2> /dev/null'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
@@ -445,27 +496,27 @@ else
   print $(color White "https://github.com/tavianator/bfs")
 fi
 
-# Make fzf history search unique {{{
-fzf-history-widget()
-{
-  local selected num
-  setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2> /dev/null
-  selected=( $(fc -rl 1 | perl -ne 'print if !$seen{(/^\s*[0-9]+\s+(.*)/, $1)}++' |
-    sort -k2 -k1rn | uniq -f 1 | sort -r -n |
-    FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} $FZF_DEFAULT_OPTS -n2..,.. --tiebreak=index --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)) )
-  local ret=$?
-  if [ -n "$selected" ]
-  then
-    num=$selected[1]
-    if [ -n "$num" ]
-    then
-      zle vi-fetch-history -n $num
-    fi
-  fi
-  zle reset-prompt
-  return $ret
-}
-# }}}
+# # Make fzf history search unique {{{
+# fzf-history-widget()
+# {
+#   local selected num
+#   setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2> /dev/null
+#   selected=( $(fc -rl 1 | perl -ne 'print if !$seen{(/^\s*[0-9]+\s+(.*)/, $1)}++' |
+#     sort -k2 -k1rn | uniq -f 1 | sort -r -n |
+#     FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} $FZF_DEFAULT_OPTS -n2..,.. --tiebreak=index --bind=ctrl-r:toggle-sort $FZF_CTRL_R_OPTS --query=${(qqq)LBUFFER} +m" $(__fzfcmd)) )
+#   local ret=$?
+#   if [ -n "$selected" ]
+#   then
+#     num=$selected[1]
+#     if [ -n "$num" ]
+#     then
+#       zle vi-fetch-history -n $num
+#     fi
+#   fi
+#   zle reset-prompt
+#   return $ret
+# }
+# # }}}
 
 # Custom CTRL-T command {{{
 
@@ -496,11 +547,30 @@ fzf-file-widget() {
 
 # }}}
 
+# # mcfly {{{
+# if (( $+commands[mcfly] ))
+# then
+#   export HISTFILE=$ZSH[cache]/zsh_history
+#   export MCFLY_KEY_SCHEME=vim
+#   export MCFLY_FUZZY=true
+#   export MCFLY_RESULTS=30
+#   znap eval mcfly 'mcfly init zsh'
+# fi
+# # }}}
+
 # zoxide {{{
 if (( $+commands[zoxide] )); then
   _ZO_ECHO=1
   znap eval zoxide 'zoxide init zsh'
 fi
+# }}}
+
+# vifm {{{
+# znap install cirala/vifmimg      # Image previews using Überzug for Vifm
+znap install anuvyklack/vifmimg   # Image previews using Überzug for Vifm
+
+export VIFM_PANE_STRATEGY=left
+znap install anuvyklack/vifmpane
 # }}}
 
 # nnn {{{
@@ -579,90 +649,53 @@ CONDA[version]=$($CONDA[home]/bin/conda --version)
 znap eval conda "${CONDA[home]}/bin/conda shell.zsh hook  # $CONDA[version]"
 # }}}
 
-# vim mode {{{
-znap source jeffreytse/zsh-vi-mode
-# znap source softmoth/zsh-vim-mode
-
-ZVM_VI_SURROUND_BINDKEY=classic
-
-# cursor {{{
-
-# ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_UNDERLINE
-ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLOCK
-
-ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_UNDERLINE
-# ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLOCK
-
+# nb {{{
+znap install xwmx/nb
+github_completion nb 'https://github.com/xwmx/nb/blob/master/etc/nb-completion.zsh'
 # }}}
-
-zvm_after_init_commands+=(
-  # <C-R> - fussy search in history with mcfly.
-  "zvm_bindkey viins '^R' mcfly-history-widget"
-)
-# }}}
-
-# vifm
-# znap install cirala/vifmimg      # Image previews using Überzug for Vifm
-znap install anuvyklack/vifmimg   # Image previews using Überzug for Vifm
-
-export VIFM_PANE_STRATEGY=left
-znap install anuvyklack/vifmpane
 
 # znap source ohmyzsh/ohmyzsh plugins/universalarchive
 # github_completion universalarchive \
 #   'https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/universalarchive/_universalarchive'
 
-#――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+#───────────────────────────────────────────────────────────
 #  WARNING: This two plugins should be last in this order!
-#――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+#───────────────────────────────────────────────────────────
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 znap source zsh-users/zsh-syntax-highlighting
 
 znap source zsh-users/zsh-history-substring-search
-#――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-# }}}
-
-# Functions {{{
-
-# Bash 'help' function analog {{{
-
-# unalias run-help
-autoload run-help
-
-# HELPDIR=/usr/share/zsh/"${ZSH_VERSION}"/help
-HELPDIR=/usr/share/zsh/help  # in Pop_OS
-# }}}
-
-run_vifm() # {{{
-{
-  zle .reset-prompt
-  BUFFER=" vifmcd"
-  zle accept-line
-}
-zle -N run_vifm
-# }}}
-
-run_ranger() # {{{
-{
-  zle .reset-prompt
-  # BUFFER=" source ranger && clear -x"
-  BUFFER=" source ranger"
-  zle accept-line
-}
-zle -N run_ranger
-# }}}
-
+#───────────────────────────────────────────────────────────
 # }}}
 
 # Key bindings {{{
 
+# ╭──────────────────────────────────────────────────────────────────╮
+# │ In Vi mode, there are following keymaps:                         │
+# ├──────────────────────────────────────────────────────────────────┤
+# │ viins  - insert mode                                             │
+# │ vicmd  - command mode                                            │
+# │ viopp  - operator pending                                        │
+# │ visual - selection active                                        │
+# ╰──────────────────────────────────────────────────────────────────╯
+
+zvm_after_keybindings()
+{
+  # <C-R> - fussy search in history.
+  zvm_bindkey viins '^r' fzf-history-widget
+  # zvm_bindkey viins '^r' mcfly-history-widget
+
+  zvm_bindkey viins "^k" history-substring-search-up
+  zvm_bindkey viins "^j" history-substring-search-down
+}
+
 # Use backtick for accept zsh-autosuggestions
 bindkey \` autosuggest-accept
 
-bindkey "^K" history-substring-search-up
-bindkey "^J" history-substring-search-down
+# bindkey "^K" history-substring-search-up
+# bindkey "^J" history-substring-search-down
 
-# show man page of current command with alt+h
+# show man page of current command with Alt+h
 bindkey '\eh' run-help
 
 # Gets the n-th argument from the last command
@@ -676,9 +709,6 @@ bindkey -s '\e5' "!:4-4 \t"
 # <C-o> - Launch Ranger and cd to the last directory after closing it.
 # bindkey '^o' run_ranger
 bindkey '^o' run_vifm
-
-# <C-R> - Fussy search in history with mcfly.
-bindkey '^R' mcfly-history-widget
 
 # }}}
 
@@ -751,8 +781,11 @@ alias gd='git diff'
 alias gg='git graph'
 alias -g random='-m curl -s http://whatthecommit.com/index.txt'
 
+# # Remove duplicate lines from the history file preserving their order.
+# alias history_clear_dups="awk '!visited[$0]++' $ZSH[cache]/zsh_history | sponge $ZSH[cache]/zsh_history"
+
 # Lists the ten most used commands.
-ialias history-stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
+ialias history_stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
 
 # ialias vifm="vifmcd"
 
