@@ -1,7 +1,8 @@
 ---
 
+app: interception-tools
 repo: https://gitlab.com/interception/linux/tools.git
 
-tools: "{{ home }}/tools"
-app: interception-tools
-build: "{{ tools }}/{{ app }}/build"
+# Directories
+src: "{{ playbook_dir }}/software/{{ app }}"
+build: "{{ src }}/build"

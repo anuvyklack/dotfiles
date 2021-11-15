@@ -3,7 +3,8 @@
 - name: "Clone {{ app }} repo"
   git:
     repo: "{{ repo }}"
-    dest: "{{ tools }}/{{ app }}"
+    dest: "{{ src }}"
+    depth: 1
     update: yes
   register: git_status
 
