@@ -1,0 +1,6 @@
+---
+
+- name: Clean build directory
+  community.general.make:
+    chdir: "{{ tmux_src }}"
+    target: clean

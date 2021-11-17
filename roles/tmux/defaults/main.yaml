@@ -1,0 +1,7 @@
+---
+
+app: tmux
+repo: tmux/tmux
+
+config: "{{ xdg_config_home }}/tmux"
+tmux_plugin_manager: "{{ xdg_data_home }}/tmux/plugins/tpm"

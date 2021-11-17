@@ -1,0 +1,126 @@
+---
+
+- name: Check if tmux is installed
+  shell: which tmux
+  register: check_tmux
+  failed_when: false
+  changed_when: check_tmux.rc != 0
+
+# - debug: var=check_tmux
+
+- name: Get current tmux version
+  shell: "{{ check_tmux.stdout }} -V"
+  register: check_tmux_version
+  changed_when: no
+  when: check_tmux.rc == 0
+
+# - debug: var=current_version
+
+- name: Get latest release info
+  uri:
+    url: "https://api.github.com/repos/{{ repo }}/releases/latest"
+    body_format: json
+    return_content: yes
+  register: latest_release
+
+# - debug: var=latest_release
+
+- name: Set the fact whether we need to download and compile tmux
+  set_fact:
+    tmux_absent_or_outdated: "{{ true if (check_tmux.rc != 0) or (check_tmux_version.stdout != latest_release.json.name ) else false }}"
+
+# - debug: var=tmux_absent_or_outdated
+
+- name: Delete old tmux version installed with apt
+  become: yes
+  apt:
+    pkg:
+      - tmux
+    state: absent
+  when:
+    - tmux_absent_or_outdated
+    - ansible_pkg_mgr == 'apt'
+
+- name: Install tmux prerequisites
+  become: yes
+  apt:
+    pkg:
+      - build-essential
+      - libevent-dev
+      - libncurses-dev
+      # - libreadline-dev
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600  # One hour
+  when:
+    - tmux_absent_or_outdated
+    - ansible_pkg_mgr == 'apt'
+
+# Delete old tmux source files {{{
+
+- name: Find old tmux version source files
+  find:
+    paths: "{{ software }}"
+    file_type: directory
+    use_regex: yes
+    patterns: '^tmux-\d+\.\d+\w?$'
+  register: old_tmux_src
+  when: tmux_absent_or_outdated
+
+# - debug: var=old_tmux_src
+
+# TODO: Run make unsinstall in old tmux source directory before wipe it.
+
+- name: Delete old tmux version source files
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ old_tmux_src.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+  when: old_tmux_src is not skipped
+
+# }}}
+
+- name: Download latest tmux tarball
+  unarchive:
+    remote_src: yes
+    src: "{{ latest_release.json.assets[0].browser_download_url }}"
+    dest: "{{ software }}"
+  when: tmux_absent_or_outdated
+  register: tmux_download_src
+
+- name: Set the fact whether we need to download and compile tmux
+  set_fact:
+    tmux_src: "{{ software }}/{{ latest_release.json.assets[0].name | splitext | first | splitext | first }}"
+  when: tmux_download_src is not skipped
+
+- name: Configure tmux build
+  command:
+    cmd: ./configure
+    chdir: "{{ tmux_src }}"
+  when: tmux_download_src is not skipped
+  register: configure
+
+- name: Build tmux
+  community.general.make:
+    chdir: "{{ tmux_src }}"
+  when: configure is not skipped
+  register: make
+  notify: Clean build directory
+
+# - debug:
+#     var: make
+
+- name: Install tmux
+  become: yes
+  community.general.make:
+    chdir: "{{ tmux_src }}"
+    target: install
+  when: make is not skipped
+  register: make_install
+
+# - debug:
+#     var: make_install
+
+# vim: fdm=marker ft=yaml.ansible
