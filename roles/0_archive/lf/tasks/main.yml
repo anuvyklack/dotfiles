@@ -1,6 +1,6 @@
 ---
 - name: Symlink lf config files
   file:
-    src: "{{ role_path }}/files"
+    src: "{{ role_files }}"
     dest: "{{ home }}/lf"
     state: link

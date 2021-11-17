@@ -9,6 +9,6 @@
 
 - name: Symlink ripgrep config files
   file:
-    src: "{{ role_path }}/files"
-    dest: "{{ home }}/.config/rg"
+    src: "{{ role_files }}"
+    dest: "{{ xdg_config_home }}/rg"
     state: link

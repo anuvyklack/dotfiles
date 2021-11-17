@@ -20,12 +20,12 @@
     path: "{{ item }}"
     state: directory
   with_items:
-    - "{{ config }}/bin/"
+    - "{{ xdg_config_home }}/bin/"
     - "{{ home }}/.local/bin/"
 
 - name: Check bin config exists
   stat:
-    path: "{{ config }}/bin/config.json"
+    path: "{{ xdg_config_home }}/bin/config.json"
   register: bin_config_file
 
 # - debug: var=bin_config_file
@@ -33,7 +33,7 @@
 - name: Create bin config file
   template:
     src: bin-config.json.j2
-    dest: "{{ config }}/bin/config.json"
+    dest: "{{ xdg_config_home }}/bin/config.json"
     mode: 0660
   when: not bin_config_file.stat.exists
 

@@ -12,4 +12,4 @@
     state: present
 
 - name: setup gnome settings
-  command: "{{ role_path }}/files/gnome-settings.sh"
+  command: "{{ role_files }}/gnome-settings.sh"

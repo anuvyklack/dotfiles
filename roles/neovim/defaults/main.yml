@@ -4,7 +4,7 @@
 #   - name: nvim
 #     pkgs: 'pynvim'
 
-
+config: "{{ xdg_config_home }}/nvim"
 
 # Sample in case two environments will be needed
 # --------------------------------------------

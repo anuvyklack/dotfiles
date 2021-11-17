@@ -9,10 +9,28 @@
 # - debug: var=ansible_env.WSL_DISTRO_NAME
 # - debug: var=ansible_env.WSL_DISTRO_NAME_1
 
-- debug: var=ansible_lsb.codename
+# - debug: var=ansible_lsb.codename
 
 # - name: Check if WSL
 #   debug:
 #     msg: 'Hello!'
 #   when: ('WSL_DISTRO_NAME' in ansible_env) or
 #         ('IS_WSL' in ansible_env)
+
+# - name: set fact
+#   set_fact:
+#     name: tmux-3.2a.tar.gz
+#
+# - debug:
+#     msg: "{{ name | splitext | first | splitext | first }}"
+
+# - debug:
+#     # msg: "{{ lookup('env', 'XDG_DATA') | default( '/'.join((home, '.local/share')), True) }}"
+#     # msg: "{{ lookup('env', 'XDG_DATA_HOME') | default( home + '/.local/share', True) }}"
+#     # msg: "{{ lookup('env', 'XDG_DATA_HOME') | default( home + '/.local/share', True) }}/tmux/plugins/tpm"
+#     msg: "{{ ansible_env.XDG_DATA_HOME | default(ansible_env.HOME + '/.local/share') }}"
+
+# - debug:
+#     msg: "{{ ansible_env.XDG_CONFIG_HOME | default(ansible_env.HOME + '/.config') }}"
+
+# - debug: var=ansible_env

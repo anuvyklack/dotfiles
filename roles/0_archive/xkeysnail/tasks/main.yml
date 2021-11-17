@@ -9,29 +9,29 @@
 - name: Symlink xkeysnail.service file to run xkeysnail as systemd service
   become: yes
   file:
-    src: "{{ files }}/xkeysnail.service"
+    src: "{{ role_files }}/xkeysnail.service"
     dest: /etc/systemd/system/xkeysnail.service
     state: link
 
 - name: Put xkeysnail under AppArmor conctrol
   become: yes
   file:
-    src: "{{ files }}/usr.local.bin.xkeysnail"
+    src: "{{ role_files }}/usr.local.bin.xkeysnail"
     dest: /etc/apparmor.d/usr.local.bin.xkeysnail
     state: link
 
 - name: Symlink xkeysnail config.py file
   become: yes
   file:
-    src: "{{ files }}/config.py"
+    src: "{{ role_files }}/config.py"
     dest: /etc/xkeysnail/config.py
     state: link
 
 - name: Test if requared line is already in ~/.xsessionrc
   shell: grep -c "xhost +SI:localuser:root" ~/.xsessionrc
   register: test_xsessionrc
-  ignore_errors: True
-  changed_when: False  # so as not to distract
+  ignore_errors: true
+  changed_when: false  # so as not to distract
 
 # - debug:
 #     var: test_xsessionrc

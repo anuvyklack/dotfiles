@@ -1,8 +1,14 @@
+ansible_python_interpreter: /usr/bin/python3
+
 user_name: "{{ ansible_env.USER }}"
 home: "{{ ansible_env.HOME }}"
-ansible_python_interpreter: /usr/bin/python3
-stow_dir: "{{ home }}/.local/stow"
-files: "{{ role_path }}/files"
 
-# dotfiles_user_home: "{{ '~' | expanduser }}"
-# dotfiles_home: "{{ dotfiles_user_home }}/.dotfiles"
+xdg_config_home: "{{ ansible_env.XDG_CONFIG_HOME | default(ansible_env.HOME + '/.config') }}"
+xdg_data_home: "{{ ansible_env.XDG_DATA_HOME | default(ansible_env.HOME + '/.local/share') }}"
+
+role_files: "{{ role_path }}/files"
+stow_dir: "{{ home }}/.local/stow"
+
+software: "{{ playbook_dir }}/software"
+
+# "{{ '~' | expanduser }}"

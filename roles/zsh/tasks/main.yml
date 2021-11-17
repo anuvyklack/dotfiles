@@ -13,6 +13,7 @@
       # - lua5.4
     state: present
     update_cache: yes
+    cache_valid_time: 3600  # One hour
   when: ansible_pkg_mgr == 'apt'
 
 - name: Setup zsh as default shell for '{{ user_name }}'
@@ -36,12 +37,12 @@
     dest: "{{ item.dest }}"
     state: link
   loop:
-    - { src: "{{ files }}/zshenv",    dest: "{{ home }}/.zshenv" }
-    - { src: "{{ files }}/zprofile",  dest: "{{ zshdir }}/.zprofile" }
-    - { src: "{{ files }}/zshrc",     dest: "{{ zshdir }}/.zshrc" }
-    - { src: "{{ files }}/zlogin",    dest: "{{ zshdir }}/.zlogin" }
-    - { src: "{{ files }}/functions", dest: "{{ zshdir }}/functions" }
-    - { src: "{{ files }}/dircolors", dest: "{{ zshdir }}/dircolors" }
+    - { src: "{{ role_files }}/zshenv",    dest: "{{ home }}/.zshenv" }
+    - { src: "{{ role_files }}/zprofile",  dest: "{{ zshdir }}/.zprofile" }
+    - { src: "{{ role_files }}/zshrc",     dest: "{{ zshdir }}/.zshrc" }
+    - { src: "{{ role_files }}/zlogin",    dest: "{{ zshdir }}/.zlogin" }
+    - { src: "{{ role_files }}/functions", dest: "{{ zshdir }}/functions" }
+    - { src: "{{ role_files }}/dircolors", dest: "{{ zshdir }}/dircolors" }
 
 
 - name: Link files in 'settings' folder
@@ -49,7 +50,7 @@
     src: "{{ item.src }}"
     dest: "{{ zshdir }}/settings/{{ item.path }}"
     state: link
-  with_filetree: "{{ files }}/settings"
+  with_filetree: "{{ role_files }}/settings"
   loop_control:
     label: "{{ zshdir }}/settings/{{ item.path }}"
 
@@ -59,7 +60,7 @@
     src: "{{ item.src }}"
     dest: "{{ zshdir }}/themes/{{ item.path }}"
     state: link
-  with_filetree: "{{ files }}/themes"
+  with_filetree: "{{ role_files }}/themes"
   loop_control:
     label: "{{ zshdir }}/theme/{{ item.path }}"
 
@@ -68,6 +69,6 @@
     src: "{{ item.src }}"
     dest: "{{ home }}/.local/bin/{{ item.path }}"
     state: link
-  with_filetree: "{{ files }}/bin"
+  with_filetree: "{{ role_files }}/bin"
   loop_control:
     label: "{{ zshdir }}/bin/{{ item.path }}"

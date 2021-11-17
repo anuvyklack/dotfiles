@@ -4,6 +4,6 @@ app: dual-function-keys
 repo: https://gitlab.com/interception/linux/plugins/dual-function-keys.git
 
 # Directories
-src: "{{ playbook_dir }}/software/{{ app }}"
+src: "{{ software }}/{{ app }}"
 build: "{{ src }}"
 

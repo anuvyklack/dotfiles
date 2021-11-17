@@ -1,6 +1,6 @@
 ---
 - name: Symlink alacritty config files
   file:
-    src: "{{ role_path }}/files"
-    dest: "{{ home }}/.config/alacritty"
+    src: "{{ role_files }}"
+    dest: "{{ xdg_config_home }}/alacritty"
     state: link

@@ -8,6 +8,7 @@
       - python3-pip
     state: latest
     update_cache: yes
+    cache_valid_time: 3600  # One hour
 
 - name: Install pipx with pip
   pip:

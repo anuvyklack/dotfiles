@@ -20,15 +20,15 @@
     force_apt_get: yes
     pkg:
       - vim
-      - vim-common
       - vim-runtime
-      - vim-tiny
+      # - vim-common  # essential package in Ubuntu 21.10
+      # - vim-tiny    # essential package in Ubuntu 21.10
   when: ansible_pkg_mgr == 'apt'
 
 - name: Symlink neovim config files
   file:
-    src: "{{ role_path }}/files"
-    dest: "{{ home }}/.config/nvim"
+    src: "{{ role_files }}"
+    dest: "{{ config }}"
     state: link
 
 

@@ -11,6 +11,7 @@
     state: present
     force_apt_get: yes
     update_cache: yes
+    cache_valid_time: 3600  # One hour
   when: ansible_pkg_mgr == 'apt'
 
 # - name: pip install packages required for image preview
@@ -29,7 +30,7 @@
 
 - name: Symlink ranger config files
   file:
-    src: "{{ files }}"
+    src: "{{ role_files }}"
     dest: "{{ config }}"
     state: link
     force: yes

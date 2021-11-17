@@ -27,13 +27,13 @@
 
 - name: Ensure user local man folder exists
   file:
-    path: "{{ home }}/.local/share/man/man1"
+    path: "{{ xdg_data_home }}/man/man1"
     state: directory
 
 - name: Install notes-cli manual file
   shell:
-    cmd: "notes --help-man > {{ home }}/.local/share/man/man1/notes.1"
-    creates: "{{ home }}/.local/share/man/man1/notes.1"
+    cmd: "notes --help-man > {{ xdg_data_home }}/man/man1/notes.1"
+    creates: "{{ xdg_data_home }}/man/man1/notes.1"
 
 - name: Update man databes
   command: mandb

@@ -28,7 +28,7 @@
       # - silversearcher-ag
       # - fzf      # fuzzy finder
 
-- name: "Create ~/.config folder"
+- name: "Ensure {{ xdg_config_home }} directory exists"
   file:
-    path: "{{ home }}/.config"
+    path: "{{ xdg_config_home }}"
     state: directory

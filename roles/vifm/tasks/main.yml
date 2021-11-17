@@ -15,9 +15,9 @@
       - ffmpegthumbnailer
       - antiword         # doc
       # - catdoc           # doc
-    state: present
-    force_apt_get: yes
+    state: latest
     update_cache: yes
+    cache_valid_time: 3600  # One hour
   when: ansible_pkg_mgr == 'apt'
 
 - name: Make sure all vifm config folders are exist
@@ -30,7 +30,7 @@
 
 - name: Symlink vifm config files
   file:
-    src: "{{ files }}/vifmrc"
+    src: "{{ role_files }}/vifmrc"
     dest: "{{ config }}/vifmrc"
     state: link
 
@@ -39,7 +39,7 @@
     src: "{{ item.src }}"
     dest: "{{ config }}/colors/{{ item.path }}"
     state: link
-  with_filetree: "{{ files }}/colors"
+  with_filetree: "{{ role_files }}/colors"
   loop_control:
     label: "{{ config }}/color/{{ item.path }}"
 

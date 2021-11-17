@@ -27,8 +27,7 @@
   when: check_conda.rc != 0
   # when: check_conda is failed
   # when: bin_conda.stat.exists == False
-  notify:
-    - remove miniconda setup script
+  notify: remove miniconda setup script
 
 # - debug: var=miniconda_downloaded
 
@@ -43,8 +42,7 @@
   when:
     # miniconda_downloaded is succeeded and
     miniconda_downloaded is not skipped
-  notify:
-    - update conda to latest version
+  notify: update conda to latest version
 
 # - debug: var=miniconda_installed
 
@@ -76,7 +74,7 @@
     state: directory
   loop:
     - "{{ home }}/.jupyter"
-    - "{{ home }}/.config/yapf"
+    - "{{ xdg_config_home }}/yapf"
 
 - name: Symlink config files
   file:
@@ -84,6 +82,6 @@
     dest: "{{ item.dest }}"
     state: link
   loop:
-    - { src: "{{ files }}/condarc",    dest: "{{ home }}/.condarc" }
-    - { src: "{{ files }}/style.yapf", dest: "{{ home }}/.config/yapf/style" }
-    - { src: "{{ files }}/jupyter_qtconsole_config.py", dest: "{{ home }}/.jupyter/jupyter_qtconsole_config.py" }
+    - { src: "{{ role_files }}/condarc",    dest: "{{ home }}/.condarc" }
+    - { src: "{{ role_files }}/style.yapf", dest: "{{ xdg_config_home }}/yapf/style" }
+    - { src: "{{ role_files }}/jupyter_qtconsole_config.py", dest: "{{ home }}/.jupyter/jupyter_qtconsole_config.py" }

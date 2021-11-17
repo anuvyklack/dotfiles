@@ -1,3 +1,3 @@
 ---
-config: "{{ home }}/config"
+config: "{{ xdg_config_home }}/bat"
 bat_release: https://api.github.com/repos/sharkdp/bat/releases/latest

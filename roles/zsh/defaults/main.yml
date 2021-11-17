@@ -1,4 +1,2 @@
 ---
-# user_name: ""
-zshdir: "{{ home }}/.config/zsh"
-files: "{{ role_path }}/files"
+zshdir: "{{ xdg_config_home }}/zsh"

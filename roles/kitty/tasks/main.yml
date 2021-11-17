@@ -20,12 +20,13 @@
     state: present
     force_apt_get: yes
     update_cache: yes
+    cache_valid_time: 3600  # One hour
   when: ansible_pkg_mgr == 'apt'
 
 # https://sw.kovidgoyal.net/kitty/binary/
 - name: Download latest kitty release
   shell:
-    cmd: "curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin dest={{ stow }} launch=n"
+    cmd: "curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin dest={{ stow_dir }} launch=n"
     warn: false  # Do not rise warning about curl.
 
 - name: Delete empty folders in 'kitty.app' directory
@@ -54,13 +55,13 @@
 
 - name: Symlink kitty config files
   file:
-    src: "{{ files }}/kitty.conf"
+    src: "{{ role_files }}/kitty.conf"
     dest: "{{ config }}/kitty.conf"
     state: link
 
 # - name: Symlink kitty config files
 #   file:
-#     src: "{{ files }}/{{ item }}"
+#     src: "{{ role_files }}/{{ item }}"
 #     dest: "{{ config }}/{{ item }}"
 #     state: link
 #   loop:
@@ -72,7 +73,7 @@
     src: "{{ item.src }}"
     dest: "{{ config }}/color_themes/{{ item.path }}"
     state: link
-  with_filetree: "{{ files }}/color_themes"
+  with_filetree: "{{ role_files }}/color_themes"
   loop_control:
     label: "~/.config/kitty/color_themes/{{ item.path }}"
 

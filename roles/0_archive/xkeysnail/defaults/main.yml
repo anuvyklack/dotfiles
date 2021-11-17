@@ -1,2 +1,1 @@
 ---
-files: "{{ role_path }}/files"

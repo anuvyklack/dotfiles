@@ -4,5 +4,5 @@ app: interception-tools
 repo: https://gitlab.com/interception/linux/tools.git
 
 # Directories
-src: "{{ playbook_dir }}/software/{{ app }}"
+src: "{{ software }}/{{ app }}"
 build: "{{ src }}/build"
