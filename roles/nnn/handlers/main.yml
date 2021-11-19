@@ -1,0 +1,6 @@
+---
+
+- name: Clean build files
+  community.general.make:
+    chdir: "{{ src }}"
+    target: clean

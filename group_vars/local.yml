@@ -11,4 +11,6 @@ stow_dir: "{{ home }}/.local/stow"
 
 software: "{{ playbook_dir }}/software"
 
+nproc: 7  # The number of processing units to use in parallel tasks.
+
 # "{{ '~' | expanduser }}"

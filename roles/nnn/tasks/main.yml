@@ -1,0 +1,50 @@
+---
+
+- name: Delete nnn version installed with apt
+  become: yes
+  apt:
+    pkg: nnn
+    state: absent
+
+- name: Check if nnn is present
+  shell: which nnn
+  register: check_nnn
+  failed_when: false
+  changed_when: check_nnn.rc != 0
+
+- name: Clone nnn repo
+  git:
+    repo: "{{ repo }}"
+    dest: "{{ src }}"
+    depth: 1
+    update: yes
+  register: git_status
+
+- name: Install nnn dependencies
+  become: yes
+  apt:
+    pkg:
+      - libreadline-dev
+      # - sxiv
+      # - suckless-tools
+    state: present
+  when: (check_nnn.rc != 0) or git_status.changed
+
+# - debug: var=git_status
+
+- name: Build and install nnn
+  become: yes
+  community.general.make:
+    chdir: "{{ src }}"
+    target: install
+    params:
+      O_NERD: 1       # use nerdfonts icons
+      O_NAMEFIRST: 1  # put name on the first palce in detailed mode
+      O_GITSTATUS: 1  # show git status wit '-G' flag
+    jobs: "{{ nproc }}"
+  when: (check_nnn.rc != 0) or git_status.changed
+  # register: make
+  notify: Clean build files
+
+# - debug: var=make
+

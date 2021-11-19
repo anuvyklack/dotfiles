@@ -1,0 +1,5 @@
+
+app: nnn
+repo: https://github.com/jarun/nnn.git
+
+src: "{{ software }}/{{ app }}"
