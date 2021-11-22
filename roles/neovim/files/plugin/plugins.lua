@@ -685,9 +685,11 @@ return require('packer').startup(function()
 
    use { 'norcalli/nvim-colorizer.lua',
       as = 'colorizer',
-      ft = {'vim', 'lua', 'conf', 'tmux', 'kitty', 'vifm'},
+      ft = {'vim', 'lua', 'conf', 'tmux', 'kitty', 'vifm', 'markdown'},
       config = function()
-         require'colorizer'.setup()
+         require'colorizer'.setup {
+            'markdown'
+         }
       end
    }
 
@@ -720,7 +722,6 @@ return require('packer').startup(function()
     -- }
 
     -- use { 'luukvbaal/nnn.nvim',
-    --    commit = 'ef9fea94065b914c68f7c12a30690884104fdadb',
     --    config = function() require('plugins_config/nnn-nvim') end
     -- }
 
@@ -796,18 +797,19 @@ return require('packer').startup(function()
 
    --                 Tmux integration                {{{
    ------------------------------------------------------
-   use {
-      'anuvyklack/vim-tmux-navigator',  -- my fork
-      -- 'christoomey/vim-tmux-navigator',  -- original
 
-      config = function()
-         -- Activate autoupdate on exit.
-         vim.g.tmux_navigator_save_on_switch = 0
-
-         -- Disable vim->tmux navigation when the Vim pane is zoomed in tmux.
-         vim.g.tmux_navigator_disable_when_zoomed = 1
-      end
-   }
+   -- use {
+   --    'anuvyklack/vim-tmux-navigator',  -- my fork
+   --    -- 'christoomey/vim-tmux-navigator',  -- original
+   --
+   --    config = function()
+   --       -- Activate autoupdate on exit.
+   --       vim.g.tmux_navigator_save_on_switch = 0
+   --
+   --       -- Disable vim->tmux navigation when the Vim pane is zoomed in tmux.
+   --       vim.g.tmux_navigator_disable_when_zoomed = 1
+   --    end
+   -- }
 
    -- use 'tmux-plugins/vim-tmux-focus-events'
    -- use 'tmux-plugins/vim-tmux'

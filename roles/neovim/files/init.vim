@@ -339,11 +339,34 @@ endfunction "}}}
 " autocmd! BufWritePost $MYVIMRC call ReloadVimrc()
 
 
+augroup NewSplit
+    autocmd!
+    autocmd WinNew * autocmd BufEnter * ++once call <SID>NewSplit()
+aug end
+
+function! <SID>NewSplit()
+    if (&bt ==? 'help' || &ft ==? 'man' || &ft ==? 'fugitive' || &ft ==? 'gitcommit')
+        let p = winnr('#')
+        if winwidth(p) >= getwinvar(p, '&tw', 80) + getwinvar(winnr(), '&tw', 80)
+            let b = bufnr()
+            let bh = &l:bufhidden
+            setlocal bufhidden=hide
+            wincmd p
+            exe winnr('#').'wincmd q'
+            vsplit
+            exe b.'b'
+            let &l:bufhidden = bh
+        endif
+    endif
+endfunction
+
+
 " autocmd FileType man set bufhidden=unload
-autocmd FileType man if (winnr("$") != 1) | wincmd H | endif
+" autocmd FileType man if (winnr("$") != 1) | wincmd H | endif
+
 
 " Automatically resize splits when resizing window
-autocmd VimResized * wincmd =
+" autocmd VimResized * wincmd =
 
 " autocmd BufRead,BufNewFile *.txt setlocal textwidth=78
 
@@ -531,11 +554,11 @@ nnoremap 2o o<CR>
 nnoremap 2O O<Esc>O
 
 " WARNING: Replaced with 'christoomey/vim-tmux-navigator' plugin
-" " Quick jumping between splits
-" map <C-J> <C-W>j
-" map <C-K> <C-W>k
-" map <C-H> <C-W>h
-" map <C-L> <C-W>l
+" Quick jumping between splits
+map <C-J> <C-W>j
+map <C-K> <C-W>k
+map <C-H> <C-W>h
+map <C-L> <C-W>l
 
 nnoremap <A-Up> <C-W>+
 nnoremap <A-Down> <C-W>-

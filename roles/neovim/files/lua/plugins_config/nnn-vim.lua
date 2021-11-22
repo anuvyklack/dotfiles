@@ -10,7 +10,10 @@ vim.env.NNN_PLUG = 'z:autojump'
 -- end
 
 nnn.setup({
-   command = "nnn -o -C",
+   -- command = "nnn -oCG",
+   command = "nnn -oC", -- -G - show git status
+   session = 'local', -- Use n³ sessions to remember the location when it is reopened.
+   -- explorer_layout = '25%',
    layout = {
       window = {
          width = 0.6,
@@ -19,13 +22,15 @@ nnn.setup({
       }
    },
    replace_netrw = 1,
-   -- set_default_mappings = 0,
-   -- action = {
-   --    ["<c-t>"] = "tab split",
-   --    ["<c-s>"] = "split",
-   --    ["<c-v>"] = "vsplit",
-   --    ["<c-o>"] = copy_to_clipboard,
-   -- },
+   set_default_mappings = 0,
+   action = {
+      ["<C-t>"] = "tab split",
+      ["<C-s>"] = "split",
+      ["<C-v>"] = "vsplit",
+      -- ["<C-o>"] = copy_to_clipboard,
+   },
 })
 
+-- WARNING
+-- Some keybindings are in the ~/.config/nvim/after/ftplugin/nnn.vim
 require('keybindings').nnn()

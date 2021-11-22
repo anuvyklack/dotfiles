@@ -202,7 +202,8 @@ end --}}}
 
 -- nvim-tree {{{
 function M.nnn()
-   map('n', '<F3>', 'Open file-explorer', "<cmd>NnnPicker<CR>")
+   -- map('n', '<F3>', 'Open file-explorer', "<cmd>NnnPicker<CR>")
+   map('n', '<F3>', 'Open file-explorer', "<cmd>NnnExplorer<CR>")
 end --}}}
 
 -- nvim-tree {{{

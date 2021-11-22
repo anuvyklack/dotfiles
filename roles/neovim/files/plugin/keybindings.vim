@@ -33,22 +33,22 @@ nmap ga <Plug>(EasyAlign)
 
 " -------------------------------------------------}}}
 
-"                  Tmux integration                {{{
-" ----------------------------------------------------
-let g:tmux_navigator_no_mappings = 1
-
-" nnoremap <silent> <C-g><C-H> :TmuxNavigateLeft<cr>
-" nnoremap <silent> <C-g><C-J> :TmuxNavigateDown<cr>
-" nnoremap <silent> <C-g><C-K> :TmuxNavigateUp<cr>
-" nnoremap <silent> <C-g><C-L> :TmuxNavigateRight<cr>
-
-nnoremap <silent> <C-H> :TmuxNavigateLeft<cr>
-nnoremap <silent> <C-J> :TmuxNavigateDown<cr>
-nnoremap <silent> <C-K> :TmuxNavigateUp<cr>
-nnoremap <silent> <C-L> :TmuxNavigateRight<cr>
-
-" nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
-" -------------------------------------------------}}}
+" "                  Tmux integration                {{{
+" " ----------------------------------------------------
+" let g:tmux_navigator_no_mappings = 1
+"
+" " nnoremap <silent> <C-g><C-H> :TmuxNavigateLeft<cr>
+" " nnoremap <silent> <C-g><C-J> :TmuxNavigateDown<cr>
+" " nnoremap <silent> <C-g><C-K> :TmuxNavigateUp<cr>
+" " nnoremap <silent> <C-g><C-L> :TmuxNavigateRight<cr>
+"
+" nnoremap <silent> <C-H> :TmuxNavigateLeft<cr>
+" nnoremap <silent> <C-J> :TmuxNavigateDown<cr>
+" nnoremap <silent> <C-K> :TmuxNavigateUp<cr>
+" nnoremap <silent> <C-L> :TmuxNavigateRight<cr>
+"
+" " nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
+" " -------------------------------------------------}}}
 
 nnoremap <silent> gb :call ChooseBuffer()<CR>
 function! ChooseBuffer()  "{{{

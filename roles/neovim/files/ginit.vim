@@ -15,7 +15,8 @@ if exists('g:nvui')
 
     packadd nvui
 
-    set guifont=FiraCode\ Nerd\ Font:h11.7
+    set guifont=Inconsolata\ LGC:h11.7
+    " set guifont=FiraCode\ Nerd\ Font:h11.7
     " set guifont=InconsolataLGC\ Nerd\ Font:h11.7
     " set guifont=Liga\ Inconsolata\ LGC\ NF\ OT:h15.7
 
