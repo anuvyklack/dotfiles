@@ -216,8 +216,11 @@ fpath+=(
 znap install zsh-users/zsh-completions
 
 github_completion exa 'https://github.com/ogham/exa/blob/master/completions/zsh/_exa'
+github_completion rg 'https://github.com/BurntSushi/ripgrep/blob/master/complete/_rg'
 github_completion vifm 'https://github.com/vifm/vifm/blob/master/data/shell-completion/zsh/_vifm'
+
 github_completion cppman 'https://github.com/aitjcize/cppman/blob/master/misc/completions/cppman.zsh'
+
 
 # conda completion {{{
 znap install esc/conda-zsh-completion
@@ -353,7 +356,47 @@ zle -N run_ranger
 
 # Plugins and programs {{{
 
+# fzf-tab {{{
+# WARNING: fzf-tab needs to be loaded after `compinit`, but before plugins
+# which will wrap widgets, such as zsh-autosuggestions or fast-syntax-highlighting!!
 znap source Aloxaf/fzf-tab
+
+zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+
+# Set descriptions format to enable group support.
+# zstyle ':completion:*:descriptions' format '[%d]'
+zstyle ':completion:*:descriptions' format '-- %d --'
+
+# # Preview directory's content with exa when completing cd.
+# zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
+# zstyle ':fzf-tab:complete:cd:*' popup-pad 80 0
+
+# Switch group using `,` and `.`
+zstyle ':fzf-tab:*' switch-group ',' '.'
+
+# A prefix to indicate the color.
+zstyle ':fzf-tab:*' prefix ''
+
+local lc=$'\e[' rc=m    # Standard ANSI terminal escape values.
+local rgb="${lc}38;2;"  # RGB color support
+local reset="${lc}0;${rc}"
+
+FZF_TAB_GROUP_COLORS=(
+  "${rgb}171;178;191$rc"  # #abb2bf
+  "${rgb}157;226;199$rc"  # #9de2c7
+  "${rgb}226;157;226$rc"  # #e29de2
+  "${rgb}205;212;96$rc"   # #CDD460
+  "${rgb}115;184;241$rc"  # #73b8f1
+  "${rgb}241;167;173$rc"  # #f1a7ad
+  "${rgb}229;192;123$rc"  # #e5c07b
+  "${rgb}209;179;255$rc"  # #d1b3ff
+  "${rgb}164;210;121$rc"  # #a4d279
+  "${rgb}162;176;246$rc"  # #a2b0f6
+)
+
+zstyle ':fzf-tab:*' group-colors $FZF_TAB_GROUP_COLORS
+
+# }}}
 
 # zsh-autosuggestions {{{
 znap source zsh-users/zsh-autosuggestions
@@ -443,6 +486,8 @@ ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_UNDERLINE
 gitfile $ZSH[scripts]/fzf-key-bindings.zsh 'https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh'
 source $ZSH[scripts]/fzf-key-bindings.zsh
 
+# gitfile $HOME/.local/bin/fzf-tmux 'https://github.com/junegunn/fzf/blob/master/bin/fzf-tmux'
+
 # # use fzf for completion
 # gitfile $ZSH[scripts]/fzf-completion.zsh 'https://github.com/junegunn/fzf/blob/master/shell/completion.zsh'
 # source $ZSH[scripts]/fzf-completion.zsh
@@ -464,8 +509,11 @@ gitfile $HOME/.local/share/man/man1/fzf.1 'https://github.com/junegunn/fzf/blob/
 # zinit ice wait"2" lucid id-as"auto" as"null"
 # zinit snippet https://github.com/junegunn/fzf/blob/master/plugin/fzf.vim
 
-export FZF_DEFAULT_OPTS='--height 75% --layout=reverse --border'
+# export FZF_TMUX_OPTS="-p"
+
+export FZF_DEFAULT_OPTS='--height 70% --layout=reverse --border'
 # export FZF_DEFAULT_OPTS='--height 75% --layout=reverse --border --preview="head -30 {}"'
+# export FZF_DEFAULT_OPTS="--reverse --preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
 
 # Using ripgrep with fzf.
 # (I've tried fd, but ripgrep is faster.)
@@ -579,8 +627,8 @@ if (( $+commands[nnn] )); then
   # nnn completion
   github_completion nnn 'https://github.com/jarun/nnn/blob/master/misc/auto-completion/zsh/_nnn'
 
-  # nnn man
-  gitfile $HOME/.local/share/man/man1/nnn.1 'https://github.com/jarun/nnn/blob/master/nnn.1'
+  # # nnn man
+  # gitfile $HOME/.local/share/man/man1/nnn.1 'https://github.com/jarun/nnn/blob/master/nnn.1'
 
   # plugins
   # gitfile ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/autojump 'https://github.com/jarun/nnn/blob/master/plugins/autojump'
@@ -604,20 +652,32 @@ if (( $+commands[nnn] )); then
   # -E : use EDITOR for undetached edits
   # -r : use advcpmv patched cp, mv
   # -x : notis, sel to system clipboard
+  # -C : color by context
   # ------------------------------------
   # export NNN_OPTS="eErx"
-  export NNN_OPTS="eEx"
+  export NNN_OPTS="eExC"
 
   # context (tabs) colors
   export NNN_COLORS='4321'
 
-  # file-specific colors
-  # export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'  # original
-  # export NNN_FCOLORS='c1e20402006033f7c6d6ab01'
+  # File-specific colors
+  # ----------------------------------------------------------
+  BLK='c1'      # Block device               c1	 DarkSeaGreen1
+  CHR='e2'      # Char device                e2	 Yellow1
+  DIR='27'      # Directory                  27	 DeepSkyBlue1
+  EXE='2e'      # Executable                 2e	 Green1
+  REG='00'      # Regular                    00	 Normal
+  HARDLINK='60' # Hard link                  60	 Plum4
+  SYMLINK='33'  # Symbolic link              33	 Cyan1
+  MISSING='f7'  # Missing OR file details    f7	 Grey62
+  ORPHAN='c6'   # Orphaned symbolic link     c6	 DeepPink1
+  FIFO='d6'     # FIFO                       d6	 Orange1
+  SOCK='ab'     # Socket                     ab	 MediumOrchid1
+  OTHER='c4'    # Unknown OR 0B regular/exe  c4	 Red1
 
-  # Onedark
-  BLK='04' CHR='04' DIR='04' EXE='00' REG='00' HARDLINK='00' SYMLINK='06' MISSING='00' ORPHAN='01' FIFO='0F' SOCK='0F' OTHER='02'
   export NNN_FCOLORS="$BLK$CHR$DIR$EXE$REG$HARDLINK$SYMLINK$MISSING$ORPHAN$FIFO$SOCK$OTHER"
+
+  # export NNN_FCOLORS='c1e20402006033f7c6d6ab01'
 
   export NNN_TMPFILE='/tmp/.lastd'  # always cd on quit
 
@@ -659,7 +719,7 @@ github_completion nb 'https://github.com/xwmx/nb/blob/master/etc/nb-completion.z
 #   'https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/universalarchive/_universalarchive'
 
 #───────────────────────────────────────────────────────────
-#  WARNING: This two plugins should be last in this order!
+#  WARNING This two plugins should be last in this order!
 #───────────────────────────────────────────────────────────
 ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
 znap source zsh-users/zsh-syntax-highlighting
@@ -670,14 +730,14 @@ znap source zsh-users/zsh-history-substring-search
 
 # Key bindings {{{
 
-# ╭──────────────────────────────────────────────────────────────────╮
-# │ In Vi mode, there are following keymaps:                         │
-# ├──────────────────────────────────────────────────────────────────┤
-# │ viins  - insert mode                                             │
-# │ vicmd  - command mode                                            │
-# │ viopp  - operator pending                                        │
-# │ visual - selection active                                        │
-# ╰──────────────────────────────────────────────────────────────────╯
+# ╭──────────────────────────────────────────╮
+# │ In Vi mode, there are following keymaps: │
+# ├──────────────────────────────────────────┤
+# │ viins  - insert mode                     │
+# │ vicmd  - command mode                    │
+# │ viopp  - operator pending                │
+# │ visual - selection active                │
+# ╰──────────────────────────────────────────╯
 
 zvm_after_keybindings()
 {
@@ -689,8 +749,11 @@ zvm_after_keybindings()
   zvm_bindkey viins "^j" history-substring-search-down
 }
 
-# Use backtick for accept zsh-autosuggestions
+# Use backtick (~ key) for accept zsh-autosuggestions
 bindkey \` autosuggest-accept
+
+# # Use "Shift+Tab" to switch between zsh compsys and fzf-tab completion.
+bindkey '^[[Z' toggle-fzf-tab
 
 # bindkey "^K" history-substring-search-up
 # bindkey "^J" history-substring-search-down

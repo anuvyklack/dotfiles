@@ -22,7 +22,8 @@
   done
 
   # recompile all zsh or sh files
-  for FILE in {$ZDOTDIR/**,$HOME/.cache/zsh/**}/*.*sh(#qN)
+  # for FILE in {$ZDOTDIR/**,$HOME/.cache/zsh/**}/*.*sh(#qN)
+  for FILE in {$ZDOTDIR/**,$ZSH[cache]/**}/*.*sh(#qN);
   do
     zrecompile -pq $FILE
   done
@@ -33,7 +34,8 @@
   # Delete all "*.zwc.old" files
   # (#qN) is glob qualifier which sets the NULL_GLOB option for the current
   # pattern, so it doesn't show message if no matches found.
-  for FILE in {$ZDOTDIR/**,$HOME/.cache/zsh/**}/*.zwc.old(#qN)
+  # for FILE in {$ZDOTDIR/**,$HOME/.cache/zsh/**}/*.zwc.old(#qN);
+  for FILE in {$ZDOTDIR/**,$ZSH[cache]/**}/*.zwc.old(#qN);
   do
     rm -f -- "$FILE"
   done

@@ -145,7 +145,8 @@ zstyle ':completion:*:cd:*' ignore-parents parent pwd
 # Don't complete backup files as executables.
 zstyle ':completion:*:complete:-command-::commands' ignored-patterns '(aptitude-*|*\~)'
 
-# Enable ls colors for zsh completion.
+# Enable filename colorizing according to ls colors for zsh completion.
+# zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*:*:*:*:default' list-colors ${(s.:.)LS_COLORS}
 
 # Directories
@@ -174,6 +175,8 @@ zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:
 # Completing process IDs with menu selection:
 zstyle ':completion:*:kill:*' force-list always
 
+# Disable sort when completing `git checkout`.
+zstyle ':completion:*:git-checkout:*' sort false
 
 #-------------------------------------------------------------------------------
 # Group matches and describe.
@@ -186,25 +189,24 @@ zstyle ':completion:*:*:-command-:*:*' group-order aliases builtins functions co
 
 # Style the group names
 # ---------------------
-#              underline                      end underline
-#              v                              v
-# %F{yellow}%B%U%{$'\e[3m'%}%d%{$'\e[23m'%}%b%u%f
-#            ^    ^~~~~~~~      ^~~~~~~~~   ^
-#         bold    italic        end italic  end bold
+#                underline              end bold
+#                v                      v
+# $'%F{yellow}%B%U%{\e[3m%}%d%{\e[23m%}%b%u%f'
+#              ^  ^~~~~~~~~  ^~~~~~~~~~   ^
+#           bold  italic     end italic   end underline
 #
-zstyle ':completion:*' format %F{yellow}%B%{$'\e[3m'%}%d%{$'\e[23m'%}%b%f
+# zstyle ':completion:*' format $' %F{yellow}%B%{\e[3m%}%d%{\e[23m%}%b%f'
 
 # describe options in full
 zstyle ':completion:*:options' description 'yes'
-
 zstyle ':completion:*:options' auto-description '%d'
+
+zstyle ':completion:*:descriptions' format $' %F{blue}%B%d%b%f'
 zstyle ':completion:*:corrections' format ' %F{green}-- %d (errors: %e) --%f'
-zstyle ':completion:*:descriptions' format ' %F{yellow}-- %d --%f'
-# zstyle ':completion:*:descriptions' format $'%{\e[0;31m%}completing %B%d%b%{\e[0m%}'
-zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
-zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
-# zstyle ':completion:*:warnings' format $'%{\e[0;31m%}No matches for:%{\e[0m%} %d'
+zstyle ':completion:*:messages' format ' %F{yellow} -- %d --%f'
+zstyle ':completion:*:warnings' format ' %F{magenta}-- no matches found --%f'
 zstyle ':completion:*:default' list-prompt '%S%M matches%s'
+
 #-------------------------------------------------------------------------------
 
 
