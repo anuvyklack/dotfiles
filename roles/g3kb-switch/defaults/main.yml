@@ -1,0 +1,7 @@
+---
+app: g3kb-switch
+repo: https://github.com/lyokha/g3kb-switch.git
+
+# Directories
+src: "{{ software }}/{{ app }}"
+build: "{{ src }}/build"

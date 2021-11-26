@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: g3kb-switch
+    # Only relevant to GNOME 3.x and 4x.
+    when: ansible_env.XDG_CURRENT_DESKTOP | lower is search('gnome')

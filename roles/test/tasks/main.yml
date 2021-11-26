@@ -33,4 +33,27 @@
 # - debug:
 #     msg: "{{ ansible_env.XDG_CONFIG_HOME | default(ansible_env.HOME + '/.config') }}"
 
+# # ansible_env.XDG_CURRENT_DESKTOP | grep --ignore-case 'gnome'
+# - debug:
+#     msg: gnome
+#   when: ansible_env.XDG_CURRENT_DESKTOP | lower is search('gnome')
+
+- name: Get GNOME version
+  command: gnome-shell --version
+  when: ansible_env.XDG_CURRENT_DESKTOP | lower is search('gnome')
+  register: check_gnome_version
+
+- debug: var=check_gnome_version.stdout
+
+- set_fact:
+    gnome_version: "{{ check_gnome_version.stdout | regex_search('[0-9.]+$') }}"
+
+- debug: var=gnome_version
+
+- debug:
+    msg: "{{ gnome_version }} is higher then 41"
+  # GNOME version is higher than 41
+  when: gnome_version is version('41', '>=')
+
+
 # - debug: var=ansible_env

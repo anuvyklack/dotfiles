@@ -1,0 +1,106 @@
+---
+
+- name: "Install {{ app }} prerequisites"
+  become: yes
+  package:
+    name:
+      - libglib2.0-dev
+      - cmake
+    state: present
+
+- name: "Clone {{ app }} repo"
+  git:
+    repo: "{{ repo }}"
+    dest: "{{ src }}"
+    depth: 1
+    update: yes
+  register: git_status
+
+# - debug:
+#     var: git_status
+
+- name: Check if "build" directory exists
+  stat:
+    path: "{{ build }}"
+  register: build_dir
+
+- name: Create or clean the "build" folder
+  file:
+    path: "{{ build }}"
+    state: "{{ item }}"
+  with_items:
+    - absent
+    - directory
+  when: (git_status.before != git_status.after) or
+        (not build_dir.stat.exists)
+
+# Get GNOME version {{{
+
+- name: Get GNOME version
+  command: gnome-shell --version
+  # when: ansible_env.XDG_CURRENT_DESKTOP | lower is search('gnome')
+  register: check_gnome_version
+
+# - debug: var=check_gnome_version.stdout
+
+- set_fact:
+    gnome_version: "{{ check_gnome_version.stdout | regex_search('[0-9.]+$') }}"
+
+# - debug: var=gnome_version
+
+# }}}
+
+# In Gnome 41 the switcher will only work with G3kbSwitch Gnome Shell extension.
+# https://github.com/lyokha/g3kb-switch#installation
+- name: Install Gnome extension
+  community.general.make:
+    chdir: "{{ src }}/extension"
+    target: install
+  when: gnome_version is version('41', '>=') # GNOME version is higher than 41
+
+# Also in this case, an additional option must be passed to cmake.
+- name: Construct CMake command
+  set_fact:
+    # g3kb_switch_cmake_command: >
+    g3kb_switch_cmake_command: "{{ 'cmake -DCMAKE_BUILD_TYPE=Release' ~
+      gnome_version is version('41', '>=') | ternary(' -DG3KBSWITCH_WITH_GNOME_SHELL_EXTENSION=ON ', ' ') ~
+      '..' }}"
+
+# - debug: var=g3kb_switch_cmake_command
+
+- name: cmake
+  command:
+    cmd: "{{ g3kb_switch_cmake_command }}"
+    chdir: "{{ build }}"
+  register: cmake
+  when:
+    - (git_status.before != git_status.after) or
+      (not build_dir.stat.exists)
+
+# - debug: var=cmake
+
+- name: "Build the {{ app }}"
+  community.general.make:
+    chdir: "{{ build }}"
+    jobs: "{{ nproc }}"
+  when: cmake is not skipped
+  register: make
+
+# - debug:
+#     var: make
+
+- name: "Install the {{ app }}"
+  become: yes
+  community.general.make:
+    chdir: "{{ build }}"
+    target: install
+  when: make is not skipped
+  # register: make_install
+
+# - debug:
+#     var: make_install
+
+- name: Update the shared libraries cache
+  become: yes
+  command:
+    cmd: ldconfig

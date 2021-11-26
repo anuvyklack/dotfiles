@@ -1,0 +1,73 @@
+---
+
+- name: "Install {{ app }} prerequisites"
+  become: yes
+  apt:
+    pkg:
+      - libxkbfile-dev
+      - cmake
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600  # One hour
+
+- name: "Clone {{ app }} repo"
+  git:
+    repo: "{{ repo }}"
+    dest: "{{ src }}"
+    depth: 1
+    update: yes
+  register: git_status
+
+# - debug:
+#     var: git_status
+
+- name: Check if "build" directory exists
+  stat:
+    path: "{{ build }}"
+  register: build_dir
+
+- name: Create or clean the "build" folder
+  file:
+    path: "{{ build }}"
+    state: "{{ item }}"
+  with_items:
+    - absent
+    - directory
+  when: (git_status.before != git_status.after) or
+        (not build_dir.stat.exists)
+
+- name: cmake
+  command:
+    cmd: "cmake .."
+    chdir: "{{ build }}"
+  register: cmake
+  when: (git_status.before != git_status.after) or
+        (not build_dir.stat.exists)
+
+# - debug: var=cmake
+
+- name: Build the "{{ app }}"
+  community.general.make:
+    chdir: "{{ build }}"
+    jobs: "{{ nproc }}"
+  when: cmake is not skipped
+  register: make
+
+# - debug:
+#     var: make
+
+- name: Install the "{{ app }}"
+  become: yes
+  community.general.make:
+    chdir: "{{ build }}"
+    target: install
+  when: make is not skipped
+  # register: make_install
+
+# - debug:
+#     var: make_install
+
+- name: Update the shared libraries cache
+  become: yes
+  command:
+    cmd: ldconfig

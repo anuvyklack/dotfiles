@@ -1,0 +1,7 @@
+---
+app: xkb-switch
+repo: https://github.com/grwlf/xkb-switch.git
+
+# Directories
+src: "{{ software }}/{{ app }}"
+build: "{{ src }}/build"
