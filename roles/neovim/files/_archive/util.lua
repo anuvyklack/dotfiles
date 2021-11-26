@@ -38,6 +38,34 @@ function M.map(mode, lhs, description, rhs, opts)
 end
 
 
+-- Set global keymap and register its description in 'which-key' plugin.
+---@param mode string
+---@param lhs string left hand side
+---@param description string
+---@param rhs string right hand side
+---@param opts? table Default values are:
+--```lua
+--{ noremap = true, silent = true }
+--```
+function M.nmap(lhs, description, rhs, opts)
+   M.map('n', lhs, description, rhs, opts)
+end
+
+
+-- Set global keymap and register its description in 'which-key' plugin.
+---@param mode string
+---@param lhs string left hand side
+---@param description string
+---@param rhs string right hand side
+---@param opts? table Default values are:
+--```lua
+--{ noremap = true, silent = true }
+--```
+function M.vmap(lhs, description, rhs, opts)
+   M.map('v', lhs, description, rhs, opts)
+end
+
+
 -- Set buffer keymap and register its description in 'which-key' plugin.
 ---@param bufnr number
 ---@param mode string
@@ -59,6 +87,21 @@ function M.buf_map(bufnr, mode, lhs, description, rhs, opts)
          [lhs] = { description, mode = mode, buffer = bufnr }
       }
    end
+end
+
+
+-- Set buffer keymap and register its description in 'which-key' plugin.
+---@param bufnr number
+---@param mode string
+---@param lhs string
+---@param description string
+---@param rhs string
+---@param opts? table Default values are:
+--```lua
+--{ noremap = true, silent = true }
+--```
+function M.buf_nmap(bufnr, lhs, description, rhs, opts)
+   M.buf_map(bufnr, 'n', lhs, description, rhs, opts)
 end
 
 

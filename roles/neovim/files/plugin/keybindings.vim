@@ -64,13 +64,13 @@ function! ChooseBuffer()  "{{{
 endfunction
 "}}}
 
-" nnoremap <Leader>u :UndotreeToggle<CR>
+" nnoremap <Leader>u <cmd>UndotreeToggle<CR>
 
 " nmap <leader>vw <Plug>(wiki-index)
 
 " Показать syntax group для участка кода, а также цвет этой группы.
 " Удобно при создании своей цветовой схемы
-nnoremap <silent> <C-g> :TSHighlightCapturesUnderCursor<CR>
+nnoremap <silent> <C-g> <cmd>TSHighlightCapturesUnderCursor<CR>
 " nnoremap <C-g> :call SyntaxAttr()<CR>
 
 " vim: tw=76 fdm=marker

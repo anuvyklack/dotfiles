@@ -8,63 +8,70 @@
 --  ░░   ░░  ░░░░░    █████      ░░░░░░  ░░ ░░   ░░  ░░░░░░ ░░ ░░   ░░   █████ ░░░░░░
 --                   ░░░░░                                              ░░░░░
 
+local map = require("util").map
+local nmap = require("util").nmap
+local vmap = require("util").vmap
+local buf_map = require("util").buf_map
+local buf_nmap = require("util").buf_nmap
+local which_key_available, which_key = pcall(require, "which-key")
+
+require'mapx'.setup{ global = true, whichkey = true }
+
 local M = {} -- All functions that need to be exported should go in this table.
 
-local mapx = require'mapx'.setup({ global = true, whichkey = true })
 
--- Dealing with word wrap:
--- If cursor is inside very long line in the file than wraps around
--- several rows on the screen, then 'j' key moves you to the next line
--- in the file, but not to the next row on the screen under your
--- previous position as in other editors.  These bindings fixes this.
-nnoremap('k', "v:count ? 'k' : 'gk'", {silent = true, expr = true})
-nnoremap('j', "v:count ? 'j' : 'gj'", {silent = true, expr = true})
-
+-- -- Dealing with word wrap:
+-- -- If cursor is inside very long line in the file than wraps around
+-- -- several rows on the screen, then 'j' key moves you to the next line
+-- -- in the file, but not to the next row on the screen under your
+-- -- previous position as in other editors.  These bindings fixes this.
+-- vim.api.nvim_set_keymap('n', 'k', "v:count == 0 ? 'gk' : 'k'", {noremap = true, expr = true, silent = true})
+-- vim.api.nvim_set_keymap('n', 'j', "v:count == 0 ? 'gj' : 'j'", {noremap = true, expr = true, silent = true})
 
 -- Hop (Easymotion) {{{
 function M.hop()
-   -- if not mapx_available then return end
+   -- local opts = { noremap = true, silent = false }
 
-   nnoremap(';w', '<cmd>HopWordAC<CR>', 'Easymotion forward word')
-   vnoremap(';w', '<cmd>HopWordAC<CR>', 'Easymotion forward word')
+   map('n', ';w', 'Easymotion forward word', "<cmd>HopWordAC<CR>")
+   map('v', ';w', 'easymotion forward word', "<cmd>HopWordAC<CR>")
+   map('n', ';b', 'Easymotion bacward word', "<cmd>HopWordBC<CR>")
+   map('v', ';b', 'Easymotion bacward word', "<cmd>HopWordBC<CR>")
 
-   nnoremap(';b', '<cmd>HopWordBC<CR>', 'Easymotion bacward word')
-   vnoremap(';b', '<cmd>HopWordBC<CR>', 'Easymotion bacward word')
+   map('n', ';j', "Easymotion line up",   "<cmd>HopLineAC<CR>")
+   map('v', ';j', "Easymotion line up",   "<cmd>HopLineAC<CR>")
+   map('n', ';k', "Easymotion line down", "<cmd>HopLineBC<CR>")
+   map('v', ';k', "Easymotion line down", "<cmd>HopLineBC<CR>")
 
-   nnoremap(';j', '<cmd>HopLineAC<CR>', 'Easymotion line up')
-   vnoremap(';j', '<cmd>HopLineAC<CR>', 'Easymotion line up')
-   nnoremap(';k', '<cmd>HopLineBC<CR>', 'Easymotion line down')
-   vnoremap(';k', '<cmd>HopLineBC<CR>', 'Easymotion line down')
-
-   nnoremap('s', '<cmd>HopChar1<CR>', 'Easymotion char')
-   vnoremap('s', '<cmd>HopChar1<CR>', 'Easymotion char')
+   map('n', 's', "Easymotion char", "<cmd>HopChar1<CR>")
+   map('v', 's', "Easymotion char", "<cmd>HopChar1<CR>")
 
 end -- }}}
 
 -- Telescope {{{
 function M.telescope()
+   -- local opts = { noremap=true, silent=false }
 
-   mapx.nname('<leader>f', 'Telescope')
-
-   nnoremap('<leader>ff', '<cmd>Telescope find_files<cr>', 'Telescope: Find files')
-   nnoremap('<leader>fg', '<cmd>Telescope live_grep<cr>',  'Telescope: Live grep')
-   nnoremap('<leader>fb', '<cmd>Telescope buffers<cr>',    'Telescope: Buffers')
-   nnoremap('<leader>fh', '<cmd>Telescope help_tags<cr>',  'Telescope: Help tags')
+   nmap('<leader>ff', 'Telescope: Find files', '<cmd>Telescope find_files<cr>')
+   nmap('<leader>fg', 'Telescope: Live grep',  '<cmd>Telescope live_grep<cr>')
+   nmap('<leader>fb', 'Telescope: Buffers',    '<cmd>Telescope buffers<cr>')
+   nmap('<leader>fh', 'Telescope: Help tags',  '<cmd>Telescope help_tags<cr>')
 
 end -- }}}
 
 -- LSP {{{
-function M.lspconfig(bufnr)
+function M.lspconfig (bufnr)
 
-   mapx.nname('<leader>l', 'LSP')
+   if which_key_available then
+      which_key.register({ ['<leader>l'] = {name = 'LSP'}  }, {mode = 'n'})
+   end
 
    -- Lspconfig bindings {{{
 
    -- See `:help vim.lsp.*` for documentation on any of the below functions
-   nnoremap('<F2>',   '<Cmd>lua vim.lsp.buf.definition()<CR>',  {buffer = bufnr}, 'LSP: go to definition')
-   nnoremap('<S-F2>', '<Cmd>lua vim.lsp.buf.declaration()<CR>', {buffer = bufnr}, 'LSP: go to declaration')
+   buf_nmap(bufnr, '<F2>', 'LSP: go to definition', '<Cmd>lua vim.lsp.buf.definition()<CR>')
+   buf_nmap(bufnr, '<S-F2>', 'LSP: go to declaration', '<Cmd>lua vim.lsp.buf.declaration()<CR>')
 
-   nnoremap('K', '<Cmd>lua vim.lsp.buf.hover()<CR>', {buffer = bufnr}, 'LSP: Hover doc')
+   buf_nmap(bufnr, 'K', 'LSP: Hover doc', '<Cmd>lua vim.lsp.buf.hover()<CR>')
 
    -- buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
    -- buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
@@ -72,13 +79,13 @@ function M.lspconfig(bufnr)
    -- buf_set_keymap(bufnr, 'n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>')
    -- buf_set_keymap(bufnr, 'n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>')
 
-   nnoremap('<leader>lt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', {buffer = bufnr}, 'LSP: Type definition')
+   buf_nmap(bufnr, '<leader>lt', 'Type definition', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
 
    -- buf_set_keymap(bufnr, 'n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
    -- buf_set_keymap(bufnr, 'n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
    -- buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>')
 
-   nnoremap('<leader>le', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', {buffer = bufnr}, 'Show errors')
+   buf_nmap(bufnr, '<leader>le', 'Show errors', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>')
 
    -- buf_set_keymap(bufnr, 'n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>')
    -- buf_set_keymap(bufnr, 'n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>')
@@ -90,40 +97,40 @@ function M.lspconfig(bufnr)
    -- Lspsaga {{{
 
    -- lsp provider to find the cursor word definition and reference
-   nnoremap("<leader>le", "<cmd>Lspsaga lsp_finder<CR>", {buffer = bufnr}, 'Show line diagnostics')
+   buf_nmap(bufnr, "<leader>le", 'show line diagnostics', "<cmd>Lspsaga lsp_finder<CR>")
 
    -- wk.register({ ['<leader>c'] = {name = 'LSP: Code action'}  }, {mode = 'n'})
    -- wk.register({ ['<leader>c'] = {name = 'LSP: Code action'}  }, {mode = 'v'})
 
-   nnoremap('<leader>la', '<cmd>Lspsaga code_action<CR>',            {buffer = bufnr}, 'Code action')
-   vnoremap('<leader>la', '<cmd><C-U>Lspsaga range_code_action<CR>', {buffer = bufnr}, 'LSP: Range code action')
+   buf_nmap(bufnr, "<leader>la", 'Code action', '<cmd>Lspsaga code_action<CR>')
+   buf_map(bufnr, "v", "<leader>la", 'LSP: Range code action', "<cmd><C-U>Lspsaga range_code_action<CR>")
 
    -- rename
-   nnoremap(        'gr', '<cmd>Lspsaga rename<CR>', {buffer = bufnr}, 'Rename')
-   nnoremap('<leader>lr', '<cmd>Lspsaga rename<CR>', {buffer = bufnr}, 'Rename')
+   buf_nmap(bufnr,         "gr", "Rename", "<cmd>Lspsaga rename<CR>")
+   buf_nmap(bufnr, "<leader>lr", "Rename", "<cmd>Lspsaga rename<CR>")
 
    -- preview definition
-   nnoremap('<leader>ld', '<cmd>Lspsaga preview_definition<CR>', {buffer = bufnr}, 'Preview definition')
+   buf_nmap(bufnr, "<leader>ld", "Preview definition", "<cmd>Lspsaga preview_definition<CR>")
 
    -- -- hover doc
-   -- buf_set_keymap(bufnr, 'n', 'K', 'Hover doc', '<cmd>Lspsaga hover_doc<CR>')
+   -- buf_set_keymap(bufnr, "n", "K", "Hover doc", "<cmd>Lspsaga hover_doc<CR>")
 
    -- show signature help
-   nnoremap('<C-k>', '<cmd>Lspsaga signature_help<CR>', {buffer = bufnr}, 'LSP: Show sinature help')
+   buf_nmap(bufnr, "<C-k>", "LSP: Show sinature help", "<cmd>Lspsaga signature_help<CR>")
 
    -- Show Diagnostics
-   nnoremap('<leader>le', '<cmd>Lspsaga show_line_diagnostics<CR>', {buffer = bufnr}, 'Show diagnostic')
+   buf_nmap(bufnr, "<leader>le", "Show diagnostic", "<cmd>Lspsaga show_line_diagnostics<CR>")
    -- only show diagnostic if cursor is over the area
-   -- buf_set_keymap(bufnr, 'n', '<leader>le', 'Show diagnostic', "<cmd>lua require'lspsaga.diagnostic'.show_cursor_diagnostics()<CR>")
+   -- buf_set_keymap(bufnr, "n", "<leader>le", "Show diagnostic", "<cmd>lua require'lspsaga.diagnostic'.show_cursor_diagnostics()<CR>")
 
    -- -- jump diagnostic
-   -- buf_set_keymap(bufnr, 'n', ']e', '<cmd>Lspsaga diagnostic_jump_next<CR>')
-   -- buf_set_keymap(bufnr, 'n', '[e', '<cmd>Lspsaga diagnostic_jump_prev<CR>')
+   -- buf_set_keymap(bufnr, "n", "]e", "<cmd>Lspsaga diagnostic_jump_next<CR>")
+   -- buf_set_keymap(bufnr, "n", "[e", "<cmd>Lspsaga diagnostic_jump_prev<CR>")
 
 
    -- -- scroll down / up inside different preview windows
-   -- buf_set_keymap(bufnr, 'n', '<C-f>', "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>")
-   -- buf_set_keymap(bufnr, 'n', '<C-b>', "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>")
+   -- buf_set_keymap(bufnr, "n", "<C-f>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>")
+   -- buf_set_keymap(bufnr, "n", "<C-b>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>")
 
    --}}}
 
@@ -201,15 +208,13 @@ end --}}}
 
 -- nnn file manager {{{
 function M.nnn()
-
-   nnoremap('<F3>', '<cmd>NnnPicker<CR>', 'Open file-explorer')
-   -- nnoremap('<F3>', '<cmd>NnnExplorer<CR>', 'Open file-explorer')
-
+   nmap('<F3>', 'Open file-explorer', "<cmd>NnnPicker<CR>")
+   -- nmap('<F3>', 'Open file-explorer', "<cmd>NnnExplorer<CR>")
 end --}}}
 
 -- nvim-tree {{{
 function M.nvim_tree()
-   nnoremap('<F3>', '<cmd>NvimTreeToggle<CR>', 'Open file-explorer')
+   nmap('<F3>', 'Open file-explorer', "<cmd>NvimTreeToggle<CR>")
 
    -- local tree_cb = require'nvim-tree.config'.nvim_tree_callback
    -- vim.g.nvim_tree_bindings = {
@@ -220,26 +225,28 @@ end --}}}
 
 -- Barbar (tabline) {{{
 function M.barbar()
-   local opts = { silent = true }
+
+   local set_keymap = vim.api.nvim_set_keymap
+   local opts = { noremap = true, silent = true }
 
    -- Move to previous/next
-   nnoremap('<A-,>', '<cmd>BufferPrevious<CR>', opts)
-   nnoremap('<A-.>', '<cmd>BufferNext<CR>', opts)
+   set_keymap('n', '<A-,>', '<cmd>BufferPrevious<CR>', opts)
+   set_keymap('n', '<A-.>', '<cmd>BufferNext<CR>', opts)
    -- Re-order to previous/next
-   nnoremap('<A-<>', '<cmd>BufferMovePrevious<CR>', opts)
-   nnoremap('<A->>', '<cmd>BufferMoveNext<CR>', opts)
+   set_keymap('n', '<A-<>', '<cmd>BufferMovePrevious<CR>', opts)
+   set_keymap('n', '<A->>', '<cmd>BufferMoveNext<CR>', opts)
    -- Goto buffer in position...
-   nnoremap('<A-1>', '<cmd>BufferGoto 1<CR>', opts)
-   nnoremap('<A-2>', '<cmd>BufferGoto 2<CR>', opts)
-   nnoremap('<A-3>', '<cmd>BufferGoto 3<CR>', opts)
-   nnoremap('<A-4>', '<cmd>BufferGoto 4<CR>', opts)
-   nnoremap('<A-5>', '<cmd>BufferGoto 5<CR>', opts)
-   nnoremap('<A-6>', '<cmd>BufferGoto 6<CR>', opts)
-   nnoremap('<A-7>', '<cmd>BufferGoto 7<CR>', opts)
-   nnoremap('<A-8>', '<cmd>BufferGoto 8<CR>', opts)
-   nnoremap('<A-9>', '<cmd>BufferLast<CR>', opts)
+   set_keymap('n', '<A-1>', '<cmd>BufferGoto 1<CR>', opts)
+   set_keymap('n', '<A-2>', '<cmd>BufferGoto 2<CR>', opts)
+   set_keymap('n', '<A-3>', '<cmd>BufferGoto 3<CR>', opts)
+   set_keymap('n', '<A-4>', '<cmd>BufferGoto 4<CR>', opts)
+   set_keymap('n', '<A-5>', '<cmd>BufferGoto 5<CR>', opts)
+   set_keymap('n', '<A-6>', '<cmd>BufferGoto 6<CR>', opts)
+   set_keymap('n', '<A-7>', '<cmd>BufferGoto 7<CR>', opts)
+   set_keymap('n', '<A-8>', '<cmd>BufferGoto 8<CR>', opts)
+   set_keymap('n', '<A-9>', '<cmd>BufferLast<CR>', opts)
    -- Close buffer
-   nnoremap('<A-c>', '<cmd>BufferClose<CR>', opts)
+   set_keymap('n', '<A-c>', '<cmd>BufferClose<CR>', opts)
    -- Wipeout buffer
    --                          <cmd>BufferWipeout<CR>
    -- Close commands
@@ -247,10 +254,10 @@ function M.barbar()
    --                          <cmd>BufferCloseBuffersLeft<CR>
    --                          <cmd>BufferCloseBuffersRight<CR>
    -- Magic buffer-picking mode
-   nnoremap('<C-s>',    '<cmd>BufferPick<CR>', opts)
+   set_keymap('n', '<C-s>',    '<cmd>BufferPick<CR>', opts)
    -- Sort automatically by...
-   nnoremap('<Space>bd', '<cmd>BufferOrderByDirectory<CR>', opts)
-   nnoremap('<Space>bl', '<cmd>BufferOrderByLanguage<CR>', opts)
+   set_keymap('n', '<Space>bd', '<cmd>BufferOrderByDirectory<CR>', opts)
+   set_keymap('n', '<Space>bl', '<cmd>BufferOrderByLanguage<CR>', opts)
 
    -- Other:
    -- :BarbarEnable - enables barbar (enabled by default)

@@ -62,6 +62,30 @@ require('packer').init{
 return require('packer').startup(function()
    use 'wbthomason/packer.nvim' -- Packer can manage itself
 
+   --                   Key Mappings                   {{{
+   -------------------------------------------------------
+   use { 'b0o/mapx.nvim', as = 'mapx' }  -- create key mappings
+
+   use { 'folke/which-key.nvim', -- WhichKey
+      as = 'which-key',
+      config = function()
+         require('which-key').setup {
+            plugins = {
+               marks = true,
+               registers = true
+            },
+            -- operators = { gc = "Comments" },
+            spelling = {
+               -- Enabling this module will show WhichKey when pressing z=
+               -- to select spelling suggestions.
+               enabled = true,
+               suggestions = 20, -- How many suggestions should be shown in the list?
+            },
+         }
+      end
+   }
+   ----------------------------------------------------}}}
+
    -------------------- Text editing ---------------------
 
    use 'matze/vim-move'         -- перемещение строк и частей строк
@@ -77,7 +101,7 @@ return require('packer').startup(function()
 
    use { 'tomtom/tcomment_vim',   -- Comments. For help use :help tcomment
       as = 'tcomment',
-      -- config = function() require('plugins_config/tcomment') end
+      config = function() require('plugins_config/tcomment') end
    }
 
    -- use { 'winston0410/commented.nvim',
@@ -641,19 +665,6 @@ return require('packer').startup(function()
 
    -- -- another undo tree visualizer
    -- use 'simnalamburt/vim-mundo'
-
-   use { 'folke/which-key.nvim',
-      as = 'which-key',
-      config = function()
-         require('which-key').setup {
-            spelling = {
-               enabled = true,  -- Enabling this will show WhichKey when pressing z=
-                                --   to select spelling suggestions.
-               suggestions = 20, -- How many suggestions should be shown in the list?
-            },
-         }
-      end
-   }
 
    use { 'gelguy/wilder.nvim',
       requires = {
