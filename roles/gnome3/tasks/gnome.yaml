@@ -1,0 +1,332 @@
+# https://docs.ansible.com/ansible/latest/modules/dconf_module.html
+#
+# To determine what dconf keys and values to use, you can run `dconf watch /`
+# in a terminal as you make changes in settings or tweaks.  You can also use
+# `dconf read <key>` and `dconf write <key> <value>` to experiment with various
+# settings.  The dconf-editor application is also useful for exploring various
+# keys along with their descriptions.
+
+- hosts: localhost
+  tasks:
+
+    - name: install playbook requirements
+      become: true
+      package:
+        name:
+          - python3-psutil
+          - dconf
+          - dbus-tools
+          - dbus-daemon
+
+    ####################
+    # gnome extensions #
+    ####################
+
+    - name: install extensions
+      become: true
+      package:
+        name:
+          - gnome-shell-extension-windowoverlay-icons
+          - gnome-shell-extension-emoji-selector
+
+    - name: enable extensions
+      dconf:
+        key: "/org/gnome/shell/enabled-extensions"
+        value: "['windowoverlay-icons@sustmidown.centrum.cz', 'emoji-selector@maestroschan.fr']"
+
+    #############
+    # shortcuts #
+    #############
+
+    # There are many built-in shortcut actions that only require setting a
+    # binding to enable.
+
+    - name: file browser shortcut
+      dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/home"
+        value: "['<Super>f']"
+
+    - name: web browser shortcut
+      dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/www"
+        value: "['<Super>w']"
+
+    # Custom shortcuts are more complicated.  For each shortcut, you have to
+    # define a name, a command, and a binding.
+
+    - name: terminal shortcut name
+      dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/name"
+        value: "'terminal'"
+    - name: terminal shortcut command
+      dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/command"
+        value: "'gnome-terminal --maximize'"
+    - name: terminal shortcut binding
+      dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/binding"
+        value: "'<Super>t'"
+
+    - name: epiphany shortcut name
+      dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/name"
+        value: "'epiphany'"
+    - name: epiphany shortcut command
+      dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/command"
+        value: "'epiphany --new-window'"
+    - name: epiphany shortcut binding
+      dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/binding"
+        value: "'<Super>e'"
+
+    # All of your custom shortcuts must also be added to an array.
+
+    - name: enable custom keybindings
+      dconf:
+        key: "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings"
+        value: "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/']"
+
+    #####################
+    # terminal settings #
+    #####################
+
+    - name: terminal bell
+      dconf:
+        key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/audible-bell"
+        value: "false"
+
+    - name: terminal transparency
+      dconf:
+        key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/use-transparent-background"
+        value: "true"
+
+    - name: terminal transparency percentage
+      dconf:
+        key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/background-transparency-percent"
+        value: "5"
+
+    - name: terminal bright bold
+      dconf:
+        key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/bold-is-bright"
+        value: "true"
+
+    - name: terminal scrollback lines
+      dconf:
+        key: "/org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/scrollback-lines"
+        value: "1000000"
+
+    - name: terminal find shortcut
+      dconf:
+        key: "/org/gnome/terminal/legacy/keybindings/find"
+        value: "'<Control>f'"
+
+    - name: terminal new tab shortcut
+      dconf:
+        key: "/org/gnome/terminal/legacy/keybindings/new-tab"
+        value: "'<Primary>t'"
+
+    - name: terminal new tab position
+      dconf:
+        key: "/org/gnome/terminal/legacy/new-tab-position"
+        value: "'next'"
+
+    #########
+    # power #
+    #########
+
+    - name: never blank screen
+      dconf:
+        key: "/org/gnome/desktop/session/idle-delay"
+        value: "uint32 0"
+
+    - name: inactive timeout
+      dconf:
+        key: "/org/gnome/settings-daemon/plugins/power/sleep-inactive-ac-type"
+        value: "'nothing'"
+
+    - name: inactive timeout on battery
+      dconf:
+        key: "/org/gnome/settings-daemon/plugins/power/sleep-inactive-battery-type"
+        value: "'nothing'"
+
+    - name: show battery percentage
+      dconf:
+        key: "/org/gnome/desktop/interface/show-battery-percentage"
+        value: "true"
+
+    - name: ignore lid close
+      become: true
+      lineinfile:
+        path: /etc/systemd/logind.conf
+        regexp: '^HandleLidSwitch='
+        insertafter: '^#HandleLidSwitch='
+        line: 'HandleLidSwitch=ignore'
+
+    #################
+    # date and time #
+    #################
+
+    - name: automatic timezone
+      dconf:
+        key: "/org/gnome/desktop/datetime/automatic-timezone"
+        value: "true"
+
+    - name: clock show date
+      dconf:
+        key: "/org/gnome/desktop/interface/clock-show-date"
+        value: "true"
+
+    - name: clock format
+      dconf:
+        key: "/org/gnome/desktop/interface/clock-format"
+        value: "'12h'"
+
+    ############
+    # behavior #
+    ############
+
+    - name: workspaces span displays
+      dconf:
+        key: "/org/gnome/mutter/workspaces-only-on-primary"
+        value: "false"
+
+    - name: app-switcher on the current workspace only
+      dconf:
+        key: "/org/gnome/shell/app-switcher/current-workspace-only"
+        value: "true"
+
+    - name: set xkb options
+      dconf:
+        key: "/org/gnome/desktop/input-sources/xkb-options"
+        value: "['caps:escape', 'lv3:rwin_switch', 'shift:both_capslock_cancel']"
+
+    - name: detach modal dialogs
+      dconf:
+        key: "/org/gnome/shell/overrides/attach-modal-dialogs"
+        value: "false"
+
+    - name: automount
+      dconf:
+        key: "/org/gnome/desktop/media-handling/automount"
+        value: "false"
+
+    - name: area click method
+      dconf:
+        key: "/org/gnome/desktop/peripherals/touchpad/click-method"
+        value: "'areas'"
+
+    - name: disable natural scrolling
+      dconf:
+        key: "/org/gnome/desktop/peripherals/touchpad/natural-scroll"
+        value: "false"
+
+    - name: enable two-finger scrolling
+      dconf:
+        key: "/org/gnome/desktop/peripherals/touchpad/two-finger-scrolling-enabled"
+        value: "true"
+
+    - name: mutter real-time scheduling
+      dconf:
+        key: "/org/gnome/mutter/experimental-features"
+        value: "['rt-scheduler']"
+
+    - name: enable subpixel antialiasing
+      dconf:
+        key: "/org/gnome/settings-daemon/plugins/xsettings/antialiasing"
+        value: "'rgba'"
+
+    - name: disable hot corner
+      dconf:
+        key: "/org/gnome/desktop/interface/enable-hot-corners"
+        value: "false"
+
+    - name: numlock on
+      dconf:
+        key: "/org/gnome/desktop/peripherals/keyboard/numlock-state"
+        value: "true"
+
+    # Only works on X11, not Wayland.
+
+    - name: middle click titlebar to lower
+      dconf:
+        key: "/org/gnome/desktop/wm/preferences/action-middle-click-titlebar"
+        value: "'lower'"
+
+    #####################
+    # epiphany settings #
+    #####################
+
+    - name: do not ask to set epiphany as the default browser
+      dconf:
+        key: "/org/gnome/epiphany/ask-for-default"
+        value: "false"
+
+    - name: always restore epiphany session
+      dconf:
+        key: "/org/gnome/epiphany/restore-session-policy"
+        value: "'always'"
+
+    - name: do not expand epiphany tabs to fill bar
+      dconf:
+        key: "/org/gnome/epiphany/ui/expand-tabs-bar"
+        value: "false"
+
+    - name: always show epiphany tab bar
+      dconf:
+        key: "/org/gnome/epiphany/ui/tabs-bar-visibility-policy"
+        value: "'always'"
+
+    - name: ask where to save downloads in epiphany
+      dconf:
+        key: "/org/gnome/epiphany/web/ask-on-download"
+        value: "true"
+
+    - name: enable epiphany adblock
+      dconf:
+        key: "/org/gnome/epiphany/web/enable-adblock"
+        value: "true"
+
+    - name: disable epiphany popups
+      dconf:
+        key: "/org/gnome/epiphany/web/enable-popups"
+        value: "false"
+
+    - name: enable epiphany safe browsing
+      dconf:
+        key: "/org/gnome/epiphany/web/enable-safe-browsing"
+        value: "true"
+
+    - name: disable smooth scrolling in epiphany
+      dconf:
+        key: "/org/gnome/epiphany/web/enable-smooth-scrolling"
+        value: "false"
+
+    - name: do not offer to remember passwords in epiphany
+      dconf:
+        key: "/org/gnome/epiphany/web/remember-passwords"
+        value: "false"
+
+    ###################
+    # profile picture #
+    ###################
+
+    - name: verify profile picture
+      stat:
+        path: /var/lib/AccountsService/icons/carl
+      register: profile_picture
+
+    - name: download profile picture
+      become: true
+      get_url:
+        url: https://carl.george.computer/me.png
+        dest: /var/lib/AccountsService/icons/carl
+        force: true
+      when: profile_picture.stat.checksum != 'd402e1effc8030039576856525b378743c53664b'
+
+    - name: set profile picture
+      become: true
+      lineinfile:
+        path: /var/lib/AccountsService/users/carl
+        regexp: '^Icon='
+        line: 'Icon=/var/lib/AccountsService/icons/carl'
