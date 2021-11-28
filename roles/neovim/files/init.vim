@@ -246,7 +246,8 @@ set helplang=ru  " Помощь на русском языке
 
 " ================= Visual Tweaks ===================
 
-set nowrap           " Wrap lines
+set signcolumn=auto:4
+set nowrap         " Wrap lines
 set cmdheight=1    " Make command line one line high
 set colorcolumn=+1 " Показывать рулетку в следующей колонке после textwidth
 set mousehide      " Hide the mouse when typing text

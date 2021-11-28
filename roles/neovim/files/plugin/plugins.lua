@@ -90,7 +90,6 @@ return require('packer').startup(function()
 
    use 'matze/vim-move'         -- перемещение строк и частей строк
    use 'wellle/targets.vim'     -- plugin that provides additional text objects
-   use 'kshenoy/vim-signature'  -- display and navigate marks
    use 'tpope/vim-unimpaired'   -- Different bidirectional motions: switch
                                 --   buffers, add blank lines, etc.
 
@@ -647,6 +646,21 @@ return require('packer').startup(function()
       config = function()
          -- vim.cmd('source ~/.config/nvim/lua/plugins_config/barbar.vim')
          require('plugins_config/barbar')
+      end
+   }
+
+   -- Marks
+   -- use 'kshenoy/vim-signature'  -- display and navigate marks
+   use { 'chentau/marks.nvim',
+      config = function()
+         require'marks'.setup {
+           force_write_shada = true,
+           default_mappings = true,
+           -- builtin_marks = { ".", "<", ">", "^", "'" },
+           signs = true,
+           excluded_filetypes = { 'git' },
+           mappings = {}
+         }
       end
    }
 
