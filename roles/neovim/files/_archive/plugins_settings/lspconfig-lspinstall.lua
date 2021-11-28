@@ -1,6 +1,17 @@
-local lsp_installer = require("nvim-lsp-installer")
+-- List of manually installed language servers.
+local manually_installed_servers = {
+   -- "ccls"
+}
+
+
+local lspconfig = require('lspconfig')
+
+local lspinstall_available, lspinstall = pcall(require, "lspinstall")
+lspinstall.setup() -- Adds the missing :LspInstall <language> command.
 
 -- Use an on_attach function to map the needed keys after
+
+---@param bufnr number
 local function on_attach (client, bufnr)
 
    local function buf_set_option(...)
@@ -22,12 +33,12 @@ local function on_attach (client, bufnr)
    require("keybindings").lspconfig(bufnr)
 end
 
-local root_pattern = require'lspconfig'.util.root_pattern
+
 local lsp_settings = {
-   sumneko_lua = require("lua-dev").setup{
+   lua = require("lua-dev").setup({
       plugins = true,
       lspconfig = {
-         root_dir = root_pattern('.git/','.root'),
+         -- cmd = {"lua-language-server"},
          on_attach = on_attach,
          settings = {
             Lua = {
@@ -57,14 +68,14 @@ local lsp_settings = {
             }
          }
       }
-   },
+   }),
    vim = {
       on_attach = on_attach,
    },
-   clangd = {
+   cpp = { -- clangd
       on_attach = on_attach,
       cmd = {
-         vim.fn.stdpath('data').."/lsp_servers/clangd/clangd",
+         vim.env.HOME .. "/.local/share/nvim/lspinstall/cpp/clangd/bin/clangd",
          -- "--compile-commands-dir=debug",
          "--background-index",
          "--suggest-missing-includes",
@@ -111,19 +122,34 @@ local lsp_settings = {
    }
 }
 
--- Register a handler that will be called for all installed servers.
--- Alternatively, you may also register handlers on specific server instances
--- instead (see example below).
-lsp_installer.on_server_ready(function(server)
-    -- print(server.name)
 
-    -- (optional) Customize the options passed to the server
-    -- if server.name == "tsserver" then
-    --     opts.root_dir = function() ... end
-    -- end
+local servers = {}
+if lspinstall_available then
+   servers = lspinstall.installed_servers()
+end
 
-    -- This setup() function is exactly the same as lspconfig's setup function.
-    -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-    -- server:setup(opts)
-    server:setup( lsp_settings[server.name] )
-end)
+-- if table is not empty
+if next(manually_installed_servers) then
+   -- Add the content of the 'manually_installed_servers'
+   -- list to the 'servers' list.
+   table.insert(servers, unpack(manually_installed_servers))
+end
+
+
+local function setup_lsp_servers()
+   for _, server in ipairs(servers) do
+      -- print(server)
+      lspconfig[server].setup( lsp_settings[server] )
+   end
+end
+setup_lsp_servers()
+
+-- Automatically reload after `:LspInstall <server>`
+-- so we don't have to restart neovim.
+if lspinstall_available then
+   lspinstall.post_install_hook = function()
+      setup_lsp_servers()
+      -- Triggers the FileType autocmd that starts the server.
+      vim.cmd("bufdo e")
+   end
+end

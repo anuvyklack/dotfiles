@@ -304,8 +304,10 @@ return require('packer').startup(function()
       requires = {
          -- Adds the missing :LspInstall <language> command
          -- to conveniently install language servers.
-         {'kabouzeid/nvim-lspinstall',
-            as = 'lspinstall'},
+         -- {'kabouzeid/nvim-lspinstall',
+         --    as = 'lspinstall'},
+
+         {'williamboman/nvim-lsp-installer', as = 'lsp-installer'},
 
          -- Setup for lua and plugins development.
          {'folke/lua-dev.nvim',
