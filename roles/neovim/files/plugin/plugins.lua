@@ -693,6 +693,12 @@ return require('packer').startup(function()
    }
 
    use { 'kevinhwang91/nvim-bqf', as = 'better-quickfix' }
+   use { 'https://gitlab.com/yorickpeterse/nvim-pqf',
+      as = 'pretty-quickfix',
+      config = function()
+         require('pqf').setup()
+      end
+   }
 
    -- <leader>? : 40-column cheat sheet
    use { 'anuvyklack/vim-cheat40', as = 'cheat40' } -- my fork
