@@ -208,7 +208,7 @@ return require('packer').startup(function()
 
    use { 'jlanzarotta/bufexplorer',
       config = function()
-         vim.g.bufExplorerFindActive = 0 -- Do not go to active window.
+         vim.g.bufExplorerFindActive = 0  -- Do not go to active window.
       end
    }
 
@@ -423,8 +423,8 @@ return require('packer').startup(function()
          'jvgrootveld/telescope-zoxide'
       },
       config = function() require('plugins_config/telescope') end,
-      cmd = 'Telescope',
-      keys = {'<leader>f'}
+      -- cmd = 'Telescope',
+      -- keys = {'<leader>f', '<leader>fh'}
    }
 
    -------------------- IDE features ---------------------
@@ -470,7 +470,7 @@ return require('packer').startup(function()
 
    use 'SirJson/fzf-gitignore'
 
-   use { 'Neui/cmakecache-syntax.vim', as = 'syntax-cmakecache'}
+   use { 'Neui/cmakecache-syntax.vim', as = 'syntax-cmakecache' }
    -- use { 'zinit-zsh/zinit-vim-syntax', ft = 'zsh' } -- zinit syntaxis
 
    use { 'anuvyklack/vim-dealii-prm',
@@ -479,7 +479,7 @@ return require('packer').startup(function()
    }
 
    -- Kitty terminal conf file syntax highlight.
-   use { "fladson/vim-kitty", as = 'syntax-kitty-conf'}
+   use { "fladson/vim-kitty", as = 'syntax-kitty-conf' }
 
    -------------------------------------------------------
 
