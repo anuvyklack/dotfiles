@@ -7,7 +7,7 @@
 "  ░██ ░██  ░██ ░██  ░░███  ██  ░░██   ░██ ███ ░██ ░██
 "  ░░  ░░   ░░  ░░    ░░░  ░░    ░░    ░░ ░░░  ░░  ░░
 
-"-------------------- Nvui GUI -----------------------
+" --------------------- Nvui GUI ------------------------
 if exists('g:nvui')
   source ~/.config/nvim/ginit.vim
 endif
@@ -26,22 +26,26 @@ let maplocalleader = ','
 "                            " unable to download spell files. With Debian
 "                            " Neovim, though, it works.
 
-set mouse=a          " Enable mouse in all modes
-set hidden           " Buffers can exist in the background
-                     "   without being in a window.
-set number           " Показывать нумерацию строк
+set mouse=a        " Enable mouse in all modes
+set hidden         " Buffers can exist in the background without being in
+                   " a window.
+
+set number         " Показывать нумерацию строк
 " set relativenumber
-set showcmd          " Show incomplete cmds down the bottom
-set showmode         " Show current mode down the bottom
-set laststatus=2     " всегда отображать статусную строку
-set novisualbell     " Отключаем пищалки и моргалки
-set autoread         " Reload files changed outside vim
-set autochdir        " set pwd as the dir of the active file
-set termguicolors    " 24 bit color support
+set noautochdir    " Set pwd as the dir of the active file.
+                   " WARNING: If set this option breakes
+                   " ahmedkhalf/project.nvim plugin.
+
+set showcmd        " Show incomplete cmds down the bottom
+set showmode       " Show current mode down the bottom
+set laststatus=2   " всегда отображать статусную строку
+set novisualbell   " Отключаем пищалки и моргалки
+set autoread       " Reload files changed outside vim
+set termguicolors  " 24 bit color support
 
 set backspace=indent,eol,start  " Allow backspace in insert mode
 set timeout timeoutlen=1300  " Время в мс в течении которого Vim ждёт
-                             "   продолжения многосимвольной команды.
+                             " продолжения многосимвольной команды.
 set ttimeoutlen=50   " Время переключения между режимами (default 50)
 syntax enable        " Включить подсветку синтаксиса
 
@@ -54,7 +58,7 @@ set titlestring=%t  " tile
 
 set exrc    " Allow vim search local configuratin files in project filders.
 set secure  " Disallows the use of :autocmd, shell and write commands in
-            "   local exrc files.
+            " local exrc files.
 
 " set virtualedit=all
 
@@ -95,7 +99,6 @@ endif
 " Clipboard                                                        {{{
 " ====================================================================
 if has('wsl')
-" if has('unix')
     let g:clipboard = {
           \   'name': 'wslclipboard',
           \   'copy': {
@@ -108,6 +111,7 @@ if has('wsl')
           \   },
           \   'cache_enabled': 1,
           \ }
+" elseif has('unix')
 endif
 " }}}
 

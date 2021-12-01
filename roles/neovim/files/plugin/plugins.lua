@@ -85,20 +85,35 @@ return require('packer').startup(function()
       end
    }
    ----------------------------------------------------}}}
-
+   --                    Treesitter                    {{{
+   -------------------------------------------------------
+   use { 'nvim-treesitter/nvim-treesitter',
+      as = 'treesitter',
+      requires = {
+         {'nvim-treesitter/nvim-treesitter-refactor',    as = 'treesitter-refactor'},
+         {'nvim-treesitter/nvim-treesitter-textobjects', as = 'treesitter-textobjects'},
+         {'RRethy/nvim-treesitter-textsubjects',         as = 'treesitter-textsubjects'},
+         {'nvim-treesitter/playground',                  as = 'treesitter-playground'},
+         {'p00f/nvim-ts-rainbow',                        as = 'treesitter-rainbow'},
+         {'romgrk/nvim-treesitter-context',              as = 'treesitter-context'},
+      },
+      run = ':TSUpdate',
+      config = function() require('plugins_config/treesitter') end
+   }
+   ----------------------------------------------------}}}
    -------------------- Text editing ---------------------
 
    use 'matze/vim-move'         -- перемещение строк и частей строк
    use 'wellle/targets.vim'     -- plugin that provides additional text objects
    use 'tpope/vim-unimpaired'   -- Different bidirectional motions: switch
-                                --   buffers, add blank lines, etc.
+                                -- buffers, add blank lines, etc.
 
    -- Until https://github.com/neovim/neovim/pull/13823 will be merged.
    use 'tjdevries/astronauta.nvim'
 
    -- Comments {{{
 
-   use { 'tomtom/tcomment_vim',   -- Comments. For help use :help tcomment
+   use { 'tomtom/tcomment_vim',   -- Comments. For doc call :help tcomment
       as = 'tcomment',
       config = function() require('plugins_config/tcomment') end
    }
@@ -135,8 +150,7 @@ return require('packer').startup(function()
    }
 
    -- -- Not yet as usable as tpope/vim-surround.
-   -- use {
-   --    "blackCauldron7/surround.nvim",
+   -- use { "blackCauldron7/surround.nvim",
    --    config = function()
    --       vim.g.surround_mappings_style = 'surround'
    --       vim.g.surround_load_autogroups = true
@@ -171,6 +185,15 @@ return require('packer').startup(function()
    -- Multiple cursors
    -- https://github.com/mg979/vim-visual-multi
    use { 'mg979/vim-visual-multi', as = 'multiple-cursors'}
+
+   ---------------------- Clipboard ----------------------
+
+   -- use { 'AckslD/nvim-neoclip.lua',
+   --    requires = {'tami5/sqlite.lua', module = 'sqlite'},
+   --    config = function()
+   --       require('neoclip').setup()
+   --    end,
+   -- }
 
    -------------------- Visual tweaks --------------------
 
@@ -291,37 +314,21 @@ return require('packer').startup(function()
    --             LSP, Completion, Snippets            {{{
    -------------------------------------------------------
 
-   -- For lsp the following has been working pretty well for me
-   -- nvim-lspconfig (for loading language servers)
-   -- nvim-compe (for completion)
-   -- lsp-trouble (for viewing info)
-   -- And then come-tabnine as a tabnine source for compe + lspsaga for cool icons.
-   -- Its definitely not a unified experience, but it isn't very hard to put
-   -- together,
-
-   use { 'neovim/nvim-lspconfig',
-      as = 'lspconfig',
+   use { 'neovim/nvim-lspconfig', as = 'lspconfig',
       requires = {
-         -- Adds the missing :LspInstall <language> command
-         -- to conveniently install language servers.
-         -- {'kabouzeid/nvim-lspinstall',
-         --    as = 'lspinstall'},
-
-         {'williamboman/nvim-lsp-installer', as = 'lsp-installer'},
-
-         -- Setup for lua and plugins development.
-         {'folke/lua-dev.nvim',
-            as = 'lua-dev'}
+         { 'williamboman/nvim-lsp-installer', -- LSP servers installer.
+            as = 'lsp-installer' },
+         { 'folke/lua-dev.nvim', -- Setup for lua and plugins development.
+            as = 'lua-dev' }
       },
       config = function() require('plugins_config/lspconfig') end
    }
 
-   -- use { 'glepnir/lspsaga.nvim',
-   -- -- use { "jasonrhansen/lspsaga.nvim",
-   --    -- branch = 'finder-preview-fixes',
-   --    as = 'lspsaga',
-   --    config = function() require('plugins_config/lspsaga') end
-   -- }
+   -- 'glepnir/lspsaga.nvim',  -- original
+   use { 'tami5/lspsaga.nvim',  -- maintained fork
+      as = 'lspsaga',
+      config = function() require('plugins_config/lspsaga') end
+   }
 
    use { 'folke/trouble.nvim',
       requires = 'kyazdani42/nvim-web-devicons',
@@ -393,27 +400,6 @@ return require('packer').startup(function()
    -- use { "mfussenegger/nvim-dap", as = 'dap' }
    -- use { "rcarriga/nvim-dap-ui",  as = 'dap-ui' }
    -- ----------------------------------------------------}}}
-
-   --------------------- Treesitter ----------------------
-   use { 'nvim-treesitter/nvim-treesitter',
-      as = 'treesitter',
-      requires = {
-         {'nvim-treesitter/nvim-treesitter-refactor',
-            as = 'treesitter-refactor'},
-         {'nvim-treesitter/nvim-treesitter-textobjects',
-            as = 'treesitter-textobjects'},
-         {'RRethy/nvim-treesitter-textsubjects',
-            as = 'treesitter-textsubjects'},
-         {'nvim-treesitter/playground',
-            as = 'treesitter-playground'},
-         {'p00f/nvim-ts-rainbow',
-            as = 'treesitter-rainbow'},
-         {'romgrk/nvim-treesitter-context',
-            as = 'treesitter-context'},
-      },
-      run = ':TSUpdate',
-      config = function() require('plugins_config/treesitter') end
-   }
 
    -------------------- Fuzzy finder ---------------------
    use { 'nvim-telescope/telescope.nvim',
@@ -488,8 +474,7 @@ return require('packer').startup(function()
    local color_themes = {
       -- gruvbox-material-dark {{{
       ['gruvbox-material-dark'] = function()
-         use {
-            'sainnhe/gruvbox-material',
+         use { 'sainnhe/gruvbox-material',
             after = 'treesitter',
             config = function()
                vim.o.background = 'dark'
@@ -521,8 +506,7 @@ return require('packer').startup(function()
       end, --}}}
       -- gruvbox-material-light {{{
       ['gruvbox-material-light'] = function()
-         use {
-            'sainnhe/gruvbox-material',
+         use { 'sainnhe/gruvbox-material',
             after = 'treesitter',
             config = function()
                vim.o.background = 'light'
@@ -554,8 +538,7 @@ return require('packer').startup(function()
       end, --}}}
       -- melange {{{
       ['melange'] = function()
-         use {
-            'savq/melange',
+         use { 'savq/melange',
             config = function()
                vim.o.background = 'light'
                vim.cmd 'colorscheme melange'
@@ -564,8 +547,7 @@ return require('packer').startup(function()
       end, --}}}
       -- moonshine {{{
       ['moonshine'] = function()
-         use {
-            'karoliskoncevicius/moonshine-vim',
+         use { 'karoliskoncevicius/moonshine-vim',
             config = function()
                vim.cmd 'colorscheme moonshine'
                -- vim.cmd 'colorscheme moonshine_lowcontrast'
@@ -579,8 +561,7 @@ return require('packer').startup(function()
       end, --}}}
       -- mellow {{{
       ['mellow'] = function()
-         use {
-            'adigitoleo/vim-mellow',
+         use { 'adigitoleo/vim-mellow',
             as = 'mellow',
             config = function()
                vim.o.background = 'light'
@@ -592,8 +573,7 @@ return require('packer').startup(function()
       end, --}}}
       -- tokyonight {{{
       ['tokyonight'] = function()
-         use {
-            'folke/tokyonight.nvim',
+         use { 'folke/tokyonight.nvim',
             setup = function()
                vim.g.tokyonight_style = "storm"
             end,
@@ -739,22 +719,22 @@ return require('packer').startup(function()
     --    config = function() require('plugins_config/nvim-tree') end
     -- }
 
-    -- use 'tpope/vim-vinegar'
+   -- use 'tpope/vim-vinegar'
 
-    -- use { 'ms-jpq/chadtree',
-    --    branch = 'chad',
-    --    run = 'python3 -m chadtree deps && nvim --headless +"CHADdeps | exit"',
-    --    cmd = {'CHADopen', 'CHADdeps', 'CHADhelp'}
-    -- }
+   -- use { 'ms-jpq/chadtree',
+   --    branch = 'chad',
+   --    run = 'python3 -m chadtree deps && nvim --headless +"CHADdeps | exit"',
+   --    cmd = {'CHADopen', 'CHADdeps', 'CHADhelp'}
+   -- }
 
-    -- -- Total Commander inspired file manager
-    -- use { 'ripxorip/bolt.nvim',
-    --    run = ':UpdateRemotePlugins'
-    -- }
+   -- -- Total Commander inspired file manager
+   -- use { 'ripxorip/bolt.nvim',
+   --    run = ':UpdateRemotePlugins'
+   -- }
 
-    -- use { 'luukvbaal/nnn.nvim',
-    --    config = function() require('plugins_config/nnn-nvim') end
-    -- }
+   -- use { 'luukvbaal/nnn.nvim',
+   --    config = function() require('plugins_config/nnn-nvim') end
+   -- }
 
    use { 'mcchrish/nnn.vim',
       config = function() require('plugins_config/nnn-vim') end
@@ -792,55 +772,55 @@ return require('packer').startup(function()
 
    ----------------------------------------------------}}}
 
-  --                      Orgmode                     {{{
-  -------------------------------------------------------
+   --                      Orgmode                     {{{
+   -------------------------------------------------------
 
-  -- use { 'kristijanhusak/orgmode.nvim',
-  --    config = function()
-  --       require('orgmode').setup{
-  --          org_hide_emphasis_markers = true,
-  --       }
-  --    end
-  -- }
+   -- use { 'kristijanhusak/orgmode.nvim',
+   --    config = function()
+   --       require('orgmode').setup{
+   --          org_hide_emphasis_markers = true,
+   --       }
+   --    end
+   -- }
 
-  use { 'vhyrro/neorg',
-     requires = "nvim-lua/plenary.nvim",
-     after = "treesitter",
-     branch = 'unstable',
-     setup = function() -- {{{
-        -- WARNING Temporary code block until neorg treesitter module
-        --         will be merged into `nvim-treesitter` repository.
-        local parser_configs = require('nvim-treesitter.parsers').get_parser_configs()
+   use { 'vhyrro/neorg',
+      requires = "nvim-lua/plenary.nvim",
+      after = "treesitter",
+      branch = 'unstable',
+      setup = function() -- {{{
+         -- WARNING Temporary code block until neorg treesitter module
+         --         will be merged into `nvim-treesitter` repository.
+         local parser_configs = require('nvim-treesitter.parsers').get_parser_configs()
 
-        parser_configs.norg = {
-           install_info = {
-              url = 'https://github.com/vhyrro/tree-sitter-norg',
-              -- files = { "src/parser.c" },
-              files  = { 'src/parser.c', 'src/scanner.cc' },
-              branch = 'main'
-           },
-        }
-     end, -- }}}
-     config = function() require('plugins_config/neorg') end
-  }
+         parser_configs.norg = {
+            install_info = {
+               url = 'https://github.com/vhyrro/tree-sitter-norg',
+               -- files = { "src/parser.c" },
+               files  = { 'src/parser.c', 'src/scanner.cc' },
+               branch = 'main'
+            },
+         }
+      end, -- }}}
+      config = function() require('plugins_config/neorg') end
+   }
 
-  ----------------------------------------------------}}}
+   ----------------------------------------------------}}}
 
    --                 Tmux integration                {{{
    ------------------------------------------------------
 
-   -- use {
-   --    'anuvyklack/vim-tmux-navigator',  -- my fork
-   --    -- 'christoomey/vim-tmux-navigator',  -- original
-   --
-   --    config = function()
-   --       -- Activate autoupdate on exit.
-   --       vim.g.tmux_navigator_save_on_switch = 0
-   --
-   --       -- Disable vim->tmux navigation when the Vim pane is zoomed in tmux.
-   --       vim.g.tmux_navigator_disable_when_zoomed = 1
-   --    end
-   -- }
+   use {
+      'anuvyklack/vim-tmux-navigator',  -- my fork
+      -- 'christoomey/vim-tmux-navigator',  -- original
+
+      config = function()
+         -- Activate autoupdate on exit.
+         vim.g.tmux_navigator_save_on_switch = 0
+
+         -- Disable vim->tmux navigation when the Vim pane is zoomed in tmux.
+         vim.g.tmux_navigator_disable_when_zoomed = 1
+      end
+   }
 
    -- use 'tmux-plugins/vim-tmux-focus-events'
    -- use 'tmux-plugins/vim-tmux'

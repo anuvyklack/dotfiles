@@ -1,5 +1,3 @@
-" https://github.com/wbthomason/packer.nvim
-
 call wilder#setup({'modes': [':', '/', '?']})
 
 " For Neovim or Vim with yarp

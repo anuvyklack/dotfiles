@@ -7,8 +7,8 @@ screen
             " (when tmux wasn't yet supported) and might be changed in future
             " releases, or get an alias
 
-" set vicmd=nvim
-set vicmd=nvr\ -s
+set vicmd=nvim
+" set vicmd=nvr\ -s
             " Command used to edit files in various contexts.  The default is
             " vim.  If you would like to use another vi clone such as Elvis or
             " Vile you will need to change this setting.

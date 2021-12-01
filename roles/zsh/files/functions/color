@@ -38,39 +38,44 @@ color ()
 
   shift
 
-  local lc=$'\e[' rc=m    # Standard ANSI terminal escape values.
-  local reset="${lc}0;${rc}"
+  # ESC is control character which starts all the escape sequences.
+  # ESC is encodes with one of the next sequences, which are all equivalent:
+  # `\033` `\x1b` `\e`
+  # `ESC [` chars are the CSI (Control Sequence Introducer)
+
+  local csi=$'\e[' rc=m    # Standard ANSI terminal escape values.
+  local reset="${csi}0;${rc}"
 
   case $style in
     bold|b)           b=1;            shift ;;
     faint|f)          b=2;            shift ;;
     italic|i)         b=3;            shift ;;
-    bold-italic|bi)   b=3${rc}${lc}1; shift ;;
+    bold-italic|bi)   b=3${rc}${csi}1; shift ;;
     underline|u)      b=4;            shift ;;
     inverse|in)       b=7;            shift ;;
     strikethrough|s)  b=9;            shift ;;
   esac
 
   case $color in
-    black|b)    echo "$lc${b};30$rc${@}$reset" ;;
-    red|r)      echo "$lc${b};31$rc${@}$reset" ;;
-    green|g)    echo "$lc${b};32$rc${@}$reset" ;;
-    yellow|y)   echo "$lc${b};33$rc${@}$reset" ;;
-    blue|bl)    echo "$lc${b};34$rc${@}$reset" ;;
-    magenta|m)  echo "$lc${b};35$rc${@}$reset" ;;
-    cyan|c)     echo "$lc${b};36$rc${@}$reset" ;;
-    white|w)    echo "$lc${b};37$rc${@}$reset" ;;
+    black|b)    echo "$csi${b};30$rc${@}$reset" ;;
+    red|r)      echo "$csi${b};31$rc${@}$reset" ;;
+    green|g)    echo "$csi${b};32$rc${@}$reset" ;;
+    yellow|y)   echo "$csi${b};33$rc${@}$reset" ;;
+    blue|bl)    echo "$csi${b};34$rc${@}$reset" ;;
+    magenta|m)  echo "$csi${b};35$rc${@}$reset" ;;
+    cyan|c)     echo "$csi${b};36$rc${@}$reset" ;;
+    white|w)    echo "$csi${b};37$rc${@}$reset" ;;
 
-    Black|bright-black|B)      echo "$lc${b};90$rc${@}$reset" ;;
-    Red|bright-red|R)          echo "$lc${b};91$rc${@}$reset" ;;
-    Green|bright-green|G)      echo "$lc${b};92$rc${@}$reset" ;;
-    Yellow|bright-yellow|Y)    echo "$lc${b};93$rc${@}$reset" ;;
-    Blue|bright-blue|Bl)       echo "$lc${b};94$rc${@}$reset" ;;
-    Magenta|bright-magenta|M)  echo "$lc${b};95$rc${@}$reset" ;;
-    Cyan|bright-cyan|C)        echo "$lc${b};96$rc${@}$reset" ;;
-    White|bright-white|W)      echo "$lc${b};97$rc${@}$reset" ;;
+    Black|bright-black|B)      echo "$csi${b};90$rc${@}$reset" ;;
+    Red|bright-red|R)          echo "$csi${b};91$rc${@}$reset" ;;
+    Green|bright-green|G)      echo "$csi${b};92$rc${@}$reset" ;;
+    Yellow|bright-yellow|Y)    echo "$csi${b};93$rc${@}$reset" ;;
+    Blue|bright-blue|Bl)       echo "$csi${b};94$rc${@}$reset" ;;
+    Magenta|bright-magenta|M)  echo "$csi${b};95$rc${@}$reset" ;;
+    Cyan|bright-cyan|C)        echo "$csi${b};96$rc${@}$reset" ;;
+    White|bright-white|W)      echo "$csi${b};97$rc${@}$reset" ;;
 
-    *)  echo "$lc${b};38;5;$(( ${color} ))$rc${@}$reset" ;;
+    *)  echo "$csi${b};38;5;$(( ${color} ))$rc${@}$reset" ;;
   esac
 }
 
