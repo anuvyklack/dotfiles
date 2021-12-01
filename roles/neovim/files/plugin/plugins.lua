@@ -383,9 +383,23 @@ return require('packer').startup(function()
 
    -- use { "liuchengxu/vista.vim" }
 
-   use { 'ahmedkhalf/lsp-rooter.nvim',
-      as = 'lsp-rooter',
-      config = function() require('lsp-rooter').setup() end
+   -- use { 'ahmedkhalf/lsp-rooter.nvim',
+   --    as = 'lsp-rooter',
+   --    config = function() require('lsp-rooter').setup() end
+   -- }
+
+   use { 'ahmedkhalf/project.nvim',
+      config = function()
+         require('project_nvim').setup {
+            detection_methods = { 'lsp', 'pattern', },
+            patterns = {
+               '.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json',
+               '>.config', '>roles'
+            },
+            silent_chdir = false, -- When set to false, you will get a message
+                                  -- when project.nvim changes your directory.
+         }
+      end
    }
 
    -- use 'airblade/vim-rooter'
