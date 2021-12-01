@@ -62,6 +62,8 @@ require('packer').init{
 return require('packer').startup(function()
    use 'wbthomason/packer.nvim' -- Packer can manage itself
 
+   use 'lewis6991/impatient.nvim' -- Improve startup time for Neovim.
+
    --                   Key Mappings                   {{{
    -------------------------------------------------------
    use { 'b0o/mapx.nvim', as = 'mapx' }  -- create key mappings
