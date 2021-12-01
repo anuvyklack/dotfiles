@@ -50,13 +50,27 @@ end -- }}}
 
 -- Telescope {{{
 function M.telescope()
+   if not mapx_available then return end
+
+   nnoremap('<C-;>', '<cmd>Telescope commands<CR>',        'Execute command')
+   nnoremap('q:',    '<cmd>Telescope command_history<CR>', 'Command-line history')
+   nnoremap('q/',    '<cmd>Telescope search_history<CR>',  'Search history')
+   nnoremap('q?',    '<cmd>Telescope search_history<CR>',  'Search history')
+
+   nnoremap('z=',    '<cmd>Telescope spell_suggest<CR>',   'Spell Suggest')
 
    mapx.nname('<leader>f', 'Telescope')
 
-   nnoremap('<leader>ff', '<cmd>Telescope find_files<cr>', 'Telescope: Find files')
-   nnoremap('<leader>fg', '<cmd>Telescope live_grep<cr>',  'Telescope: Live grep')
-   nnoremap('<leader>fb', '<cmd>Telescope buffers<cr>',    'Telescope: Buffers')
-   nnoremap('<leader>fh', '<cmd>Telescope help_tags<cr>',  'Telescope: Help tags')
+   nnoremap('<leader>ff', '<cmd>Telescope find_files<CR>', 'Find files')
+   nnoremap('<leader>fg', '<cmd>Telescope live_grep<CR>',  'Live grep')
+   nnoremap('<leader>fb', '<cmd>Telescope buffers<CR>',    'Buffers')
+   nnoremap('<leader>fh', '<cmd>Telescope help_tags<CR>',  'Help tags')
+   nnoremap('<leader>fp', '<cmd>Telescope projects<CR>',   'Projects')
+   nnoremap('<leader>fo', '<cmd>Telescope vim_options<CR>','Vim Options')
+   nnoremap('<leader>fm', '<cmd>MarksListAll<CR>',         'Marks')
+
+   nnoremap('<C-/>', '<cmd>Telescope current_buffer_fuzzy_find<CR>', 'Search in buffer')
+   -- nnoremap('<leader>fs', '<cmd>Telescope current_buffer_fuzzy_find<CR>', 'Search in buffer')
 
 end -- }}}
 

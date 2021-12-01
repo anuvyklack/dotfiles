@@ -419,10 +419,8 @@ return require('packer').startup(function()
    use { 'nvim-telescope/telescope.nvim',
       as = 'telescope',
       requires = {
-         'nvim-lua/popup.nvim',
          'nvim-lua/plenary.nvim',
          -- 'famiu/bufdelete.nvim',
-         'jvgrootveld/telescope-zoxide'
       },
       config = function() require('plugins_config/telescope') end,
       -- cmd = 'Telescope',
