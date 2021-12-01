@@ -505,21 +505,13 @@ lua require('keybindings')
 " Fix writing :W to save
 command! W w
 
+" nnoremap <expr> zz "zz" . (winheight(0) * 0.1)->float2nr() . "<c-e>"
+
 " Копировать, вставить
 vnoremap <silent> <C-c> "+y :let @*=@+<CR>
 map <C-p> "+p
 
 map Y y$
-
-" lua << EOF
-" -- Dealing with word wrap:
-" -- If cursor is inside very long line in the file than wraps around
-" -- several rows on the screen, then 'j' key moves you to the next line
-" -- in the file, but not to the next row on the screen under your
-" -- previous position as in other editors.  These bindings fixes this.
-" vim.api.nvim_set_keymap('n', 'k', "v:count == 0 ? 'gk' : 'k'", {noremap = true, expr = true, silent = true})
-" vim.api.nvim_set_keymap('n', 'j', "v:count == 0 ? 'gj' : 'j'", {noremap = true, expr = true, silent = true})
-" EOF
 
 " nnoremap j gj
 " nnoremap k gk

@@ -10,20 +10,27 @@
 
 local M = {} -- All functions that need to be exported should go in this table.
 
-local mapx = require'mapx'.setup({ global = true, whichkey = true })
+local mapx_available, mapx = pcall(require, 'mapx')
 
--- Dealing with word wrap:
--- If cursor is inside very long line in the file than wraps around
--- several rows on the screen, then 'j' key moves you to the next line
--- in the file, but not to the next row on the screen under your
--- previous position as in other editors.  These bindings fixes this.
-nnoremap('k', "v:count ? 'k' : 'gk'", {silent = true, expr = true})
-nnoremap('j', "v:count ? 'j' : 'gj'", {silent = true, expr = true})
+if mapx_available then
+   mapx.setup({ global = true, whichkey = true })
+
+   -- local mapx = require'mapx'.setup({ global = true, whichkey = true })
+
+   -- Dealing with word wrap:
+   -- If cursor is inside very long line in the file than wraps around
+   -- several rows on the screen, then 'j' key moves you to the next line
+   -- in the file, but not to the next row on the screen under your
+   -- previous position as in other editors.  These bindings fixes this.
+   nnoremap('k', "v:count ? 'k' : 'gk'", {silent = true, expr = true})
+   nnoremap('j', "v:count ? 'j' : 'gj'", {silent = true, expr = true})
+
+end
 
 
 -- Hop (Easymotion) {{{
 function M.hop()
-   -- if not mapx_available then return end
+   if not mapx_available then return end
 
    nnoremap(';w', '<cmd>HopWordAC<CR>', 'Easymotion forward word')
    vnoremap(';w', '<cmd>HopWordAC<CR>', 'Easymotion forward word')
@@ -55,6 +62,7 @@ end -- }}}
 
 -- LSP {{{
 function M.lspconfig(bufnr)
+   if not mapx_available then return end
 
    mapx.nname('<leader>l', 'LSP')
 
@@ -131,6 +139,7 @@ end --}}}
 
 -- nvim-compe {{{
 function M.nvim_compe()
+   if not mapx_available then return end
 
    local opts = {noremap = true, silent = true, expr = true}
 
@@ -199,16 +208,10 @@ function M.treesitter_textobjects()
    }
 end --}}}
 
--- nnn file manager {{{
-function M.nnn()
-
-   nnoremap('<F3>', '<cmd>NnnPicker<CR>', 'Open file-explorer')
-   -- nnoremap('<F3>', '<cmd>NnnExplorer<CR>', 'Open file-explorer')
-
-end --}}}
-
 -- nvim-tree {{{
 function M.nvim_tree()
+   if not mapx_available then return end
+
    nnoremap('<F3>', '<cmd>NvimTreeToggle<CR>', 'Open file-explorer')
 
    -- local tree_cb = require'nvim-tree.config'.nvim_tree_callback
@@ -218,8 +221,19 @@ function M.nvim_tree()
 
 end --}}}
 
+-- nnn file manager {{{
+function M.nnn()
+   if not mapx_available then return end
+
+   nnoremap('<F4>', '<cmd>NnnPicker<CR>', 'Open file-explorer')
+   -- nnoremap('<F3>', '<cmd>NnnExplorer<CR>', 'Open file-explorer')
+
+end --}}}
+
 -- Barbar (tabline) {{{
 function M.barbar()
+   if not mapx_available then return end
+
    local opts = { silent = true }
 
    -- Move to previous/next

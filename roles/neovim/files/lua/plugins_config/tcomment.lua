@@ -6,7 +6,8 @@
 --     ['gcc'] = 'Current line'
 -- })
 
-local m = require'mapx'
+local mapx_available, mapx = pcall(require, 'mapx')
+if not mapx_available then return end
 
-m.nname('gc', 'Comments')
--- m.vname('gc', 'Comment region')
+mapx.nname('gc', 'Comments')
+-- mapx.vname('gc', 'Comment region')
