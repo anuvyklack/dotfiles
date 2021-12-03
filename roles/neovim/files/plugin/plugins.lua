@@ -164,10 +164,11 @@ return require('packer').startup(function()
    -- }}}
 
    -- Improved * keybinding action.
-   use { 'haya14busa/vim-asterisk',
-      as = 'asterisk',
-      setup = function()
-         vim.g['asterisk#keeppos'] = 1
+   use { 'haya14busa/vim-asterisk', as = 'asterisk',
+      config = function()
+         -- Keep cursor position inside word between jumps.
+         vim.g['asterisk#keeppos'] = 0
+         require('keybindings').asterisks()
       end
    }
 

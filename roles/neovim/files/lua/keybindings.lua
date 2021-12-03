@@ -286,6 +286,14 @@ function M.barbar()
 
 end -- }}}
 
+function M.asterisks()
+   if not mapx_available then return end
+   map('*',  '<Plug>(asterisk-z*)')
+   map('#',  '<Plug>(asterisk-z#)')
+   map('g*', '<Plug>(asterisk-gz*)', ':help gstar')
+   map('g#', '<Plug>(asterisk-gz#)', ':help g#')
+end
+
 return M
 
 -- vim: fdm=marker
