@@ -68,15 +68,9 @@ return require('packer').startup(function()
    -------------------------------------------------------
    use { 'b0o/mapx.nvim', as = 'mapx' }  -- create key mappings
 
-   use { 'folke/which-key.nvim', -- WhichKey
-      as = 'which-key',
+   use { 'folke/which-key.nvim', as = 'which-key', -- WhichKey
       config = function()
          require('which-key').setup {
-            plugins = {
-               marks = true,
-               registers = true
-            },
-            -- operators = { gc = "Comments" },
             spelling = {
                -- Enabling this module will show WhichKey when pressing z=
                -- to select spelling suggestions.
@@ -89,8 +83,7 @@ return require('packer').startup(function()
    ----------------------------------------------------}}}
    --                    Treesitter                    {{{
    -------------------------------------------------------
-   use { 'nvim-treesitter/nvim-treesitter',
-      as = 'treesitter',
+   use { 'nvim-treesitter/nvim-treesitter', as = 'treesitter',
       requires = {
          {'nvim-treesitter/nvim-treesitter-refactor',    as = 'treesitter-refactor'},
          {'nvim-treesitter/nvim-treesitter-textobjects', as = 'treesitter-textobjects'},
@@ -102,6 +95,8 @@ return require('packer').startup(function()
       run = ':TSUpdate',
       config = function() require('plugins_config/treesitter') end
    }
+
+   -- use 'wellle/context.vim'   -- Vscode breadcrumbs analog
    ----------------------------------------------------}}}
    -------------------- Text editing ---------------------
 
@@ -132,8 +127,7 @@ return require('packer').startup(function()
    -- use  'othree/eregex.vim'
 
    -- Autopairs {{{
-   use { 'windwp/nvim-autopairs',
-      as = 'autopairs',
+   use { 'windwp/nvim-autopairs', as = 'autopairs',
       config = function()
          require('nvim-autopairs').setup()
          -- require("nvim-autopairs.completion.compe").setup({
@@ -178,8 +172,7 @@ return require('packer').startup(function()
    -- }
 
    -- Подсвечивать и удалять висящие пробелы в конце строк
-   use { 'ntpeters/vim-better-whitespace',
-      as = 'better-whitespace',
+   use { 'ntpeters/vim-better-whitespace', as = 'better-whitespace',
       config = function()
          vim.cmd('source ~/.config/nvim/lua/plugins_config/vim-better-whitespace.vim')
       end
@@ -257,13 +250,11 @@ return require('packer').startup(function()
 
    ---------------------- Movements ----------------------
 
-   -- use { 'easymotion/vim-easymotion',
-   --   as = 'easymotion',
+   -- use { 'easymotion/vim-easymotion', as = 'easymotion',
    --   config = function() require('plugins_config/easymotion') end
    -- }
 
-   use { 'phaazon/hop.nvim',
-      as = 'easymotion-hop',
+   use { 'phaazon/hop.nvim', as = 'easymotion-hop',
       config = function()
          require'hop'.setup {
             winblend = 30,
@@ -327,7 +318,7 @@ return require('packer').startup(function()
       config = function() require('plugins_config/lspconfig') end
    }
 
-   -- 'glepnir/lspsaga.nvim',  -- original
+   -- use { 'glepnir/lspsaga.nvim',  -- original
    use { 'tami5/lspsaga.nvim',  -- maintained fork
       as = 'lspsaga',
       config = function() require('plugins_config/lspsaga') end
@@ -356,9 +347,7 @@ return require('packer').startup(function()
 
    -- Completion {{{
 
-   -- Icons in completion menu.
-   use { 'onsails/lspkind-nvim',
-      as = 'lspkind',
+   use { 'onsails/lspkind-nvim', as = 'lspkind', -- Icons in completion menu.
       config = function() require('plugins_config/lspkind-nvim') end
    }
 
@@ -377,17 +366,11 @@ return require('packer').startup(function()
 
    use { 'jubnzv/virtual-types.nvim', as = 'virtual-types' }
 
-   use { 'simrat39/symbols-outline.nvim',
-      as = 'symbols-outline',
+   use { 'simrat39/symbols-outline.nvim', as = 'symbols-outline',
       config = function() require('plugins_config/symbols-outline') end
    }
 
    -- use { "liuchengxu/vista.vim" }
-
-   -- use { 'ahmedkhalf/lsp-rooter.nvim',
-   --    as = 'lsp-rooter',
-   --    config = function() require('lsp-rooter').setup() end
-   -- }
 
    use { 'ahmedkhalf/project.nvim',
       config = function()
@@ -397,8 +380,8 @@ return require('packer').startup(function()
                '.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json',
                '>.config', '>roles'
             },
-            silent_chdir = false, -- When set to false, you will get a message
-                                  -- when project.nvim changes your directory.
+            silent_chdir = true, -- When set to false, you will get a message
+                                 -- when project.nvim changes your directory.
          }
       end
    }
@@ -419,8 +402,7 @@ return require('packer').startup(function()
    -- ----------------------------------------------------}}}
 
    -------------------- Fuzzy finder ---------------------
-   use { 'nvim-telescope/telescope.nvim',
-      as = 'telescope',
+   use { 'nvim-telescope/telescope.nvim', as = 'telescope',
       requires = {
          'nvim-lua/plenary.nvim',
          -- 'famiu/bufdelete.nvim',
@@ -438,7 +420,6 @@ return require('packer').startup(function()
    --                         -- and
    --                         -- :help include-search
 
-   -- use 'wellle/context.vim'   -- Vscode breadcrumbs analog
    -- use 'majutsushi/tagbar'    -- список тегов в текущем файле
    -- use 'liuchengxu/vista.vim' -- View and search LSP symbols and tags.
 
@@ -476,8 +457,7 @@ return require('packer').startup(function()
    use { 'Neui/cmakecache-syntax.vim', as = 'syntax-cmakecache' }
    -- use { 'zinit-zsh/zinit-vim-syntax', ft = 'zsh' } -- zinit syntaxis
 
-   use { 'anuvyklack/vim-dealii-prm',
-      as = 'syntax-dealii-prm',
+   use { 'anuvyklack/vim-dealii-prm', as = 'syntax-dealii-prm',
       -- event = 'BufNewFile,BufRead *.prm'
    }
 
@@ -578,8 +558,7 @@ return require('packer').startup(function()
       end, --}}}
       -- mellow {{{
       ['mellow'] = function()
-         use { 'adigitoleo/vim-mellow',
-            as = 'mellow',
+         use { 'adigitoleo/vim-mellow', as = 'mellow',
             config = function()
                vim.o.background = 'light'
                -- vim.o.background = 'dark'
@@ -637,8 +616,7 @@ return require('packer').startup(function()
 
    -- bufferline / tabline
 
-   use { 'romgrk/barbar.nvim',
-      as = 'barbar-tabline',
+   use { 'romgrk/barbar.nvim', as = 'barbar-tabline',
       requires = 'kyazdani42/nvim-web-devicons',
       config = function()
          -- vim.cmd('source ~/.config/nvim/lua/plugins_config/barbar.vim')
@@ -711,8 +689,7 @@ return require('packer').startup(function()
    -- -- foldtext customization
    -- use 'scr1pt0r/crease.vim'
 
-   use { 'norcalli/nvim-colorizer.lua',
-      as = 'colorizer',
+   use { 'norcalli/nvim-colorizer.lua', as = 'colorizer',
       ft = {'vim', 'lua', 'conf', 'tmux', 'kitty', 'vifm', 'markdown'},
       config = function()
          require'colorizer'.setup {
@@ -771,8 +748,7 @@ return require('packer').startup(function()
    --              Lua plugins development             {{{
    -------------------------------------------------------
 
-   use { 'rafcamlet/nvim-luapad',
-      as = 'luapad',
+   use { 'rafcamlet/nvim-luapad', as = 'luapad',
       config = function()
          vim.cmd [[
             command! LuaAttach lua require('luapad').attach()
@@ -856,8 +832,7 @@ return require('packer').startup(function()
 
    --          Русский язык (Switch language)          {{{
    -------------------------------------------------------
-   use { 'lyokha/vim-xkbswitch',
-      as = 'xkbswitch',
+   use { 'lyokha/vim-xkbswitch', as = 'xkbswitch',
       config = function()
          vim.g.XkbSwitchEnabled = 1
          vim.g.XkbSwitchLib = '/usr/local/lib/libg3kbswitch.so'

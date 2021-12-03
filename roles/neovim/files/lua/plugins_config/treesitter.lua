@@ -4,19 +4,17 @@ local available, treesitter_config = pcall(require, "nvim-treesitter.configs")
 if not available then return end
 
 treesitter_config.setup {
-
    -- ensure_installed = "maintained",
    -- 'yaml'
    ensure_installed = {
       'bash', 'comment', 'c', 'cpp', 'fennel', 'go', 'html', 'json',
       'latex', 'lua', 'python', 'regex', 'rust', 'toml', 'query'
    },
-
-   highlight = { enable = true,
-                 use_languagetree = true },
-
+   highlight = {
+      enable = true,
+      use_languagetree = true
+   },
    indent = {enable = true},
-
    incremental_selection = {
       enable = true,
       keymaps = {
@@ -26,7 +24,6 @@ treesitter_config.setup {
          node_decremental = 'grm'
       }
    },
-
    playground = {
       enable = true,
       disable = {},
@@ -46,24 +43,19 @@ treesitter_config.setup {
          show_help = '?',
       },
    },
-
    textobjects = require("keybindings").treesitter_textobjects(),
-
    textsubjects = {
-      enable = true,
-      keymaps = {
-         ['.'] = 'textsubjects-smart',
-         [';'] = 'textsubjects-big',
-      }
+       enable = true,
+       keymaps = {
+           ['.'] = 'textsubjects-smart',
+           [';'] = 'textsubjects-container-outer',
+       }
    },
-
    rainbow = {
       enable = true,
-      -- Highlight also non-parentheses delimiters,
-      --   boolean or table: lang -> boolean
-      extended_mode = true,
-      -- Do not enable for files with more than 1000 lines, int
-      max_file_lines = 1000,
+      extended_mode = true, -- Highlight also non-parentheses delimiters,
+                            -- boolean or table: lang -> boolean.
+      max_file_lines = 1000, -- Do not enable for files with more than 1000 lines, int.
    }
 
    -- refactor = {

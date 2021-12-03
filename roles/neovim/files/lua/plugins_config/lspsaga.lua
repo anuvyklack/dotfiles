@@ -40,7 +40,7 @@ require('lspsaga').init_lsp_saga {
   hint_sign  = "", -- 
   infor_sign = "", -- 
 
-  dianostic_header_icon = ' ',
+  diagnostic_header_icon = ' ',
 
   -- code action
   code_action_icon = '',
