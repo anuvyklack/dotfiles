@@ -67,10 +67,10 @@ function M.telescope()
    nnoremap('<leader>fh', '<cmd>Telescope help_tags<CR>',  'Help tags')
    nnoremap('<leader>fp', '<cmd>Telescope projects<CR>',   'Projects')
    nnoremap('<leader>fo', '<cmd>Telescope vim_options<CR>','Vim Options')
-   nnoremap('<leader>fm', '<cmd>MarksListAll<CR>',         'Marks')
+
+   nnoremap('<leader>fm', '<cmd>MarksListBuf<CR>',         'Marks')
 
    nnoremap('<C-/>', '<cmd>Telescope current_buffer_fuzzy_find<CR>', 'Search in buffer')
-   -- nnoremap('<leader>fs', '<cmd>Telescope current_buffer_fuzzy_find<CR>', 'Search in buffer')
 
 end -- }}}
 
