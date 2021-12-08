@@ -40,6 +40,7 @@ call wilder#set_option('pipeline', [
 call wilder#set_option(
       \ 'renderer',
       \ wilder#popupmenu_renderer({
+      \     'apply_incsearch_fix': 1,
       \     'highlighter': wilder#basic_highlighter(),
       \ })
 \)
