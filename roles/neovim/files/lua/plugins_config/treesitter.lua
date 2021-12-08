@@ -8,7 +8,8 @@ treesitter_config.setup {
    -- 'yaml'
    ensure_installed = {
       'bash', 'comment', 'c', 'cpp', 'fennel', 'go', 'html', 'json',
-      'latex', 'lua', 'python', 'regex', 'rust', 'toml', 'query'
+      'latex', 'lua', 'python', 'regex', 'rust', 'toml', 'query',
+      -- 'vim'
    },
    highlight = {
       enable = true,

@@ -69,28 +69,41 @@ return require('packer').startup(function()
    use { 'b0o/mapx.nvim', as = 'mapx' }  -- create key mappings
 
    use { 'folke/which-key.nvim', as = 'which-key', -- WhichKey
-      config = function()
+      config = function ()
          require('which-key').setup {
-            spelling = {
-               -- Enabling this module will show WhichKey when pressing z=
-               -- to select spelling suggestions.
-               enabled = true,
-               suggestions = 20, -- How many suggestions should be shown in the list?
+            plugins = {
+               spelling = { -- Enabling this module will show WhichKey when
+                            -- pressing z= to select spelling suggestions.
+                  enabled = false,
+                  suggestions = 20, -- How many suggestions should be shown in the list?
+               },
+               presets = {
+                  operators = true,
+               },
+            },
+            operators = {
+               gc = "Comments"
+            },
+            -- ignore_missing = true, -- enable this to hide mappings for which you didn't specify a label
+            hidden = { -- hide mapping boilerplate
+               "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ ",
+               "<SNR>", "<Plug>"
             },
          }
       end
    }
    ----------------------------------------------------}}}
+
    --                    Treesitter                    {{{
    -------------------------------------------------------
    use { 'nvim-treesitter/nvim-treesitter', as = 'treesitter',
       requires = {
-         {'nvim-treesitter/nvim-treesitter-refactor',    as = 'treesitter-refactor'},
          {'nvim-treesitter/nvim-treesitter-textobjects', as = 'treesitter-textobjects'},
          {'RRethy/nvim-treesitter-textsubjects',         as = 'treesitter-textsubjects'},
+         {'nvim-treesitter/nvim-treesitter-refactor',    as = 'treesitter-refactor'},
+         {'romgrk/nvim-treesitter-context',              as = 'treesitter-context'},
          {'nvim-treesitter/playground',                  as = 'treesitter-playground'},
          {'p00f/nvim-ts-rainbow',                        as = 'treesitter-rainbow'},
-         {'romgrk/nvim-treesitter-context',              as = 'treesitter-context'},
       },
       run = ':TSUpdate',
       config = function() require('plugins_config/treesitter') end
@@ -98,33 +111,32 @@ return require('packer').startup(function()
 
    -- use 'wellle/context.vim'   -- Vscode breadcrumbs analog
    ----------------------------------------------------}}}
+
    -------------------- Text editing ---------------------
 
-   use 'matze/vim-move'         -- перемещение строк и частей строк
-   use 'wellle/targets.vim'     -- plugin that provides additional text objects
-   use 'tpope/vim-unimpaired'   -- Different bidirectional motions: switch
-                                -- buffers, add blank lines, etc.
+   use 'matze/vim-move'        -- перемещение строк и частей строк
+   use 'wellle/targets.vim'    -- plugin that provides additional text objects
+   use 'tpope/vim-unimpaired'  -- Different bidirectional motions: switch
+                               -- buffers, add blank lines, etc.
 
-   -- Until https://github.com/neovim/neovim/pull/13823 will be merged.
-   use 'tjdevries/astronauta.nvim'
+   -- use 'othree/eregex.vim'     -- Perl style regexp notation for Vim
 
    -- Comments {{{
-
-   use { 'tomtom/tcomment_vim',   -- Comments. For doc call :help tcomment
-      as = 'tcomment',
-      config = function() require('plugins_config/tcomment') end
+   -- Also define `gc` - comment textobject.
+   -- Doesn't work in visual mode. Works in operator mode (:help mapmode-o).
+   use { 'echasnovski/mini.nvim',
+      config = function()
+         require('mini.comment').setup{}
+         --
+         which_key{
+            gc = { name = 'Comment' },
+            gcc = 'Comment out current line',
+            ['gc*'] = 'which_key_ignore',
+            ['gc#'] = 'which_key_ignore',
+         }
+      end
    }
-
-   -- use { 'winston0410/commented.nvim',
-   --   config = function()
-   --     require('commented').setup{}
-   --   end
-   -- }
-
    -- }}}
-
-   -- -- Perl style regexp notation for Vim
-   -- use  'othree/eregex.vim'
 
    -- Autopairs {{{
    use { 'windwp/nvim-autopairs', as = 'autopairs',
@@ -140,18 +152,18 @@ return require('packer').startup(function()
 
    -- Surround {{{
 
-   -- Заключать фрагменты текста в кавычки или скобки.
-   use { 'tpope/vim-surround',
+   use { 'tpope/vim-surround', as = 'surround',
       requires = 'tpope/vim-repeat'
    }
 
    -- -- Not yet as usable as tpope/vim-surround.
-   -- use { "blackCauldron7/surround.nvim",
+   -- use { 'blackCauldron7/surround.nvim', as = 'surround',
    --    config = function()
-   --       vim.g.surround_mappings_style = 'surround'
-   --       vim.g.surround_load_autogroups = true
-   --
-   --       require "surround".setup {}
+   --       require"surround".setup {
+   --          mappings_style = "surround",
+   --          load_autogroups = true,
+   --          map_insert_mode = false,
+   --       }
    --    end
    -- }
 
@@ -160,21 +172,20 @@ return require('packer').startup(function()
    -- Improved * keybinding action.
    use { 'haya14busa/vim-asterisk', as = 'asterisk',
       config = function()
-         -- Keep cursor position inside word between jumps.
-         vim.g['asterisk#keeppos'] = 0
+         vim.g['asterisk#keeppos'] = 0 -- Keep cursor position inside word between jumps.
          require('keybindings').asterisks()
       end
    }
 
-   -- use { 'kevinhwang91/nvim-hlslens',
-   --    as = 'hlslens',
+   -- use { 'kevinhwang91/nvim-hlslens', as = 'hlslens',
    --    config = function() require('plugins_config/hlslens') end
    -- }
 
    -- Подсвечивать и удалять висящие пробелы в конце строк
    use { 'ntpeters/vim-better-whitespace', as = 'better-whitespace',
       config = function()
-         vim.cmd('source ~/.config/nvim/lua/plugins_config/vim-better-whitespace.vim')
+         -- vim.cmd("exe 'source'..stdpath('config')..'/lua/plugins_config/vim-better-whitespace.vim'")
+         vim.cmd("source ~/.config/nvim/lua/plugins_config/vim-better-whitespace.vim")
       end
    }
 
@@ -201,33 +212,42 @@ return require('packer').startup(function()
    -- -- Найденный текст пульсирует
    -- use { 'inside/vim-search-pulse' }
 
-   -- -- WARNING Work, but not very stable.
-   -- -- indent-blankline {{{
-   -- -- Adds indentation guides to all lines.
-   -- use { 'lukas-reineke/indent-blankline.nvim',
-   --    branch = 'lua',
-   --    ft = {'lua', 'python'},
-   --    config = function()
-   --       -- Filetypes for which this plugin is enabled
-   --       vim.g.indent_blankline_filetype = {'lua', 'python'}
-   --
-   --       vim.g.indent_blankline_char = '│'
-   --       vim.g.indent_blankline_use_treesitter = true
-   --       vim.g.indent_blankline_show_first_indent_level = false
-   --       vim.g.indent_blankline_show_trailing_blankline_indent = false
-   --
-   --       vim.g.indent_blankline_show_current_context = true
-   --       vim.g.indent_blankline_context_highlight_list = {'Error', 'Warning'}
-   --    end
-   -- } --}}}
+   -- Indentation guides {{{
+   use { 'lukas-reineke/indent-blankline.nvim',
+      ft = {
+         'python',
+         -- 'lua'
+      },
+      config = function()
+         require("indent_blankline").setup {
+            filetype = {
+               'python',
+               -- 'lua'
+            },
+            use_treesitter = true,
+            show_current_context = true,
+            show_current_context_start = false,
+            show_end_of_line = true,
+            context_highlight_list = {'Error', 'Warning'},
+            show_first_indent_level = false,
+            max_indent_increase = 1,
+            show_trailing_blankline_indent = false,
+         }
+      end
+   }
+   --}}}
 
    ------------ Windows and buffers managment ------------
 
    -- use 'matbme/JABS.nvim'
 
    use { 'jlanzarotta/bufexplorer',
+      -- requires = 'ryanoasis/vim-devicons', -- Install to enable devicons.
       config = function()
+         vim.g.bufExplorerDisableDefaultKeyMapping = 1  -- Disable default mappings.
          vim.g.bufExplorerFindActive = 0  -- Do not go to active window.
+         vim.g.bufExplorerShowNoName = 1  -- Show "No Name" buffers.
+         vim.g.bufExplorerShowRelativePath = 1 -- Show relative paths.
       end
    }
 
@@ -497,7 +517,7 @@ return require('packer').startup(function()
                vim.g.gruvbox_material_better_performance = 1
 
                vim.cmd 'colorscheme gruvbox-material'
-               vim.cmd('source ~/.config/nvim/lua/plugins_config/gruvbox-material.vim')
+               vim.cmd("source ~/.config/nvim/lua/plugins_config/gruvbox-material.vim")
             end
          }
       end, --}}}
@@ -529,7 +549,7 @@ return require('packer').startup(function()
                vim.g.gruvbox_material_better_performance = 1
 
                vim.cmd 'colorscheme gruvbox-material'
-               vim.cmd('source ~/.config/nvim/lua/plugins_config/gruvbox-material.vim')
+               vim.cmd("source ~/.config/nvim/lua/plugins_config/gruvbox-material.vim")
             end
          }
       end, --}}}
@@ -563,7 +583,7 @@ return require('packer').startup(function()
                vim.o.background = 'light'
                -- vim.o.background = 'dark'
                vim.cmd 'colorscheme mellow'
-               vim.cmd('source ~/.config/nvim/lua/plugins_config/mellow.vim')
+               vim.cmd("source ~/.config/nvim/lua/plugins_config/mellow.vim")
             end
          }
       end, --}}}
@@ -594,12 +614,12 @@ return require('packer').startup(function()
 
    use { 'folke/lsp-colors.nvim',
       config = function()
-         require('lsp-colors').setup({
-           Error       = "#db4b4b",
-           Warning     = "#e0af68",
-           Information = "#0db9d7",
-           Hint        = "#10B981"
-         })
+         require('lsp-colors').setup{
+            Error       = "#db4b4b",
+            Warning     = "#e0af68",
+            Information = "#0db9d7",
+            Hint        = "#10B981"
+         }
       end
    }
    ----------------------------------------------------}}}
@@ -619,7 +639,6 @@ return require('packer').startup(function()
    use { 'romgrk/barbar.nvim', as = 'barbar-tabline',
       requires = 'kyazdani42/nvim-web-devicons',
       config = function()
-         -- vim.cmd('source ~/.config/nvim/lua/plugins_config/barbar.vim')
          require('plugins_config/barbar')
       end
    }
@@ -629,12 +648,12 @@ return require('packer').startup(function()
    use { 'chentau/marks.nvim',
       config = function()
          require'marks'.setup {
-           force_write_shada = true,
-           default_mappings = true,
-           -- builtin_marks = { ".", "<", ">", "^", "'" },
-           signs = true,
-           excluded_filetypes = { 'git' },
-           mappings = {}
+            -- force_write_shada = true,
+            default_mappings = true,
+            -- builtin_marks = { ".", "<", ">", "^", "'" },
+            signs = true,
+            excluded_filetypes = { 'gitcommit' },
+            mappings = {}
          }
       end
    }
@@ -662,17 +681,13 @@ return require('packer').startup(function()
       },
       run = ':UpdateRemotePlugins',
       -- event = 'CmdlineEnter',
-      config = function()
-         vim.cmd('source ~/.config/nvim/lua/plugins_config/wilder.vim')
-      end
+      config = function() vim.cmd("source ~/.config/nvim/lua/plugins_config/wilder.vim") end
    }
 
    use { 'kevinhwang91/nvim-bqf', as = 'better-quickfix' }
    use { 'https://gitlab.com/yorickpeterse/nvim-pqf',
       as = 'pretty-quickfix',
-      config = function()
-         require('pqf').setup()
-      end
+      config = function() require('pqf').setup() end
    }
 
    -- <leader>? : 40-column cheat sheet
@@ -681,9 +696,7 @@ return require('packer').startup(function()
    -- -- TODO Need to rewrite in lua.
    -- use { 'camspiers/lens.vim',
    --    requires = 'camspiers/animate.vim',
-   --    config = function()
-   --       vim.cmd('source ~/.config/nvim/lua/plugins_config/lens.vim')
-   --    end
+   --    config = function() vim.cmd("source ~/.config/nvim/lua/plugins_config/lens.vim") end
    -- }
 
    -- -- foldtext customization
@@ -699,7 +712,7 @@ return require('packer').startup(function()
    }
 
    -- Execute :StartupTime to get an averaged startup profile.
-   use { 'tweekmonster/startuptime.vim',
+   use { 'tweekmonster/startuptime.vim', as = 'startuptime',
       cmd = 'StartupTime'
    }
 
@@ -822,11 +835,9 @@ return require('packer').startup(function()
    -- --                      Pandoc                      {{{
    -- -------------------------------------------------------
    -- use { 'vim-pandoc/vim-pandoc',
-   --    ft = {'markdown', 'pandoc'},
    --    requires = {'vim-pandoc/vim-pandoc-syntax', opt = true},
-   --    config = function()
-   --       vim.cmd('source ~/.config/nvim/lua/plugins_config/pandoc.vim')
-   --    end
+   --    ft = {'markdown', 'pandoc'},
+   --    config = function() vim.cmd("source ~/.config/nvim/lua/plugins_config/pandoc.vim") end
    -- }
    -- ----------------------------------------------------}}}
 
@@ -839,6 +850,12 @@ return require('packer').startup(function()
          vim.g.XkbSwitchAssistNKeymap = 1  -- for commands r and f
          vim.g.XkbSwitchAssistSKeymap = 1  -- for search lines
          -- vim.g.XkbSwitchIMappings = {'ru'}
+
+         which_key{
+            gh = 'which_key_ignore',
+            gH = 'test description',
+            ['g<C-H>'] = 'which_key_ignore'
+         }
       end
    }
    -- use 'powerman/vim-plugin-ruscmd'

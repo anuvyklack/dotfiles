@@ -13,7 +13,7 @@ local M = {} -- All functions that need to be exported should go in this table.
 local mapx_available, mapx = pcall(require, 'mapx')
 
 if mapx_available then
-   mapx.setup({ global = true, whichkey = true })
+   mapx.setup{ global = true, whichkey = true }
 
    -- local mapx = require'mapx'.setup({ global = true, whichkey = true })
 
@@ -172,6 +172,7 @@ function M.treesitter_textobjects()
    return {
       select = { --{{{
          enable = true,
+         lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim.
          keymaps = {
             -- You can use the capture groups defined in textobjects.scm
             ['af'] = '@function.outer',
@@ -288,13 +289,16 @@ function M.barbar()
 
 end -- }}}
 
+-- Asterisks {{{
 function M.asterisks()
    if not mapx_available then return end
    map('*',  '<Plug>(asterisk-z*)')
    map('#',  '<Plug>(asterisk-z#)')
-   map('g*', '<Plug>(asterisk-gz*)', ':help gstar')
-   map('g#', '<Plug>(asterisk-gz#)', ':help g#')
-end
+   -- map('g*', '<Plug>(asterisk-gz*)', ':help gstar')
+   -- map('g#', '<Plug>(asterisk-gz#)', ':help g#')
+   map('g*', '<Plug>(asterisk-gz*)', 'which_key_ignore')
+   map('g#', '<Plug>(asterisk-gz#)', 'which_key_ignore')
+end -- }}}
 
 return M
 

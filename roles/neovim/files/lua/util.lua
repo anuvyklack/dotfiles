@@ -15,7 +15,14 @@ end
 
 --------------------- Keybindings ---------------------
 
--- Set global keymap and register its description in 'which-key' plugin.
+-- The wrapper function around the 'which-key.register()' function.
+-- Doesn't throw an error if 'which-key' plugin doesn't available.
+function _G.which_key(opt)
+   if not which_key_available then return end
+   which_key.register(opt)
+end
+
+--- Set global keymap and register its description in 'which-key' plugin.
 ---@param mode string
 ---@param lhs string left hand side
 ---@param description string

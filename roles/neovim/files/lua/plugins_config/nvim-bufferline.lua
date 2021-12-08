@@ -1,5 +1,4 @@
 require('bufferline').setup {
-
    options = {
 
       numbers = "none",  -- "none" | "ordinal" | "buffer_id" | "both"
