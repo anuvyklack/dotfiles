@@ -1,8 +1,5 @@
---------------------- Keybindings ---------------------
+-- vim.wo.foldmethod = 'expr'
+-- vim.wo.foldexpr   = "nvim_treesitter#foldexpr()"
 
-local buf_map = require("util").buf_map
-
-buf_map(0, 'n', 'gK', 'Show :help', 'K')
-buf_map(0, 'v', 'gK', 'Show :help', 'K')
-
--------------------------------------------------------
+-- vim.api.nvim_buf_del_keymap(0, 'n', 'K')
+-- vim.api.nvim_buf_del_keymap(0, 'v', 'K')

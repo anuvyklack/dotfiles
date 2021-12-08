@@ -27,8 +27,10 @@ let maplocalleader = ','
 
 " let loaded_netrwPlugin = 1 " If 0 disabled netrw
 "                            " If disabled on Ubuntu 'spellfile.vim' plugin
-"                            " unable to download spell files. With Debian
-"                            " Neovim, though, it works.
+"                            " unable to download spell files.
+"                            " With Debian Neovim, though, it works.
+
+set virtualedit=block
 
 set mouse=a        " Enable mouse in all modes
 set hidden         " Buffers can exist in the background without being in
@@ -47,11 +49,9 @@ set novisualbell   " Отключаем пищалки и моргалки
 set autoread       " Reload files changed outside vim
 set termguicolors  " 24 bit color support
 
-set backspace=indent,eol,start  " Allow backspace in insert mode
-set timeout timeoutlen=1300  " Время в мс в течении которого Vim ждёт
-                             " продолжения многосимвольной команды.
-set ttimeoutlen=50   " Время переключения между режимами (default 50)
-syntax enable        " Включить подсветку синтаксиса
+set ttimeoutlen=50  " Время переключения между режимами (default 50)
+set timeoutlen=1000 " Время в мс в течении которого Vim ждёт продолжения
+                    " многосимвольной команды.
 
 " set completeopt-=preview  " Not to show preview window on complection
 " set completeopt=menuone,noselect
@@ -60,12 +60,11 @@ set completeopt=menu,menuone,noselect
 set title
 set titlestring=%t  " tile
 
-set exrc    " Allow vim search local configuratin files in project filders.
+set exrc    " Allow vim search local configuratin files in project folders.
 set secure  " Disallows the use of :autocmd, shell and write commands in
             " local exrc files.
 
-" set virtualedit=all
-
+syntax enable  " Включить подсветку синтаксиса
 " }}}
 
 " Folding                                                            {{{
@@ -169,7 +168,7 @@ augroup END
 " показывать самый длинный вариант
 " set wildmode=list:longest
 
-set wildmenu  " enable ctrl-n and ctrl-p to scroll through matches
+set wildmenu  " Enable ctrl-n and ctrl-p to scroll through matches.
 
 " Символ, который активирует автодополнение в скриптовых коммандах или при
 " назначении клавиш. Использование <Tab> в этих ситуациях непосредственно
@@ -188,14 +187,13 @@ set pumheight=15  " Количество строк во всплывающем 
 
 " =================== Scrolling ======================
 
-set scrolloff=0  " Start scrolling when we're n lines away from margins
+set scrolloff=0  " Start scrolling when we're n lines away from margins.
 setlocal scrolloff=0 " https://github.com/karb94/neoscroll.nvim/issues/28
 
-set sidescrolloff=1 " Сколько колонок должно остаться до конца экрана,
+set sidescrolloff=4 " Сколько колонок должно остаться до конца экрана,
                     " чтобы Vim начал прокручивать экран вбок.
-
-set sidescroll=1  " Минимальное количество колонок на которое экран
-                  " будет прокручиваться горизонтально за раз.
+set sidescroll=1    "   Минимальное количество колонок на которое экран
+                    " будет прокручиваться горизонтально за раз.
 
 " ===================== Search =======================
 
@@ -205,22 +203,23 @@ set ignorecase   " Ignore case when searching...
 set smartcase    " ...unless we type a capital
 
 set inccommand=split " Shows a preview window of all the changes
-                     "  you are going to make in the document.
+                     " you are going to make in the document.
 
 " ==================== Spelling ======================
 
 set spelllang=ru_ru,en_us
 " set dictionary            " используемые словари
 
-" Автоматически включать проверку орфографии для определённых типов файлов
-" autocmd BufRead,BufNewFile *.md setlocal spell
-autocmd FileType text      setlocal spell
-autocmd FileType gitcommit setlocal spell
-
 " ===================== Syntax ========================
 
-let g:markdown_fenced_languages = ['html', 'python', 'shell=sh', 'bash=sh', 'json']
+" https://github.com/tpope/vim-markdown
+let g:markdown_fenced_languages = [
+      \ 'lua', 'vim', 'shell=sh', 'bash=sh', 'python', 'json', 'html'
+      \ ]
 let g:markdown_minlines = 100  " Syntax highlight is synchronized in 100 lines.
+" let g:markdown_folding = 1 " Enable folding in markdown files. The value of
+"                       " the variable does not matter. It just should be set.
+"                       " :help ft-markdown-plugin
 
 let g:vimsyn_embed = 'lPr'  " Turn on syntax highlighting for embeded lua,
                             " python and ruby pieces of code inside
@@ -238,9 +237,9 @@ set nowritebackup
 " ================== Русский язык =====================
 
 set keymap=russian-jcukenwin
-set iminsert=0  " Чтобы при старте ввод был на английском,
+set iminsert=0  "   Чтобы при старте ввод был на английском,
                 " а не русском (start > i).
-set imsearch=0  " Чтобы при старте поиск был на английском,
+set imsearch=0  "   Чтобы при старте поиск был на английском,
                 " а не русском (start > /).
 
 " " Менять цвет курсора при включенном русском языке
@@ -256,10 +255,10 @@ set helplang=ru  " Помощь на русском языке
 
 set signcolumn=auto:4
 set nowrap         " Wrap lines
-set cmdheight=1    " Make command line one line high
-set colorcolumn=+1 " Показывать рулетку в следующей колонке после textwidth
-set mousehide      " Hide the mouse when typing text
-" set cursorline     " выделять строку, на которой находится курсор
+set cmdheight=1    " Make command line one line high.
+set colorcolumn=+1 " Показывать рулетку в следующей колонке после textwidth.
+set mousehide      " Hide the mouse when typing text.
+" set cursorline     " Выделять строку, на которой находится курсор.
 
 " set guicursor=a:blinkon100  " Turn on cursor blinking
 
@@ -278,9 +277,11 @@ set splitright
 
 "          Settings that unnecessary in Neovim         {{{
 " --------------------------------------------------------
+" set encoding=utf-8
+" set backspace=indent,eol,start
+
 " set history=10000  " Store lots of :cmdline history.
 "                    " defaults to 10000 (the maximum)
-" set encoding=utf-8
 
 " filetype plugin indent on
 "        " Is a short form of these commands:
@@ -387,115 +388,13 @@ endfunction
 " autocmd WinEnter * if &previewwindow | wincmd L | endif
 
 
-" " Auto define the suitable foldcolumn value
-" augroup AutoSetFoldColumn
-"     autocmd!
-"     autocmd BufRead * let b:maxFoldLevel = MaxFoldLevel()
-"     autocmd WinEnter,BufWinEnter,VimResized * call SetFoldColumn()
-"     autocmd User MyCustomCloseWindow call SetFoldColumn()
-" augroup END
-"
-" function! SetFoldColumn() "{{{
-"     " echom '-----------'
-"     " для всех окон
-"     for window in range(1, winnr('$'))
-"
-"         " Maximum fold level for buffer in window
-"         let mfl = getbufvar(winbufnr(window), 'maxFoldLevel')
-"
-"         " If max fold level is 0, scip such window.
-"         if mfl == 0
-"             " echom 'win '. window .' mfl==0'
-"             call setwinvar(window, "&foldcolumn", 0)
-"             continue
-"         endif
-"
-"         " Переменная w:bufnr хранит номер буфера открытого в данном окне.
-"         " Если такой переменной не существует, эта функция (SetFoldColumn)
-"         " создаст её.  Если значение этой пременной равно номеру буфера
-"         " открытого в данном окне, то текущая итерация цикла пропускается.
-"         " Или другими словами, это означает, что с прошлой проверки буфер в
-"         " окне не поменялся.
-"         " С w:wwid всё тоже самое, только она хранит значение ширины окна.
-"         if getwinvar(window, 'bufnr') == winbufnr(window) &&
-"         \  getwinvar(window, 'wwid')  == winwidth(window)
-"             " echom 'Win '. window .' scip check'
-"             continue
-"         else
-"             let w:bufnr = winbufnr(window)
-"             let w:wwid  = winwidth(window)
-"         endif
-"
-"         " textwidth for window
-"         let tw = getbufvar(winbufnr(window), '&textwidth')
-"
-"         " Size of the column with numbers of lines.
-"         " '+1' is because there is always one space between column with line
-"         " numbers and the beginning of the text.
-"         let nu = (&number ?  strlen(string(line('$'))) + 1 : 0)
-"
-"         " If window in narrower than textwidth + size of the number
-"         " column, then skip such window.
-"         if winwidth(window) <= (tw + nu)
-"             " echom 'win '.window.' width <= tw + nu'
-"             call setwinvar(window, "&foldcolumn", 0)
-"             continue
-"         endif
-"
-"         " Required foldcolumn size
-"         let fdcSize = (mfl>1 ? mfl+1 : mfl)
-"
-"         " The difference between the width of the window and
-"         " the textwidth in this window.
-"         let delta = abs(winwidth(window) - tw - nu)
-"
-"         " Finale foldcolumn size
-"         let fdc = (fdcSize > delta ? delta : fdcSize)
-"
-"         call setwinvar(window, "&foldcolumn", fdc)
-"
-"         " echom 'win '. window .' fdc='. fdc
-"
-"     endfor
-" endfunction "}}}
-"
-" function! MaxFoldLevel() "{{{
-"     " Retrun a number which is the maximum fold level of the current file.
-"
-"     let winview = winsaveview()  " save window and cursor positions
-"
-"     " open all nested folds
-"     norm zR
-"     1  " Jump to the first line of the buffer
-"     let position = line('.')
-"     let mfl = foldlevel(position)  " mfl: max fold level
-"
-"     " jump to the next fold if exists
-"     norm zj
-"
-"     while line('.') != position
-"         if foldlevel(position) > mfl
-"             let mfl = foldlevel(position)
-"         endif
-"         let position = line('.')
-"         norm zj
-"     endwhile
-"
-"     " close all nested folds back
-"     norm zM
-"     call winrestview(winview)  " restore the window and cursor positions
-"
-"     return mfl
-" endfunction "}}}
-
-
 " Tmux windows names
 " autocmd BufReadPost,FileReadPost,BufNewFile * call system("tmux rename-window " . expand("%"))
 " autocmd BufEnter * let &titlestring = ' ' . expand("%:t")
 " set title
 
 " Highlight on yank. For explanations see `:help lua-highlight`
-au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=200}
+au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=250}
 
 "}}}
 
@@ -516,23 +415,23 @@ command! W w
 " nnoremap <expr> zz "zz" . (winheight(0) * 0.1)->float2nr() . "<c-e>"
 
 " Копировать, вставить
-vnoremap <silent> <C-c> "+y :let @*=@+<CR>
-map <C-p> "+p
+" vnoremap <silent> <C-c> "+y <cmd>let @*=@+<CR>
+nnoremap yc    "+y
+nnoremap ycc   "+yy
+nnoremap <C-c> "+y
+nnoremap <C-c><C-c> "+yy
+vnoremap <C-c> "+y
+nnoremap cp    "+p
+nnoremap cP    "+P
+vnoremap <C-p> "+p
 
-map Y y$
-
-" nnoremap j gj
-" nnoremap k gk
-
-
-" noremap <C-Left>
 
 " Перемещаться в начало / конец строки по 'Shift + h/l'
 noremap H ^
 noremap L $
 
 " Отключить подсветку только что найденного текста
-nnoremap <silent> <Esc> :noh<CR><Esc>
+nnoremap <silent> <Esc> <cmd>nohlsearch<CR><Esc>
 
 
 " При нажатии <Enter> вставлять пустую сроку снизу если буфер имеет
@@ -547,6 +446,7 @@ nnoremap <silent> <Esc> :noh<CR><Esc>
 " Change the behavior of the <Enter> key when the popup menu is visible.
 " The <Enter> key will select the highlighted menu item, just as <C-Y>
 " does.
+" <C-g>u : break undo sequence, start new change (:help i_CTRL-G_u)
 inoremap <expr> <Enter> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 
@@ -663,7 +563,6 @@ endif
 
 " Включать и выклюяать проверку орфографии
 map <silent> <F6> :call ToggleSpell()<CR>
-
 fu! ToggleSpell() "{{{
     " Toggle the spell state
     setlocal spell!
@@ -672,27 +571,25 @@ fu! ToggleSpell() "{{{
 endf "}}}
 
 
-" Переключать язык по нажатию Ctrl-\ вместо Ctrl-^, как в Emacs.
-" Switch keyboard layout (language) on Ctrl-\ instead of Ctrl-^,
-" like in Emacs.
-" ----------------------------------------------------------
-inoremap <silent> <C-\> <C-O>:call ToggleKeyboardLayout()<CR>
-nnoremap <silent> <C-\> :call ToggleKeyboardLayout()<CR>
+" " Переключать язык по нажатию Ctrl-\ вместо Ctrl-^, как в Emacs.
+" " Switch keyboard layout (language) on Ctrl-\ instead of Ctrl-^,
+" " like in Emacs.
+" inoremap <silent> <C-\> <C-O>:call ToggleKeyboardLayout()<CR>
+" nnoremap <silent> <C-\> :call ToggleKeyboardLayout()<CR>
 
 " " Switch keyboard layout (language) on Ctrl-Space instead of Ctrl-^.
 " " ----------------------------------------------------------
 " inoremap <silent> <C-Space> <C-O>:call ToggleKeyboardLayout()<CR>
 " nnoremap <silent> <C-Space> :call ToggleKeyboardLayout()<CR>
-
-fu! ToggleKeyboardLayout() "{{{
-    if &iminsert == 0
-        " set iminsert=1
-        setlocal iminsert=1
-    elseif &iminsert == 1
-        " set iminsert=0
-        setlocal iminsert=0
-    endif
-endf "}}}
+" fu! ToggleKeyboardLayout() "{{{
+"     if &iminsert == 0
+"         " set iminsert=1
+"         setlocal iminsert=1
+"     elseif &iminsert == 1
+"         " set iminsert=0
+"         setlocal iminsert=0
+"     endif
+" endf "}}}
 
 " }}}
 
