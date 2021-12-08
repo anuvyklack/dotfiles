@@ -22,18 +22,18 @@ local function on_attach (client, bufnr)
    require("keybindings").lspconfig(bufnr)
 end
 
-local root_pattern = require'lspconfig'.util.root_pattern
+local lsputil = require'lspconfig'.util
 local lsp_settings = {
    sumneko_lua = require("lua-dev").setup{
       plugins = true,
       lspconfig = {
-         root_dir = root_pattern('.git/','.root'),
+         root_dir = lsputil.root_pattern('.git/', '.root'),
          on_attach = on_attach,
          settings = {
             Lua = {
                diagnostics = {
                   -- Get the language server to recognize the `use` global.
-                  globals = {"use"},
+                  globals = { 'use', 'map', 'nnoremap', 'vnoremap' },
                },
                completion = {
                   showParams = false
@@ -58,7 +58,8 @@ local lsp_settings = {
          }
       }
    },
-   vim = {
+   vimls = {
+      root_dir = lsputil.root_pattern('.git/', '.root'),
       on_attach = on_attach,
    },
    clangd = {
@@ -93,11 +94,9 @@ local lsp_settings = {
    },
    cmake = {
       on_attach = on_attach,
-      -- default_config = {
-         init_options = {
-            buildDirectory = "build-Debug"
-         }
-      -- },
+      init_options = {
+         buildDirectory = "build-Debug"
+      }
    },
    pyright = {
       on_attach = {

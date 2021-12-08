@@ -86,7 +86,9 @@ function M.lspconfig(bufnr)
    nnoremap('<F2>',   '<Cmd>lua vim.lsp.buf.definition()<CR>',  {buffer = bufnr}, 'LSP: go to definition')
    nnoremap('<S-F2>', '<Cmd>lua vim.lsp.buf.declaration()<CR>', {buffer = bufnr}, 'LSP: go to declaration')
 
-   nnoremap('K', '<Cmd>lua vim.lsp.buf.hover()<CR>', {buffer = bufnr}, 'LSP: Hover doc')
+   if vim.bo.filetype ~= 'vim' then
+      nnoremap('K', '<Cmd>lua vim.lsp.buf.hover()<CR>', {buffer = bufnr}, 'LSP: Hover doc')
+   end
 
    -- buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
    -- buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
