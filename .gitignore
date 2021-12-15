@@ -3,8 +3,8 @@ tags*
 
 software/
 
+!**/neovim/files/doc/tags
 **/neovim/files/.netrwhist
-**/neovim/files/plugin/packer_compiled.vim
 **/neovim/files/plugin/packer_compiled.lua
 
 **/vifm/**/vifm-help.txt

@@ -4,6 +4,9 @@ autocmd BufWritePre * :StripWhitespace"
 let g:better_whitespace_enabled=1
 let g:strip_whitespace_on_save=1
 
+let g:better_whitespace_operator=''
+   " The plugin provides operator to strip whitespaces
+
 " Strip white lines at the end of the file when stripping whitespaces.
 let g:strip_whitelines_at_eof=1
 

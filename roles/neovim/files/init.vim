@@ -25,37 +25,32 @@ set fileencodings=utf-8,cp1251
 let mapleader = "\<Space>"  " set <leader> key
 let maplocalleader = ','
 
-" let loaded_netrwPlugin = 1 " If 0 disabled netrw
-"                            " If disabled on Ubuntu 'spellfile.vim' plugin
-"                            " unable to download spell files.
-"                            " With Debian Neovim, though, it works.
-
 set virtualedit=block
 
-set mouse=a        " Enable mouse in all modes
-set hidden         " Buffers can exist in the background without being in
-                   " a window.
+set mouse=a         " Enable mouse in all modes
+set hidden          " Buffers can exist in the background without being in
+                    " a window.
 
-set number         " Показывать нумерацию строк
+set number          " Показывать нумерацию строк
 " set relativenumber
-set noautochdir    " Set pwd as the dir of the active file.
-                   " WARNING: If set this option breakes
-                   " ahmedkhalf/project.nvim plugin.
+set noautochdir     " Set pwd as the dir of the active file.
+                    " WARNING: If set this option breakes
+                    " ahmedkhalf/project.nvim plugin.
 
-set showcmd        " Show incomplete cmds down the bottom
-set showmode       " Show current mode down the bottom
-set laststatus=2   " всегда отображать статусную строку
-set novisualbell   " Отключаем пищалки и моргалки
-set autoread       " Reload files changed outside vim
-set termguicolors  " 24 bit color support
+set showcmd         " Show incomplete cmds down the bottom
+set showmode        " Show current mode down the bottom
+set laststatus=2    " всегда отображать статусную строку
+set novisualbell    " Отключаем пищалки и моргалки
+set autoread        " Reload files changed outside vim
+set termguicolors   " 24 bit color support
 
 set ttimeoutlen=50  " Время переключения между режимами (default 50)
 set timeoutlen=1000 " Время в мс в течении которого Vim ждёт продолжения
                     " многосимвольной команды.
 
 " set completeopt-=preview  " Not to show preview window on complection
-" set completeopt=menuone,noselect
-set completeopt=menu,menuone,noselect
+set completeopt=menuone,noselect
+" set completeopt=menu,menuone,noselect
 
 set title
 set titlestring=%t  " tile
@@ -64,17 +59,17 @@ set exrc    " Allow vim search local configuratin files in project folders.
 set secure  " Disallows the use of :autocmd, shell and write commands in
             " local exrc files.
 
-syntax enable  " Включить подсветку синтаксиса
+syntax enable   " Включить подсветку синтаксиса
 " }}}
 
 " Folding                                                            {{{
 " ======================================================================
 
-set foldmethod=marker  " fold based on markers
+set foldmethod=marker   " fold based on markers
 set foldcolumn=auto:3
-" set foldlevelstart=0 " 0: to always start editing with all folds closed
-set foldnestmax=5   " deepest fold is 5 levels (only for sintax and indent)
-set foldminlines=5  " minimum lines required to create fold
+set foldlevelstart=0    " 0: to always start editing with all folds closed
+set foldnestmax=5       " deepest fold is 5 levels (only for sintax and indent)
+set foldminlines=5      " minimum lines required to create fold
 set foldopen=block,hor,mark,jump,percent,quickfix,search,tag,undo
 " set foldopen=all
 
@@ -120,15 +115,17 @@ endif
 
 " Indentation                                                      {{{
 " =====================================================================
-set autoindent     " Use the current indentation when creating a new line
-                   " in Insert mode, both through normal Enter or o/O.
-set smartindent    " Включить “умную” расстановку отступов.
-set smarttab       " “Умная” расстановка отступов.
-set expandtab      " Заменять табуляцию пробелами.
-set tabstop=4      " Количество пробелов в одном символе табуляции.
-set softtabstop=4
-set shiftwidth=4   " Количество пробелов на которое будет сдвинута
-                   " строка командами >> или <<.
+
+
+set autoindent      " Use the current indentation when creating a new line
+                    " in Insert mode, both through normal Enter or o/O.
+set smartindent     " Включить “умную” расстановку отступов.
+set smarttab        " “Умная” расстановка отступов.
+set expandtab       " Заменять табуляцию пробелами.
+set tabstop=4       " Количество пробелов в одном символе табуляции.
+set softtabstop=-1  " Sunchronize tabstop with shiftwidth.
+set shiftwidth=4    " Количество пробелов на которое будет сдвинута
+                    " строка командами >> или <<.
 
 " Show invisible symbols. Display tabs and trailing spaces visually
 set list listchars=tab:\ \ ,trail:· ",eol:¶ ",eol:¤
@@ -138,11 +135,11 @@ set list listchars=tab:\ \ ,trail:· ",eol:¶ ",eol:¤
 " Formating text                                   {{{
 " ====================================================
 
-set formatoptions=tcqj  " The behavior of 'gw' command.
-                        " Default value is 'tcqj'
+set formatoptions=tcqj  " Default: tcqj
+                        " The behavior of 'gw' command.
 
-set joinspaces " Put two spaces after period.
-set linebreak  " Wrap lines at convenient points.
+set joinspaces  " Put two spaces after period.
+set linebreak   " Wrap lines at convenient points.
 
 " Use Par Unix utility for 'gq' command
 setglobal formatprg=par\ -w75\ g
@@ -155,40 +152,40 @@ function! UpdateFormatprg()
 endfunction
 
 augroup UpdateFormatprgGroup
-   autocmd!
-   autocmd VimEnter,BufEnter * call UpdateFormatprg()
-   autocmd OptionSet textwidth call UpdateFormatprg()
+  autocmd!
+  autocmd VimEnter,BufEnter * call UpdateFormatprg()
+  autocmd OptionSet textwidth call UpdateFormatprg()
 augroup END
 
 " }}}
 
 " =================== Completion =====================
 
-" При автодополнении в командном режиме (:command) в начале списка
-" показывать самый длинный вариант
 " set wildmode=list:longest
+                    " При автодополнении в командном режиме (:command) в
+                    " начале списка показывать самый длинный вариант
 
-set wildmenu  " Enable ctrl-n and ctrl-p to scroll through matches.
+set wildcharm=<C-z> " Символ, который активирует автодополнение в скриптовых
+                    " коммандах или при назначении клавиш. Использование
+                    " <Tab> в этих ситуациях непосредственно вставит символ
+                    " табуляции, а не откроет меню дополнения.
 
-" Символ, который активирует автодополнение в скриптовых коммандах или при
-" назначении клавиш. Использование <Tab> в этих ситуациях непосредственно
-" вставит символ табуляции, а не откроет меню дополнения.
-set wildcharm=<C-z>
-
-" Отключение опции 'pum' включает автодополнение в командной строке
-" в старом стиле: в строку, а не в формате вертикального выпадающего списка.
 set wildoptions=pum,tagfile
+                    " Отключение опции 'pum' включает автодополнение в
+                    " командной строке в старом стиле: в строку, а не в
+                    " формате вертикального выпадающего списка.
+
 " set wildoptions=tagfile
 
 " ================== Pop-Up Menu ====================
 
-set pumblend=7    " Прозрачность всплывающего меню
-set pumheight=15  " Количество строк во всплывающем окне
+set pumblend=7      " Прозрачность всплывающего меню
+set pumheight=15    " Количество строк во всплывающем окне
 
 " =================== Scrolling ======================
 
-set scrolloff=0  " Start scrolling when we're n lines away from margins.
-setlocal scrolloff=0 " https://github.com/karb94/neoscroll.nvim/issues/28
+set scrolloff=0     " Start scrolling when we're n lines away from margins.
+setlocal scrolloff=0  " https://github.com/karb94/neoscroll.nvim/issues/28
 
 set sidescrolloff=4 " Сколько колонок должно остаться до конца экрана,
                     " чтобы Vim начал прокручивать экран вбок.
@@ -197,29 +194,31 @@ set sidescroll=1    "   Минимальное количество колоно
 
 " ===================== Search =======================
 
-set incsearch    " Подсвечивать найденный текст по мере набора
-set hlsearch     " Highlight searches by default
-set ignorecase   " Ignore case when searching...
-set smartcase    " ...unless we type a capital
+set incsearch       " Подсвечивать найденный текст по мере набора
+set hlsearch        " Highlight searches by default
+set ignorecase      " Ignore case when searching...
+set smartcase       " ...unless we type a capital
 
-set inccommand=split " Shows a preview window of all the changes
-                     " you are going to make in the document.
+set inccommand=split " Shows a preview window of all the changes you are
+                     " going to make in the document.
 
 " ==================== Spelling ======================
 
 set spelllang=ru_ru,en_us
-" set dictionary            " используемые словари
+" set dictionary      " используемые словари
 
 " ===================== Syntax ========================
 
 " https://github.com/tpope/vim-markdown
 let g:markdown_fenced_languages = [
-      \ 'lua', 'vim', 'shell=sh', 'bash=sh', 'python', 'json', 'html'
+      \ 'lua', 'vim', 'shell=sh', 'bash=sh', 'cpp', 'python', 'json', 'html'
       \ ]
-let g:markdown_minlines = 100  " Syntax highlight is synchronized in 100 lines.
-" let g:markdown_folding = 1 " Enable folding in markdown files. The value of
-"                       " the variable does not matter. It just should be set.
-"                       " :help ft-markdown-plugin
+let g:markdown_minlines = 100   " Syntax highlight is synchronized in 100 lines.
+
+" let g:markdown_folding = 1
+                    " Enable folding in markdown files. The value of the
+                    " variable does not matter. It just should be set.
+                    " :help ft-markdown-plugin
 
 let g:vimsyn_embed = 'lPr'  " Turn on syntax highlighting for embeded lua,
                             " python and ruby pieces of code inside
@@ -249,16 +248,16 @@ set imsearch=0  "   Чтобы при старте поиск был на анг
 " highlight Cursor guifg=NONE guibg=#e8ae3c
 " highlight lCursor guifg=NONE guibg=#e7ae3c
 
-set helplang=ru  " Помощь на русском языке
+set helplang=ru     " Помощь на русском языке
 
 " ================= Visual Tweaks ===================
 
 set signcolumn=auto:4
-set nowrap         " Wrap lines
-set cmdheight=1    " Make command line one line high.
-set colorcolumn=+1 " Показывать рулетку в следующей колонке после textwidth.
-set mousehide      " Hide the mouse when typing text.
-" set cursorline     " Выделять строку, на которой находится курсор.
+set nowrap          " Wrap lines
+set cmdheight=1     " Make command line one line high.
+set colorcolumn=+1  " Показывать рулетку в следующей колонке после textwidth.
+set mousehide       " Hide the mouse when typing text.
+" set cursorline      " Выделять строку, на которой находится курсор.
 
 " set guicursor=a:blinkon100  " Turn on cursor blinking
 
@@ -277,32 +276,36 @@ set splitright
 
 "          Settings that unnecessary in Neovim         {{{
 " --------------------------------------------------------
+
 " set encoding=utf-8
 " set backspace=indent,eol,start
-
-" set history=10000  " Store lots of :cmdline history.
-"                    " defaults to 10000 (the maximum)
-
+"
+" set history=10000 " Store lots of :cmdline history.
+"                   " Defaults: 10000 (the maximum)
+"
+" set wildmenu      " Enable ctrl-n and ctrl-p to scroll through matches.
+"
 " filetype plugin indent on
-"        " Is a short form of these commands:
-"        "
-"        "     filetype on
-"        "     filetype plugin on
-"        "     filetype indent on
-"        "
-"        " The first command turns on filetype detection for Vim to help set
-"        " syntax highlighting and other options. The plugin part will load
-"        " plugins for specific filetype if they exist. The last bit will
-"        " load indent file for specific filetype if they exist too.
-"        "
-"        " For example, if you want to activate certain plugins for only
-"        " Python language, then you can create a file
-"        " ~/.vim/ftplugin/python.vim. Put all the plugins and commands you
-"        " want specifically for Python inside that file.
-"        "
-"        " A good practice is to separate the indent configuration inside
-"        " another file (~/.vim/indent/python.vim).  However, I usually just
-"        " put the indents inside the plugin file.
+"         " Is a short form of these commands:
+"         "
+"         "     filetype on
+"         "     filetype plugin on
+"         "     filetype indent on
+"         "
+"         " The first command turns on filetype detection for Vim to help set
+"         " syntax highlighting and other options. The plugin part will load
+"         " plugins for specific filetype if they exist. The last bit will
+"         " load indent file for specific filetype if they exist too.
+"         "
+"         " For example, if you want to activate certain plugins for only
+"         " Python language, then you can create a file
+"         " ~/.vim/ftplugin/python.vim. Put all the plugins and commands you
+"         " want specifically for Python inside that file.
+"         "
+"         " A good practice is to separate the indent configuration inside
+"         " another file (~/.vim/indent/python.vim).  However, I usually just
+"         " put the indents inside the plugin file.
+
 " ----------------------------------------------------}}}
 
 "               Autocommands and Functions             {{{

@@ -296,7 +296,7 @@ telescope.setup {
 --    }
 -- }
 
-
+telescope.load_extension('fzf')  -- use fzf module in C
 telescope.load_extension('projects')
 -- telescope.load_extension('neoclip')
 

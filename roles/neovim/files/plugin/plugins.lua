@@ -184,8 +184,8 @@ return require('packer').startup(function()
    -- Подсвечивать и удалять висящие пробелы в конце строк
    use { 'ntpeters/vim-better-whitespace', as = 'better-whitespace',
       config = function()
-         -- vim.cmd("exe 'source'..stdpath('config')..'/lua/plugins_config/vim-better-whitespace.vim'")
-         vim.cmd("source ~/.config/nvim/lua/plugins_config/vim-better-whitespace.vim")
+         -- vim.cmd("exe 'source'..stdpath('config')..'/lua/plugins_config/better-whitespace.vim'")
+         vim.cmd("source ~/.config/nvim/lua/plugins_config/better-whitespace.vim")
       end
    }
 
@@ -244,7 +244,7 @@ return require('packer').startup(function()
    use { 'jlanzarotta/bufexplorer',
       -- requires = 'ryanoasis/vim-devicons', -- Install to enable devicons.
       config = function()
-         vim.g.bufExplorerDisableDefaultKeyMapping = 1  -- Disable default mappings.
+         vim.g.bufExplorerDisableDefaultKeyMapping = 1 -- Disable default mappings.
          vim.g.bufExplorerFindActive = 0  -- Do not go to active window.
          vim.g.bufExplorerShowNoName = 1  -- Show "No Name" buffers.
          vim.g.bufExplorerShowRelativePath = 1 -- Show relative paths.
@@ -258,20 +258,19 @@ return require('packer').startup(function()
    --     vim.g.winresizer_vert_resize  = 1
    --     vim.g.winresizer_horiz_resize = 1
    --     vim.g.winresizer_start_key = '<leader>w'
-   --
-   --     -- require("util").set_keymap('n', '<leader>w', 'Window resize mode',
-   --     --                            '<cmd>WinResizerStartResize<CR>',
-   --     --                            {noremap = true, silent = true})
+   --     -- require("util").set_keymap('n', '<leader>w', 'Window resize mode', '<cmd>WinResizerStartResize<CR>', {noremap = true, silent = true})
    --   end
    -- }
 
    -- use 'zhaocai/GoldenView.Vim'
-   use {'RobertAudi/GoldenView.vim', opt = true}
+   -- use { 'RobertAudi/GoldenView.vim', opt = true }
 
    ---------------------- Movements ----------------------
 
    -- use { 'easymotion/vim-easymotion', as = 'easymotion',
-   --   config = function() require('plugins_config/easymotion') end
+   --    config = function()
+   --       vim.cmd("source ~/.config/nvim/lua/plugins_config/easymotion.vim")
+   --    end
    -- }
 
    use { 'phaazon/hop.nvim', as = 'easymotion-hop',
@@ -493,7 +492,6 @@ return require('packer').startup(function()
       -- gruvbox-material-dark {{{
       ['gruvbox-material-dark'] = function()
          use { 'sainnhe/gruvbox-material',
-            after = 'treesitter',
             config = function()
                vim.o.background = 'dark'
 
@@ -525,7 +523,6 @@ return require('packer').startup(function()
       -- gruvbox-material-light {{{
       ['gruvbox-material-light'] = function()
          use { 'sainnhe/gruvbox-material',
-            after = 'treesitter',
             config = function()
                vim.o.background = 'light'
 
@@ -761,7 +758,6 @@ return require('packer').startup(function()
 
    --              Lua plugins development             {{{
    -------------------------------------------------------
-
    use { 'rafcamlet/nvim-luapad', as = 'luapad',
       config = function()
          vim.cmd [[
@@ -771,12 +767,6 @@ return require('packer').startup(function()
          ]]
       end
    }
-
-   -- use { 'tjdevries/nlua.nvim' }
-
-   -- -- Better Lua syntax highlighting
-   -- use { 'euclidianAce/BetterLua.vim', as = 'syntax-BetterLua' }
-
    ----------------------------------------------------}}}
 
    --                      Orgmode                     {{{
@@ -793,7 +783,6 @@ return require('packer').startup(function()
    use { 'vhyrro/neorg',
       requires = "nvim-lua/plenary.nvim",
       after = "treesitter",
-      branch = 'unstable',
       setup = function() -- {{{
          -- WARNING Temporary code block until neorg treesitter module
          --         will be merged into `nvim-treesitter` repository.

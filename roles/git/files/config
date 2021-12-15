@@ -1,3 +1,5 @@
+# vim: ft=gitconfig
+
 [user]
     email = anuvyklack@gmail.com
     name = Yuriy Artemyev
@@ -50,5 +52,3 @@
 # [diff-so-fancy]
 #     stripLeadingSymbols = false
 #     rulerWidth = 80
-
-# vim: ft=gitconfig
