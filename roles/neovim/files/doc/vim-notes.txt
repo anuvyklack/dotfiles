@@ -1,0 +1,101 @@
+*vim-notes.txt*		All stuff usefull in vim configuraion.
+
+								*my-vim-notes*
+To regenerate help-tags type: `:helptags %:p:h` or `:helptags ALL`
+Vim helpfiles cheatsheet: https://devhints.io/vim-help
+
+--------------------------------------------------------------------------------
+KEYBINDINGS SPECIAL SYMBOLS
+
+<buffer>	Set mapping in the current buffer only.	|:map-<buffer>|
+
+<C-U>		Remove all characters between the cursor position and the
+		beginning of the line.			|c_CTRL-U|
+
+<C-Z>		Use in mapping to trigger 'wildmenu' (completion).
+		Символ, который активирует автодополнение в скриптовых коммандах
+		или при назначении клавиш. Использование <Tab> в этих ситуациях
+		непосредственно вставит символ табуляции, а не откроет меню
+		дополнения.				'wildcharm'
+
+<C-g>u		Break undo sequence and start a new change.
+							|i_CTRL-G_u|
+
+------------------------------------------------------------------------------
+COMMAND MODE
+
+|:verbose|	Allows to check, who set option: >
+			:verbose set expandtab?
+<
+|:options|	Open a window for viewing and setting all options.
+
+
+------------------------------------------------------------------------------
+LUA FUNCTIONS
+
+|vim.inspect()|	Return a human-readable representation of the given object.
+
+|vim.notify()|	Notification provider.  Without a runtime, writes to `:Messages`
+                See also: ~
+                    |nvim_notify|
+
+------------------------------------------------------------------------------
+QUICKFIX
+How to write your own custom function to format quickfix window content:
+https://github.com/kevinhwang91/nvim-bqf#format-new-quickfix
+
+------------------------------------------------------------------------------
+OPTIONS
+
+Indentation settings							<<<
+
+'tabstop'	(default 0)
+		Количество пробелов, которыми символ табуляции отображается в
+		тексте.  Оказывает влияние как на уже существующие табуляции,
+		так и на новые. В случае изменения значения, «на лету»
+		применяется к тексту.
+
+'softtabstop'	(default 0)
+		Количество пробелов, которыми символ табуляции отображается при
+		добавлении. Несмотря на то, что при нажатии на <Tab> вы получите
+		ожидаемый результат (добавляется новый символ табуляции),
+		фактически в отступе могут использоваться как табуляция так и
+		пробелы.  Например, при установленных 'tabstop' равной 8 и
+		'softtabstop' равной 4, троекратное нажатие <Tab> приведет к
+		добавлению отступа шириной 12 пробелов, однако сформирован он
+		будет из одного символа табуляции и 4 пробелов.
+
+'shiftwidth'	(default 8)
+		По умолчанию используется для регулирование ширины отступов в
+		пробелах, добавляемых командами |>>| и |<<|. Если значение опции
+		не равно 'tabstop', как и в случае с 'softtabstop', отступ может
+		состоять как из символов табуляций так и из пробелов. При
+		включении опции — 'smarttab', оказывает дополнительное влияние.
+
+'smarttab'	(default on)
+		В случае включения этой опции, нажатие <Tab> в начале строки
+		(если быть точнее, до первого непробельного символа в строке)
+		приведет к добавлению отступа, ширина которого соответствует
+		'shiftwidth' (независимо от значений в |tabstop| и |softtabstop|).
+		Нажатие на <BS> удалит отступ, а не только один символ, что
+		очень полезно при включенной 'expandtab'. Напомню: опция
+		оказывает влияние только на отступы в начале строки, в остальных
+		местах используются значения из 'tabstop' и 'softtabstop'.
+
+'expandtab'	(default off)
+		В режиме вставки заменяет символ табуляции на соответствующее
+		количество пробелов. Так же влияет на отступы, добавляемые
+		командами |>>| и |<<|.
+
+Вооружившись полученными знаниями, очень просто настроить требуемое поведение
+отступов. Популярная практика у разработчиков: пробелы вместо табуляции, ширина
+отступа — 4 пробела. Настройка в данном случае будет выглядеть следующим образом:
+>
+	set tabstop=4
+	set shiftwidth=4
+	set smarttab
+	set expandtab
+<									>>>
+
+
+ vim: ft=help fdm=marker foldmarker=<<<,>>> modifiable noreadonly

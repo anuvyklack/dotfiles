@@ -1,19 +1,15 @@
-*myhelp.txt*       My notes for Neovim
+*myhelp.txt*	My notes for Neovim
 
-                                                                  *myhelp*
-To regenerate help-tags type: `:helpt %:p:h`
-Vim helpfiles cheatsheet: https://devhints.io/vim-help
-
+								*myhelp*
 Navigation inside vim help~
-
-Jump to specific subjects by using tags:
+Jump to specific subjects by using tags:			<<<
 - Use the "CTRL-]" keybinding while standing on the name of a command or
   option.  This only works when the tag is a keyword.  "<C-Leftmouse>" and
   "g<LeftMouse>" work just like "CTRL-]".
 - Use the ":ta {subject}" command.  This also works with non-keyword
   characters.
 
-Use CTRL-T or CTRL-O to jump back.
+Use CTRL-T or CTRL-O to jump back.				>>>
 
                                       Type |gO| to see the table of contents.
 
@@ -186,4 +182,4 @@ command: >
 <localleader>b		Insert a PDB breakpoint at the current line.
 
 ------------------------------------------------------------------------------
- vim:tw=78:isk=!-~,^*,^\|,^\":ts=8:noet:ft=help:norl:ma:noro
+ vim: ts=8 ft=help fdm=marker foldmarker=<<<,>>> fml=1 modifiable noreadonly
