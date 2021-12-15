@@ -280,7 +280,8 @@ return require('packer').startup(function()
             winblend = 30,
             -- keys = 'asdghklqwertyuiopzxcvbnmfj'
             -- keys = 'asdghklqwertyuiopzxcvfjbnm'
-            keys = 'asdghklqwertyuiopzxcvfjbn'
+            keys = 'asdghklqwertyuiopzxcvfjbn',
+            uppercase_labels = false, -- Display labels as uppercase.
          }
          require('keybindings').hop()
       end

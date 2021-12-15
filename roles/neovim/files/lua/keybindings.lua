@@ -46,6 +46,8 @@ function M.hop()
    nnoremap('s', '<cmd>HopChar1<CR>', 'Easymotion char')
    vnoremap('s', '<cmd>HopChar1<CR>', 'Easymotion char')
 
+   nnoremap('t', '<cmd>HopChar2<CR>', 'Easymotion 2 chars')
+
 end -- }}}
 
 -- Telescope {{{

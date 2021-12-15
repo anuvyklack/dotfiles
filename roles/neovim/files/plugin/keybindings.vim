@@ -8,17 +8,6 @@
 " ░░   ░░  ░░░░░    █████      ░░░░░░  ░░ ░░   ░░  ░░░░░░ ░░ ░░   ░░   █████ ░░░░░░
 "                  ░░░░░                                              ░░░░░
 
-" "              Easymotion key bindings             {{{
-" " ----------------------------------------------------
-" map  ; <Plug>(easymotion-prefix)
-" nmap s <Plug>(easymotion-bd-f)
-" xmap s <Plug>(easymotion-bd-f)
-" omap s <Plug>(easymotion-bd-f)
-" nmap ;w <Plug>(easymotion-w)
-" nmap ;b <Plug>(easymotion-b)
-" nmap ;l <Plug>(easymotion-lineanywhere)
-" " -------------------------------------------------}}}
-
 "                     Easy-Align                   {{{
 " ----------------------------------------------------
 " Start interactive EasyAlign in visual mode (e.g. vipga)
