@@ -189,6 +189,22 @@ return require('packer').startup(function()
       end
    }
 
+   use { 'AndrewRadev/splitjoin.vim', as = 'splitjoin' }
+
+   -- -- The same as 'splitjoin', but in lua and may be some day will using treesitter.
+   -- use { 'AckslD/nvim-revJ.lua',
+   --    requires = 'wellle/targets.vim',
+   --    config = function()
+   --       require("revj").setup{
+   --          keymaps = {
+   --              operator = '<Leader>J', -- for operator (+motion)
+   --              line = '<Leader>j', -- for formatting current line
+   --              visual = '<Leader>j', -- for formatting visual selection
+   --          },
+   --       }
+   --    end
+   -- }
+
    -- Multiple cursors
    -- https://github.com/mg979/vim-visual-multi
    use { 'mg979/vim-visual-multi', as = 'multiple-cursors'}
