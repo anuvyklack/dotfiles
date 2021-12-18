@@ -8,7 +8,7 @@ treesitter_config.setup {
    -- 'yaml'
    ensure_installed = {
       'bash', 'comment', 'c', 'cpp', 'fennel', 'go', 'html', 'json',
-      'latex', 'lua', 'python', 'regex', 'rust', 'toml', 'query',
+      'latex', 'lua', 'python', 'regex', 'rust', 'toml', 'query', 'markdown'
       -- 'vim'
    },
    highlight = {
@@ -56,6 +56,9 @@ treesitter_config.setup {
       enable = true,
       extended_mode = true, -- Highlight also non-parentheses delimiters,
                             -- boolean or table: lang -> boolean.
+      -- disable = { -- List of languages you want to disable the plugin for.
+      --    'jsx', 'cpp',
+      -- },
       max_file_lines = 1000, -- Do not enable for files with more than 1000 lines, int.
    }
 
