@@ -55,11 +55,11 @@ highlight HopUnmatched guifg=#aaaaaa
 
 lua << EOF
 require'nvim-treesitter.configs'.setup{
-  rainbow = {
-    colors = {
-      '#f28534', '#80aa9e', '#e9b143', '#b0b846', '#d3869b', '#f2594b'
-    },
-  },
+   rainbow = {
+      colors = {
+         '#f28534', '#80aa9e', '#e9b143', '#b0b846', '#d3869b', '#f2594b'
+      },
+   },
 }
 EOF
 

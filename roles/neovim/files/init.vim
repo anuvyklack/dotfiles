@@ -17,8 +17,8 @@ endif
 
 lua require('impatient')
 
-" General Config                                                     {{{
-" ======================================================================
+" General Config                                                        {{{
+" =========================================================================
 " Список кодировок для автоматического их определения
 set fileencodings=utf-8,cp1251
 
@@ -62,8 +62,8 @@ set secure  " Disallows the use of :autocmd, shell and write commands in
 syntax enable   " Включить подсветку синтаксиса
 " }}}
 
-" Folding                                                            {{{
-" ======================================================================
+" Folding                                                               {{{
+" =========================================================================
 
 set foldmethod=marker   " fold based on markers
 set foldcolumn=auto:3
@@ -77,8 +77,8 @@ set foldopen=block,hor,mark,jump,percent,quickfix,search,tag,undo
 
 " }}}
 
-" Python support                                                    {{{
-" =====================================================================
+" Python support                                                        {{{
+" =========================================================================
 set pyxversion=3
 if has('unix')
     let g:python3_host_prog = '/usr/bin/python3'
@@ -94,8 +94,8 @@ endif
 
 " }}}
 
-" Clipboard                                                        {{{
-" ====================================================================
+" Clipboard                                                             {{{
+" =========================================================================
 if has('wsl')
     let g:clipboard = {
           \   'name': 'wslclipboard',
@@ -113,8 +113,8 @@ if has('wsl')
 endif
 " }}}
 
-" Indentation                                                      {{{
-" =====================================================================
+" Indentation                                                           {{{
+" =========================================================================
 
 
 set autoindent      " Use the current indentation when creating a new line
@@ -132,8 +132,8 @@ set list listchars=tab:\ \ ,trail:· ",eol:¶ ",eol:¤
 
 " }}}
 
-" Formating text                                   {{{
-" ====================================================
+" Formating text                                                        {{{
+" =========================================================================
 
 set formatoptions=tcqj  " Default: tcqj
                         " The behavior of 'gw' command.
@@ -159,7 +159,7 @@ augroup END
 
 " }}}
 
-" =================== Completion =====================
+" =================== Completion ======================
 
 " set wildmode=list:longest
                     " При автодополнении в командном режиме (:command) в
@@ -177,12 +177,12 @@ set wildoptions=pum,tagfile
 
 " set wildoptions=tagfile
 
-" ================== Pop-Up Menu ====================
+" =================== Pop-Up Menu ======================
 
 set pumblend=7      " Прозрачность всплывающего меню
 set pumheight=15    " Количество строк во всплывающем окне
 
-" =================== Scrolling ======================
+" ==================== Scrolling =======================
 
 set scrolloff=0     " Start scrolling when we're n lines away from margins.
 setlocal scrolloff=0  " https://github.com/karb94/neoscroll.nvim/issues/28
@@ -192,7 +192,7 @@ set sidescrolloff=4 " Сколько колонок должно остатьс�
 set sidescroll=1    "   Минимальное количество колонок на которое экран
                     " будет прокручиваться горизонтально за раз.
 
-" ===================== Search =======================
+" ===================== Search =========================
 
 set incsearch       " Подсвечивать найденный текст по мере набора
 set hlsearch        " Highlight searches by default
@@ -202,12 +202,12 @@ set smartcase       " ...unless we type a capital
 set inccommand=split " Shows a preview window of all the changes you are
                      " going to make in the document.
 
-" ==================== Spelling ======================
+" ===================== Spelling =======================
 
 set spelllang=ru_ru,en_us
 " set dictionary      " используемые словари
 
-" ===================== Syntax ========================
+" ====================== Syntax ========================
 
 " https://github.com/tpope/vim-markdown
 let g:markdown_fenced_languages = [
@@ -224,7 +224,7 @@ let g:vimsyn_embed = 'lPr'  " Turn on syntax highlighting for embeded lua,
                             " python and ruby pieces of code inside
                             " Vimscript in *.vim files.
 
-" ============== Turn Off Swap Files ==================
+" =============== Turn Off Swap Files ==================
 
 set noswapfile
 
@@ -233,7 +233,7 @@ set noswapfile
 set nobackup
 set nowritebackup
 
-" ================== Русский язык =====================
+" =================== Русский язык =====================
 
 set keymap=russian-jcukenwin
 set iminsert=0  "   Чтобы при старте ввод был на английском,
@@ -250,7 +250,7 @@ set imsearch=0  "   Чтобы при старте поиск был на анг
 
 set helplang=ru     " Помощь на русском языке
 
-" ================= Visual Tweaks ===================
+" ================== Visual Tweaks =====================
 
 set signcolumn=auto:4
 set nowrap          " Wrap lines
@@ -268,7 +268,7 @@ set mousehide       " Hide the mouse when typing text.
 set guicursor=n-v-c:block-Cursor/lCursor
 set guicursor+=i-ci-ve:ver25-Cursor2/lCursor2,r-cr:hor20,o:hor50
 
-" ================= Window Splits ====================
+" ================== Window Splits =====================
 
 " Open splits on the left and above
 set splitbelow

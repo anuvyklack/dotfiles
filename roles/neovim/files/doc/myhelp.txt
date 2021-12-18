@@ -2,7 +2,8 @@
 
 								*myhelp*
 Navigation inside vim help~
-Jump to specific subjects by using tags:			<<<
+								<<<
+Jump to specific subjects by using tags:
 - Use the "CTRL-]" keybinding while standing on the name of a command or
   option.  This only works when the tag is a keyword.  "<C-Leftmouse>" and
   "g<LeftMouse>" work just like "CTRL-]".
@@ -66,26 +67,21 @@ gv                      Reselect previous selected region
 ===============================================================================
 INSERT MODE                                                *myhelp-insert*
 
-   - <C-N>: Complete word
-   - <C-N><C-P>: Complete word (?)
-   - <C-X><C-L>: Complete line (!!)
-   - \cc: <Leader>cc Comment out all selected rows with a single-line comment
-     (//) — part of NERDCommenter
    - \\w: Navigate to a word with EasyMotion’s help (works with any navigation
      commands)
 
 ==============================================================================
 COMMAND MODE                                              *myhelp-command*
 
-:!{cmd}                 Execute shell command inside vim (example `:!exa ~` )
+:!{cmd}			Execute shell command inside vim (example `:!exa ~` )
 
-:r!{cmd}                Выполнить команду shell и вставить результат после
-                        курсора.
+:r!{cmd}		Выполнить команду shell и вставить результат после
+			курсора.
 
-:retab                  Заменяет все символы табуляции пробелами в соответствии
-                        с параметром |'tabstop'|.
+:retab			Заменяет все символы табуляции пробелами в соответствии
+			с параметром |'tabstop'|.
 
-:spelldump              Create a new buffer containing everything from the
+:spelldump		Create a new buffer containing everything from the
 			spell file(s) currently in use.
 
 
@@ -95,12 +91,12 @@ DIFF MODE                                                    *myhelp-diff*
 Starting Vim in diff mode: >
 	nvim -d file1 file2 [file3 [file4]]
 <
-      `zo`   развернуть блок
-      `zc`   свернуть блок
-      `]c`   следующая разница
-      `[c`   предыдущая разница
-      `do`   (diff-obtain) получить разницу из другого окна в текущее
-      `dp`   (diff-put) отправить разницу из текущего окна в соседнее
+	`zo`   развернуть блок
+	`zc`   свернуть блок
+	`]c`   следующая разница
+	`[c`   предыдущая разница
+	`do`   (diff-obtain) получить разницу из другого окна в текущее
+	`dp`   (diff-put) отправить разницу из текущего окна в соседнее
 
 `:diffupdate`   re-scan the files for differences
 
@@ -130,23 +126,23 @@ gwip                    Отформатировать текущий параг
 Выравнивание строк по заданным элементам~
                                                        Плагин *easy-align*
 
-{selected text}ga       Start interactive EasyAlign in visual mode (e.g. vipga)
+{selected text}ga	Start interactive EasyAlign in visual mode (e.g. vipga)
 
-ga{motion}              EasyAlign for a motion/text object (e.g. gaip)
+ga{motion}		EasyAlign for a motion/text object (e.g. gaip)
 
 Example: type `gaip=` on the paragraph below: >
 
-    apple   =red
-    grass+=green
-    sky-=   blue
+	apple   =red
+	grass+=green
+	sky-=   blue
 <
 
 ------------------------------------------------------------------------------
 Switch between single-line and multiline formats of code~
                                                         Плагин *splitjoin*
 
-gS                      Split into multiline constraction.
-gJ                      Join into single-line construction.
+gS			Split into multiline constraction.
+gJ			Join into single-line construction.
 
 ------------------------------------------------------------------------------
 PYTHON                                                     *myhelp-python*
