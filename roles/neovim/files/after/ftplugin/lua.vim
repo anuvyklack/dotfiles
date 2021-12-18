@@ -23,8 +23,8 @@
 "-----------------------------------------------------------------------------
 " Folds
 "-----------------------------------------------------------------------------
-set fillchars+=fold:•
-set foldtext=CustomFoldText('•')
+setlocal fillchars+=fold:•
+setlocal foldtext=CustomFoldText('•')
 
 function! CustomFoldText(string) "{{{
 

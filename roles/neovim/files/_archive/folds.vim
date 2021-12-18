@@ -7,13 +7,13 @@ set foldtext=CustomFoldText('•')
 function! CustomFoldText(string) "{{{
     " Get first non-blank line.
     let line_num = v:foldstart
-    while getline(fs) =~ '^\s*$'  " if line consists only from spaces
-      let line_num = nextnonblank(line_num + 1)
+    while getline(line_num) =~ '^\s*$'  " if line consists only from spaces
+        let line_num = nextnonblank(line_num + 1)
     endwhile
 
     " If fold is emty, get the first line.
     if line_num >= v:foldend
-      let line_num = v:foldstart
+        let line_num = v:foldstart
     endif
 
     " Get the number of indentation.
@@ -22,7 +22,7 @@ function! CustomFoldText(string) "{{{
 
     " Get the line content, removing all whitespaces
     " from the beginning and the end of the line.
-    let line = trim(getline(line_num))
+    let line = getline(line_num)->trim()
 
     " Construct the list from '&commentstring' string using '%s' as separator,
     " and get the first element from the list.
@@ -34,12 +34,12 @@ function! CustomFoldText(string) "{{{
     " If the line starts from the first element in the obtained list (i.e. line
     " starts with the comment sign), then ...
     if match(line, '^' . comment_str) != -1
-      " ... add its length to the 'indent_num' variable.
-      let indent_num = indent_num + len(comment_str)
+        " ... add its length to the 'indent_num' variable.
+        let indent_num = indent_num + len(comment_str)
     endif
 
     " Remove all comment signs.
-    let line = substitute(line, join(split(&commentstring, '%s'), '\|'), '', 'g')
+    let line = substitute(line, split(&commentstring, '%s')->join('\|'), '', 'g')
     "                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     "                           In this command we construct from this string:
     "                               '/*%s*/'   (cpp example)
@@ -48,7 +48,7 @@ function! CustomFoldText(string) "{{{
     "                           which is Vim pattern.
 
     " Remove all foldmarkers signs.
-    let line = substitute(line, join(split(&foldmarker, ','), '\d\?\|'), '', 'g')
+    let line = substitute(line, split(&foldmarker, ',')->join('\d\?\|'), '', 'g')
 
     let indent_num = indent_num + match(line, '\S')
 
@@ -72,7 +72,9 @@ function! CustomFoldText(string) "{{{
     let fold_size_str = " " . fold_size_num . " lines "
 
     " Size of line numbers colummn
-    let nu = (&number ? len(string(line('$'))) : 0)
+    " let nu = (&number ? line('$')->string()->len() : 0)
+    let nu = (&number ? line('$')->strlen() : 0)
+
 
     " Calculate the number of folded lines as a percentage of the whole buffer. {{{
 
@@ -129,4 +131,4 @@ endfunction "}}}
 "       \ 'default': '%{CreaseIndent()}%{FoldTxt()} %{IsMod()} %{Cmmtd()} %= %{CountFoldText()}%l '.g:lines_label.' %f%f%f%f',
 "       \}
 
-" vim: tw=79
+" vim: tw=79 fdm=marker
