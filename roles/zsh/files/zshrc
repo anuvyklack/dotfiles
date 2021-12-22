@@ -39,7 +39,7 @@ fi
 # zsh-snap {{{
 
 # 'declare' is the same as 'typeset'.
-# -A  - The names refer to associative array parameters.
+# -A : The names refer to associative array parameters.
 declare -A ZSH_SNAP
 ZSH_SNAP[HOME_DIR]="$HOME/.local/share/znap/zsh-snap"
 ZSH_SNAP[PLUGINS_DIR]="$HOME/.local/share/znap"
@@ -48,21 +48,28 @@ ZSH_SNAP[EVAL]=$HOME/.cache/zsh-snap/eval
 ZSH_SNAP[FPATH]=$HOME/.cache/zsh-snap/fpath
 
 if [[ ! -s $ZSH_SNAP[BIN] ]]; then
-  git clone --depth=1 'https://github.com/marlonrichert/zsh-snap.git' $ZSH_SNAP[HOME_DIR]
+  # git clone --depth=1 'https://github.com/marlonrichert/zsh-snap.git' $ZSH_SNAP[HOME_DIR]
+  git clone 'https://github.com/marlonrichert/zsh-snap.git' $ZSH_SNAP[HOME_DIR]
+
+  # WARNING: temporary switch to particular commit.
+  # git -C $ZSH_SNAP[HOME_DIR] checkout f0ca23b
 fi
 
 source $ZSH_SNAP[BIN]
 
-# Do not auto compile functions in my folder, because
-# I compile them later into one library file.
-zstyle ':znap:*' auto-compile-ignore "${my_zsh_functions}/*"
-# }}}
+# zstyle ':znap:*' auto-compile no
 
-# gitfile {{{
-
-znap install mohd-akram/ghget
+# # Do not auto compile functions in my folder, because
+# # I compile them later into one library file.
+# zstyle ':znap:*' auto-compile-ignore "${my_zsh_functions}/*"
 
 # }}}
+
+# # gitfile {{{
+#
+# znap install mohd-akram/ghget
+#
+# # }}}
 
 # }}}
 
@@ -431,6 +438,12 @@ ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
 # Do the initialization when the script is sourced (i.e. Initialize instantly).
 # ZVM_INIT_MODE=sourcing
 
+if [[ ! -d $ZSH_SNAP[PLUGINS_DIR]/zsh-vi-mode ]]; then
+  git clone "https://github.com/jeffreytse/zsh-vi-mode.git" $ZSH_SNAP[PLUGINS_DIR]/zsh-vi-mode
+
+  # WARNING: temporary switch to particulra commit.
+  git -C $ZSH_SNAP[PLUGINS_DIR]/zsh-vi-mode checkout c1480b4
+fi
 znap source jeffreytse/zsh-vi-mode
 
 ZVM_VI_SURROUND_BINDKEY=classic
