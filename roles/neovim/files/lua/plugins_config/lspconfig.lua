@@ -63,7 +63,7 @@ local lsp_settings = {
       on_attach = on_attach,
       capabilities = capabilities,
       cmd = {
-         vim.fn.stdpath('data').."/lsp_servers/clangd/clangd",
+         "clangd",
          -- "--compile-commands-dir=debug",
          "--background-index",
          "--suggest-missing-includes",
