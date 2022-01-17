@@ -746,6 +746,15 @@ require('packer').startup(function()
       end
    }
 
+   use { 'anuvyklack/help-vsplit.nvim', as = 'help-vsplit',
+   -- use { '~/Git/my_neovim_plugins/help-vsplit.nvim', as = 'help-vsplit',
+      config = function()
+         require('help-vsplit').setup{
+            side = 'right' -- or 'left'
+         }
+      end
+   }
+
    -- Execute :StartupTime to get an averaged startup profile.
    use { 'tweekmonster/startuptime.vim', as = 'startuptime',
       cmd = 'StartupTime'
