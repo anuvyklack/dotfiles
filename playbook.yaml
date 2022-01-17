@@ -7,6 +7,10 @@
     #   tags:
     #     - test
 
+    - role: systemd
+      tags:
+        - systemd
+
     - role: hidpi
       tags:
         - hidpi
