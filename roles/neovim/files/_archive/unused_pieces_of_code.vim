@@ -262,3 +262,23 @@ function! MaxFoldLevel() "{{{
 endfunction "}}}
 
 " ======================================================
+
+augroup NewSplit
+    autocmd!
+    autocmd WinNew * autocmd BufEnter * ++once call <SID>NewSplit()
+aug end
+function! <SID>NewSplit()
+    if (&bt ==? 'help' || &ft ==? 'man' || &ft ==? 'fugitive' || &ft ==? 'gitcommit')
+        let p = winnr('#')
+        if winwidth(p) >= getwinvar(p, '&tw', 80) + 80
+            let b = bufnr()
+            let bh = &l:bufhidden
+            setlocal bufhidden=hide
+            wincmd p
+            exe winnr('#').'wincmd q'
+            vsplit
+            exe b.'b'
+            let &l:bufhidden = bh
+        endif
+    endif
+endfunction

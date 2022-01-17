@@ -11,6 +11,7 @@ treesitter_config.setup {
       'latex', 'lua', 'python', 'regex', 'rust', 'toml', 'query', 'markdown'
       -- 'vim'
    },
+
    highlight = {
       enable = true,
       use_languagetree = true
@@ -60,8 +61,10 @@ treesitter_config.setup {
       --    'jsx', 'cpp',
       -- },
       max_file_lines = 1000, -- Do not enable for files with more than 1000 lines, int.
-   }
-
+   },
+   context_commentstring = {
+      enable = true
+   },
    -- refactor = {
    --   smart_rename = {enable = true, keymaps = {smart_rename = "grr"}},
    --   highlight_definitions = {enable = true}
