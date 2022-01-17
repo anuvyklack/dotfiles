@@ -133,7 +133,30 @@ function M.lspconfig(bufnr)
 
 end --}}}
 
+-- LuaSnip {{{
+function M.luasnip()
+   local available_luasnip, luasnip = pcall(require, 'luasnip')
+   if not available_luasnip then return end
 
+   keymap.set('n', '<Tab>', function() --{{{
+      -- if luasnip.expand_or_jumpable() then
+      if luasnip.expand_or_locally_jumpable() then
+         luasnip.expand_or_jump()
+      -- else
+      --    vim.api.nvim_feedkeys('<Tab>', 'n', true)
+      --    -- vim.api.nvim_command('normal! <Tab>')
+      end
+   end) --}}}
+
+   keymap.set('n', '<S-Tab>', function() --{{{
+      if luasnip.jumpable(-1) then
+         luasnip.jump(-1)
+      -- else
+      --    vim.api.nvim_feedkeys('<S-Tab>', 'n', true)
+      end
+   end) --}}}
+
+end --}}}
 
 -- Treesitter {{{
 function M.treesitter_textobjects()
