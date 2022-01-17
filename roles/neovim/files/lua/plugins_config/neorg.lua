@@ -9,11 +9,11 @@ require('neorg').setup {
             }
          }
       },
-		["core.norg.completion"] = {
-			config = {
-				engine = "nvim-compe" -- "nvim-cmp"
-			}
-		}
+      ["core.norg.completion"] = {
+         config = {
+            engine = "nvim-compe" -- "nvim-cmp"
+         }
+      }
    },
 }
 

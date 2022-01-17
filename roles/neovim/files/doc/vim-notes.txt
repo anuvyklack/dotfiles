@@ -33,11 +33,16 @@ COMMAND MODE
 ------------------------------------------------------------------------------
 LUA FUNCTIONS
 
-|vim.inspect()|	Return a human-readable representation of the given object.
+|vim.inspect()|		Return a human-readable representation of the given
+			object.
 
-|vim.notify()|	Notification provider.  Without a runtime, writes to `:Messages`
-                See also: ~
-                    |nvim_notify|
+|vim.notify()|		Notification provider.  Without a runtime, writes to `:Messages`
+			See also: ~
+                	    |nvim_notify|
+
+|vim.tbl_deep_extend()|	Merges recursively two or more map-like tables.
+
+|vim.tbl_values()|	Return a list of all values used in a table.
 
 ------------------------------------------------------------------------------
 QUICKFIX

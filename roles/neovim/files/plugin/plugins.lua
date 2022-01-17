@@ -18,29 +18,16 @@
 --                  and `PackerCompile` at the end.
 -- -------------- ------------------------------------------------
 
-local fn = vim.fn
-local execute = vim.api.nvim_command
+--                       Install and setup Packer                            {{{
+--------------------------------------------------------------------------------
+local install_path = vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
 
--- setup Packer {{{
--- Auto install packer.nvim if not exists
-local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-
-if fn.empty(fn.glob(install_path)) > 0 then
-   fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', '--depth', '1', install_path})
-   execute 'packadd packer.nvim'
+if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+   vim.fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', '--depth', '1', install_path})
+   vim.api.nvim_command('packadd packer.nvim')
 end
 
--- -- Auto compile when there are changes in plugins.lua
--- -- vim.cmd 'autocmd BufWritePost plugins.lua PackerCompile'
--- vim.cmd [[
---   augroup Packer
---     autocmd!
---     autocmd BufWritePost plugins.lua PackerCompile
---   augroup end
--- ]]
-
--- Packer settings
-require('packer').init{
+require('packer').init { --{{{
    display = {
       -- open_cmd = '80vnew [packer]',  -- set the width of the packer split
       open_fn = function()
@@ -56,52 +43,64 @@ require('packer').init{
    git = {
       clone_timeout = 600  -- timeout, in seconds, for git clones
    }
-}
--- }}}
+} --}}}
 
-return require('packer').startup(function()
+-- -- Auto compile when there are changes in plugins.lua
+-- -- vim.cmd 'autocmd BufWritePost plugins.lua PackerCompile'
+-- vim.cmd [[
+--   augroup Packer
+--     autocmd!
+--     autocmd BufWritePost plugins.lua PackerCompile
+--   augroup end
+-- ]]
+
+-----------------------------------------------------------------------------}}}
+
+require('packer').startup(function()
    use 'wbthomason/packer.nvim' -- Packer can manage itself
 
    use 'lewis6991/impatient.nvim' -- Improve startup time for Neovim.
 
-   --                   Key Mappings                   {{{
-   -------------------------------------------------------
-   use { 'b0o/mapx.nvim', as = 'mapx' }  -- create key mappings
+   --                          Key Mappings                               {{{
+   -------------------------------------------------------------------------
 
-   use { 'folke/which-key.nvim', as = 'which-key', -- WhichKey
-      config = function ()
-         require('which-key').setup {
-            plugins = {
-               spelling = { -- Enabling this module will show WhichKey when
-                            -- pressing z= to select spelling suggestions.
-                  enabled = false,
-                  suggestions = 20, -- How many suggestions should be shown in the list?
-               },
-               presets = {
-                  operators = true,
-               },
-            },
-            operators = {
-               gc = "Comments"
-            },
-            -- ignore_missing = true, -- enable this to hide mappings for which you didn't specify a label
-            hidden = { -- hide mapping boilerplate
-               "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ ",
-               "<SNR>", "<Plug>"
-            },
-         }
-      end
-   }
-   ----------------------------------------------------}}}
+   -- use { 'folke/which-key.nvim', as = 'which-key', -- WhichKey
+   --    config = function ()
+   --       require('which-key').setup {
+   --          plugins = {
+   --             spelling = { -- Enabling this module will show WhichKey when
+   --                          -- pressing z= to select spelling suggestions.
+   --                enabled = false,
+   --                suggestions = 20, -- How many suggestions should be shown in the list?
+   --             },
+   --             presets = {
+   --                operators = true,
+   --             },
+   --          },
+   --          operators = {
+   --             gc = "Comments"
+   --          },
+   --          -- ignore_missing = true, -- Enable this to hide mappings for which you
+   --          --                        -- didn't specify a label.
+   --          hidden = { -- hide mapping boilerplate
+   --             "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ ",
+   --             "<SNR>", "<Plug>"
+   --          },
+   --       }
+   --    end
+   -- }
 
-   --                    Treesitter                    {{{
-   -------------------------------------------------------
+   --------------------------------------------------------------------}}}
+
+   --                           Treesitter                               {{{
+   -------------------------------------------------------------------------
    use { 'nvim-treesitter/nvim-treesitter', as = 'treesitter',
       requires = {
          {'nvim-treesitter/nvim-treesitter-textobjects', as = 'treesitter-textobjects'},
          {'RRethy/nvim-treesitter-textsubjects',         as = 'treesitter-textsubjects'},
          {'nvim-treesitter/nvim-treesitter-refactor',    as = 'treesitter-refactor'},
          {'romgrk/nvim-treesitter-context',              as = 'treesitter-context'},
+         {'JoosepAlviste/nvim-ts-context-commentstring', as = 'treesitter-context-commentstring'},
          {'nvim-treesitter/playground',                  as = 'treesitter-playground'},
          {'p00f/nvim-ts-rainbow',                        as = 'treesitter-rainbow'},
       },
@@ -110,18 +109,154 @@ return require('packer').startup(function()
    }
 
    -- use 'wellle/context.vim'   -- Vscode breadcrumbs analog
-   ----------------------------------------------------}}}
+   ----------------------------------------------------------------------}}}
 
-   -------------------- Text editing ---------------------
+   --                              LSP                                   {{{
+   -------------------------------------------------------------------------
 
-   use 'matze/vim-move'        -- перемещение строк и частей строк
-   use 'wellle/targets.vim'    -- plugin that provides additional text objects
-   use 'tpope/vim-unimpaired'  -- Different bidirectional motions: switch
-                               -- buffers, add blank lines, etc.
+   use { 'neovim/nvim-lspconfig', as = 'lspconfig',
+      config = function() require 'plugins_config/lspconfig' end,
+      requires = {
+         {  -- LSP servers installer.
+            'williamboman/nvim-lsp-installer', as = 'lsp-installer'
+         },
+         {  -- Setup for lua and plugins development.
+            'folke/lua-dev.nvim', as = 'lua-dev'
+         }
+      }
+   }
+
+   -- Lsp signature hint when you type.
+   use { 'ray-x/lsp_signature.nvim', as = 'lsp-signature',
+      config = function() require('plugins_config/lsp_signature') end
+   }
+
+   -- use { 'glepnir/lspsaga.nvim',  -- original
+   use { 'tami5/lspsaga.nvim',  -- maintained fork
+      as = 'lspsaga',
+      config = function() require('plugins_config/lspsaga') end
+   }
+
+   use { 'folke/trouble.nvim',
+      requires = 'kyazdani42/nvim-web-devicons',
+      cmd = {'Trouble', 'TroubleToggle'},
+      config = function() require('plugins_config/trouble') end
+   }
+
+   -- use 'nvim-lua/diagnostic-nvim'
+
+   -- use { 'jubnzv/virtual-types.nvim', as = 'virtual-types' }
+
+   -- use { 'simrat39/symbols-outline.nvim', as = 'symbols-outline',
+   --    config = function() require('plugins_config/symbols-outline') end
+   -- }
+
+   -- use { "liuchengxu/vista.vim" }
+
+   use { 'ahmedkhalf/project.nvim',
+      config = function()
+         require('project_nvim').setup {
+            detection_methods = { 'lsp', 'pattern', },
+            patterns = {
+               '.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json',
+               '>.config', '>roles'
+            },
+            silent_chdir = true, -- When set to false, you will get a message
+                                 -- when project.nvim changes your directory.
+         }
+      end
+   }
+
+   -- use 'nvim-lua/lsp_extensions.nvim'
+   -- use 'tjdevries/nlua.nvim'
+
+   ----------------------------------------------------------------------}}}
+
+   --                 Completion, Autopairs, Snippets                    {{{
+   -------------------------------------------------------------------------
+
+   -- Autopairs {{{
+   use { 'windwp/nvim-autopairs', as = 'autopairs',
+      config = function()
+         require('nvim-autopairs').setup()
+      end
+   }
+   -- }}}
+
+   -- cmp {{{
+
+   use { 'L3MON4D3/LuaSnip',
+      config = function() require('plugins_config/luasnip') end,
+   }
+
+   -- The community driven  collection of snippets.
+   -- use { 'rafamadriz/friendly-snippets' }
+
+   use { 'hrsh7th/nvim-cmp', as = 'cmp',
+      config = function() require('plugins_config/cmp') end,
+      requires = {
+         {  -- Icons in completion menu.
+            'onsails/lspkind-nvim', as = 'lspkind',
+            config = function() require('plugins_config/lspkind-nvim') end
+         },
+         'saadparwaiz1/cmp_luasnip', -- source for LuaSnip snippet plugin
+         'hrsh7th/cmp-nvim-lsp', -- source for neovim's Lua runtime API such 'vim.lsp.*'
+         'hrsh7th/cmp-buffer',
+         'hrsh7th/cmp-path',
+         'hrsh7th/cmp-cmdline',
+      }
+   }
+
+   --}}}
+
+   -- -- coq {{{
+   -- use { 'ms-jpq/coq_nvim', branch = 'coq',
+   --    after = 'autopairs',
+   --    requires = {
+   --       { -- 9000+ Snippets
+   --          'ms-jpq/coq.artifacts', branch = 'artifacts'
+   --       },
+   --       { -- https://github.com/ms-jpq/coq.thirdparty
+   --          'ms-jpq/coq.thirdparty', branch = '3p'
+   --       }
+   --    },
+   --    setup  = function() require('plugins_config/coq_nvim').setup() end,
+   --    config = function() require('plugins_config/coq_nvim').config() end,
+   -- }
+   -- --}}}
+   --
+   -- -- wilder {{{
+   -- use { 'gelguy/wilder.nvim',
+   --    requires = {
+   --       'roxma/nvim-yarp',
+   --       'roxma/vim-hug-neovim-rpc'
+   --    },
+   --    run = ':UpdateRemotePlugins',
+   --    event = 'CmdlineEnter',
+   --    config = function() vim.cmd("source ~/.config/nvim/lua/plugins_config/wilder.vim") end
+   -- }
+   -- --}}}
+
+   ----------------------------------------------------------------------}}}
+
+   --                  DAP (Debug Adapter Protocol)                      {{{
+   -------------------------------------------------------------------------
+   -- use { "mfussenegger/nvim-dap", as = 'dap' }
+   -- use { "rcarriga/nvim-dap-ui",  as = 'dap-ui' }
+   ----------------------------------------------------------------------}}}
+
+   ---------------------------- Text editing -------------------------------
+
+   use 'matze/vim-move'       -- перемещение строк и частей строк
+   use 'wellle/targets.vim'   -- plugin that provides additional text objects
+   use 'tpope/vim-unimpaired' -- Different bidirectional motions: switch
+                              -- buffers, add blank lines, etc.
+   use 'junegunn/vim-easy-align'
 
    -- use 'othree/eregex.vim'     -- Perl style regexp notation for Vim
 
    -- Comments {{{
+
    -- Also define `gc` - comment textobject.
    -- Doesn't work in visual mode. Works in operator mode (:help mapmode-o).
    use { 'echasnovski/mini.nvim',
@@ -131,23 +266,14 @@ return require('packer').startup(function()
          which_key{
             gc = { name = 'Comment' },
             gcc = 'Comment out current line',
-            ['gc*'] = 'which_key_ignore',
-            ['gc#'] = 'which_key_ignore',
+            ['gc*'] = "which_key_ignore",
+            ['gc#'] = "which_key_ignore",
          }
       end
    }
-   -- }}}
 
-   -- Autopairs {{{
-   use { 'windwp/nvim-autopairs', as = 'autopairs',
-      config = function()
-         require('nvim-autopairs').setup()
-         -- require("nvim-autopairs.completion.compe").setup({
-         --    map_cr = true, -- map <CR> on insert mode
-         --    map_complete = true -- It will auto insert `(` after select function or method item.
-         -- })
-      end
-   }
+   -- use 'tomtom/tcomment_vim'
+
    -- }}}
 
    -- Surround {{{
@@ -169,7 +295,7 @@ return require('packer').startup(function()
 
    -- }}}
 
-   -- Improved * keybinding action.
+   -- Makes * operator works the way it should by default.
    use { 'haya14busa/vim-asterisk', as = 'asterisk',
       config = function()
          vim.g['asterisk#keeppos'] = 0 -- Keep cursor position inside word between jumps.
@@ -209,7 +335,7 @@ return require('packer').startup(function()
    -- https://github.com/mg979/vim-visual-multi
    use { 'mg979/vim-visual-multi', as = 'multiple-cursors'}
 
-   ---------------------- Clipboard ----------------------
+   ----------------------------- Clipboard ---------------------------------
 
    -- use { 'AckslD/nvim-neoclip.lua',
    --    requires = {'tami5/sqlite.lua', module = 'sqlite'},
@@ -218,7 +344,7 @@ return require('packer').startup(function()
    --    end,
    -- }
 
-   -------------------- Visual tweaks --------------------
+   --------------------------- Visual tweaks -------------------------------
 
    -- Подсвечивает все такие же слова как и слово под курсором.
    use { 'RRethy/vim-illuminate' }
@@ -253,7 +379,7 @@ return require('packer').startup(function()
    }
    --}}}
 
-   ------------ Windows and buffers managment ------------
+   -------------------- Windows and buffers managment ----------------------
 
    -- use 'matbme/JABS.nvim'
 
@@ -281,7 +407,7 @@ return require('packer').startup(function()
    -- use 'zhaocai/GoldenView.Vim'
    -- use { 'RobertAudi/GoldenView.vim', opt = true }
 
-   ---------------------- Movements ----------------------
+   ----------------------------- Movements ---------------------------------
 
    -- use { 'easymotion/vim-easymotion', as = 'easymotion',
    --    config = function()
@@ -304,19 +430,19 @@ return require('packer').startup(function()
 
    -- use {'ggandor/lightspeed.nvim', }
 
-   --                   Smooth scroll                  {{{
-   -------------------------------------------------------
+   --                          Smooth scroll                             {{{
+   -------------------------------------------------------------------------
 
    -- https://github.com/psliwka/vim-smoothie
    use { 'psliwka/vim-smoothie',
       config = function()
-         -- Time (in milliseconds) between subseqent screen/cursor postion updates.
-         -- Lower value produces smoother animation.
+         -- Time (in milliseconds) between subseqent screen/cursor postion
+         -- updates.  Lower value produces smoother animation.
          vim.g.smoothie_update_interval = 20
          --
-         -- Base scrolling speed (in lines per second), to be taken into account by
-         -- the velocity calculation algorithm.  Can be decreased to achieve slower
-         -- (and easier to follow) animation.
+         -- Base scrolling speed (in lines per second), to be taken into account
+         -- by the velocity calculation algorithm.  Can be decreased to achieve
+         -- slower (and easier to follow) animation.
          vim.g.smoothie_base_speed = 7
       end
    }
@@ -325,7 +451,7 @@ return require('packer').startup(function()
    --    config = function() require('plugins_config/neoscroll') end
    -- }
 
-   ----------------------------------------------------}}}
+   ----------------------------------------------------------------------}}}
 
    -- -- Clever-f
    -- use { 'rhysd/clever-f.vim',
@@ -339,116 +465,9 @@ return require('packer').startup(function()
 
    -- use 'chaoren/vim-wordmotion'  -- More useful word motions for Vim
 
-   -------------------------------------------------------
+   -------------------------------------------------------------------------
 
-   --             LSP, Completion, Snippets            {{{
-   -------------------------------------------------------
-
-   use { 'neovim/nvim-lspconfig', as = 'lspconfig',
-      requires = {
-         { 'williamboman/nvim-lsp-installer', -- LSP servers installer.
-            as = 'lsp-installer' },
-         { 'folke/lua-dev.nvim', -- Setup for lua and plugins development.
-            as = 'lua-dev' }
-      },
-      config = function() require('plugins_config/lspconfig') end
-   }
-
-   -- use { 'glepnir/lspsaga.nvim',  -- original
-   use { 'tami5/lspsaga.nvim',  -- maintained fork
-      as = 'lspsaga',
-      config = function() require('plugins_config/lspsaga') end
-   }
-
-   use { 'folke/trouble.nvim',
-      requires = 'kyazdani42/nvim-web-devicons',
-      cmd = {'Trouble', 'TroubleToggle'},
-      config = function() require('plugins_config/trouble') end
-   }
-
-   -- use 'nvim-lua/diagnostic-nvim'
-
-   -- Snippets {{{
-
-   -- https://github.com/L3MON4D3/LuaSnip
-   -- https://github.com/L3MON4D3/LuaSnip/blob/master/DOC.md
-   -- https://github.com/L3MON4D3/LuaSnip/wiki/Cool-Snippets#all---pairs
-   -- https://github.com/L3MON4D3/LuaSnip/wiki/Nice-Configs
-   use { 'L3MON4D3/LuaSnip' }
-
-   -- The community driven  collection of snippets.
-   use { 'rafamadriz/friendly-snippets' }
-
-   -- }}}
-
-   -- Completion {{{
-
-   use { 'onsails/lspkind-nvim', as = 'lspkind', -- Icons in completion menu.
-      config = function() require('plugins_config/lspkind-nvim') end
-   }
-
-   use { 'hrsh7th/nvim-cmp',
-      requires = {
-         'hrsh7th/cmp-nvim-lsp',
-         'hrsh7th/cmp-buffer'
-      },
-      config = function() require('plugins_config/nvim-cmp') end
-   }
-
-   -- }}}
-
-   -- Lsp signature hint when you type.
-   use { 'ray-x/lsp_signature.nvim', as = 'lsp-signature' }
-
-   use { 'jubnzv/virtual-types.nvim', as = 'virtual-types' }
-
-   use { 'simrat39/symbols-outline.nvim', as = 'symbols-outline',
-      config = function() require('plugins_config/symbols-outline') end
-   }
-
-   -- use { "liuchengxu/vista.vim" }
-
-   use { 'ahmedkhalf/project.nvim',
-      config = function()
-         require('project_nvim').setup {
-            detection_methods = { 'lsp', 'pattern', },
-            patterns = {
-               '.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json',
-               '>.config', '>roles'
-            },
-            silent_chdir = true, -- When set to false, you will get a message
-                                 -- when project.nvim changes your directory.
-         }
-      end
-   }
-
-   -- use 'airblade/vim-rooter'
-
-   -- use 'nvim-lua/lsp_extensions.nvim'
-   -- use 'steelsojka/completion-buffers'
-   -- use 'tjdevries/nlua.nvim'
-
-
-   ----------------------------------------------------}}}
-
-   -- --           DAP (Debug Adapter Protocol)           {{{
-   -- -------------------------------------------------------
-   -- use { "mfussenegger/nvim-dap", as = 'dap' }
-   -- use { "rcarriga/nvim-dap-ui",  as = 'dap-ui' }
-   -- ----------------------------------------------------}}}
-
-   -------------------- Fuzzy finder ---------------------
-   use { 'nvim-telescope/telescope.nvim', as = 'telescope',
-      requires = {
-         'nvim-lua/plenary.nvim',
-         -- 'famiu/bufdelete.nvim',
-      },
-      config = function() require('plugins_config/telescope') end,
-      -- cmd = 'Telescope',
-      -- keys = {'<leader>f', '<leader>fh'}
-   }
-
-   -------------------- IDE features ---------------------
+   ---------------------------- IDE features -------------------------------
 
    -- use 'tpope/vim-apathy'  -- Make 'gf' keybinding work in different filetypes.
    --                         -- For instructions of what it can do more look:
@@ -474,21 +493,180 @@ return require('packer').startup(function()
    -- }
 
    use { 'TimUntersberger/neogit',
+      requires = 'nvim-lua/plenary.nvim',
+      config = function()
+         require('neogit').setup{}
+      end
+   }
+
+   --------------------------- Fuzzy finder --------------------------------
+   use { 'nvim-telescope/telescope.nvim', as = 'telescope',
+      commit = '860cc65',
+      requires = {
+         'nvim-lua/plenary.nvim',
+         { 'nvim-telescope/telescope-fzf-native.nvim', as = 'telescope-fzf-native',
+            run = 'make'
+         },
+         -- 'famiu/bufdelete.nvim',
+      },
+      config = function() require('plugins_config/telescope') end,
+      -- event = 'VimEnter',
+      -- cmd = 'Telescope',
+      -- keys = {'<leader>f', '<leader>fh'}
+   }
+
+   ----------------------------- Statusline --------------------------------
+   -- use { 'glepnir/galaxyline.nvim',
+   --    branch = 'main',
+   --    config = function() require'statusline' end,
+   --    requires = {'kyazdani42/nvim-web-devicons'}
+   -- }
+   -------------------------------------------------------------------------
+
+   ----------------------- Vim additional modules --------------------------
+
+   -- bufferline / tabline
+
+   use { 'romgrk/barbar.nvim', as = 'barbar-tabline',
+      requires = 'kyazdani42/nvim-web-devicons',
+      config = function()
+         require('plugins_config/barbar')
+      end
+   }
+
+   use { 'anuvyklack/pretty-fold.nvim', as = 'pretty-fold', branch = 'nightly',
+   -- use { '~/Git/my_neovim_plugins/pretty-fold.nvim', as = 'pretty-fold',
+      config = function()
+         vim.opt.fillchars:append('fold:•')
+         require('pretty-fold').setup{
+            -- marker = { comment_signs = 'spaces' },
+            marker = { process_comment_signs = 'spaces' },
+            expr = { process_comment_signs = false }
+         }
+         require('pretty-fold.preview').setup{
+            -- border = 'shadow'
+         }
+      end
+   }
+
+   use { 'sindrets/diffview.nvim',
       requires = 'nvim-lua/plenary.nvim'
    }
 
-   --------- Syntaxes and programming languages ----------
+   -- Marks
+   -- use 'kshenoy/vim-signature'  -- display and navigate marks
+   use { 'chentau/marks.nvim',
+      config = function()
+         require'marks'.setup {
+            -- force_write_shada = true,
+            default_mappings = true,
+            -- builtin_marks = { ".", "<", ">", "^", "'" },
+            signs = true,
+            excluded_filetypes = { 'gitcommit' },
+            mappings = {}
+         }
+      end
+   }
+
+   -- use { 'akinsho/nvim-bufferline.lua',
+   --    requires = 'kyazdani42/nvim-web-devicons',
+   --    config = function() require('plugins_config/nvim-bufferline') end
+   -- }
+
+   -- -- visualize undo tree
+   -- use { 'mbbill/undotree',
+   --    config = function()
+   --       vim.g.undotree_HighlightChangedWithSign = 0
+   --       vim.g.undotree_WindowLayout = 2
+   --    end
+   -- }
+
+   -- -- another undo tree visualizer
+   -- use 'simnalamburt/vim-mundo'
+
+   use { 'kevinhwang91/nvim-bqf', as = 'better-quickfix',
+      ft = 'qf'
+   }
+
+   use { 'https://gitlab.com/yorickpeterse/nvim-pqf', as = 'pretty-quickfix',
+      ft = 'qf',
+      config = function() require('pqf').setup() end
+   }
+
+   -- <leader>? : 40-column cheat sheet
+   use { 'anuvyklack/vim-cheat40', as = 'cheat40' } -- my fork
+
+   -- -- TODO Need to rewrite in lua.
+   -- use { 'camspiers/lens.vim',
+   --    requires = 'camspiers/animate.vim',
+   --    config = function() vim.cmd("source ~/.config/nvim/lua/plugins_config/lens.vim") end
+   -- }
+
+   -- -- foldtext customization
+   -- use 'scr1pt0r/crease.vim'
+
+   use { 'norcalli/nvim-colorizer.lua', as = 'colorizer',
+      ft = {'vim', 'lua', 'conf', 'tmux', 'kitty', 'vifm', 'markdown'},
+      config = function()
+         require'colorizer'.setup {
+            'markdown'
+         }
+      end
+   }
+
+   use { 'anuvyklack/help-vsplit.nvim', as = 'help-vsplit',
+   -- use { '~/Git/my_neovim_plugins/help-vsplit.nvim', as = 'help-vsplit',
+      config = function()
+         require('help-vsplit').setup{
+            side = 'right' -- or 'left'
+         }
+      end
+   }
+
+   -- Execute :StartupTime to get an averaged startup profile.
+   use { 'tweekmonster/startuptime.vim', as = 'startuptime',
+      cmd = 'StartupTime'
+   }
+
+   -- -- use 'simnalamburt/vim-mundo'  -- another undo tree visualizer
+   -- use { 'mbbill/undotree',         -- visualize undo tree
+   --    config = function()
+   --       vim.g.undotree_HighlightChangedWithSign = 0
+   --       vim.g.undotree_WindowLayout = 2
+   --    end
+   -- }
+
+   -------------------------------------------------------------------------
+
+   ----------------- Syntaxes and programming languages --------------------
+
+   -- Show syntax highlighting attributes of character under cursor.
+   use 'vim-scripts/SyntaxAttr.vim'
+
+   -- Automatically adjusts 'shiftwidth' and 'expandtab' heuristically
+   -- based on the current file.
+   use { 'tpope/vim-sleuth',
+      cmd = { 'Sleuth', 'verbose Sleuth' },
+      config = function()
+         vim.g.sleuth_automatic = 0 -- Turn off automatic detection, потому что
+                                    -- думает за меня и думает лишнего.
+      end
+   }
 
    -- Подсветка синтаксисов для разных языков.
    use { 'sheerun/vim-polyglot',
       setup = function()  -- run before plugin load
          -- This variable should be declared before polyglot is loaded!
-         -- vim.g.polyglot_disabled = 'markdown'
-         vim.g.polyglot_disabled = {'markdown', 'gitignore', 'txt'}
+         vim.g.polyglot_disabled = {
+            'sensible',
+            'autoindent', -- use https://github.com/tpope/vim-sleuth instead
+            -- 'help',  -- because it force set 'expandtab'
+            -- 'markdown',
+            -- 'gitignore',
+            -- 'txt',
+         }
       end
    }
-
-   use 'SirJson/fzf-gitignore'
 
    use { 'Neui/cmakecache-syntax.vim', as = 'syntax-cmakecache' }
    -- use { 'zinit-zsh/zinit-vim-syntax', ft = 'zsh' } -- zinit syntaxis
@@ -500,10 +678,157 @@ return require('packer').startup(function()
    -- Kitty terminal conf file syntax highlight.
    use { "fladson/vim-kitty", as = 'syntax-kitty-conf' }
 
-   -------------------------------------------------------
+   -------------------------------------------------------------------------
 
-   --                   Color scheme                   {{{
-   -------------------------------------------------------
+   --                           File manager                             {{{
+   -------------------------------------------------------------------------
+
+   use { 'kyazdani42/nvim-tree.lua',
+      requires = 'kyazdani42/nvim-web-devicons',
+      config = function() require('plugins_config/nvim-tree') end
+   }
+
+   -- use 'tpope/vim-vinegar'
+
+   -- use { 'ms-jpq/chadtree',
+   --    branch = 'chad',
+   --    run = 'python3 -m chadtree deps && nvim --headless +"CHADdeps | exit"',
+   --    cmd = {'CHADopen', 'CHADdeps', 'CHADhelp'}
+   -- }
+
+   -- -- Total Commander inspired file manager
+   -- use { 'ripxorip/bolt.nvim',
+   --    run = ':UpdateRemotePlugins'
+   -- }
+
+   -- use { 'luukvbaal/nnn.nvim',
+   --    config = function() require('plugins_config/nnn-nvim') end
+   -- }
+
+   use { 'mcchrish/nnn.vim',
+      config = function() require('plugins_config/nnn-vim') end
+   }
+
+   -- use { 'is0n/fm-nvim',
+   --    config = function() require('plugins_config/fm-nvim') end
+   -- }
+
+   use { 'vifm/vifm.vim',
+      -- TODO Open issue to packer: help tags not generated automaticaly.
+      run = ':helptags ALL',
+   }
+
+   ----------------------------------------------------------------------}}}
+
+   --                      Lua plugins development                       {{{
+   -------------------------------------------------------------------------
+   use { 'rafcamlet/nvim-luapad', as = 'luapad',
+      config = function()
+         vim.cmd [[
+            command! LuaAttach lua require('luapad').attach()
+            command! LuaDetach lua require('luapad').detach()
+            command! LuaToggle lua require('luapad').toggle()
+         ]]
+      end
+   }
+   ----------------------------------------------------------------------}}}
+
+   --                              Orgmode                               {{{
+   -------------------------------------------------------------------------
+
+   -- use { 'kristijanhusak/orgmode.nvim',
+   --    config = function()
+   --       require('orgmode').setup{
+   --          org_hide_emphasis_markers = true,
+   --       }
+   --    end
+   -- }
+
+   use { 'vhyrro/neorg',
+      requires = "nvim-lua/plenary.nvim",
+      after = "treesitter",
+      setup = function() -- {{{
+         -- WARNING Temporary code block until neorg treesitter module
+         --         will be merged into `nvim-treesitter` repository.
+         local parser_configs = require('nvim-treesitter.parsers').get_parser_configs()
+
+         parser_configs.norg = {
+            install_info = {
+               url = 'https://github.com/vhyrro/tree-sitter-norg',
+               -- files = { "src/parser.c" },
+               files  = { 'src/parser.c', 'src/scanner.cc' },
+               branch = 'main'
+            },
+         }
+      end, -- }}}
+      config = function() require('plugins_config/neorg') end
+   }
+
+   ----------------------------------------------------------------------}}}
+
+   --                         Tmux integration                           {{{
+   -------------------------------------------------------------------------
+
+   use {
+      'anuvyklack/vim-tmux-navigator',  -- my fork
+      -- 'christoomey/vim-tmux-navigator',  -- original
+
+      config = function()
+         -- Activate autoupdate on exit.
+         vim.g.tmux_navigator_save_on_switch = 0
+
+         -- Disable vim->tmux navigation when the Vim pane is zoomed in tmux.
+         vim.g.tmux_navigator_disable_when_zoomed = 1
+      end
+   }
+
+   -- use 'tmux-plugins/vim-tmux-focus-events'
+   -- use 'tmux-plugins/vim-tmux'
+   ----------------------------------------------------------------------}}}
+
+   --                              Pandoc                                {{{
+   -------------------------------------------------------------------------
+   -- use { 'vim-pandoc/vim-pandoc',
+   --    requires = {'vim-pandoc/vim-pandoc-syntax', opt = true},
+   --    ft = {'markdown', 'pandoc'},
+   --    config = function()
+   --       vim.cmd("source ~/.config/nvim/lua/plugins_config/pandoc.vim")
+   --    end
+   -- }
+   ----------------------------------------------------------------------}}}
+
+   --                   Русский язык (Switch language)                   {{{
+   -------------------------------------------------------------------------
+   use { 'lyokha/vim-xkbswitch', as = 'xkbswitch',
+      config = function()
+         vim.g.XkbSwitchEnabled = 1
+         vim.g.XkbSwitchLib = '/usr/local/lib/libg3kbswitch.so'
+         vim.g.XkbSwitchAssistNKeymap = 1  -- for commands r and f
+         vim.g.XkbSwitchAssistSKeymap = 1  -- for search lines
+         -- vim.g.XkbSwitchIMappings = {'ru'}
+
+         which_key{
+            gh = 'which_key_ignore',
+            gH = 'test description',
+            ['g<C-H>'] = 'which_key_ignore'
+         }
+      end
+   }
+   -- use 'powerman/vim-plugin-ruscmd'
+   ----------------------------------------------------------------------}}}
+
+   --                           Color scheme                             {{{
+   -------------------------------------------------------------------------
+   --                 ███                                    ██
+   --                ░░██                                   ░██
+   --   █████   █████ ░██  █████  ██████      ██████  █████ ░██████   █████  ██████████   █████
+   --  ██░░░██ ██░░░██░██ ██░░░██░░██░░█     ██░░░░  ██░░░██░██░░░██ ██░░░██░░██░░██░░██ ██░░░██
+   -- ░██  ░░ ░██  ░██░██░██  ░██ ░██ ░     ░░█████ ░██  ░░ ░██  ░██░███████ ░██ ░██ ░██░███████
+   -- ░██   ██░██  ░██░██░██  ░██ ░██        ░░░░░██░██   ██░██  ░██░██░░░░  ░██ ░██ ░██░██░░░░
+   -- ░░█████ ░░█████ ░██░░█████  ███        ██████ ░░█████ ░██  ░██░░█████  ███ ░██ ░██░░█████
+   --  ░░░░░   ░░░░░  ░░  ░░░░░  ░░░        ░░░░░░   ░░░░░  ░░   ░░  ░░░░░  ░░░  ░░  ░░  ░░░░░
+
+
    local color_themes = {
       -- gruvbox-material-dark {{{
       ['gruvbox-material-dark'] = function()
@@ -526,8 +851,8 @@ return require('packer').startup(function()
                -- Available values: 'auto', 'red', 'orange', 'yellow',
                -- 'green', 'aqua', 'blue', 'purple'
                vim.g.gruvbox_material_cursor = 'blue'
-               -- vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
-               vim.g.gruvbox_material_diagnostic_virtual_text = 'grey'
+               vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
+               -- vim.g.gruvbox_material_diagnostic_virtual_text = 'grey'
                vim.g.gruvbox_material_current_word = 'grey background'
                vim.g.gruvbox_material_better_performance = 1
 
@@ -636,236 +961,7 @@ return require('packer').startup(function()
          }
       end
    }
-   ----------------------------------------------------}}}
-
-   -- --------------------- Statusline ----------------------
-   -- use { 'glepnir/galaxyline.nvim',
-   --    branch = 'main',
-   --    config = function() require'statusline' end,
-   --    requires = {'kyazdani42/nvim-web-devicons'}
-   -- }
-   -- -------------------------------------------------------
-
-   --------------- Vim additional modules ----------------
-
-   -- bufferline / tabline
-
-   use { 'romgrk/barbar.nvim', as = 'barbar-tabline',
-      requires = 'kyazdani42/nvim-web-devicons',
-      config = function()
-         require('plugins_config/barbar')
-      end
-   }
-
-   -- Marks
-   -- use 'kshenoy/vim-signature'  -- display and navigate marks
-   use { 'chentau/marks.nvim',
-      config = function()
-         require'marks'.setup {
-            -- force_write_shada = true,
-            default_mappings = true,
-            -- builtin_marks = { ".", "<", ">", "^", "'" },
-            signs = true,
-            excluded_filetypes = { 'gitcommit' },
-            mappings = {}
-         }
-      end
-   }
-
-   -- use { 'akinsho/nvim-bufferline.lua',
-   --    requires = 'kyazdani42/nvim-web-devicons',
-   --    config = function() require('plugins_config/nvim-bufferline') end
-   -- }
-
-   -- -- visualize undo tree
-   -- use { 'mbbill/undotree',
-   --    config = function()
-   --       vim.g.undotree_HighlightChangedWithSign = 0
-   --       vim.g.undotree_WindowLayout = 2
-   --    end
-   -- }
-
-   -- -- another undo tree visualizer
-   -- use 'simnalamburt/vim-mundo'
-
-   use { 'gelguy/wilder.nvim',
-      requires = {
-         'roxma/nvim-yarp',
-         'roxma/vim-hug-neovim-rpc'
-      },
-      run = ':UpdateRemotePlugins',
-      -- event = 'CmdlineEnter',
-      config = function() vim.cmd("source ~/.config/nvim/lua/plugins_config/wilder.vim") end
-   }
-
-   use { 'kevinhwang91/nvim-bqf', as = 'better-quickfix' }
-   use { 'https://gitlab.com/yorickpeterse/nvim-pqf',
-      as = 'pretty-quickfix',
-      config = function() require('pqf').setup() end
-   }
-
-   -- <leader>? : 40-column cheat sheet
-   use { 'anuvyklack/vim-cheat40', as = 'cheat40' } -- my fork
-
-   -- -- TODO Need to rewrite in lua.
-   -- use { 'camspiers/lens.vim',
-   --    requires = 'camspiers/animate.vim',
-   --    config = function() vim.cmd("source ~/.config/nvim/lua/plugins_config/lens.vim") end
-   -- }
-
-   -- -- foldtext customization
-   -- use 'scr1pt0r/crease.vim'
-
-   use { 'norcalli/nvim-colorizer.lua', as = 'colorizer',
-      ft = {'vim', 'lua', 'conf', 'tmux', 'kitty', 'vifm', 'markdown'},
-      config = function()
-         require'colorizer'.setup {
-            'markdown'
-         }
-      end
-   }
-
-   -- Execute :StartupTime to get an averaged startup profile.
-   use { 'tweekmonster/startuptime.vim', as = 'startuptime',
-      cmd = 'StartupTime'
-   }
-
-   -------------------------------------------------------
-
-   --                   File manager                   {{{
-   -------------------------------------------------------
-
-   use { 'kyazdani42/nvim-tree.lua',
-      requires = 'kyazdani42/nvim-web-devicons',
-      config = function() require('plugins_config/nvim-tree') end
-   }
-
-   -- use 'tpope/vim-vinegar'
-
-   -- use { 'ms-jpq/chadtree',
-   --    branch = 'chad',
-   --    run = 'python3 -m chadtree deps && nvim --headless +"CHADdeps | exit"',
-   --    cmd = {'CHADopen', 'CHADdeps', 'CHADhelp'}
-   -- }
-
-   -- -- Total Commander inspired file manager
-   -- use { 'ripxorip/bolt.nvim',
-   --    run = ':UpdateRemotePlugins'
-   -- }
-
-   -- use { 'luukvbaal/nnn.nvim',
-   --    config = function() require('plugins_config/nnn-nvim') end
-   -- }
-
-   use { 'mcchrish/nnn.vim',
-      config = function() require('plugins_config/nnn-vim') end
-   }
-
-   -- use { 'is0n/fm-nvim',
-   --    config = function() require('plugins_config/fm-nvim') end
-   -- }
-
-   use { 'vifm/vifm.vim',
-      -- TODO Open issue to packer: help tags not generated automaticaly.
-      run = ':helptags ALL',
-   }
-
-   ----------------------------------------------------}}}
-
-   --              Lua plugins development             {{{
-   -------------------------------------------------------
-   use { 'rafcamlet/nvim-luapad', as = 'luapad',
-      config = function()
-         vim.cmd [[
-            command! LuaAttach lua require('luapad').attach()
-            command! LuaDetach lua require('luapad').detach()
-            command! LuaToggle lua require('luapad').toggle()
-         ]]
-      end
-   }
-   ----------------------------------------------------}}}
-
-   --                      Orgmode                     {{{
-   -------------------------------------------------------
-
-   -- use { 'kristijanhusak/orgmode.nvim',
-   --    config = function()
-   --       require('orgmode').setup{
-   --          org_hide_emphasis_markers = true,
-   --       }
-   --    end
-   -- }
-
-   use { 'vhyrro/neorg',
-      requires = "nvim-lua/plenary.nvim",
-      after = "treesitter",
-      setup = function() -- {{{
-         -- WARNING Temporary code block until neorg treesitter module
-         --         will be merged into `nvim-treesitter` repository.
-         local parser_configs = require('nvim-treesitter.parsers').get_parser_configs()
-
-         parser_configs.norg = {
-            install_info = {
-               url = 'https://github.com/vhyrro/tree-sitter-norg',
-               -- files = { "src/parser.c" },
-               files  = { 'src/parser.c', 'src/scanner.cc' },
-               branch = 'main'
-            },
-         }
-      end, -- }}}
-      config = function() require('plugins_config/neorg') end
-   }
-
-   ----------------------------------------------------}}}
-
-   --                 Tmux integration                {{{
-   ------------------------------------------------------
-
-   use {
-      'anuvyklack/vim-tmux-navigator',  -- my fork
-      -- 'christoomey/vim-tmux-navigator',  -- original
-
-      config = function()
-         -- Activate autoupdate on exit.
-         vim.g.tmux_navigator_save_on_switch = 0
-
-         -- Disable vim->tmux navigation when the Vim pane is zoomed in tmux.
-         vim.g.tmux_navigator_disable_when_zoomed = 1
-      end
-   }
-
-   -- use 'tmux-plugins/vim-tmux-focus-events'
-   -- use 'tmux-plugins/vim-tmux'
-   ---------------------------------------------------}}}
-
-   -- --                      Pandoc                      {{{
-   -- -------------------------------------------------------
-   -- use { 'vim-pandoc/vim-pandoc',
-   --    requires = {'vim-pandoc/vim-pandoc-syntax', opt = true},
-   --    ft = {'markdown', 'pandoc'},
-   --    config = function() vim.cmd("source ~/.config/nvim/lua/plugins_config/pandoc.vim") end
-   -- }
-   -- ----------------------------------------------------}}}
-
-   --          Русский язык (Switch language)          {{{
-   -------------------------------------------------------
-   use { 'lyokha/vim-xkbswitch', as = 'xkbswitch',
-      config = function()
-         vim.g.XkbSwitchEnabled = 1
-         vim.g.XkbSwitchLib = '/usr/local/lib/libg3kbswitch.so'
-         vim.g.XkbSwitchAssistNKeymap = 1  -- for commands r and f
-         vim.g.XkbSwitchAssistSKeymap = 1  -- for search lines
-         -- vim.g.XkbSwitchIMappings = {'ru'}
-
-         which_key{
-            gh = 'which_key_ignore',
-            gH = 'test description',
-            ['g<C-H>'] = 'which_key_ignore'
-         }
-      end
-   }
-   -- use 'powerman/vim-plugin-ruscmd'
-   ----------------------------------------------------}}}
+   ----------------------------------------------------------------------}}}
 
 end)
 

@@ -1,0 +1,19 @@
+---
+
+- name: Decrease systemd log size
+  become: yes
+  lineinfile:
+    path: /etc/systemd/journald.conf
+    regexp: '^#SystemMaxUse=$'
+    line: SystemMaxUse=50M
+
+- name: Decrease systemd log size
+  become: yes
+  lineinfile:
+    path: /etc/systemd/journald.conf
+    regexp: '^#SystemMaxFileSize=$'
+    line: SystemMaxFileSize=12M
+
+- name: Reload systemd-journald
+  become: yes
+  command: systemctl restart systemd-journald

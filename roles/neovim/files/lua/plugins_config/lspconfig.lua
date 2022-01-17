@@ -1,19 +1,14 @@
 local lsp_installer = require("nvim-lsp-installer")
 
+local capabilities = nil
+local available_cmp, cmp_nvim_lsp = pcall(require, 'cmp_nvim_lsp')
+if available_cmp then
+   capabilities = cmp_nvim_lsp.update_capabilities( vim.lsp.protocol.make_client_capabilities() )
+end
+
 -- Use an on_attach function to map the needed keys after
-local function on_attach (client, bufnr)
-
-   local function buf_set_option(...)
-      vim.api.nvim_buf_set_option(bufnr, ...)
-   end
-
-   -- Enable completion triggered by <c-x><c-o>
-   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-   require('lsp_signature').on_attach({
-      -- Array of extra characters that will trigger signature completion.
-      extra_trigger_chars = {"(", ","}
-   })
+local function on_attach(client, bufnr)
+   vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
    -- require('virtualtypes').on_attach()
    require('illuminate').on_attach(client)
@@ -22,13 +17,14 @@ local function on_attach (client, bufnr)
    require("keybindings").lspconfig(bufnr)
 end
 
-local lsputil = require'lspconfig'.util
+local lsputil = require("lspconfig").util
 local lsp_settings = {
    sumneko_lua = require("lua-dev").setup{
       plugins = true,
       lspconfig = {
          root_dir = lsputil.root_pattern('.git/', '.root'),
          on_attach = on_attach,
+         capabilities = capabilities,
          settings = {
             Lua = {
                diagnostics = {
@@ -61,9 +57,11 @@ local lsp_settings = {
    vimls = {
       root_dir = lsputil.root_pattern('.git/', '.root'),
       on_attach = on_attach,
+      capabilities = capabilities,
    },
    clangd = {
       on_attach = on_attach,
+      capabilities = capabilities,
       cmd = {
          vim.fn.stdpath('data').."/lsp_servers/clangd/clangd",
          -- "--compile-commands-dir=debug",
@@ -82,6 +80,7 @@ local lsp_settings = {
       -- A list of ccls available options:
       -- https://github.com/MaskRay/ccls/wiki/Customization#initialization-options
       on_attach = on_attach,
+      capabilities = capabilities,
       -- Customization options are passed to ccls at
       -- initialization time via init_options.
       init_options = {
@@ -94,6 +93,7 @@ local lsp_settings = {
    },
    cmake = {
       on_attach = on_attach,
+      capabilities = capabilities,
       init_options = {
          buildDirectory = "build-Debug"
       }
@@ -102,10 +102,12 @@ local lsp_settings = {
       on_attach = {
          on_attach,
          -- require('lsp_signature').on_attach  -- type hints
-      }
+      },
+      capabilities = capabilities,
    },
    bash = {
       on_attach = on_attach,
+      capabilities = capabilities,
       filetypes = { "sh", "zsh" }
    }
 }
@@ -114,15 +116,9 @@ local lsp_settings = {
 -- Alternatively, you may also register handlers on specific server instances
 -- instead (see example below).
 lsp_installer.on_server_ready(function(server)
-    -- print(server.name)
+   -- print(server.name)
 
-    -- (optional) Customize the options passed to the server
-    -- if server.name == "tsserver" then
-    --     opts.root_dir = function() ... end
-    -- end
-
-    -- This setup() function is exactly the same as lspconfig's setup function.
-    -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-    -- server:setup(opts)
-    server:setup( lsp_settings[server.name] )
+   -- This setup() function is exactly the same as lspconfig's setup function.
+   -- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+   server:setup( lsp_settings[server.name] )
 end)

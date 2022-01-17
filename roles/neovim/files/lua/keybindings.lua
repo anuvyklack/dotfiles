@@ -8,166 +8,155 @@
 --  ░░   ░░  ░░░░░    █████      ░░░░░░  ░░ ░░   ░░  ░░░░░░ ░░ ░░   ░░   █████ ░░░░░░
 --                   ░░░░░                                              ░░░░░
 
-local M = {} -- All functions that need to be exported should go in this table.
+local keymap = require "util".keymap
+local M = {}
 
-local mapx_available, mapx = pcall(require, 'mapx')
+local function cmd(command) return table.concat({'<cmd>', command, '<CR>'}) end
 
-if mapx_available then
-   mapx.setup{ global = true, whichkey = true }
-
-   -- local mapx = require'mapx'.setup({ global = true, whichkey = true })
-
-   -- Dealing with word wrap:
-   -- If cursor is inside very long line in the file than wraps around
-   -- several rows on the screen, then 'j' key moves you to the next line
-   -- in the file, but not to the next row on the screen under your
-   -- previous position as in other editors.  These bindings fixes this.
-   nnoremap('k', "v:count ? 'k' : 'gk'", {silent = true, expr = true})
-   nnoremap('j', "v:count ? 'j' : 'gj'", {silent = true, expr = true})
-
-end
-
+-- Dealing with word wrap:
+-- If cursor is inside very long line in the file than wraps around several rows
+-- on the screen, then 'j' key moves you to the next line in the file, but not
+-- to the next row on the screen under your previous position as in other
+-- editors.  These bindings fixes this.
+keymap.set('n', 'k', function() return vim.v.count > 0 and 'k' or 'gk' end, {silent = true, expr = true})
+keymap.set('n', 'j', function() return vim.v.count > 0 and 'j' or 'gj' end, {silent = true, expr = true})
 
 -- Hop (Easymotion) {{{
 function M.hop()
-   if not mapx_available then return end
+   keymap.set({'n','v'}, ';w', function() vim.cmd('HopWordAC') end, 'Easymotion forward word')
+   keymap.set({'n','v'}, ';b', function() vim.cmd('HopWordBC') end, 'Easymotion bacward word')
 
-   nnoremap(';w', '<cmd>HopWordAC<CR>', 'Easymotion forward word')
-   vnoremap(';w', '<cmd>HopWordAC<CR>', 'Easymotion forward word')
+   keymap.set({'n','v'}, ';j', cmd 'HopLineAC', 'Easymotion line up')
+   keymap.set({'n','v'}, ';k', cmd 'HopLineBC', 'Easymotion line down')
 
-   nnoremap(';b', '<cmd>HopWordBC<CR>', 'Easymotion bacward word')
-   vnoremap(';b', '<cmd>HopWordBC<CR>', 'Easymotion bacward word')
+   keymap.set({'n','v'}, 's', cmd 'HopChar1', 'Easymotion char')
 
-   nnoremap(';j', '<cmd>HopLineAC<CR>', 'Easymotion line up')
-   vnoremap(';j', '<cmd>HopLineAC<CR>', 'Easymotion line up')
-   nnoremap(';k', '<cmd>HopLineBC<CR>', 'Easymotion line down')
-   vnoremap(';k', '<cmd>HopLineBC<CR>', 'Easymotion line down')
-
-   nnoremap('s', '<cmd>HopChar1<CR>', 'Easymotion char')
-   vnoremap('s', '<cmd>HopChar1<CR>', 'Easymotion char')
-
-   nnoremap('t', '<cmd>HopChar2<CR>', 'Easymotion 2 chars')
-
+   keymap.set('n', 't', cmd 'HopChar2', 'Easymotion 2 chars')
 end -- }}}
 
 -- Telescope {{{
 function M.telescope()
-   if not mapx_available then return end
+   keymap.set('n' ,'<C-;>', cmd 'Telescope commands',        'Execute command')
+   keymap.set('n' ,'q:',    cmd 'Telescope command_history', 'Command-line history')
+   keymap.set('n' ,'q/',    cmd 'Telescope search_history',  'Search history')
+   keymap.set('n' ,'q?',    cmd 'Telescope search_history',  'Search history')
 
-   nnoremap('<C-;>', '<cmd>Telescope commands<CR>',        'Execute command')
-   nnoremap('q:',    '<cmd>Telescope command_history<CR>', 'Command-line history')
-   nnoremap('q/',    '<cmd>Telescope search_history<CR>',  'Search history')
-   nnoremap('q?',    '<cmd>Telescope search_history<CR>',  'Search history')
+   keymap.set('n', 'z=',    cmd 'Telescope spell_suggest',   'Spell Suggest')
 
-   nnoremap('z=',    '<cmd>Telescope spell_suggest<CR>',   'Spell Suggest')
+   which_key.name('n', '<leader>f', 'Telescope')
 
-   mapx.nname('<leader>f', 'Telescope')
+   keymap.set('n' ,'<leader>ff', cmd 'Telescope find_files', 'Find files')
+   keymap.set('n' ,'<leader>fg', cmd 'Telescope live_grep',  'Live grep')
+   keymap.set('n' ,'<leader>fb', cmd 'Telescope buffers',    'Buffers')
+   keymap.set('n' ,'<leader>fh', cmd 'Telescope help_tags',  'Help tags')
+   keymap.set('n' ,'<leader>fp', cmd 'Telescope projects',   'Projects')
+   keymap.set('n' ,'<leader>fo', cmd 'Telescope vim_options','Vim Options')
 
-   nnoremap('<leader>ff', '<cmd>Telescope find_files<CR>', 'Find files')
-   nnoremap('<leader>fg', '<cmd>Telescope live_grep<CR>',  'Live grep')
-   nnoremap('<leader>fb', '<cmd>Telescope buffers<CR>',    'Buffers')
-   nnoremap('<leader>fh', '<cmd>Telescope help_tags<CR>',  'Help tags')
-   nnoremap('<leader>fp', '<cmd>Telescope projects<CR>',   'Projects')
-   nnoremap('<leader>fo', '<cmd>Telescope vim_options<CR>','Vim Options')
+   keymap.set('n', '<leader>fm', cmd 'MarksListBuf', 'Marks')
 
-   nnoremap('<leader>fm', '<cmd>MarksListBuf<CR>',         'Marks')
-
-   nnoremap('<C-/>', '<cmd>Telescope current_buffer_fuzzy_find<CR>', 'Search in buffer')
-
+   keymap.set('n', '<C-/>', cmd "Telescope current_buffer_fuzzy_find", 'Search in buffer')
 end -- }}}
 
 -- LSP {{{
 function M.lspconfig(bufnr)
-   if not mapx_available then return end
-
-   mapx.nname('<leader>l', 'LSP')
+   which_key.name('n','<leader>l', 'LSP')
 
    -- Lspconfig bindings {{{
-
    -- See `:help vim.lsp.*` for documentation on any of the below functions
-   nnoremap('<F2>',   '<Cmd>lua vim.lsp.buf.definition()<CR>',  {buffer = bufnr}, 'LSP: go to definition')
-   nnoremap('<S-F2>', '<Cmd>lua vim.lsp.buf.declaration()<CR>', {buffer = bufnr}, 'LSP: go to declaration')
+
+   keymap.set('n', '<F2>',   vim.lsp.buf.definition,  'LSP: go to definition',  { buffer = bufnr })
+   keymap.set('n', '<S-F2>', vim.lsp.buf.declaration, 'LSP: go to declaration', { buffer = bufnr })
 
    if vim.bo.filetype ~= 'vim' then
-      nnoremap('K', '<Cmd>lua vim.lsp.buf.hover()<CR>', {buffer = bufnr}, 'LSP: Hover doc')
+      keymap.set('n', 'K', vim.lsp.buf.hover, 'LSP: Hover doc', { buffer = bufnr })
    end
 
-   -- buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
-   -- buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
-   -- buf_set_keymap(bufnr, 'n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>')
-   -- buf_set_keymap(bufnr, 'n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>')
-   -- buf_set_keymap(bufnr, 'n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>')
+   -- keymap.set('n', 'gi',         vim.lsp.buf.implementation,          { buffer = bufnr })
+   -- keymap.set('n', '<C-k>',      vim.lsp.buf.signature_help,          { buffer = bufnr })
+   -- keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder,    { buffer = bufnr })
+   -- keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, { buffer = bufnr })
+   -- keymap.set('n', '<leader>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, { buffer = bufnr })
 
-   nnoremap('<leader>lt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', {buffer = bufnr}, 'LSP: Type definition')
+   keymap.set('n', '<leader>lt', vim.lsp.buf.type_definition, 'LSP: Type definition', { buffer = bufnr })
 
-   -- buf_set_keymap(bufnr, 'n', '<leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>')
-   -- buf_set_keymap(bufnr, 'n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>')
-   -- buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>')
+   -- keymap.set('n', '<leader>rn', vim.lsp.buf.rename,      { buffer = bufnr })
+   -- keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr })
+   -- keymap.set('n', 'gr',         vim.lsp.buf.references,  { buffer = bufnr })
 
-   nnoremap('<leader>le', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', {buffer = bufnr}, 'Show errors')
+   keymap.set('n', '<leader>le', vim.lsp.diagnostic.show_line_diagnostics, 'Show errors', { buffer = bufnr })
 
-   -- buf_set_keymap(bufnr, 'n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>')
-   -- buf_set_keymap(bufnr, 'n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>')
-   -- buf_set_keymap(bufnr, 'n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>')
-   -- buf_set_keymap(bufnr, "n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>")
+   -- keymap.set('n', '[d',        vim.lsp.diagnostic.goto_prev,   { buffer = bufnr })
+   -- keymap.set('n', ']d',        vim.lsp.diagnostic.goto_next,   { buffer = bufnr })
+   -- keymap.set('n', '<leader>q', vim.lsp.diagnostic.set_loclist, { buffer = bufnr })
+   -- keymap.set("n", "<leader>f", vim.lsp.buf.formatting,         { buffer = bufnr })
 
    --}}}
 
    -- Lspsaga {{{
 
-   -- lsp provider to find the cursor word definition and reference
-   nnoremap("<leader>le", "<cmd>Lspsaga lsp_finder<CR>", {buffer = bufnr}, 'Show line diagnostics')
+   keymap.set('n', "<leader>le", cmd('Lspsaga lsp_finder'), 'Show line diagnostics', { buffer = bufnr })
 
    -- wk.register({ ['<leader>c'] = {name = 'LSP: Code action'}  }, {mode = 'n'})
    -- wk.register({ ['<leader>c'] = {name = 'LSP: Code action'}  }, {mode = 'v'})
 
-   nnoremap('<leader>la', '<cmd>Lspsaga code_action<CR>',            {buffer = bufnr}, 'Code action')
-   vnoremap('<leader>la', '<cmd><C-U>Lspsaga range_code_action<CR>', {buffer = bufnr}, 'LSP: Range code action')
+   keymap.set('n', '<leader>la', cmd 'Lspsaga code_action',            'Code action',            { buffer = bufnr })
+   keymap.set('v', '<leader>la', cmd '<C-U>Lspsaga range_code_action', 'LSP: Range code action', { buffer = bufnr })
 
    -- rename
-   nnoremap(        'gr', '<cmd>Lspsaga rename<CR>', {buffer = bufnr}, 'Rename')
-   nnoremap('<leader>lr', '<cmd>Lspsaga rename<CR>', {buffer = bufnr}, 'Rename')
+   keymap.set('n',         'gr', cmd 'Lspsaga rename', 'Rename', { buffer = bufnr })
+   keymap.set('n', '<leader>lr', cmd 'Lspsaga rename', 'Rename', { buffer = bufnr })
 
    -- preview definition
-   nnoremap('<leader>ld', '<cmd>Lspsaga preview_definition<CR>', {buffer = bufnr}, 'Preview definition')
+   keymap.set('n', '<leader>ld', cmd 'Lspsaga preview_definition', 'Preview definition', { buffer = bufnr })
 
    -- -- hover doc
-   -- buf_set_keymap(bufnr, 'n', 'K', 'Hover doc', '<cmd>Lspsaga hover_doc<CR>')
+   -- buf_set_keymap(bufnr, 'n', 'K', 'Hover doc', cmd 'Lspsaga hover_doc')
 
    -- show signature help
-   nnoremap('<C-k>', '<cmd>Lspsaga signature_help<CR>', {buffer = bufnr}, 'LSP: Show sinature help')
+   keymap.set('n', '<C-k>', cmd 'Lspsaga signature_help', 'LSP: Show sinature help', { buffer = bufnr })
 
    -- Show Diagnostics
-   nnoremap('<leader>le', '<cmd>Lspsaga show_line_diagnostics<CR>', {buffer = bufnr}, 'Show diagnostic')
+   keymap.set('n', '<leader>le', cmd 'Lspsaga show_line_diagnostics', 'Show diagnostic', { buffer = bufnr })
    -- only show diagnostic if cursor is over the area
-   -- buf_set_keymap(bufnr, 'n', '<leader>le', 'Show diagnostic', "<cmd>lua require'lspsaga.diagnostic'.show_cursor_diagnostics()<CR>")
+   -- buf_set_keymap(bufnr, 'n', '<leader>le', 'Show diagnostic', require'lspsaga.diagnostic'.show_cursor_diagnostics)
 
    -- -- jump diagnostic
-   -- buf_set_keymap(bufnr, 'n', ']e', '<cmd>Lspsaga diagnostic_jump_next<CR>')
-   -- buf_set_keymap(bufnr, 'n', '[e', '<cmd>Lspsaga diagnostic_jump_prev<CR>')
+   -- buf_set_keymap(bufnr, 'n', ']e', cmd 'Lspsaga diagnostic_jump_next')
+   -- buf_set_keymap(bufnr, 'n', '[e', cmd 'Lspsaga diagnostic_jump_prev')
 
 
    -- -- scroll down / up inside different preview windows
-   -- buf_set_keymap(bufnr, 'n', '<C-f>', "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>")
-   -- buf_set_keymap(bufnr, 'n', '<C-b>', "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>")
+   -- buf_set_keymap(bufnr, 'n', '<C-f>', cmd "lua require('lspsaga.action').smart_scroll_with_saga(1)")
+   -- buf_set_keymap(bufnr, 'n', '<C-b>', cmd "lua require('lspsaga.action').smart_scroll_with_saga(-1)")
 
    --}}}
 
 end --}}}
 
--- nvim-compe {{{
-function M.nvim_compe()
-   if not mapx_available then return end
+-- LuaSnip {{{
+function M.luasnip()
+   local available_luasnip, luasnip = pcall(require, 'luasnip')
+   if not available_luasnip then return end
 
-   local opts = {noremap = true, silent = true, expr = true}
+   keymap.set('n', '<Tab>', function() --{{{
+      -- if luasnip.expand_or_jumpable() then
+      if luasnip.expand_or_locally_jumpable() then
+         luasnip.expand_or_jump()
+      -- else
+      --    vim.api.nvim_feedkeys('<Tab>', 'n', true)
+      --    -- vim.api.nvim_command('normal! <Tab>')
+      end
+   end) --}}}
 
-   vim.api.nvim_set_keymap('i', '<C-Space>', "compe#complete()",              opts)
-   -- vim.api.nvim_set_keymap('i', '<CR>',      "compe#confirm('<CR>')",         opts)
-   vim.api.nvim_set_keymap('i', '<C-e>',     "compe#close('<C-e>')",          opts)
-   vim.api.nvim_set_keymap('i', '<C-f>',     "compe#scroll({ 'delta': +4 })", opts)
-   vim.api.nvim_set_keymap('i', '<C-d>',     "compe#scroll({ 'delta': -4 })", opts)
+   keymap.set('n', '<S-Tab>', function() --{{{
+      if luasnip.jumpable(-1) then
+         luasnip.jump(-1)
+      -- else
+      --    vim.api.nvim_feedkeys('<S-Tab>', 'n', true)
+      end
+   end) --}}}
 
-end -- }}}
+end --}}}
 
 -- Treesitter {{{
 function M.treesitter_textobjects()
@@ -229,9 +218,7 @@ end --}}}
 
 -- nvim-tree {{{
 function M.nvim_tree()
-   if not mapx_available then return end
-
-   nnoremap('<F3>', '<cmd>NvimTreeToggle<CR>', 'Open file-explorer')
+   keymap.set('n', '<F3>', cmd 'NvimTreeToggle', 'Open file-explorer')
 
    -- local tree_cb = require'nvim-tree.config'.nvim_tree_callback
    -- vim.g.nvim_tree_bindings = {
@@ -242,48 +229,43 @@ end --}}}
 
 -- nnn file manager {{{
 function M.nnn()
-   if not mapx_available then return end
-
-   nnoremap('<F4>', '<cmd>NnnPicker<CR>', 'Open file-explorer')
-   -- nnoremap('<F3>', '<cmd>NnnExplorer<CR>', 'Open file-explorer')
-
+   keymap.set('n', '<F4>', cmd 'NnnPicker', 'Open file-explorer')
+   -- keymap.set('n', '<F3>', cmd 'NnnExplorer', 'Open file-explorer')
 end --}}}
 
 -- Barbar (tabline) {{{
 function M.barbar()
-   if not mapx_available then return end
-
    local opts = { silent = true }
 
    -- Move to previous/next
-   nnoremap('<A-,>', '<cmd>BufferPrevious<CR>', opts)
-   nnoremap('<A-.>', '<cmd>BufferNext<CR>', opts)
+   keymap.set('n', '<A-,>', cmd 'BufferPrevious', opts)
+   keymap.set('n', '<A-.>', cmd 'BufferNext', opts)
    -- Re-order to previous/next
-   nnoremap('<A-<>', '<cmd>BufferMovePrevious<CR>', opts)
-   nnoremap('<A->>', '<cmd>BufferMoveNext<CR>', opts)
+   keymap.set('n', '<A-<>', cmd 'BufferMovePrevious', opts)
+   keymap.set('n', '<A->>', cmd 'BufferMoveNext', opts)
    -- Goto buffer in position...
-   nnoremap('<A-1>', '<cmd>BufferGoto 1<CR>', opts)
-   nnoremap('<A-2>', '<cmd>BufferGoto 2<CR>', opts)
-   nnoremap('<A-3>', '<cmd>BufferGoto 3<CR>', opts)
-   nnoremap('<A-4>', '<cmd>BufferGoto 4<CR>', opts)
-   nnoremap('<A-5>', '<cmd>BufferGoto 5<CR>', opts)
-   nnoremap('<A-6>', '<cmd>BufferGoto 6<CR>', opts)
-   nnoremap('<A-7>', '<cmd>BufferGoto 7<CR>', opts)
-   nnoremap('<A-8>', '<cmd>BufferGoto 8<CR>', opts)
-   nnoremap('<A-9>', '<cmd>BufferLast<CR>', opts)
+   keymap.set('n', '<A-1>', cmd 'BufferGoto 1', opts)
+   keymap.set('n', '<A-2>', cmd 'BufferGoto 2', opts)
+   keymap.set('n', '<A-3>', cmd 'BufferGoto 3', opts)
+   keymap.set('n', '<A-4>', cmd 'BufferGoto 4', opts)
+   keymap.set('n', '<A-5>', cmd 'BufferGoto 5', opts)
+   keymap.set('n', '<A-6>', cmd 'BufferGoto 6', opts)
+   keymap.set('n', '<A-7>', cmd 'BufferGoto 7', opts)
+   keymap.set('n', '<A-8>', cmd 'BufferGoto 8', opts)
+   keymap.set('n', '<A-9>', cmd 'BufferLast', opts)
    -- Close buffer
-   nnoremap('<A-c>', '<cmd>BufferClose<CR>', opts)
+   keymap.set('n', '<A-c>', cmd 'BufferClose', opts)
    -- Wipeout buffer
-   --                          <cmd>BufferWipeout<CR>
+   --                          BufferWipeout
    -- Close commands
-   --                          <cmd>BufferCloseAllButCurrent<CR>
-   --                          <cmd>BufferCloseBuffersLeft<CR>
-   --                          <cmd>BufferCloseBuffersRight<CR>
+   --                          BufferCloseAllButCurrent
+   --                          BufferCloseBuffersLeft
+   --                          BufferCloseBuffersRight
    -- Magic buffer-picking mode
-   nnoremap('<C-s>',    '<cmd>BufferPick<CR>', opts)
+   keymap.set('n', '<C-s>',    cmd 'BufferPick', opts)
    -- Sort automatically by...
-   nnoremap('<Space>bd', '<cmd>BufferOrderByDirectory<CR>', opts)
-   nnoremap('<Space>bl', '<cmd>BufferOrderByLanguage<CR>', opts)
+   keymap.set('n', '<Space>bd', cmd 'BufferOrderByDirectory', opts)
+   keymap.set('n', '<Space>bl', cmd 'BufferOrderByLanguage', opts)
 
    -- Other:
    -- :BarbarEnable - enables barbar (enabled by default)
@@ -293,13 +275,12 @@ end -- }}}
 
 -- Asterisks {{{
 function M.asterisks()
-   if not mapx_available then return end
-   map('*',  '<Plug>(asterisk-z*)')
-   map('#',  '<Plug>(asterisk-z#)')
-   -- map('g*', '<Plug>(asterisk-gz*)', ':help gstar')
-   -- map('g#', '<Plug>(asterisk-gz#)', ':help g#')
-   map('g*', '<Plug>(asterisk-gz*)', 'which_key_ignore')
-   map('g#', '<Plug>(asterisk-gz#)', 'which_key_ignore')
+   keymap.set('', '*',  '<Plug>(asterisk-z*)')
+   keymap.set('', '#',  '<Plug>(asterisk-z#)')
+   -- keymap.set('', 'g*', '<Plug>(asterisk-gz*)', ':help gstar')
+   -- keymap.set('', 'g#', '<Plug>(asterisk-gz#)', ':help g#')
+   keymap.set('', 'g*', '<Plug>(asterisk-gz*)', 'which_key_ignore')
+   keymap.set('', 'g#', '<Plug>(asterisk-gz#)', 'which_key_ignore')
 end -- }}}
 
 return M

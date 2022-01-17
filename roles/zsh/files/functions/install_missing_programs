@@ -50,7 +50,7 @@ install_missing_programs()
     unset bin_base_version
     unset bin_config_file
     echo
-  fi # }}}
+  fi #}}}
   # rg {{{
   if ! (( $+commands[rg] ))
   then
@@ -58,7 +58,7 @@ install_missing_programs()
     echo
     bin install https://github.com/BurntSushi/ripgrep
     echo
-  fi # }}}
+  fi #}}}
   # bat {{{
   if ! (( $+commands[bat] ))
   then
@@ -73,7 +73,7 @@ install_missing_programs()
     install_update_bat
 
     echo
-  fi # }}}
+  fi #}}}
   # exa {{{
   if ! (( $+commands[exa] ))
   then
@@ -81,7 +81,7 @@ install_missing_programs()
     echo
     bin install https://github.com/ogham/exa
     echo
-  fi # }}}
+  fi #}}}
   # fzf {{{
   if ! (( $+commands[fzf] ))
   then
@@ -89,7 +89,8 @@ install_missing_programs()
     echo
     bin install https://github.com/junegunn/fzf
     echo
-  fi # }}}
+    # github_file $ZSH[scripts]/fzf-key-bindings.zsh 'https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh'
+  fi #}}}
   # zoxide {{{
   if ! (( $+commands[zoxide] ))
   then
@@ -98,8 +99,7 @@ install_missing_programs()
     bin install https://github.com/ajeetdsouza/zoxide
     echo
   fi
-  # github_file $ZSH[scripts]/fzf-key-bindings.zsh 'https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh'
-  # }}}
+  #}}}
   # delta {{{
   if ! (( $+commands[delta] ))
   then
@@ -107,7 +107,7 @@ install_missing_programs()
     echo
     bin install https://github.com/dandavison/delta
     echo
-  fi # }}}
+  fi #}}}
   # topgrade {{{
   if ! (( $+commands[topgrade] ))
   then
@@ -115,7 +115,7 @@ install_missing_programs()
     echo
     bin install https://github.com/r-darwish/topgrade
     echo
-  fi # }}}
+  fi #}}}
   # dust {{{
   if ! (( $+commands[dust] ))
   then
@@ -123,7 +123,7 @@ install_missing_programs()
     echo
     bin install https://github.com/bootandy/dust
     echo
-  fi # }}}
+  fi #}}}
   # duf {{{
   if ! (( $+commands[duf] ))
   then
@@ -131,7 +131,7 @@ install_missing_programs()
     echo
     bin install https://github.com/muesli/duf
     echo
-  fi # }}}
+  fi #}}}
   # broot {{{
   if ! (( $+commands[broot] ))
   then
@@ -139,7 +139,7 @@ install_missing_programs()
     echo
     bin install https://github.com/Canop/broot
     echo
-  fi # }}}
+  fi #}}}
   # mcfly {{{
   if ! (( $+commands[mcfly] ))
   then
@@ -147,7 +147,7 @@ install_missing_programs()
     echo
     bin install https://github.com/cantino/mcfly
     echo
-  fi # }}}
+  fi #}}}
   # btop++ {{{
   if ! (( $+commands[btop] ))
   then
@@ -155,7 +155,7 @@ install_missing_programs()
     echo
     bin install https://github.com/aristocratos/btop
     echo
-  fi # }}}
+  fi #}}}
   # # glow {{{
   # if ! (( $+commands[glow] ))
   # then
@@ -163,7 +163,7 @@ install_missing_programs()
   #   echo
   #   bin install https://github.com/charmbracelet/glow
   #   echo
-  # fi # }}}
+  # fi #}}}
 
 
   # pipx apps
@@ -174,7 +174,7 @@ install_missing_programs()
       echo
       pipx install ueberzug
       echo
-    fi # }}}
+    fi #}}}
   fi
 
   # print Everything is installed

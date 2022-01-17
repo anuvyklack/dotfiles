@@ -57,7 +57,7 @@ require('bufferline').setup {
       offsets = {
          filetype = "NvimTree",
          text = "File Explorer",
-         text_align = "center", -- "left" | "center" | "right"
+         text_align = "center", --"left" | "center" | "right"
       },
 
       -- disable filetype icons for buffers

@@ -45,3 +45,5 @@ vim.g.symbols_outline = {
         TypeParameter = {icon = "𝙏",    hl = "TSParameter"}    -- 𝙏
     }
 }
+
+-- :lua print(vim.inspect(vim.lsp.protocol.CompletionItemKind))

@@ -641,10 +641,10 @@ if (( $+commands[nnn] )); then
   github_completion nnn 'https://github.com/jarun/nnn/blob/master/misc/auto-completion/zsh/_nnn'
 
   # # nnn man
-  # gitfile $HOME/.local/share/man/man1/nnn.1 'https://github.com/jarun/nnn/blob/master/nnn.1'
+  gitfile $HOME/.local/share/man/man1/nnn.1 'https://github.com/jarun/nnn/blob/master/nnn.1'
 
   # plugins
-  # gitfile ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/autojump 'https://github.com/jarun/nnn/blob/master/plugins/autojump'
+  gitfile ${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins/autojump 'https://github.com/jarun/nnn/blob/master/plugins/autojump'
 
   # cd into last dir on quit nnn {{{
   nnn_quitcd()
