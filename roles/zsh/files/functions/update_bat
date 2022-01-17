@@ -1,8 +1,8 @@
 #!/usr/bin/zsh
 
-install_update_bat()
+update_bat()
 {
-    current_version=$(bat --version 2>/dev/null | sed 's/bat /v/')
+    current_version=$(bat --version 2>/dev/null | perl -ne '/^bat\s*([0-9.]+).*$/ && print "v$1"')
 
     local latest_release='https://api.github.com/repos/sharkdp/bat/releases/latest'
     local last_version=$(curl -s "$latest_release" | jq -r '.tag_name')

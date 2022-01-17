@@ -11,7 +11,7 @@ update()
     string="―― $(date +%H:%M:%S) - Update bat "
     color white bold ${(r:80::―:)string}
 
-    install_update_bat
+    update_bat
 
     print
     # }}}
