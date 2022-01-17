@@ -63,35 +63,34 @@ require('packer').startup(function()
 
    use 'lewis6991/impatient.nvim' -- Improve startup time for Neovim.
 
-   --                   Key Mappings                   {{{
-   -------------------------------------------------------
-   use { 'b0o/mapx.nvim', as = 'mapx' }  -- create key mappings
+   --                          Key Mappings                               {{{
+   -------------------------------------------------------------------------
 
-   use { 'folke/which-key.nvim', as = 'which-key', -- WhichKey
-      config = function ()
-         require('which-key').setup {
-            plugins = {
-               spelling = { -- Enabling this module will show WhichKey when
-                            -- pressing z= to select spelling suggestions.
-                  enabled = false,
-                  suggestions = 20, -- How many suggestions should be shown in the list?
-               },
-               presets = {
-                  operators = true,
-               },
-            },
-            operators = {
-               gc = "Comments"
-            },
-            -- ignore_missing = true, -- enable this to hide mappings for which you didn't specify a label
-            hidden = { -- hide mapping boilerplate
-               "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ ",
-               "<SNR>", "<Plug>"
-            },
-         }
-      end
-   }
-   ----------------------------------------------------}}}
+   -- use { 'folke/which-key.nvim', as = 'which-key', -- WhichKey
+   --    config = function ()
+   --       require('which-key').setup {
+   --          plugins = {
+   --             spelling = { -- Enabling this module will show WhichKey when
+   --                          -- pressing z= to select spelling suggestions.
+   --                enabled = false,
+   --                suggestions = 20, -- How many suggestions should be shown in the list?
+   --             },
+   --             presets = {
+   --                operators = true,
+   --             },
+   --          },
+   --          operators = {
+   --             gc = "Comments"
+   --          },
+   --          -- ignore_missing = true, -- Enable this to hide mappings for which you
+   --          --                        -- didn't specify a label.
+   --          hidden = { -- hide mapping boilerplate
+   --             "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ ",
+   --             "<SNR>", "<Plug>"
+   --          },
+   --       }
+   --    end
+   -- }
 
    --------------------------------------------------------------------}}}
 
