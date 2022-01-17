@@ -670,6 +670,21 @@ require('packer').startup(function()
       end
    }
 
+   use { 'anuvyklack/pretty-fold.nvim', as = 'pretty-fold', branch = 'nightly',
+   -- use { '~/Git/my_neovim_plugins/pretty-fold.nvim', as = 'pretty-fold',
+      config = function()
+         vim.opt.fillchars:append('fold:•')
+         require('pretty-fold').setup{
+            -- marker = { comment_signs = 'spaces' },
+            marker = { process_comment_signs = 'spaces' },
+            expr = { process_comment_signs = false }
+         }
+         require('pretty-fold.preview').setup{
+            -- border = 'shadow'
+         }
+      end
+   }
+
    -- Marks
    -- use 'kshenoy/vim-signature'  -- display and navigate marks
    use { 'chentau/marks.nvim',

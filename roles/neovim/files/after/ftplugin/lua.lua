@@ -25,6 +25,7 @@ path:append( vim.fn.stdpath("config") .. "/lua")
 
 vim.wo.foldmethod = 'expr'
 vim.wo.foldexpr   = "nvim_treesitter#foldexpr()"
+-- require('pretty-fold').ft_setup('lua', {fill_char = '*'})
 
 
 -- Keybindings -----------------------------------------------------------------
