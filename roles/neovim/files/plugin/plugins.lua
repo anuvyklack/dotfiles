@@ -19,7 +19,6 @@
 -- -------------- ------------------------------------------------
 
 local fn = vim.fn
-local execute = vim.api.nvim_command
 
 -- setup Packer {{{
 -- Auto install packer.nvim if not exists
@@ -27,7 +26,7 @@ local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
 
 if fn.empty(fn.glob(install_path)) > 0 then
    fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', '--depth', '1', install_path})
-   execute 'packadd packer.nvim'
+   vim.api.nvim_command('packadd packer.nvim')
 end
 
 -- -- Auto compile when there are changes in plugins.lua
@@ -59,7 +58,7 @@ require('packer').init{
 }
 -- }}}
 
-return require('packer').startup(function()
+require('packer').startup(function()
    use 'wbthomason/packer.nvim' -- Packer can manage itself
 
    use 'lewis6991/impatient.nvim' -- Improve startup time for Neovim.
@@ -94,8 +93,10 @@ return require('packer').startup(function()
    }
    ----------------------------------------------------}}}
 
-   --                    Treesitter                    {{{
-   -------------------------------------------------------
+   --------------------------------------------------------------------}}}
+
+   --                           Treesitter                               {{{
+   -------------------------------------------------------------------------
    use { 'nvim-treesitter/nvim-treesitter', as = 'treesitter',
       requires = {
          {'nvim-treesitter/nvim-treesitter-textobjects', as = 'treesitter-textobjects'},
@@ -110,14 +111,16 @@ return require('packer').startup(function()
    }
 
    -- use 'wellle/context.vim'   -- Vscode breadcrumbs analog
-   ----------------------------------------------------}}}
+   ----------------------------------------------------------------------}}}
 
-   -------------------- Text editing ---------------------
 
-   use 'matze/vim-move'        -- перемещение строк и частей строк
-   use 'wellle/targets.vim'    -- plugin that provides additional text objects
-   use 'tpope/vim-unimpaired'  -- Different bidirectional motions: switch
-                               -- buffers, add blank lines, etc.
+   ---------------------------- Text editing -------------------------------
+
+   use 'matze/vim-move'       -- перемещение строк и частей строк
+   use 'wellle/targets.vim'   -- plugin that provides additional text objects
+   use 'tpope/vim-unimpaired' -- Different bidirectional motions: switch
+                              -- buffers, add blank lines, etc.
+   use 'junegunn/vim-easy-align'
 
    -- use 'othree/eregex.vim'     -- Perl style regexp notation for Vim
 
@@ -131,8 +134,8 @@ return require('packer').startup(function()
          which_key{
             gc = { name = 'Comment' },
             gcc = 'Comment out current line',
-            ['gc*'] = 'which_key_ignore',
-            ['gc#'] = 'which_key_ignore',
+            ['gc*'] = "which_key_ignore",
+            ['gc#'] = "which_key_ignore",
          }
       end
    }
@@ -169,7 +172,7 @@ return require('packer').startup(function()
 
    -- }}}
 
-   -- Improved * keybinding action.
+   -- Makes * operator works the way it should by default.
    use { 'haya14busa/vim-asterisk', as = 'asterisk',
       config = function()
          vim.g['asterisk#keeppos'] = 0 -- Keep cursor position inside word between jumps.
@@ -209,7 +212,7 @@ return require('packer').startup(function()
    -- https://github.com/mg979/vim-visual-multi
    use { 'mg979/vim-visual-multi', as = 'multiple-cursors'}
 
-   ---------------------- Clipboard ----------------------
+   ----------------------------- Clipboard ---------------------------------
 
    -- use { 'AckslD/nvim-neoclip.lua',
    --    requires = {'tami5/sqlite.lua', module = 'sqlite'},
@@ -218,7 +221,7 @@ return require('packer').startup(function()
    --    end,
    -- }
 
-   -------------------- Visual tweaks --------------------
+   --------------------------- Visual tweaks -------------------------------
 
    -- Подсвечивает все такие же слова как и слово под курсором.
    use { 'RRethy/vim-illuminate' }
@@ -253,7 +256,7 @@ return require('packer').startup(function()
    }
    --}}}
 
-   ------------ Windows and buffers managment ------------
+   -------------------- Windows and buffers managment ----------------------
 
    -- use 'matbme/JABS.nvim'
 
@@ -281,7 +284,7 @@ return require('packer').startup(function()
    -- use 'zhaocai/GoldenView.Vim'
    -- use { 'RobertAudi/GoldenView.vim', opt = true }
 
-   ---------------------- Movements ----------------------
+   ----------------------------- Movements ---------------------------------
 
    -- use { 'easymotion/vim-easymotion', as = 'easymotion',
    --    config = function()
@@ -304,19 +307,19 @@ return require('packer').startup(function()
 
    -- use {'ggandor/lightspeed.nvim', }
 
-   --                   Smooth scroll                  {{{
-   -------------------------------------------------------
+   --                          Smooth scroll                             {{{
+   -------------------------------------------------------------------------
 
    -- https://github.com/psliwka/vim-smoothie
    use { 'psliwka/vim-smoothie',
       config = function()
-         -- Time (in milliseconds) between subseqent screen/cursor postion updates.
-         -- Lower value produces smoother animation.
+         -- Time (in milliseconds) between subseqent screen/cursor postion
+         -- updates.  Lower value produces smoother animation.
          vim.g.smoothie_update_interval = 20
          --
-         -- Base scrolling speed (in lines per second), to be taken into account by
-         -- the velocity calculation algorithm.  Can be decreased to achieve slower
-         -- (and easier to follow) animation.
+         -- Base scrolling speed (in lines per second), to be taken into account
+         -- by the velocity calculation algorithm.  Can be decreased to achieve
+         -- slower (and easier to follow) animation.
          vim.g.smoothie_base_speed = 7
       end
    }
@@ -325,7 +328,7 @@ return require('packer').startup(function()
    --    config = function() require('plugins_config/neoscroll') end
    -- }
 
-   ----------------------------------------------------}}}
+   ----------------------------------------------------------------------}}}
 
    -- -- Clever-f
    -- use { 'rhysd/clever-f.vim',
@@ -448,7 +451,7 @@ return require('packer').startup(function()
       -- keys = {'<leader>f', '<leader>fh'}
    }
 
-   -------------------- IDE features ---------------------
+   ---------------------------- IDE features -------------------------------
 
    -- use 'tpope/vim-apathy'  -- Make 'gf' keybinding work in different filetypes.
    --                         -- For instructions of what it can do more look:
@@ -474,36 +477,16 @@ return require('packer').startup(function()
    -- }
 
    use { 'TimUntersberger/neogit',
-      requires = 'nvim-lua/plenary.nvim'
-   }
-
-   --------- Syntaxes and programming languages ----------
-
-   -- Подсветка синтаксисов для разных языков.
-   use { 'sheerun/vim-polyglot',
-      setup = function()  -- run before plugin load
-         -- This variable should be declared before polyglot is loaded!
-         -- vim.g.polyglot_disabled = 'markdown'
-         vim.g.polyglot_disabled = {'markdown', 'gitignore', 'txt'}
+      requires = 'nvim-lua/plenary.nvim',
+      config = function()
+         require('neogit').setup{}
       end
    }
 
-   use 'SirJson/fzf-gitignore'
-
-   use { 'Neui/cmakecache-syntax.vim', as = 'syntax-cmakecache' }
-   -- use { 'zinit-zsh/zinit-vim-syntax', ft = 'zsh' } -- zinit syntaxis
-
-   use { 'anuvyklack/vim-dealii-prm', as = 'syntax-dealii-prm',
-      -- event = 'BufNewFile,BufRead *.prm'
    }
 
-   -- Kitty terminal conf file syntax highlight.
-   use { "fladson/vim-kitty", as = 'syntax-kitty-conf' }
-
-   -------------------------------------------------------
-
-   --                   Color scheme                   {{{
-   -------------------------------------------------------
+   --                           Color scheme                             {{{
+   -------------------------------------------------------------------------
    local color_themes = {
       -- gruvbox-material-dark {{{
       ['gruvbox-material-dark'] = function()
@@ -526,8 +509,8 @@ return require('packer').startup(function()
                -- Available values: 'auto', 'red', 'orange', 'yellow',
                -- 'green', 'aqua', 'blue', 'purple'
                vim.g.gruvbox_material_cursor = 'blue'
-               -- vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
-               vim.g.gruvbox_material_diagnostic_virtual_text = 'grey'
+               vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
+               -- vim.g.gruvbox_material_diagnostic_virtual_text = 'grey'
                vim.g.gruvbox_material_current_word = 'grey background'
                vim.g.gruvbox_material_better_performance = 1
 
@@ -636,17 +619,17 @@ return require('packer').startup(function()
          }
       end
    }
-   ----------------------------------------------------}}}
+   ----------------------------------------------------------------------}}}
 
-   -- --------------------- Statusline ----------------------
+   ----------------------------- Statusline --------------------------------
    -- use { 'glepnir/galaxyline.nvim',
    --    branch = 'main',
    --    config = function() require'statusline' end,
    --    requires = {'kyazdani42/nvim-web-devicons'}
    -- }
-   -- -------------------------------------------------------
+   -------------------------------------------------------------------------
 
-   --------------- Vim additional modules ----------------
+   ----------------------- Vim additional modules --------------------------
 
    -- bufferline / tabline
 
@@ -730,10 +713,52 @@ return require('packer').startup(function()
       cmd = 'StartupTime'
    }
 
-   -------------------------------------------------------
+   -------------------------------------------------------------------------
 
-   --                   File manager                   {{{
-   -------------------------------------------------------
+   ----------------- Syntaxes and programming languages --------------------
+
+   -- Show syntax highlighting attributes of character under cursor.
+   use 'vim-scripts/SyntaxAttr.vim'
+
+   -- Automatically adjusts 'shiftwidth' and 'expandtab' heuristically
+   -- based on the current file.
+   use { 'tpope/vim-sleuth',
+      cmd = { 'Sleuth', 'verbose Sleuth' },
+      config = function()
+         vim.g.sleuth_automatic = 0 -- Turn off automatic detection, потому что
+                                    -- думает за меня и думает лишнего.
+      end
+   }
+
+   -- Подсветка синтаксисов для разных языков.
+   use { 'sheerun/vim-polyglot',
+      setup = function()  -- run before plugin load
+         -- This variable should be declared before polyglot is loaded!
+         vim.g.polyglot_disabled = {
+            'sensible',
+            'autoindent', -- use https://github.com/tpope/vim-sleuth instead
+            -- 'help',  -- because it force set 'expandtab'
+            -- 'markdown',
+            -- 'gitignore',
+            -- 'txt',
+         }
+      end
+   }
+
+   use { 'Neui/cmakecache-syntax.vim', as = 'syntax-cmakecache' }
+   -- use { 'zinit-zsh/zinit-vim-syntax', ft = 'zsh' } -- zinit syntaxis
+
+   use { 'anuvyklack/vim-dealii-prm', as = 'syntax-dealii-prm',
+      -- event = 'BufNewFile,BufRead *.prm'
+   }
+
+   -- Kitty terminal conf file syntax highlight.
+   use { "fladson/vim-kitty", as = 'syntax-kitty-conf' }
+
+   -------------------------------------------------------------------------
+
+   --                           File manager                             {{{
+   -------------------------------------------------------------------------
 
    use { 'kyazdani42/nvim-tree.lua',
       requires = 'kyazdani42/nvim-web-devicons',
@@ -770,10 +795,10 @@ return require('packer').startup(function()
       run = ':helptags ALL',
    }
 
-   ----------------------------------------------------}}}
+   ----------------------------------------------------------------------}}}
 
-   --              Lua plugins development             {{{
-   -------------------------------------------------------
+   --                      Lua plugins development                       {{{
+   -------------------------------------------------------------------------
    use { 'rafcamlet/nvim-luapad', as = 'luapad',
       config = function()
          vim.cmd [[
@@ -783,10 +808,10 @@ return require('packer').startup(function()
          ]]
       end
    }
-   ----------------------------------------------------}}}
+   ----------------------------------------------------------------------}}}
 
-   --                      Orgmode                     {{{
-   -------------------------------------------------------
+   --                              Orgmode                               {{{
+   -------------------------------------------------------------------------
 
    -- use { 'kristijanhusak/orgmode.nvim',
    --    config = function()
@@ -816,10 +841,10 @@ return require('packer').startup(function()
       config = function() require('plugins_config/neorg') end
    }
 
-   ----------------------------------------------------}}}
+   ----------------------------------------------------------------------}}}
 
-   --                 Tmux integration                {{{
-   ------------------------------------------------------
+   --                         Tmux integration                           {{{
+   -------------------------------------------------------------------------
 
    use {
       'anuvyklack/vim-tmux-navigator',  -- my fork
@@ -836,19 +861,21 @@ return require('packer').startup(function()
 
    -- use 'tmux-plugins/vim-tmux-focus-events'
    -- use 'tmux-plugins/vim-tmux'
-   ---------------------------------------------------}}}
+   ----------------------------------------------------------------------}}}
 
-   -- --                      Pandoc                      {{{
-   -- -------------------------------------------------------
+   --                              Pandoc                                {{{
+   -------------------------------------------------------------------------
    -- use { 'vim-pandoc/vim-pandoc',
    --    requires = {'vim-pandoc/vim-pandoc-syntax', opt = true},
    --    ft = {'markdown', 'pandoc'},
-   --    config = function() vim.cmd("source ~/.config/nvim/lua/plugins_config/pandoc.vim") end
+   --    config = function()
+   --       vim.cmd("source ~/.config/nvim/lua/plugins_config/pandoc.vim")
+   --    end
    -- }
-   -- ----------------------------------------------------}}}
+   ----------------------------------------------------------------------}}}
 
-   --          Русский язык (Switch language)          {{{
-   -------------------------------------------------------
+   --                   Русский язык (Switch language)                   {{{
+   -------------------------------------------------------------------------
    use { 'lyokha/vim-xkbswitch', as = 'xkbswitch',
       config = function()
          vim.g.XkbSwitchEnabled = 1
@@ -865,7 +892,7 @@ return require('packer').startup(function()
       end
    }
    -- use 'powerman/vim-plugin-ruscmd'
-   ----------------------------------------------------}}}
+   ----------------------------------------------------------------------}}}
 
 end)
 

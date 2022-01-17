@@ -17,8 +17,8 @@ endif
 
 lua require('impatient')
 
-" General Config                                                        {{{
-" =========================================================================
+" General Config                                                       {{{
+" ========================================================================
 " Список кодировок для автоматического их определения
 set fileencodings=utf-8,cp1251
 
@@ -62,14 +62,14 @@ set secure  " Disallows the use of :autocmd, shell and write commands in
 syntax enable   " Включить подсветку синтаксиса
 " }}}
 
-" Folding                                                               {{{
-" =========================================================================
+" Folding                                                              {{{
+" ========================================================================
 
 set foldmethod=marker   " fold based on markers
-set foldcolumn=auto:3
+set foldcolumn=auto:2
 set foldlevelstart=0    " 0: to always start editing with all folds closed
-set foldnestmax=5       " deepest fold is 5 levels (only for sintax and indent)
-set foldminlines=5      " minimum lines required to create fold
+set foldnestmax=5       " maximum nested fold level
+set foldminlines=4      " minimum lines required to create fold
 set foldopen=block,hor,mark,jump,percent,quickfix,search,tag,undo
 " set foldopen=all
 
@@ -77,8 +77,8 @@ set foldopen=block,hor,mark,jump,percent,quickfix,search,tag,undo
 
 " }}}
 
-" Python support                                                        {{{
-" =========================================================================
+" Python support                                                       {{{
+" ========================================================================
 set pyxversion=3
 if has('unix')
     let g:python3_host_prog = '/usr/bin/python3'
@@ -94,8 +94,8 @@ endif
 
 " }}}
 
-" Clipboard                                                             {{{
-" =========================================================================
+" Clipboard                                                            {{{
+" ========================================================================
 if has('wsl')
     let g:clipboard = {
           \   'name': 'wslclipboard',
@@ -113,8 +113,8 @@ if has('wsl')
 endif
 " }}}
 
-" Indentation                                                           {{{
-" =========================================================================
+" Indentation                                                          {{{
+" ========================================================================
 
 
 set autoindent      " Use the current indentation when creating a new line
@@ -179,8 +179,16 @@ set wildoptions=pum,tagfile
 
 " =================== Pop-Up Menu ======================
 
-set pumblend=7      " Прозрачность всплывающего меню
-set pumheight=15    " Количество строк во всплывающем окне
+set pumblend=0      " Enables pseudo-transparency for the popup-menu.
+                    " With 0 value the transparency is disabled, which is
+                    " necessary for proper work of lspkind-icons plugin.
+                    " Because most Nerd Font icons require 2 cells where
+                    " second shold be the space for correct render.  And
+                    " with pseudo transparency turned on, the underlying
+                    " characters can occupy a cell required for the space
+                    " character.
+
+" set pumheight=15    " Количество строк во всплывающем окне
 
 " ==================== Scrolling =======================
 
@@ -252,7 +260,7 @@ set helplang=ru     " Помощь на русском языке
 
 " ================== Visual Tweaks =====================
 
-set signcolumn=auto:4
+set signcolumn=auto:1
 set nowrap          " Wrap lines
 set cmdheight=1     " Make command line one line high.
 set colorcolumn=+1  " Показывать рулетку в следующей колонке после textwidth.
@@ -274,8 +282,8 @@ set guicursor+=i-ci-ve:ver25-Cursor2/lCursor2,r-cr:hor20,o:hor50
 set splitbelow
 set splitright
 
-"          Settings that unnecessary in Neovim         {{{
-" --------------------------------------------------------
+"                Settings that unnecessary in Neovim                   {{{
+" ------------------------------------------------------------------------
 
 " set encoding=utf-8
 " set backspace=indent,eol,start
@@ -306,10 +314,10 @@ set splitright
 "         " another file (~/.vim/indent/python.vim).  However, I usually just
 "         " put the indents inside the plugin file.
 
-" ----------------------------------------------------}}}
+" ---------------------------------------------------------------------}}}
 
-"               Autocommands and Functions             {{{
-" ========================================================
+"                     Autocommands and Functions                       {{{
+" ========================================================================
 
 " https://www.bobbywlindsey.com/2017/07/30/vim-functions/
 " convert rows of numbers or text (as if pasted from excel column) to a tuple
@@ -401,14 +409,14 @@ au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeou
 
 "}}}
 
-"                      Key Bindings                    {{{
-" ========================================================
+"                            Key Bindings                              {{{
+" ========================================================================
 " Синтаксис создания комбинации
 " [[mode]nore]map keys command
 " где mode — режим или окружение, где работает комбинация
 " nore (non-recursive) — не «раскрывать» комбинацию,
 " а использовать значение по умолчанию
-" ========================================================
+" ========================================================================
 
 lua require('keybindings')
 
@@ -473,10 +481,8 @@ nnoremap <A-RIght> <C-W>>
 map vv <C-W>v
 " map ss <C-W>s
 
-
 " Close preview window if exists, else close current window
-map <silent> Q :call CloseWindow()<CR>
-
+map <silent> Q <cmd>call CloseWindow()<CR>
 function! CloseWindow() "{{{
     if bufexists("[Command Line]")
         close  " Close command line window like q:, q/, q? etc.
@@ -499,7 +505,6 @@ function! CloseWindow() "{{{
         close  " Close the current window, except if it the last.
     endif
 endfunction "}}}
-
 function! IsPreviewWindowOpen()  "{{{
     " Check if 'preview window' is open.  Return 1 or 0.
 
@@ -514,7 +519,6 @@ function! IsPreviewWindowOpen()  "{{{
     return 0
 endfunction
 " }}}
-
 function! IsFileTypeOpen(name)  "{{{
     " Signature: string -> number
     " Accepts string with filetype (vim, py, cpp, ...) or 'quickfix'
@@ -539,7 +543,6 @@ function! IsFileTypeOpen(name)  "{{{
     endif
     return 0
 endfunction  "}}}
-
 
 " In insert mode, move normally by using Ctrl
 cnoremap <C-h> <Left>
