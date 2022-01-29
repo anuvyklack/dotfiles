@@ -65,10 +65,13 @@ syntax enable   " Включить подсветку синтаксиса
 " Folding                                                              {{{
 " ========================================================================
 
-set foldmethod=marker   " fold based on markers
+set foldmethod=marker
+" set foldmethod=expr     " use folding based on treesitter
+set foldexpr=nvim_treesitter#foldexpr()
+
 set foldcolumn=auto:2
 set foldlevelstart=0    " 0: to always start editing with all folds closed
-set foldnestmax=5       " maximum nested fold level
+set foldnestmax=20      " maximum nested fold level
 set foldminlines=4      " minimum lines required to create fold
 set foldopen=block,hor,mark,jump,percent,quickfix,search,tag,undo
 " set foldopen=all
@@ -591,4 +594,4 @@ endf "}}}
 " endfunction
 
 
-" vim: fen fdm=marker number tw=76 cc=+1
+" vim: fdm=marker number tw=76 cc=+1

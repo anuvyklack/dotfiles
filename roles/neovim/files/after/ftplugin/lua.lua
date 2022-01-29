@@ -1,8 +1,17 @@
-vim.bo.textwidth = 80
-
+vim.bo.textwidth   = 80
 vim.bo.tabstop     = 3
 vim.bo.softtabstop = 3
 vim.bo.shiftwidth  = 3
+vim.wo.foldmethod  = 'expr'
+
+-- require('pretty-fold').ft_setup('lua', {fill_char = '*'})
+
+-- Keybindings -----------------------------------------------------------------
+
+require('util').keymap.set(
+   {'n','v'}, 'gK', 'K', {desc = 'Show :help', buffer = true})
+
+--------------------------------------------------------------------------------
 
 -- Make 'gf' vim keybinding work on `lua requare('module.foo')` statements.
 -- For this, we need to add `.lua` extension to search name. And add `lua/`
@@ -23,11 +32,4 @@ vim.bo.keywordprg = ":help"
 local path = vim.opt_local.path
 path:append( vim.fn.stdpath("config") .. "/lua")
 
-vim.wo.foldmethod = 'expr'
-vim.wo.foldexpr   = "nvim_treesitter#foldexpr()"
--- require('pretty-fold').ft_setup('lua', {fill_char = '*'})
-
-
--- Keybindings -----------------------------------------------------------------
-
-require'util'.keymap.set({'n', 'v'}, 'gK', 'K', 'Show :help', { buffer = true })
+--------------------------------------------------------------------------------

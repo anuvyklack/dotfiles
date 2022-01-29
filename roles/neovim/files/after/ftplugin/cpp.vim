@@ -6,9 +6,7 @@ set colorcolumn=+1      " Показывать ограничительную л
 setlocal foldcolumn=3
 " set foldnestmax=3   " deepest fold is 3 levels
 
-" Use treesitter base folding.
-setlocal foldmethod=expr
-setlocal foldexpr=nvim_treesitter#foldexpr()
+setlocal foldmethod=expr " use treesitter base folding
 
 lua << EOF
 require('pretty-fold').ft_setup('cpp', {
