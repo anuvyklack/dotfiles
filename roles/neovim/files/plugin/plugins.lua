@@ -665,6 +665,38 @@ require('packer').startup(function()
       config = function() require('plugins_config/nvim-tree') end
    }
 
+   -- use { 'elihunter173/dirbuf.nvim',
+   --    config = function()
+   --      require('dirbuf').setup {
+   --          hash_padding = 2,
+   --          show_hidden = true,
+   --      }
+   --    end
+   -- }
+
+   -- use { 'tamago324/lir.nvim', as = 'lir-filemanager',
+   --    requires = {
+   --       'nvim-lua/plenary.nvim',
+   --       'kyazdani42/nvim-web-devicons',
+   --    },
+   --    config = function() require('plugins_config/lir') end
+   -- }
+
+   use { 'mcchrish/nnn.vim',
+      config = function() require('plugins_config/nnn-vim') end
+   }
+
+   -- use { 'luukvbaal/nnn.nvim',
+   --    config = function() require('plugins_config/nnn-nvim') end
+   -- }
+
+   -- other {{{
+
+   -- use { 'vifm/vifm.vim',
+   --    -- TODO Open issue to packer: help tags not generated automaticaly.
+   --    run = ':helptags ALL',
+   -- }
+
    -- use 'tpope/vim-vinegar'
 
    -- use { 'ms-jpq/chadtree',
