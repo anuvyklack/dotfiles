@@ -23,7 +23,12 @@
 local install_path = vim.fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
 
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-   vim.fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', '--depth', '1', install_path})
+   vim.fn.system({
+      'git', 'clone',
+      '--depth', '1',
+      'https://github.com/wbthomason/packer.nvim',
+      install_path
+   })
    vim.api.nvim_command('packadd packer.nvim')
 end
 
@@ -31,7 +36,7 @@ require('packer').init { --{{{
    display = {
       -- open_cmd = '80vnew [packer]',  -- set the width of the packer split
       open_fn = function()
-         return require("packer.util").float({border = "rounded"})
+         return require("packer.util").float({ border = "rounded" })
          -- return require("packer.util").float()
       end,
       working_sym = '', --      plugin being installed/updated
@@ -61,7 +66,7 @@ require('packer').startup(function()
 
    use 'lewis6991/impatient.nvim' -- Improve startup time for Neovim.
 
-   --                          Key Mappings                               {{{
+   --                          Key Mappings                              {{{
    -------------------------------------------------------------------------
 
    -- use { 'folke/which-key.nvim', as = 'which-key', -- WhichKey
@@ -107,8 +112,6 @@ require('packer').startup(function()
       run = ':TSUpdate',
       config = function() require('plugins_config/treesitter') end
    }
-
-   -- use 'wellle/context.vim'   -- Vscode breadcrumbs analog
    ----------------------------------------------------------------------}}}
 
    --                              LSP                                   {{{
@@ -143,20 +146,14 @@ require('packer').startup(function()
       config = function() require('plugins_config/trouble') end
    }
 
-   -- use 'nvim-lua/diagnostic-nvim'
-
-   -- use { 'jubnzv/virtual-types.nvim', as = 'virtual-types' }
-
    -- use { 'simrat39/symbols-outline.nvim', as = 'symbols-outline',
    --    config = function() require('plugins_config/symbols-outline') end
    -- }
 
-   -- use { "liuchengxu/vista.vim" }
-
    use { 'ahmedkhalf/project.nvim',
       config = function()
          require('project_nvim').setup {
-            detection_methods = { 'lsp', 'pattern', },
+            detection_methods = { 'lsp', 'pattern' },
             patterns = {
                '.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json',
                '>.config', '>roles'
@@ -166,9 +163,6 @@ require('packer').startup(function()
          }
       end
    }
-
-   -- use 'nvim-lua/lsp_extensions.nvim'
-   -- use 'tjdevries/nlua.nvim'
 
    ----------------------------------------------------------------------}}}
 
@@ -197,7 +191,7 @@ require('packer').startup(function()
       requires = {
          {  -- Icons in completion menu.
             'onsails/lspkind-nvim', as = 'lspkind',
-            config = function() require('plugins_config/lspkind-nvim') end
+            config = function() require('plugins_config/lspkind') end
          },
          'saadparwaiz1/cmp_luasnip', -- source for LuaSnip snippet plugin
          'hrsh7th/cmp-nvim-lsp', -- source for neovim's Lua runtime API such 'vim.lsp.*'
@@ -253,8 +247,6 @@ require('packer').startup(function()
                               -- buffers, add blank lines, etc.
    use 'junegunn/vim-easy-align'
 
-   -- use 'othree/eregex.vim'     -- Perl style regexp notation for Vim
-
    -- Comments {{{
 
    -- Also define `gc` - comment textobject.
@@ -295,7 +287,7 @@ require('packer').startup(function()
 
    -- }}}
 
-   -- Makes * operator works the way it should by default.
+   -- Makes *-operator works the way it should by default.
    use { 'haya14busa/vim-asterisk', as = 'asterisk',
       config = function()
          vim.g['asterisk#keeppos'] = 0 -- Keep cursor position inside word between jumps.
@@ -311,7 +303,7 @@ require('packer').startup(function()
    use { 'ntpeters/vim-better-whitespace', as = 'better-whitespace',
       config = function()
          -- vim.cmd("exe 'source'..stdpath('config')..'/lua/plugins_config/better-whitespace.vim'")
-         vim.cmd("source ~/.config/nvim/lua/plugins_config/better-whitespace.vim")
+         vim.cmd "source ~/.config/nvim/lua/plugins_config/better-whitespace.vim"
       end
    }
 
@@ -337,22 +329,19 @@ require('packer').startup(function()
 
    ----------------------------- Clipboard ---------------------------------
 
-   -- use { 'AckslD/nvim-neoclip.lua',
-   --    requires = {'tami5/sqlite.lua', module = 'sqlite'},
-   --    config = function()
-   --       require('neoclip').setup()
-   --    end,
-   -- }
+   use { 'AckslD/nvim-neoclip.lua',
+      requires = {
+         { 'tami5/sqlite.lua', module = 'sqlite' },
+      },
+      config = function()
+         require('neoclip').setup()
+      end,
+   }
 
    --------------------------- Visual tweaks -------------------------------
 
    -- Подсвечивает все такие же слова как и слово под курсором.
    use { 'RRethy/vim-illuminate' }
-
-   -- use 'itchyny/vim-cursorword'
-
-   -- -- Найденный текст пульсирует
-   -- use { 'inside/vim-search-pulse' }
 
    -- Indentation guides {{{
    use { 'lukas-reineke/indent-blankline.nvim',
@@ -393,6 +382,13 @@ require('packer').startup(function()
       end
    }
 
+   -- -- Broken friendship with barbar-tabline
+   -- use { 'vim-ctrlspace/vim-ctrlspace',
+   --    config = function ()
+   --       vim.g.CtrlSpaceDefaultMappingKey = "<C-space> "
+   --    end
+   -- }
+
    use { 'roxma/vim-window-resize-easy', as = 'window-resize-easy' }
 
    -- use { 'simeji/winresizer',
@@ -403,9 +399,6 @@ require('packer').startup(function()
    --     -- require("util").set_keymap('n', '<leader>w', 'Window resize mode', '<cmd>WinResizerStartResize<CR>', {noremap = true, silent = true})
    --   end
    -- }
-
-   -- use 'zhaocai/GoldenView.Vim'
-   -- use { 'RobertAudi/GoldenView.vim', opt = true }
 
    ----------------------------- Movements ---------------------------------
 
@@ -475,15 +468,10 @@ require('packer').startup(function()
    --                         -- and
    --                         -- :help include-search
 
-   -- use 'majutsushi/tagbar'    -- список тегов в текущем файле
-   -- use 'liuchengxu/vista.vim' -- View and search LSP symbols and tags.
-
    -- Asynchronous build and test dispatcher
    use { 'tpope/vim-dispatch',
-      cmd = {'Dispatch', 'Make', 'Focus', 'Start'}
+      cmd = { 'Dispatch', 'Make', 'Focus', 'Start' }
    }
-
-   -- use 'junegunn/gv.vim'  -- A git commit browser in Vim.
 
    -- use { 'lewis6991/gitsigns.nvim',
    --    requires = 'nvim-lua/plenary.nvim' ,
@@ -501,7 +489,6 @@ require('packer').startup(function()
 
    --------------------------- Fuzzy finder --------------------------------
    use { 'nvim-telescope/telescope.nvim', as = 'telescope',
-      commit = '860cc65',
       requires = {
          'nvim-lua/plenary.nvim',
          { 'nvim-telescope/telescope-fzf-native.nvim', as = 'telescope-fzf-native',
@@ -529,9 +516,7 @@ require('packer').startup(function()
 
    use { 'romgrk/barbar.nvim', as = 'barbar-tabline',
       requires = 'kyazdani42/nvim-web-devicons',
-      config = function()
-         require('plugins_config/barbar')
-      end
+      config = function() require('plugins_config/barbar') end
    }
 
    use { 'anuvyklack/pretty-fold.nvim', as = 'pretty-fold', branch = 'nightly',
@@ -543,7 +528,7 @@ require('packer').startup(function()
             marker = { process_comment_signs = 'spaces' },
             expr = { process_comment_signs = false }
          }
-         require('pretty-fold.preview').setup{
+         require('pretty-fold.preview').setup {
             -- border = 'shadow'
          }
       end
@@ -573,16 +558,13 @@ require('packer').startup(function()
    --    config = function() require('plugins_config/nvim-bufferline') end
    -- }
 
-   -- -- visualize undo tree
-   -- use { 'mbbill/undotree',
+   -- -- use 'simnalamburt/vim-mundo'  -- another undo tree visualizer
+   -- use { 'mbbill/undotree',         -- visualize undo tree
    --    config = function()
    --       vim.g.undotree_HighlightChangedWithSign = 0
    --       vim.g.undotree_WindowLayout = 2
    --    end
    -- }
-
-   -- -- another undo tree visualizer
-   -- use 'simnalamburt/vim-mundo'
 
    use { 'kevinhwang91/nvim-bqf', as = 'better-quickfix',
       ft = 'qf'
@@ -602,9 +584,6 @@ require('packer').startup(function()
    --    config = function() vim.cmd("source ~/.config/nvim/lua/plugins_config/lens.vim") end
    -- }
 
-   -- -- foldtext customization
-   -- use 'scr1pt0r/crease.vim'
-
    use { 'norcalli/nvim-colorizer.lua', as = 'colorizer',
       ft = {'vim', 'lua', 'conf', 'tmux', 'kitty', 'vifm', 'markdown'},
       config = function()
@@ -617,8 +596,8 @@ require('packer').startup(function()
    use { 'anuvyklack/help-vsplit.nvim', as = 'help-vsplit',
    -- use { '~/Git/my_neovim_plugins/help-vsplit.nvim', as = 'help-vsplit',
       config = function()
-         require('help-vsplit').setup{
-            side = 'right' -- or 'left'
+         require('help-vsplit').setup {
+            side = 'left'
          }
       end
    }
@@ -627,14 +606,6 @@ require('packer').startup(function()
    use { 'tweekmonster/startuptime.vim', as = 'startuptime',
       cmd = 'StartupTime'
    }
-
-   -- -- use 'simnalamburt/vim-mundo'  -- another undo tree visualizer
-   -- use { 'mbbill/undotree',         -- visualize undo tree
-   --    config = function()
-   --       vim.g.undotree_HighlightChangedWithSign = 0
-   --       vim.g.undotree_WindowLayout = 2
-   --    end
-   -- }
 
    -------------------------------------------------------------------------
 
@@ -701,22 +672,11 @@ require('packer').startup(function()
    --    run = ':UpdateRemotePlugins'
    -- }
 
-   -- use { 'luukvbaal/nnn.nvim',
-   --    config = function() require('plugins_config/nnn-nvim') end
-   -- }
-
-   use { 'mcchrish/nnn.vim',
-      config = function() require('plugins_config/nnn-vim') end
-   }
-
    -- use { 'is0n/fm-nvim',
    --    config = function() require('plugins_config/fm-nvim') end
    -- }
 
-   use { 'vifm/vifm.vim',
-      -- TODO Open issue to packer: help tags not generated automaticaly.
-      run = ':helptags ALL',
-   }
+   -- }}}
 
    ----------------------------------------------------------------------}}}
 
