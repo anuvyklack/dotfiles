@@ -426,23 +426,22 @@ require('packer').startup(function()
    --                          Smooth scroll                             {{{
    -------------------------------------------------------------------------
 
-   -- https://github.com/psliwka/vim-smoothie
-   use { 'psliwka/vim-smoothie',
-      config = function()
-         -- Time (in milliseconds) between subseqent screen/cursor postion
-         -- updates.  Lower value produces smoother animation.
-         vim.g.smoothie_update_interval = 20
-         --
-         -- Base scrolling speed (in lines per second), to be taken into account
-         -- by the velocity calculation algorithm.  Can be decreased to achieve
-         -- slower (and easier to follow) animation.
-         vim.g.smoothie_base_speed = 7
-      end
-   }
-
-   -- use { 'karb94/neoscroll.nvim',
-   --    config = function() require('plugins_config/neoscroll') end
+   -- use { 'psliwka/vim-smoothie',
+   --    config = function()
+   --       -- Time (in milliseconds) between subseqent screen/cursor postion
+   --       -- updates.  Lower value produces smoother animation.
+   --       vim.g.smoothie_update_interval = 20
+   --
+   --       -- Base scrolling speed (in lines per second), to be taken into account
+   --       -- by the velocity calculation algorithm.  Can be decreased to achieve
+   --       -- slower (and easier to follow) animation.
+   --       vim.g.smoothie_base_speed = 7
+   --    end
    -- }
+
+   use { 'karb94/neoscroll.nvim',
+      config = function() require('plugins_config/neoscroll') end
+   }
 
    ----------------------------------------------------------------------}}}
 
