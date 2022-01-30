@@ -34,10 +34,10 @@ g.nvim_tree_symlink_arrow = ' -> '
 g.nvim_tree_respect_buf_cwd = 1
 
 g.nvim_tree_show_icons = {
-  git = 0,
-  folders = 1,
-  files = 1,
-  folder_arrows = 1,
+   git = 0,
+   folders = 1,
+   files = 1,
+   folder_arrows = 1,
 }
 
 --   diff
@@ -54,33 +54,33 @@ g.nvim_tree_show_icons = {
 -- 
 
 g.nvim_tree_icons = {
-  default = '',
-  symlink = '',
-  git = {
-    unstaged  = "•", --   ✗  
-    staged    = "", -- ✓   ﯂  
-    unmerged  = "",
-    renamed   = "", --  
-    untracked = "★",
-    deleted   = "",
-    ignored   = "" --   ◌ 
-    },
-  folder = {
-    arrow_open   = "", --   
-    arrow_closed = "", --   
-    default      = "",
-    open         = "",
-    empty        = "",
-    empty_open   = "",
-    symlink      = "",
-    symlink_open = "",
-    },
-    lsp = {
+   default = '',
+   symlink = '',
+   git = {
+      unstaged  = "•", --   ✗  
+      staged    = "", -- ✓   ﯂  
+      unmerged  = "",
+      renamed   = "", --  
+      untracked = "★",
+      deleted   = "",
+      ignored   = "" --   ◌ 
+   },
+   folder = {
+      arrow_open   = "", --   
+      arrow_closed = "", --   
+      default      = "",
+      open         = "",
+      empty        = "",
+      empty_open   = "",
+      symlink      = "",
+      symlink_open = "",
+   },
+   lsp = {
       hint    = "",
       info    = "",
       warning = "",
       error   = "",
-    }
+   }
 }
 
 
