@@ -32,29 +32,39 @@ _G.which_key.name = function(mode, lhs, name)
    _G.which_key { [lhs] = { name = name, mode = mode } }
 end
 
----Set keymap and register its description in 'which-key' plugin.  Any of
----`description` or `opts` arguments may be ommited. So it is possible to pass
----`opts` table without `description` string.  See: :help vim.keymap.set()
+---Set keymap and register its description in 'which-key' plugin.  If `opts`
+---table contains `desc` key, its value will be registred in 'which-key' plugin.
+---Also see: :help vim.keymap.set()
 ---@param mode string|string[]
 ---@param lhs string left hand side
 ---@param rhs string|function right hand side
----@param description? string
 ---@param opts? table
-function util.keymap.set(mode, lhs, rhs, description, opts)
-   -- local options = { noremap = true, silent = true }
-   -- opts = vim.tbl_deep_extend("force", options, opts or {})
-
-   if type(description) == 'table' then
-      opts = description
-      description = nil
+function util.keymap.set(mode, lhs, rhs, opts)
+   if vim.keymap.set then
+      vim.keymap.set(mode, lhs, rhs, opts)
+   else
+      if type(rhs) == "function" then
+         _G.anuvyklack = _G.anuvyklack or {}
+         _G.anuvyklack.functions = _G.anuvyklack.functions or { next_index = 1 }
+         local next_index = _G.anuvyklack.functions.next_index
+         local fun = 'f' .. next_index
+         _G.anuvyklack.functions[fun] = rhs
+         rhs = string.format('lua _G.anuvyklack.functions[%s]', fun)
+         _G.anuvyklack.functions.next_index = next_index + 1
+      end
+      for _, m in ipairs(mode) do
+         if opts.buffer then
+            vim.api.nvim_buf_set_keymap(opts.buffer, m, lhs, rhs, opts)
+         else
+            vim.api.nvim_set_keymap(m, lhs, rhs, opts)
+         end
+      end
    end
 
-   vim.keymap.set(mode, lhs, rhs, opts)
-
-   if description then
-      _G.which_key {
-         [lhs] = { description, mode = mode }
-      }
+   if opts and opts.desc then
+      _G.which_key({
+         [lhs] = { opts.desc, mode = mode }
+      })
    end
 end
 
