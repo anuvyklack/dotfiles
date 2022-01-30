@@ -1,8 +1,9 @@
 local which_key_available, which_key = pcall(require, "which-key")
 local util = {}
 
----Check if file exists
-function util.is_file_exists(path)
+---Check if file exists.
+---@param path string
+function util.file_exists(path)
    local f = io.open(path, "r")
    if f ~= nil then
       io.close(f)
