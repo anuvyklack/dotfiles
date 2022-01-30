@@ -494,6 +494,7 @@ require('packer').startup(function()
    }
 
    --------------------------- Fuzzy finder --------------------------------
+
    use { 'nvim-telescope/telescope.nvim', as = 'telescope',
       requires = {
          'nvim-lua/plenary.nvim',
@@ -529,7 +530,17 @@ require('packer').startup(function()
    -- use { '~/Git/my_neovim_plugins/pretty-fold.nvim', as = 'pretty-fold',
       config = function()
          vim.opt.fillchars:append('fold:•')
-         require('pretty-fold').setup{
+         require('pretty-fold').setup {
+            {
+               add_close_pattern = true, -- true, 'last_line' or false
+               matchup_patterns = {
+                  { '^%s*do$', 'end' }, -- `do ... end` blocks
+                  { 'function%s*%(', 'end' }, -- 'function( or 'function (''
+                  { '{', '}' },
+                  { '%(', ')' }, -- % to escape lua pattern char
+                  { '%[', ']' }, -- % to escape lua pattern char
+               }
+            },
             -- marker = { comment_signs = 'spaces' },
             marker = { process_comment_signs = 'spaces' },
             expr = { process_comment_signs = false }
