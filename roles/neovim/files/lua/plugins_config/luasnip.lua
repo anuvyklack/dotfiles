@@ -5,10 +5,13 @@
 
 local types = require('luasnip.util.types')
 
-require('luasnip').config.setup {
+require('luasnip').config.setup({
    history = true,
-	region_check_events = 'InsertEnter',
-	delete_check_events = 'User None',
+
+   -- Do not jump to snippet if i'm outside of it.
+   -- https://github.com/L3MON4D3/LuaSnip/issues/78
+	region_check_events = "CursorMoved", -- 'InsertEnter',
+	delete_check_events = "TextChanged", -- 'User None',
 
    ext_opts = {
       [types.choiceNode] = {
@@ -27,7 +30,7 @@ require('luasnip').config.setup {
          }
       }
    },
-}
+})
 
 require('keybindings').luasnip()
 

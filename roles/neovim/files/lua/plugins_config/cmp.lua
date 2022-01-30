@@ -15,8 +15,8 @@ local function tab(fallback)
    -- elseif luasnip.expand_or_jumpable() then
    elseif luasnip.expand_or_locally_jumpable() then
       luasnip.expand_or_jump()
-   -- elseif has_words_before() then
-   --    cmp.complete()
+   elseif has_words_before() then
+      cmp.complete()
    else
       fallback()
    end
@@ -75,7 +75,7 @@ cmp.setup {
       { name = 'nvim_lsp' },
       { name = 'luasnip' },
       { name = 'path' },
-      { name = 'nvim_lua' } -- Neovim's Lua runtime API such 'vim.lsp.*'
+      { name = 'nvim_lua' }, -- Neovim's Lua runtime API such 'vim.lsp.*'
    },{
       { name = 'buffer',
         option = {
@@ -86,21 +86,40 @@ cmp.setup {
       }
    }),
 
+   completion = {
+      border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
+      scrollbar = "║"
+   },
+   window = {
+      documentation = {
+         border = "rounded",
+         scrollbar = "║",
+      },
+      completion = {
+         border = "rounded",
+         scrollbar = "║",
+      },
+   },
    formatting = {
-      format = require('lspkind').cmp_format {  -- lspkind icons
-         with_text = true, -- enables text annotations
+      fields = {
+         cmp.ItemField.Abbr,
+         cmp.ItemField.Kind,
+         cmp.ItemField.Menu,
+      },
+      format = require('lspkind').cmp_format({  -- lspkind icons
+         with_text = false, -- enables text annotations
 
          -- Prevent the popup from showing more than provided characters.
          -- (e.g 50 will not show more than 50 characters)
          maxwidth = 50,
 
-         -- menu = {
-         --    buffer = "｢Buffer｣",
+         -- menu = ({
+         --    buffer   = "｢Buffer｣",
          --    nvim_lsp = "｢LSP｣",
-         --    luasnip = "｢LuaSnip｣",
+         --    luasnip  = "｢LuaSnip｣",
          --    nvim_lua = "｢Lua｣",
          --    latex_symbols = "｢Latex｣",
-         -- }
+         -- })
 
          -- -- The function below will be called before any actual modifications
          -- -- from lspkind so that you can provide more controls on popup customization.
@@ -109,8 +128,8 @@ cmp.setup {
          --    ...
          --    return vim_item
          -- end
-      }
-   }
+      })
+   },
 }
 
 -- Use buffer source for `/`
@@ -128,7 +147,12 @@ cmp.setup.cmdline(':', {
       { name = 'path' }
    },{
       { name = 'cmdline' }
-   })
+   }),
+   formatting = {
+      fields = {
+         cmp.ItemField.Abbr,
+      },
+   }
 })
 
 local available_autopairs, autopairs_cmp = pcall(require, 'nvim-autopairs.completion.cmp')
@@ -140,6 +164,5 @@ if available_autopairs then
       }
    })
 end
-
 
 -- vim: fml=3 foldnestmax=3
