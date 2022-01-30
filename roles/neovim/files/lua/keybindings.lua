@@ -132,6 +132,20 @@ function M.lspconfig(bufnr)
 
    --}}}
 
+   -- Renamer {{{
+
+   -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>lr', cmd 'Lspsaga rename', {silent = true, noremap = true})
+
+   keymap.set({n,v}, '<leader>lr', cmd 'lua require("renamer").rename()', { buffer = bufnr })
+
+   -- keymap.set({n,v}, '<leader>lr', cmd 'lua require("renamer").rename()', { buffer = bufnr })
+   -- keymap.set({n,v},         'gr', cmd 'lua require("renamer").rename()', { buffer = bufnr })
+
+   -- keymap.set({n,v}, '<leader>lr', require('renamer').rename, { buffer = bufnr })
+   -- keymap.set({n,v},         'gr', require('renamer').rename, { buffer = bufnr })
+
+   -- }}}
+
 end --}}}
 
 -- LuaSnip {{{

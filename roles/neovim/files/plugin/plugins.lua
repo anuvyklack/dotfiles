@@ -461,6 +461,13 @@ require('packer').startup(function()
 
    ---------------------------- IDE features -------------------------------
 
+   use { 'filipdutescu/renamer.nvim', as = 'renamer', branch = 'master',
+      requires = 'nvim-lua/plenary.nvim',
+      config = function()
+         require('renamer').setup {}
+      end
+   }
+
    -- use 'tpope/vim-apathy'  -- Make 'gf' keybinding work in different filetypes.
    --                         -- For instructions of what it can do more look:
    --                         -- https://github.com/tpope/vim-apathy
