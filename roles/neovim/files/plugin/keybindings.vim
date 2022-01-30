@@ -8,8 +8,8 @@
 " ░░   ░░  ░░░░░    █████      ░░░░░░  ░░ ░░   ░░  ░░░░░░ ░░ ░░   ░░   █████ ░░░░░░
 "                  ░░░░░                                              ░░░░░
 
-"                     Easy-Align                   {{{
-" ----------------------------------------------------
+"                          Easy-Align                          {{{
+" ----------------------------------------------------------------
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 xmap ga <Plug>(EasyAlign)
 
@@ -20,10 +20,10 @@ nmap ga <Plug>(EasyAlign)
 " grass+=green
 " sky-=   blue
 
-" -------------------------------------------------}}}
+" -------------------------------------------------------------}}}
 
-"                  Tmux integration                {{{
-" ----------------------------------------------------
+"                       Tmux integration                       {{{
+" ----------------------------------------------------------------
 let g:tmux_navigator_no_mappings = 1
 
 " nnoremap <silent> <C-g><C-H> <cmd>TmuxNavigateLeft<cr>
@@ -37,7 +37,7 @@ nnoremap <silent> <C-K> <cmd>TmuxNavigateUp<cr>
 nnoremap <silent> <C-L> <cmd>TmuxNavigateRight<cr>
 
 " nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
-" -------------------------------------------------}}}
+" -------------------------------------------------------------}}}
 
 nnoremap <silent> gb <cmd>call ChooseBuffer()<CR>
 function! ChooseBuffer()  "{{{
@@ -58,7 +58,7 @@ endfunction "}}}
 
 " Показать syntax group для участка кода, а также цвет этой группы.
 " Удобно при создании своей цветовой схемы
-" nnoremap <silent> <C-g> <cmd>TSHighlightCapturesUnderCursor<CR>
-nnoremap <C-g> <cmd>call SyntaxAttr()<CR>
+nnoremap <silent> <C-g> <cmd>TSHighlightCapturesUnderCursor<CR>
+" nnoremap <C-g> <cmd>call SyntaxAttr()<CR>
 
 " vim: tw=76 fdm=marker
