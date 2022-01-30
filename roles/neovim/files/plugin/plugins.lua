@@ -724,11 +724,11 @@ require('packer').startup(function()
    -------------------------------------------------------------------------
    use { 'rafcamlet/nvim-luapad', as = 'luapad',
       config = function()
-         vim.cmd [[
-            command! LuaAttach lua require('luapad').attach()
-            command! LuaDetach lua require('luapad').detach()
-            command! LuaToggle lua require('luapad').toggle()
-         ]]
+         local command = vim.api.nvim_add_user_command
+         local luapad = require('luapad')
+         command('LuaAttach', luapad.attach, { bang = true })
+         command('LuaDetach', luapad.detach, { bang = true })
+         command('LuaToggle', luapad.toggle, { bang = true })
       end
    }
    ----------------------------------------------------------------------}}}
