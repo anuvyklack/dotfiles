@@ -1,22 +1,30 @@
--- HACK This file is loaded after nvim-treesitter plugin.
+-- HACK: This file is loaded after nvim-treesitter plugin.
 
-local available, treesitter_config = pcall(require, "nvim-treesitter.configs")
-if not available then return end
+local treesitter_config = require('nvim-treesitter.configs')
 
-treesitter_config.setup {
-   -- ensure_installed = "maintained",
-   -- 'yaml'
+local config = {
+   -- One of 'all', 'maintained' (parsers with maintainers), or a list of languages.
+   -- ensure_installed = 'maintained',
    ensure_installed = {
-      'bash', 'comment', 'c', 'cpp', 'fennel', 'go', 'html', 'json',
-      'latex', 'lua', 'python', 'regex', 'rust', 'toml', 'query', 'markdown'
-      -- 'vim'
+      'lua', 'python', 'regex', 'comment', 'query', 'bash',
+      'c', 'cpp', 'make', 'cmake', 'json', 'html', 'http', 'ninja', 'fennel',
+      'go', 'latex', 'bibtex', 'rust', 'toml',
+      'markdown',
+      -- 'vim',
+      -- 'yaml',
    },
 
    highlight = {
-      enable = true,
-      use_languagetree = true
+      enable = true, -- need for neorg
+
+       -- Setting this to true will run `:h syntax` and tree-sitter at the same
+       -- time.  Set this to `true` if you depend on 'syntax' being enabled
+       -- (like for indentation).  Using this option may slow down your editor,
+       -- and you may see some duplicate highlights.  Instead of true it can
+       -- also be a list of languages.
+       additional_vim_regex_highlighting = false,
    },
-   indent = {enable = true},
+   indent = { enable = true },
    incremental_selection = {
       enable = true,
       keymaps = {
@@ -70,5 +78,29 @@ treesitter_config.setup {
    --   highlight_definitions = {enable = true}
    --   -- highlight_current_scope = { enable = true }
    -- },
-
 }
+
+--------------------------------- Neorg ----------------------------------------
+local parser_configs = require('nvim-treesitter.parsers').get_parser_configs()
+
+parser_configs.norg_meta = {
+   install_info = {
+      url = "https://github.com/nvim-neorg/tree-sitter-norg-meta",
+      files = { "src/parser.c" },
+      branch = "main"
+   },
+}
+parser_configs.norg_table = {
+   install_info = {
+      url = "https://github.com/nvim-neorg/tree-sitter-norg-table",
+      files = { "src/parser.c" },
+      branch = "main"
+   },
+}
+
+for _, parser in ipairs{ 'norg', 'norg_meta', 'norg_table' } do
+   table.insert(config.ensure_installed, parser)
+end
+--------------------------------------------------------------------------------
+
+treesitter_config.setup(config)

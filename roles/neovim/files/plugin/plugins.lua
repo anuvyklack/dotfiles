@@ -747,20 +747,6 @@ require('packer').startup(function()
    use { 'vhyrro/neorg',
       requires = "nvim-lua/plenary.nvim",
       after = "treesitter",
-      setup = function() -- {{{
-         -- WARNING Temporary code block until neorg treesitter module
-         --         will be merged into `nvim-treesitter` repository.
-         local parser_configs = require('nvim-treesitter.parsers').get_parser_configs()
-
-         parser_configs.norg = {
-            install_info = {
-               url = 'https://github.com/vhyrro/tree-sitter-norg',
-               -- files = { "src/parser.c" },
-               files  = { 'src/parser.c', 'src/scanner.cc' },
-               branch = 'main'
-            },
-         }
-      end, -- }}}
       config = function() require('plugins_config/neorg') end
    }
 
