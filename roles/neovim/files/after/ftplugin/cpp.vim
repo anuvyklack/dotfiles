@@ -9,17 +9,20 @@ setlocal foldcolumn=3
 setlocal foldmethod=expr " use treesitter base folding
 
 lua << EOF
-require('pretty-fold').ft_setup('cpp', {
-   -- fill_char = ' ', -- use 'space' as fold char
-   process_comment_signs = false,
-   stop_words = {
-      -- '%*%s*@brief%s*', -- 1 or more spaces -> '*' -> 1 or more spaces
-      --                   -- -> '@brief' -> all spaces after
-      '%s%*',      -- a space and star char
-      '@brief%s*', -- '@brief' and any number of spaces after
-   },
-   comment_signs = {
-      '/**', -- C++ Doxygen comments
-   }
-})
+local pretty_fold_available, pretty_fold = pcall(require, 'pretty-fold')
+if pretty_fold_available then
+    require('pretty-fold').ft_setup('cpp', {
+       -- fill_char = ' ', -- use 'space' as fold char
+       process_comment_signs = false,
+       stop_words = {
+          -- '%*%s*@brief%s*', -- 1 or more spaces -> '*' -> 1 or more spaces
+          --                   -- -> '@brief' -> all spaces after
+          '%s%*',      -- a space and star char
+          '@brief%s*', -- '@brief' and any number of spaces after
+       },
+       comment_signs = {
+          '/**', -- C++ Doxygen comments
+       }
+    })
+end
 EOF

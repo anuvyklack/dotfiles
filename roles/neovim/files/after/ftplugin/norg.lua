@@ -6,13 +6,16 @@ vim.bo.shiftwidth  = 2
 
 vim.wo.foldmethod = 'expr' -- use treesitter base folding
 
-require('pretty-fold').ft_setup('norg', {
-   fill_char = ' ', -- use 'space' as fold char
-   process_comment_signs = false,
-   comment_signs = {
-      -- '@note',
-   }
-})
+local pretty_fold_available, pretty_fold = pcall(require, 'pretty-fold')
+if pretty_fold_available then
+   pretty_fold.ft_setup('norg', {
+      fill_char = ' ', -- use 'space' as fold char
+      process_comment_signs = false,
+      comment_signs = {
+         -- '@note',
+      }
+   })
+end
 
 local cmp_available, cmp = pcall(require, 'cmp')
 if cmp_available then
