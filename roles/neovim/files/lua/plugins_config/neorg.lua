@@ -4,33 +4,26 @@ require('neorg').setup {
       ["core.keybinds"] = { config = {
          default_keybinds = true, -- Generate the default keybinds
          neorg_leader = "<Leader>o" -- This is the default if unspecified
-      } },
+      }},
       ["core.norg.concealer"] = { config = {
+         markup_preset = 'dimmed',
          icons = {
             todo = {
                enabled = true,
-               -- done = {
-               --    enabled = true,
-               --    icon = "",
-               --    highlight = "NeorgTodoItemDoneMark",
-               --    query = "(todo_item_done) @icon",
-               --    extract = function() return 1 end,
-               -- },
+               done = {
+                  icon = "", -- 
+               },
                pending = {
-                  enabled = true,
-                  icon = "",
-                  -- icon = "ﮫ",
-                  -- icon = "",
-                  highlight = "NeorgTodoItemPendingMark",
-                  query = "(todo_item_pending) @icon",
-                  extract = function() return 1 end,
+                  -- icon = "",
+                  -- icon = "",
+                  icon = "•",
+
+                  -- icon = "  ",
+                  -- -- Do not ofset the first '[' bracker.
+                  -- extract = function() return 0 end,
                },
                undone = {
-                  enabled = true,
                   icon = " ", -- default: ×
-                  highlight = "NeorgTodoItemUndoneMark",
-                  query = "(todo_item_undone) @icon",
-                  extract = function() return 1 end,
                },
                -- uncertain = {
                --    enabled = true,
@@ -70,7 +63,7 @@ require('neorg').setup {
             },
 
             list = {
-               enabled = true,
+               enabled = false,
                level_1 = {
                   enabled = true,
                   icon = "•",
@@ -79,16 +72,18 @@ require('neorg').setup {
                },
                level_2 = {
                   enabled = true,
-                  icon = " •",
+                  -- icon = " •",
+                  icon = "••", -- •
                   highlight = "NeorgUnorderedList2",
                   query = "(unordered_list2_prefix) @icon",
+                  -- extract = function() return 1 end,
                },
-               -- level_3 = {
-               --    enabled = true,
-               --    icon = "  •",
-               --    highlight = "NeorgUnorderedList3",
-               --    query = "(unordered_list3_prefix) @icon",
-               -- },
+               level_3 = {
+                  enabled = true,
+                  icon = "--•",
+                  highlight = "NeorgUnorderedList3",
+                  query = "(unordered_list3_prefix) @icon",
+               },
                -- level_4 = {
                --    enabled = true,
                --    icon = "   •",
@@ -109,56 +104,18 @@ require('neorg').setup {
                -- },
             },
 
-            link = {
-               enabled = true,
-               -- level_1 = {
-               --    enabled = true,
-               --    icon = " ",
-               --    highlight = "NeorgUnorderedLink1",
-               --    query = "(unordered_link1_prefix) @icon",
-               -- },
-               -- level_2 = {
-               --    enabled = true,
-               --    icon = "  ",
-               --    highlight = "NeorgUnorderedLink2",
-               --    query = "(unordered_link2_prefix) @icon",
-               -- },
-               -- level_3 = {
-               --    enabled = true,
-               --    icon = "   ",
-               --    highlight = "NeorgUnorderedLink3",
-               --    query = "(unordered_link3_prefix) @icon",
-               -- },
-               -- level_4 = {
-               --    enabled = true,
-               --    icon = "",
-               --    highlight = "NeorgUnorderedLink4",
-               --    query = "(unordered_link4_prefix) @icon",
-               -- },
-               -- level_5 = {
-               --    enabled = true,
-               --    icon = " ",
-               --    highlight = "NeorgUnorderedLink5",
-               --    query = "(unordered_link5_prefix) @icon",
-               -- },
-               -- level_6 = {
-               --    enabled = true,
-               --    icon = "  ",
-               --    highlight = "NeorgUnorderedLink6",
-               --    query = "(unordered_link6_prefix) @icon",
-               -- },
-            },
-         },
-         markup_preset = 'dimmed',
-      } },
+            definition = { enabled = false },
+            delimiter = { enabled = false },
+         }
+      }},
       ["core.norg.dirman"] = { config = { -- Manage your directories with Neorg.
          workspaces = {
             my_workspace = "~/neorg"
          }
-      } },
+      }},
       ["core.norg.completion"] = { config = {
          engine = "nvim-cmp"
-      } }
+      }}
    },
 }
 

@@ -9,11 +9,12 @@ vim.wo.foldmethod = 'expr' -- use treesitter base folding
 local pretty_fold_available, pretty_fold = pcall(require, 'pretty-fold')
 if pretty_fold_available then
    pretty_fold.ft_setup('norg', {
-      fill_char = ' ', -- use 'space' as fold char
+      fill_char = ' ', -- use 'space' as a fold char
       process_comment_signs = false,
       comment_signs = {
          -- '@note',
-      }
+      },
+      add_close_pattern = false,
    })
 end
 
