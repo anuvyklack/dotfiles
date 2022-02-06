@@ -1,5 +1,7 @@
 ---
 
+# -------------------------- Install from apt -----------------------------
+
 # - name: install kitty (apt)
 #   become: yes
 #   become_user: root
@@ -10,6 +12,57 @@
 #     force_apt_get: yes
 #     update_cache: yes
 #   when: ansible_pkg_mgr == 'apt'
+
+# --------------------- Install from Github release -----------------------
+
+- name: Check if kitty is installed
+  shell: which kitty  # "command -v kitty"
+  register: check_kitty
+  failed_when: false
+  changed_when: check_kitty.rc != 0
+
+- set_fact:
+    kitty_installed: "{{ true if check_kitty.rc == 0 else false }}"
+
+# - debug: var=kitty_installed
+
+- name: Get current version info
+  command: kitty --version
+  register: kitty_current_ver
+  changed_when: no
+  when: kitty_installed
+
+- name: Get current version
+  set_fact:
+    kitty_current_ver: "{{ kitty_current_ver | regex_search('[0-9.]+') }}"
+  when: kitty_installed
+
+# - debug: var=kitty_current_ver
+
+- name: Get latest release info
+  uri:
+    url: "{{ kitty_release }}"
+    body_format: json
+    return_content: yes
+  register: latest_release
+
+# - debug: var=latest_release.json.tag_name
+
+- name: Get latest release version
+  set_fact:
+    kitty_latest_ver: "{{ latest_release.json.tag_name | regex_search('[0-9.]+') }}"
+
+# - debug: var=kitty_latest_ver
+
+- name: Delete old kitty version installed with package manager
+  become: yes
+  apt:
+    name: kitty
+    state: absent
+  when:
+    - ansible_pkg_mgr == 'apt'
+    - kitty_installed
+    - kitty_latest_ver is version(kitty_current_ver, '>')
 
 - name: install stow (apt)
   become: yes
@@ -28,20 +81,24 @@
   shell:
     cmd: "curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin dest={{ stow_dir }} launch=n"
     warn: false  # Do not rise warning about curl.
+  register: download_latest_kitty
+  when:
+    - kitty_installed
+    - kitty_latest_ver is version(kitty_current_ver, '>')
 
 - name: Delete empty folders in 'kitty.app' directory
   command:
     cmd: find -type d -empty -delete
     chdir: "{{ stow_dir }}/kitty.app"
-
+  when: download_latest_kitty is not skipped
 
 - name: stow kitty application
   command:
-    cmd: stow -R kitty.app
+    cmd: stow --restow kitty.app
     chdir: "{{ stow_dir }}"
+  when: download_latest_kitty is not skipped
 
-
-- name: Make sure kitty config directories exist
+- name: Make sure kitty config directories are exist
   file:
     dest: "{{ item }}"
     state: directory
@@ -107,11 +164,6 @@
     label: "{{ item.kitten }}/{{ item.file }}"
 
 
-# - name: get path to kitty bin
-#   shell: "which kitty"  # "command -v kitty"
-#   register: check_kitty
-#   changed_when: No
-#
 # # - debug: var=check_kitty
 #
 # # sudo update-alternatives --install /usr/bin/x-terminal-emulator x-terminal-emulator $(which kitty) 50

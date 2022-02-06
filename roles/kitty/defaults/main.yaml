@@ -1,3 +1,3 @@
 ---
-
+kitty_release: https://api.github.com/repos/kovidgoyal/kitty/releases/latest
 config: "{{ xdg_config_home }}/kitty"
