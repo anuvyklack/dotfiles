@@ -1,15 +1,12 @@
 ---
 - name: Install ranger (apt)
   become: yes
-  become_user: root
-  become_method: sudo
   apt:
     pkg:
       - ranger
       - python3-pip
       - poppler-utils
     state: present
-    force_apt_get: yes
     update_cache: yes
     cache_valid_time: 3600  # One hour
   when: ansible_pkg_mgr == 'apt'

@@ -2,7 +2,6 @@
 - name: Install apt packages
   become: yes
   apt:
-    force_apt_get: yes  # Force usage of apt-get instead of aptitude
     update_cache: yes
     cache_valid_time: 3600  # One hour
     state: present

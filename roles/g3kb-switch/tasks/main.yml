@@ -62,9 +62,12 @@
 - name: Construct CMake command
   set_fact:
     # g3kb_switch_cmake_command: >
-    g3kb_switch_cmake_command: "{{ 'cmake -DCMAKE_BUILD_TYPE=Release' ~
-      gnome_version is version('41', '>=') | ternary(' -DG3KBSWITCH_WITH_GNOME_SHELL_EXTENSION=ON ', ' ') ~
-      '..' }}"
+    g3kb_switch_cmake_command:
+      "{{
+        'cmake -DCMAKE_BUILD_TYPE=Release' ~
+        gnome_version is version('41', '>=') | ternary(' -DG3KBSWITCH_WITH_GNOME_SHELL_EXTENSION=ON ', ' ') ~
+        '..'
+      }}"
 
 # - debug: var=g3kb_switch_cmake_command
 
@@ -104,3 +107,5 @@
   become: yes
   command:
     cmd: ldconfig
+
+# vim: fdm=marker

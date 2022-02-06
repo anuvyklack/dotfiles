@@ -66,14 +66,9 @@
 
 - name: install stow (apt)
   become: yes
-  become_user: root
-  become_method: sudo
   apt:
     name: stow
     state: present
-    force_apt_get: yes
-    update_cache: yes
-    cache_valid_time: 3600  # One hour
   when: ansible_pkg_mgr == 'apt'
 
 # https://sw.kovidgoyal.net/kitty/binary/

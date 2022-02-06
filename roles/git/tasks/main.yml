@@ -7,7 +7,7 @@
       - git
       - tig
     state: present
-    force_apt_get: yes  # Force usage of apt-get instead of aptitude
+    # force_apt_get: yes  # Force usage of apt-get instead of aptitude
     update_cache: yes
     cache_valid_time: 3600  # One hour
   when: ansible_pkg_mgr == 'apt'

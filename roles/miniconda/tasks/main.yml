@@ -40,8 +40,8 @@
     executable: /bin/bash
   register: miniconda_installed
   when:
-    # miniconda_downloaded is succeeded and
-    miniconda_downloaded is not skipped
+    # - miniconda_downloaded is succeeded
+    - miniconda_downloaded is not skipped
   notify: update conda to latest version
 
 # - debug: var=miniconda_installed
