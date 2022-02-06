@@ -6,15 +6,22 @@
   failed_when: false
   changed_when: check_tmux.rc != 0
 
-# - debug: var=check_tmux
+- name: Set fact if tmux is installed
+  set_fact:
+    tmux_installed: "{{ true if check_tmux.rc == 0 else false }}"
 
-- name: Get current tmux version
-  shell: "{{ check_tmux.stdout }} -V"
+- name: Check current tmux version
+  shell: tmux -V
   register: check_tmux_version
   changed_when: no
-  when: check_tmux.rc == 0
+  when: tmux_installed
 
-# - debug: var=current_version
+- name: Set fact with current tmux version
+  set_fact:
+    tmux_current: "{{ check_tmux_version.stdout }}"
+  when: check_tmux_version is not skipped
+
+# - debug: var=tmux_current
 
 - name: Get latest release info
   uri:
@@ -23,19 +30,21 @@
     return_content: yes
   register: latest_release
 
-# - debug: var=latest_release
+- name: Get latest release version
+  set_fact:
+    tmux_latest: "{{ latest_release.json.name }}"
 
 - name: Set the fact whether we need to download and compile tmux
   set_fact:
-    tmux_absent_or_outdated: "{{ true if (check_tmux.rc != 0) or (check_tmux_version.stdout != latest_release.json.name ) else false }}"
+    tmux_absent_or_outdated:
+      "{{ false if tmux_installed and (tmux_latest == tmux_current) else true }}"
 
 # - debug: var=tmux_absent_or_outdated
 
 - name: Delete old tmux version installed with apt
   become: yes
   apt:
-    pkg:
-      - tmux
+    name: tmux
     state: absent
   when:
     - tmux_absent_or_outdated
@@ -110,8 +119,7 @@
   register: make
   notify: Clean build directory
 
-# - debug:
-#     var: make
+# - debug: var=make
 
 - name: Install tmux
   become: yes
@@ -121,7 +129,6 @@
   when: make is not skipped
   register: make_install
 
-# - debug:
-#     var: make_install
+# - debug: var=make_install
 
 # vim: fdm=marker ft=yaml.ansible

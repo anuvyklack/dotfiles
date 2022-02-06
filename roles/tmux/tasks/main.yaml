@@ -28,5 +28,6 @@
 
 - name: Install tmux plugins
   command: "{{ tmux_plugin_manager }}/bin/install_plugins"
+  changed_when: no
 
 # vim: ft=yaml.ansible
