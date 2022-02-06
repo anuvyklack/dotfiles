@@ -4,7 +4,7 @@
   apt:
     update_cache: yes
     cache_valid_time: 3600  # One hour
-    state: present
+    state: latest
     pkg:
       - wajig
       - man
@@ -17,12 +17,10 @@
       - htop
       - ntfs-3g
       - qimgv    # image viewer
-
       # - x11-xkb-utils
-      # - bfs      # find(1) c поиском в ширину в первую очередь
+      # - bfs      # find c поиском в ширину в первую очередь
       # - par      # Paragraph formating utility for vim
       # - lua5.4
-
       # - exa      # a modern replacment for ls
       # - silversearcher-ag
       # - fzf      # fuzzy finder

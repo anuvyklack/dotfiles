@@ -21,7 +21,8 @@
   failed_when: false
   changed_when: check_kitty.rc != 0
 
-- set_fact:
+- name: Set fact if kitty is installed
+  set_fact:
     kitty_installed: "{{ true if check_kitty.rc == 0 else false }}"
 
 # - debug: var=kitty_installed
@@ -64,12 +65,12 @@
     - kitty_installed
     - kitty_latest_ver is version(kitty_current_ver, '>')
 
-- name: install stow (apt)
-  become: yes
-  apt:
-    name: stow
-    state: present
-  when: ansible_pkg_mgr == 'apt'
+- name: Set the fact whether kitty absent or outdated
+  set_fact:
+    kitty_absent_or_outdated:
+      "{{ false if kitty_installed and kitty_latest_ver is version(kitty_current_ver, '==') else true }}"
+
+# - debug: var=kitty_absent_or_outdated
 
 # https://sw.kovidgoyal.net/kitty/binary/
 - name: Download latest kitty release
@@ -77,15 +78,20 @@
     cmd: "curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin dest={{ stow_dir }} launch=n"
     warn: false  # Do not rise warning about curl.
   register: download_latest_kitty
-  when:
-    - kitty_installed
-    - kitty_latest_ver is version(kitty_current_ver, '>')
+  when: kitty_absent_or_outdated
 
 - name: Delete empty folders in 'kitty.app' directory
   command:
     cmd: find -type d -empty -delete
     chdir: "{{ stow_dir }}/kitty.app"
   when: download_latest_kitty is not skipped
+
+- name: install stow (apt)
+  become: yes
+  apt:
+    name: stow
+    state: present
+  when: ansible_pkg_mgr == 'apt'
 
 - name: stow kitty application
   command:
