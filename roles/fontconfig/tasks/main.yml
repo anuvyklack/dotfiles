@@ -1,0 +1,16 @@
+---
+
+- name: Make sure fontconfig directorie exists
+  file:
+    dest: "{{ config }}"
+    state: directory
+
+- name: Symlink kitty config files
+  file:
+    src: "{{ role_files }}/fonts.conf"
+    dest: "{{ config }}/fonts.conf"
+    state: link
+
+- name: Update fontconfig cache
+  command: fc-cache -r
+  changed_when: no
