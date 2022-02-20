@@ -541,8 +541,11 @@ command! ncdu ncdu %d %s
 command! z :set noquickview | :execute 'cd "'.system('zoxide query %a').'"'
 command! zi :set noquickview | :execute 'cd' fnameescape(system('zoxide query -l "%a" | fzf --height 20 2>/dev/tty')) '%IU' | redraw
 
-" " command to change directory by picking it via fzf
-command! fzfcd :set noquickview | :execute 'cd' fnameescape(system("command find -L . -mindepth 1 \\( -path '*/\\.*' -o -fstype 'sysfs' -o -fstype 'devfs' -o -fstype 'devtmpfs' -o -fstype 'proc' \\) -prune -o -type d -print 2> /dev/null | cut -b3- | fzf --height 20 2>/dev/tty")) '%IU' | redraw
+" command to change directory by picking it via fzf
+" with find:
+" command! fzfcd :set noquickview | :execute 'cd' fnameescape(system("command find -L . -mindepth 1 \\( -path '*/\\.*' -o -fstype 'sysfs' -o -fstype 'devfs' -o -fstype 'devtmpfs' -o -fstype 'proc' \\) -prune -o -type d -print 2> /dev/null | cut -b3- | fzf --height 20 2>/dev/tty")) '%IU' | redraw
+" with bfs:
+command! fzfcd :set noquickview | :execute 'cd' fnameescape(system("command bfs -type d -L -print 2> /dev/null | fzf --height 20 2>/dev/tty")) '%IU' | redraw
 
 " "  Find with FZF and fd
 " command! fzf :set noquickview | :execute 'goto "'.term('fdfind --exclude node_modules | fzf --preview "exa --all --sort .name --tree --level 1 --classify --git --long --color=always {}" --preview-window wrap 2>/dev/tty ').'"%IU' | redraw
