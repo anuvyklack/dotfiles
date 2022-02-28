@@ -36,40 +36,26 @@ fi
 
 # Plugin manager invocation {{{
 
-# zsh-snap {{{
+declare -A ZNAP  # Create an associative array.
+ZNAP[PLUGINS]="$HOME/.local/share/zsh/plugins"
+ZNAP[SELF]="$ZNAP[PLUGINS]/zsh-snap"
+ZNAP[BIN]="$ZNAP[SELF]/znap.zsh"
 
-# 'declare' is the same as 'typeset'.
-# -A : The names refer to associative array parameters.
-declare -A ZSH_SNAP
-ZSH_SNAP[HOME_DIR]="$HOME/.local/share/znap/zsh-snap"
-ZSH_SNAP[PLUGINS_DIR]="$HOME/.local/share/znap"
-ZSH_SNAP[BIN]="$ZSH_SNAP[HOME_DIR]/znap.zsh"
-ZSH_SNAP[EVAL]=$HOME/.cache/zsh-snap/eval
-ZSH_SNAP[FPATH]=$HOME/.cache/zsh-snap/fpath
+if [[ ! -s $ZNAP[BIN] ]]; then
+  # git clone --depth=1 'https://github.com/marlonrichert/zsh-snap.git' $ZNAP[self]
+  git clone 'https://github.com/marlonrichert/zsh-snap.git' $ZNAP[SELF]
 
-if [[ ! -s $ZSH_SNAP[BIN] ]]; then
-  # git clone --depth=1 'https://github.com/marlonrichert/zsh-snap.git' $ZSH_SNAP[HOME_DIR]
-  git clone 'https://github.com/marlonrichert/zsh-snap.git' $ZSH_SNAP[HOME_DIR]
-
-  # WARNING: temporary switch to particular commit.
-  # git -C $ZSH_SNAP[HOME_DIR] checkout f0ca23b
+  # WARNING: temporary switch to a particular commit.
+  # https://github.com/marlonrichert/zsh-snap/issues/166
+  git -C $ZNAP[SELF] checkout 26b0889a
 fi
-
-source $ZSH_SNAP[BIN]
+source $ZNAP[BIN]
 
 # zstyle ':znap:*' auto-compile no
 
 # # Do not auto compile functions in my folder, because
 # # I compile them later into one library file.
 # zstyle ':znap:*' auto-compile-ignore "${my_zsh_functions}/*"
-
-# }}}
-
-# # gitfile {{{
-#
-# znap install mohd-akram/ghget
-#
-# # }}}
 
 # }}}
 
@@ -120,89 +106,83 @@ _show_title
 
 # }}}
 
-# Core settings {{{
+# Core zsh settings {{{
 
-# 'declare' is the same as 'typeset'.
-# -A  - The names refer to associative array parameters.
+# Create an associative array.
 declare -A ZSH
 
 ZSH[cache]="$HOME/.cache/zsh"
-ZSH[completions]="$ZSH[cache]/completions"
+# ZSH[completions]="$ZSH[cache]/completions"
+ZSH[completions]="$XDG_DATA_HOME/zsh/site-functions"
 ZSH[scripts]="$ZSH[cache]/scripts"
 
 [ -d $ZSH[completions] ] || mkdir -p $ZSH[completions]
 [ -d $ZSH[scripts] ] || mkdir -p $ZSH[scripts]
 
 
-# REPORTTIME=20            # Report time stats of commands running longer
-#                          # than 20 sec.
+# REPORTTIME=20             # Report time stats of commands running longer
+#                           # than 20 sec.
 
-setopt extended_glob     # Because someday i will learn advanced pattern
-                         # matching.
+setopt extended_glob      # Because someday i will learn advanced pattern
+                          # matching.
 
-                         # In order to use #, ~ and ^ for filename
-                         # generation grep word
-                         # *~(*.gz|*.bz|*.bz2|*.zip|*.Z) -> searches for
-                         # word not in compressed files don't forget to
-                         # quote '^', '~' and '#'!
+                          # In order to use #, ~ and ^ for filename
+                          # generation grep word
+                          # *~(*.gz|*.bz|*.bz2|*.zip|*.Z) -> searches for
+                          # word not in compressed files don't forget to
+                          # quote '^', '~' and '#'!
 
-setopt auto_cd           # If a command is issued that can't be executed as
-                         # a normal command, and the command is the name of
-                         # a directory, perform the cd command to that
-                         # directory.
+setopt auto_cd            # Go to folder path without using cd.
+setopt auto_pushd         # Push the old directory onto the stack on `cd`.
+setopt pushd_ignore_dups  # Do not store duplicates in the stack.
+setopt pushd_silent       # Do not print the directory stack after 'pushd'
+                          # or 'popd'.
 
-setopt auto_pushd        # Make 'cd' push the old directory onto the
-                         # directory stack
+setopt pushd_minus        # Exchanges the meanings of `+' and `-' when used
+                          # with a number to specify a directory in the
+                          # stack.
 
-setopt pushd_ignore_dups # Don't push multiple copies of the same directory
-                         # onto the directory stack.
+unsetopt cdable_vars      # Нельзя вводить пути для команды 'cd' (или без
+                          # неё, если используетя опция 'auto_cd') в
+                          # домашней директории без '~/' в начале.
 
-setopt pushd_silent      # Do not print the directory stack after 'pushd'
-                         # or 'popd'.
-
-setopt pushd_minus       # Exchanges the meanings of `+' and `-' when used
-                         # with a number to specify a directory in the
-                         # stack.
-
-unsetopt cdable_vars     # Нельзя вводить пути для команды 'cd' (или без
-                         # неё, если используетя опция 'auto_cd') в
-                         # домашней директории без '~/' в начале.
-
-setopt clobber           # With this option the `>` redirection, if file
-                         # exists, truncates it to zero length.  So unset
-                         # it we NOT aLlows `>' redirection to truncate
-                         # existing files.  This way `>!' or `>|' must be
-                         # used to truncate a file.
+unsetopt clobber          # With this option the `>` redirection, if file
+                          # exists, truncates it to zero length.  So unset
+                          # it we NOT allows `>' redirection to truncate
+                          # existing files.  This way `>!' or `>|' must be
+                          # used to truncate a file.
 
 setopt interactive_comments  # Allow comments even in interactive shells.
 
 setopt nomatch
-# unsetopt nomatch         # DON'T YOU YELL AT ME WHEN YOU CAN'T FIND A MATCH.
-#                          # THAT'S YOUR PROBLEM, NOT MINE.
+# unsetopt nomatch         # Don't you yell at me when you can't find a match.
+#                          # that's your problem, not mine.
 
-unsetopt beep            # Seriously why does this shit even exist.
+unsetopt beep             # Seriously why does this shit even exist!?
 
-setopt combining_chars   # Combine zero-length punctuation characters
-                         # (accents) with the base character.
+setopt combining_chars    # Combine zero-length punctuation characters
+                          # (accents) with the base character.
 
-setopt rc_quotes         # Allow 'Henry''s Garage' instead of 'Henry'\''s
-                         # Garage'.
+setopt rc_quotes          # Allow 'Henry''s Garage' instead of 'Henry'\''s Garage'.
 
-setopt hash_list_all     # Whenever a command completion is attempted,
-                         # make sure the entire command path is hashed
-                         # first.
+setopt hash_list_all      # Whenever a command completion is attempted,
+                          # make sure the entire command path is hashed
+                          # first.
 
 # Jobs
-setopt long_list_jobs    # List jobs in the long format by default.
-setopt auto_resume       # Attempt to resume existing job before creating
-                         # a new process.
-setopt notify            # Report status of background jobs immediately.
-unsetopt bg_nice         # Don't run all background jobs at a lower priority.
-unsetopt hup             # Don't kill jobs on shell exit.
-unsetopt check_jobs      # Don't report on jobs when shell exit.
+setopt long_list_jobs     # List jobs in the long format by default.
+setopt auto_resume        # Attempt to resume existing job before creating a new process.
+setopt notify             # Report status of background jobs immediately.
+unsetopt bg_nice          # Don't run all background jobs at a lower priority.
+unsetopt hup              # Don't kill jobs on shell exit.
+unsetopt check_jobs       # Don't report on jobs when shell exit.
 
-setopt correct_all       # Correct the spelling of all arguments in a line.
+setopt correct_all        # Correct the spelling of all arguments in a line.
 CORRECT_IGNORE_FILE='.*'
+
+READNULLCMD='less'        # Переменная READNULLCMD определяет команду,
+                          # которая будет вызвана, если перенаправление
+                          # stdin использовать без ввода команды: `< file.txt`
 
 # Если в слове есть ошибка, предложить исправить её:
 SPROMPT="Ошибка! ввести %r вместо %R? ([Y]es/[N]o/[E]dit/[A]bort) "
@@ -217,7 +197,6 @@ source $ZDOTDIR/settings/completion.zsh
 
 fpath+=(
   $ZSH[completions]
-  # ~[zsh-users/zsh-completions]/src
 )
 
 znap install zsh-users/zsh-completions
@@ -272,6 +251,8 @@ fi
 # }}}
 
 # }}}
+
+# Functions {{{
 
 # Expand aliaces                                                        {{{
 #――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
@@ -329,8 +310,6 @@ bindkey " " expand-alias-space
 bindkey -M isearch " " magic-space
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――}}}
 
-# Functions {{{
-
 # Bash 'help' function analog {{{
 
 # unalias run-help
@@ -361,47 +340,62 @@ zle -N run_ranger
 
 # }}}
 
-# Plugins and programs {{{
+# Plugins {{{
 
 # fzf-tab {{{
 # WARNING: fzf-tab needs to be loaded after `compinit`, but before plugins
 # which will wrap widgets, such as zsh-autosuggestions or fast-syntax-highlighting!!
+
 znap source Aloxaf/fzf-tab
 
+# Use tmux popup windows.
 zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 
 # Set descriptions format to enable group support.
-# zstyle ':completion:*:descriptions' format '[%d]'
 zstyle ':completion:*:descriptions' format '-- %d --'
 
 # # Preview directory's content with exa when completing cd.
 # zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
 # zstyle ':fzf-tab:complete:cd:*' popup-pad 80 0
 
-# Switch group using `,` and `.`
-zstyle ':fzf-tab:*' switch-group ',' '.'
-
+# Colors {{{
 # A prefix to indicate the color.
 zstyle ':fzf-tab:*' prefix ''
+# zstyle ':fzf-tab:*' prefix '·'
 
 local lc=$'\e[' rc=m    # Standard ANSI terminal escape values.
 local rgb="${lc}38;2;"  # RGB color support
 local reset="${lc}0;${rc}"
-
 FZF_TAB_GROUP_COLORS=(
-  "${rgb}171;178;191$rc"  # #abb2bf
-  "${rgb}157;226;199$rc"  # #9de2c7
-  "${rgb}226;157;226$rc"  # #e29de2
-  "${rgb}205;212;96$rc"   # #CDD460
-  "${rgb}115;184;241$rc"  # #73b8f1
-  "${rgb}241;167;173$rc"  # #f1a7ad
-  "${rgb}229;192;123$rc"  # #e5c07b
-  "${rgb}209;179;255$rc"  # #d1b3ff
-  "${rgb}164;210;121$rc"  # #a4d279
-  "${rgb}162;176;246$rc"  # #a2b0f6
+  "${rgb}171;178;191${rc}"  # #abb2bf
+  "${rgb}157;226;199${rc}"  # #9de2c7
+  "${rgb}226;157;226${rc}"  # #e29de2
+  "${rgb}205;212;96${rc}"   # #CDD460
+  "${rgb}115;184;241${rc}"  # #73b8f1
+  "${rgb}241;167;173${rc}"  # #f1a7ad
+  "${rgb}229;192;123${rc}"  # #e5c07b
+  "${rgb}209;179;255${rc}"  # #d1b3ff
+  "${rgb}164;210;121${rc}"  # #a4d279
+  "${rgb}162;176;246${rc}"  # #a2b0f6
 )
-
 zstyle ':fzf-tab:*' group-colors $FZF_TAB_GROUP_COLORS
+# }}}
+
+completion-switch(){ # {{{
+  if $FZF_TAB_ENABLED; then
+    disable-fzf-tab
+    zstyle ':completion:*:*:*:*:descriptions' format '%F{blue}%B-- %D%d --%b%f'
+    FZF_TAB_ENABLED=false
+  else
+    enable-fzf-tab
+    zstyle ':completion:*:*:*:*:descriptions' format '-- %d --'
+    FZF_TAB_ENABLED=true
+  fi
+} # }}}
+zle -N completion-switch
+
+FZF_TAB_ENABLED=false
+completion-switch
 
 # }}}
 
@@ -433,16 +427,17 @@ ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
 
 # }}}
 
-# vim mode {{{
+# zsh-vi-mode {{{
 
 # Do the initialization when the script is sourced (i.e. Initialize instantly).
 # ZVM_INIT_MODE=sourcing
 
-if [[ ! -d $ZSH_SNAP[PLUGINS_DIR]/zsh-vi-mode ]]; then
-  git clone "https://github.com/jeffreytse/zsh-vi-mode.git" $ZSH_SNAP[PLUGINS_DIR]/zsh-vi-mode
+if [[ ! -d $ZNAP[PLUGINS]/zsh-vi-mode ]]; then
+  git clone "https://github.com/jeffreytse/zsh-vi-mode.git" $ZNAP[PLUGINS]/zsh-vi-mode
 
-  # WARNING: temporary switch to particulra commit.
-  git -C $ZSH_SNAP[PLUGINS_DIR]/zsh-vi-mode checkout c1480b4
+  # WARNING: temporary switch to a particular commit
+  # https://github.com/jeffreytse/zsh-vi-mode/issues/122
+  git -C $ZNAP[PLUGINS]/zsh-vi-mode checkout c1480b4
 fi
 znap source jeffreytse/zsh-vi-mode
 
@@ -627,8 +622,9 @@ fi
 # }}}
 
 # vifm {{{
-# znap install cirala/vifmimg      # Image previews using Überzug for Vifm
-znap install anuvyklack/vifmimg   # Image previews using Überzug for Vifm
+# Image previews using Überzug for Vifm
+# znap install cirala/vifmimg
+znap install anuvyklack/vifmimg
 
 export VIFM_PANE_STRATEGY=left
 znap install anuvyklack/vifmpane
@@ -675,18 +671,18 @@ if (( $+commands[nnn] )); then
 
   # File-specific colors
   # ----------------------------------------------------------
-  BLK='c1'      # Block device               c1	 DarkSeaGreen1
-  CHR='e2'      # Char device                e2	 Yellow1
-  DIR='27'      # Directory                  27	 DeepSkyBlue1
-  EXE='2e'      # Executable                 2e	 Green1
-  REG='00'      # Regular                    00	 Normal
-  HARDLINK='60' # Hard link                  60	 Plum4
-  SYMLINK='33'  # Symbolic link              33	 Cyan1
-  MISSING='f7'  # Missing OR file details    f7	 Grey62
-  ORPHAN='c6'   # Orphaned symbolic link     c6	 DeepPink1
-  FIFO='d6'     # FIFO                       d6	 Orange1
-  SOCK='ab'     # Socket                     ab	 MediumOrchid1
-  OTHER='c4'    # Unknown OR 0B regular/exe  c4	 Red1
+  BLK='c1'      # Block device               c1  DarkSeaGreen1
+  CHR='e2'      # Char device                e2  Yellow1
+  DIR='27'      # Directory                  27  DeepSkyBlue1
+  EXE='2e'      # Executable                 2e  Green1
+  REG='00'      # Regular                    00  Normal
+  HARDLINK='60' # Hard link                  60  Plum4
+  SYMLINK='33'  # Symbolic link              33  Cyan1
+  MISSING='f7'  # Missing OR file details    f7  Grey62
+  ORPHAN='c6'   # Orphaned symbolic link     c6  DeepPink1
+  FIFO='d6'     # FIFO                       d6  Orange1
+  SOCK='ab'     # Socket                     ab  MediumOrchid1
+  OTHER='c4'    # Unknown OR 0B regular/exe  c4  Red1
 
   export NNN_FCOLORS="$BLK$CHR$DIR$EXE$REG$HARDLINK$SYMLINK$MISSING$ORPHAN$FIFO$SOCK$OTHER"
 
@@ -754,24 +750,28 @@ znap source zsh-users/zsh-history-substring-search
 
 zvm_after_keybindings()
 {
-  # <C-R> - fussy search in history.
+  # <C-r> - fussy search in history.
   zvm_bindkey viins '^r' fzf-history-widget
   # zvm_bindkey viins '^r' mcfly-history-widget
+
+  # Switch group in fzf-tab with `,` and `.` ('<' and '>' keys).
+  zstyle ':fzf-tab:*' switch-group ',' '.'
 
   zvm_bindkey viins "^k" history-substring-search-up
   zvm_bindkey viins "^j" history-substring-search-down
 }
 
-# Use backtick (~ key) for accept zsh-autosuggestions
+# backtick (~ key) - accept zsh-autosuggestions
 bindkey \` autosuggest-accept
 
-# # Use "Shift+Tab" to switch between zsh compsys and fzf-tab completion.
-bindkey '^[[Z' toggle-fzf-tab
+# Shift+Tab - switch between zsh compsys and fzf-tab completions.
+# bindkey '^[[Z' toggle-fzf-tab
+bindkey '^[[Z' completion-switch
 
 # bindkey "^K" history-substring-search-up
 # bindkey "^J" history-substring-search-down
 
-# show man page of current command with Alt+h
+# Alt+h - show man page of current command
 bindkey '\eh' run-help
 
 # Gets the n-th argument from the last command
@@ -782,7 +782,7 @@ bindkey -s '\e3' "!:2-2 \t"
 bindkey -s '\e4' "!:3-3 \t"
 bindkey -s '\e5' "!:4-4 \t"
 
-# <C-o> - Launch Ranger and cd to the last directory after closing it.
+# <C-o> - launch file manager and cd to the last directory after closing it.
 # bindkey '^o' run_ranger
 bindkey '^o' run_vifm
 
@@ -790,14 +790,11 @@ bindkey '^o' run_vifm
 
 # Aliaces {{{
 
-# Filesystem aliases
-alias ..=' cd ..'
-alias ...=' cd ../..'
-alias ....=' cd ../../..'
-alias .....=' cd ../../../..'
+# Remove duplicate lines from the history file preserving their order.
+alias history_clear_dups="awk '!visited[$0]++' $ZSH[cache]/zsh_history | sponge $ZSH[cache]/zsh_history"
 
-ialias :q='exit'
-ialias :Q='exit'
+# Lists the ten most used commands.
+ialias history_stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
 
 ialias -g L='| less'
 
@@ -808,16 +805,6 @@ ialias help='run-help'  # Bash 'help' function analog.
 ialias ping='ping -c 1' # Пингуем один раз вместо бесконечности.
 
 ialias tree='tree -I .git -I .github'
-
-ialias mv='nocorrect mv -v'
-ialias cp='nocorrect cp -vR'  # рекурсивное копирование
-ialias rm='nocorrect rm -v'
-ialias grep='grep --color=auto'
-ialias wget='wget -c'  # автоматическое продолжение при разрыве соединения
-
-# Создание каталогов без коррекции и со всеми
-# родительскими каталогами, если они отсутствуют.
-ialias mkdir='nocorrect mkdir -vp'
 
 # Вывод свободного и использованного дискового пространства в
 # "гуманистическом" представлении.
@@ -858,11 +845,25 @@ alias gd='git diff'
 alias gg='git graph'
 alias -g random='-m curl -s http://whatthecommit.com/index.txt'
 
-# # Remove duplicate lines from the history file preserving their order.
-# alias history_clear_dups="awk '!visited[$0]++' $ZSH[cache]/zsh_history | sponge $ZSH[cache]/zsh_history"
+# Filesystem aliases
+alias ..=' cd ..'
+alias ...=' cd ../..'
+alias ....=' cd ../../..'
+alias .....=' cd ../../../..'
 
-# Lists the ten most used commands.
-ialias history_stat="history 0 | awk '{print \$2}' | sort | uniq -c | sort -n -r | head"
+# Создание каталогов без коррекции и со всеми
+# родительскими каталогами, если они отсутствуют.
+ialias mkdir='nocorrect mkdir -vp'
+
+ialias mv='nocorrect mv -v'
+ialias cp='nocorrect cp -vR'  # рекурсивное копирование
+ialias rm='nocorrect rm -v'
+
+ialias grep='grep --color=auto'
+ialias wget='wget -c'  # автоматическое продолжение при разрыве соединения
+
+ialias :q='exit'
+ialias :Q='exit'
 
 # ialias vifm="vifmcd"
 

@@ -11,16 +11,18 @@
 # For WSL
 [[ "$(umask)" = "000" ]] && umask 022
 
-export ZDOTDIR=~/.config/zsh
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+
+export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 
 # On Ubuntu the `compinit` function is called in '/etc/zsh/zshrc'.
 # We want to disable this behavior according to the comment in that file.
-#---------------------------------------------------------------------------------
 # https://blog.patshead.com/2011/04/improve-your-oh-my-zsh-startup-time-maybe.html
 skip_global_compinit=1
 
 # Ensure that a non-login, non-interactive shell has a defined environment.
-#-------------------------------------------------------------------
 # https://github.com/sorin-ionescu/prezto/blob/master/runcoms/zshenv
 if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]
 then

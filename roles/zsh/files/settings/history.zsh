@@ -2,10 +2,9 @@
 #  Command history managment
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-# History environment variables
-HISTFILE=${HOME}/.cache/zsh/zsh_history
-HISTSIZE=110000  # Larger than $SAVEHIST for HIST_EXPIRE_DUPS_FIRST to work
-SAVEHIST=100000
+HISTFILE=$XDG_CACHE_HOME/zsh/zsh_history  # History filepath
+HISTSIZE=11000  # Larger than $SAVEHIST for HIST_EXPIRE_DUPS_FIRST to work
+SAVEHIST=10000
 
 setopt bang_hist              # Treat the '!' character specially during expansion.
 
@@ -31,16 +30,18 @@ setopt hist_find_no_dups      # Do not display a line previously found.
 setopt hist_ignore_dups       # Don't record an entry that was just recorded again.
 setopt hist_ignore_space      # Don't record an entry starting with a space.
 
-setopt hist_expire_dups_first  # Delete duplicates first when HISTFILE size
-                               # exceeds HISTSIZE
+setopt hist_expire_dups_first # Delete duplicates first when HISTFILE size
+                              # exceeds HISTSIZE.
 
 # setopt hist_ignore_all_dups   # Delete old recorded entry if new entry is a duplicate.
 # setopt hist_save_no_dups      # Don't write duplicate entries in the history file.
 
-# Patterns that would not be stored in history
-export HISTORY_IGNORE="(cd|ranger|r|exit|:q|kill)"
-
 # Not store failed commands into history
-zshaddhistory() { whence ${${(z)1}[1]} >/dev/null || return 2 }
+zshaddhistory() {
+    whence ${${(z)1}[1]} >/dev/null || return 2
+}
+
+# Patterns that would not be stored in history
+export HISTORY_IGNORE="(cd|ranger|r|exit|:q|kill|vifm*)"
 
 # vim: tw=80 ts=2 sw=2 fdm=marker

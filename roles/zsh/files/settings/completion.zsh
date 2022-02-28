@@ -3,15 +3,16 @@
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Shell completion settings
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-# For more information open 'man zshoptions'. Search for “Completion”.
+# For more information open 'man zshoptions' and search for “Completion”.
 
 setopt menu_complete    # При множестве вариатнов подстановки по нажатию
                         # <Tab> откроет меню и подставит первый вариант.
                         # При повторном нажатии подставит следующий
                         # вариант. В меню можно пользоваться стрелками.
 
-# setopt auto_menu        # Show completion menu on a successive tab press.
-#                         # This option is overridden by MENU_COMPLETE.
+# setopt auto_menu        # Show completion menu on a successive tab press (two
+#                         # use of the Tab key).  This option is overridden by
+#                         # MENU_COMPLETE.
 
 # setopt auto_complete    # Select the first match given by the completion menu.
 #                         # Override AUTO_MENU.
@@ -50,13 +51,13 @@ unsetopt glob_dots      # Dotfiles are matched without explicitly specifying
 
 
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-#  Zstyle
+#  zstyle
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 # The general way to use zstyle to configure a Zsh module:
 #
 #     zstyle <pattern> <style> <values>
 #
-# Zstyle pattern for the completion:
+# zstyle pattern for the completion:
 #
 #     :completion:<function>:<completer>:<command>:<argument>:<tag>
 #
@@ -68,8 +69,8 @@ unsetopt glob_dots      # Dotfiles are matched without explicitly specifying
 #               underscore from the completer’s name here.
 # <command>   - Apply the style to a specific command, like cd, rm, or sed for
 #               example.
-# <argument>  - Apply the style to the nth option or the nth argument. It’s not
-#               available for many styles.
+# <argument>  - Apply the style to the n-th option or the n-th argument.
+#               It’s not available for many styles.
 # <tag>       - Apply the style to a specific tag. You can think of a tag as a
 #               type of match. For example “files”, “domains”, “users”, or
 #               “options” are tags.
@@ -85,9 +86,9 @@ zstyle ':completion:*' verbose true
 zstyle ':completion:*' completer _extensions _complete _approximate
 
 
-#-------------------------------------------------------------------------------
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Menu
-#-------------------------------------------------------------------------------
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 # Use the menu to select zsh completion suggestions.
 zstyle ':completion:*' menu select=1
 # zstyle ':completion:*' menu select=1 _complete _ignored _approximate
@@ -115,10 +116,10 @@ bindkey -M menuselect '^[' send-break  # escape
 bindkey -M menuselect '^[[Z' reverse-menu-complete
 
 # }}}
-#-------------------------------------------------------------------------------
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
-# Some functions, like _apt and _dpkg, are very slow. It is possible to use a cache
-# in order to proxy the list of results (like the list of available debian
+# Some functions, like _apt and _dpkg, are very slow. It is possible to use a
+# cache in order to proxy the list of results (like the list of available debian
 # packages).
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path $HOME/.cache/zsh/.zcompcache
@@ -132,7 +133,7 @@ zstyle ':completion:*' insert-tab false
 # Autocomplete options for cd instead of directory stack
 zstyle ':completion:*' complete-options true
 
-# # In which order sort files on completion.
+# In which order sort files on completion.
 # Possible values: size, link, time, modification, access.
 zstyle ':completion:*' file-sort alphabetically
 
@@ -146,7 +147,6 @@ zstyle ':completion:*:cd:*' ignore-parents parent pwd
 zstyle ':completion:*:complete:-command-::commands' ignored-patterns '(aptitude-*|*\~)'
 
 # Enable filename colorizing according to ls colors for zsh completion.
-# zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*:*:*:*:default' list-colors ${(s.:.)LS_COLORS}
 
 # Directories
@@ -178,9 +178,9 @@ zstyle ':completion:*:kill:*' force-list always
 # Disable sort when completing `git checkout`.
 zstyle ':completion:*:git-checkout:*' sort false
 
-#-------------------------------------------------------------------------------
-# Group matches and describe.
-#-------------------------------------------------------------------------------
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+#  Group matches and describe.
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 # Categorize completion suggestions with headings.
 # Required for completion to be in good groups (named after the tags)
 zstyle ':completion:*' group-name ''
@@ -201,13 +201,13 @@ zstyle ':completion:*:*:-command-:*:*' group-order aliases builtins functions co
 zstyle ':completion:*:options' description 'yes'
 zstyle ':completion:*:options' auto-description '%d'
 
-zstyle ':completion:*:descriptions' format $' %F{blue}%B%d%b%f'
-zstyle ':completion:*:corrections' format ' %F{green}-- %d (errors: %e) --%f'
-zstyle ':completion:*:messages' format ' %F{yellow} -- %d --%f'
-zstyle ':completion:*:warnings' format ' %F{magenta}-- no matches found --%f'
+zstyle ':completion:*:*:*:*:corrections'  format 'F{green}!- %d (errors: %e) -!%f'
+zstyle ':completion:*:*:*:*:descriptions' format '%F{blue}%B-- %D %d --%b%f'
+zstyle ':completion:*:*:*:*:messages'     format ' %F{yellow} -- %d --%f'
+zstyle ':completion:*:*:*:*:warnings'     format ' %F{magenta}-- no matches found --%f'
 zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 
-#-------------------------------------------------------------------------------
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 
 zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
@@ -252,10 +252,10 @@ zstyle ':completion:*:*:mocp:*' file-patterns '*.(wav|WAV|mp3|MP3|ogg|OGG|flac):
 zstyle ':completion:*:expand:*' tag-order all-expansions
 zstyle ':completion:*:history-words' list false
 
-# recent (as of Dec 2007) zsh versions are able to provide descriptions
-# for commands (read: 1st word in the line) that it will list for the user
-# to choose from. The following disables that, because it's not exactly fast.
-zstyle ':completion:*:-command-:*:' verbose false
+# # recent (as of Dec 2007) zsh versions are able to provide descriptions
+# # for commands (read: 1st word in the line) that it will list for the user
+# # to choose from. The following disables that, because it's not exactly fast.
+# zstyle ':completion:*:-command-:*:' verbose false
 
 # define files to ignore for zcompile
 zstyle ':completion:*:*:zcompile:*' ignored-patterns '(*~|*.zwc)'
