@@ -641,20 +641,21 @@ require('packer').startup(function()
       end
    }
 
-   -- Подсветка синтаксисов для разных языков.
-   use { 'sheerun/vim-polyglot',
-      setup = function()  -- run before plugin load
-         -- This variable should be declared before polyglot is loaded!
-         vim.g.polyglot_disabled = {
-            'sensible',
-            'autoindent', -- use https://github.com/tpope/vim-sleuth instead
-            -- 'help',  -- because it force set 'expandtab'
-            -- 'markdown',
-            -- 'gitignore',
-            -- 'txt',
-         }
-      end
-   }
+   -- -- Подсветка синтаксисов для разных языков.
+   -- use { 'sheerun/vim-polyglot',
+   --    setup = function()  -- run before plugin load
+   --       -- This variable should be declared before polyglot is loaded!
+   --       vim.g.polyglot_disabled = {
+   --          'sensible',
+   --          'autoindent', -- use https://github.com/tpope/vim-sleuth instead
+   --          'help',  -- because it force set 'expandtab'
+   --          'norg',
+   --          -- 'markdown',
+   --          -- 'gitignore',
+   --          -- 'txt',
+   --       }
+   --    end
+   -- }
 
    use { 'Neui/cmakecache-syntax.vim', as = 'syntax-cmakecache' }
    -- use { 'zinit-zsh/zinit-vim-syntax', ft = 'zsh' } -- zinit syntaxis
