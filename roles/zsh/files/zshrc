@@ -205,6 +205,8 @@ github_completion exa 'https://github.com/ogham/exa/blob/master/completions/zsh/
 github_completion rg 'https://github.com/BurntSushi/ripgrep/blob/master/complete/_rg'
 github_completion vifm 'https://github.com/vifm/vifm/blob/master/data/shell-completion/zsh/_vifm'
 
+znap fpath _gh 'gh completion -s zsh'
+
 github_completion cppman 'https://github.com/aitjcize/cppman/blob/master/misc/completions/cppman.zsh'
 
 
