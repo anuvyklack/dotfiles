@@ -754,7 +754,7 @@ require('packer').startup(function()
    --    end
    -- }
 
-   use { 'vhyrro/neorg',
+   use { 'nvim-neorg/neorg',
       requires = "nvim-lua/plenary.nvim",
       after = "treesitter",
       config = function() require('plugins_config/neorg') end

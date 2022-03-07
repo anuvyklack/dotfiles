@@ -20,4 +20,5 @@ local function set_ft_query(ft, type)
    end
 end
 
-set_ft_query("cpp", "folds")
+set_ft_query('cpp', 'folds')
+set_ft_query('norg', 'folds')

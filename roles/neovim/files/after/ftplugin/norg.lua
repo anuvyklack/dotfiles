@@ -4,6 +4,7 @@ vim.bo.tabstop     = 2
 vim.bo.softtabstop = 2
 vim.bo.shiftwidth  = 2
 
+vim.wo.foldminlines = 2    -- minimum lines required to create fold
 vim.wo.foldmethod = 'expr' -- use treesitter base folding
 
 local pretty_fold_available, pretty_fold = pcall(require, 'pretty-fold')
@@ -59,8 +60,8 @@ if cmp_available then
                -- concatenates the string
                -- local max = 50
                -- if string.len(word) >= max then
-               -- 	local before = string.sub(word, 1, math.floor((max - 3) / 2))
-               -- 	word = before .. "..."
+               --    local before = string.sub(word, 1, math.floor((max - 3) / 2))
+               --    word = before .. "..."
                -- end
 
                if entry.completion_item.insertTextFormat == types.lsp.InsertTextFormat.Snippet
