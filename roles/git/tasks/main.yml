@@ -1,13 +1,12 @@
 ---
 
-- name: Install git and tig (apt)
+- name: Install git (apt)
   become: yes
   apt:
     pkg:
       - git
-      - tig
+      # - tig
     state: present
-    # force_apt_get: yes  # Force usage of apt-get instead of aptitude
     update_cache: yes
     cache_valid_time: 3600  # One hour
   when: ansible_pkg_mgr == 'apt'
@@ -24,10 +23,11 @@
     cmd: mv 'git' 'git.original'
     chdir: "{{ xdg_config_home }}"
     creates: 'git.original'
-  when: git.stat.exists and
-        not git.stat.islnk  # When ~/.config/git is not symlink
+  when:
+    - git.stat.exists
+    - not git.stat.islnk  # When ~/.config/git is not symlink
 
-- name: Ensure ~/.config dir exists
+- name: "Ensure {{ xdg_config_home }} dir exists"
   file:
     path: "{{ xdg_config_home }}"
     state: directory
