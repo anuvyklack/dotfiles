@@ -1,7 +1,5 @@
 local g = vim.g
 
-g.nvim_tree_quit_on_open = 0 -- Closes the tree when you open a file.
-
 -- Display indent markers when folders are open.
 g.nvim_tree_indent_markers = 1
 
@@ -16,11 +14,6 @@ g.nvim_tree_add_trailing = 0
 
 -- Compact folders that only contain a single folder into one node in the file tree.
 g.nvim_tree_group_empty = 1
-
-g.nvim_tree_window_picker_exclude = {
-  filetype = { 'packer', 'qf' },
-  buftype = { 'terminal' },
-}
 
 -- List of filenames that gets highlighted with NvimTreeSpecialFile
 g.nvim_tree_special_files = {
@@ -109,8 +102,9 @@ require('nvim-tree').setup {
       icons = { hint = "", info = "", warning = "", error = "" }
    },
 
-   update_cwd = true, -- Updates the root directory of the tree on `DirChanged`
-                      -- (when your run `:cd` usually).
+   -- Updates the root directory of the tree on `DirChanged` (when your run
+   -- `:cd` usually).
+   update_cwd = true,
 
    -- Update the focused file on `BufEnter`, un-collapses the folders
    -- recursively until it finds the file.
