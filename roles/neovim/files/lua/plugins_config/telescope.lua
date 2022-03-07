@@ -79,12 +79,17 @@ telescope.setup {
       scroll_strategy = 'limit',  -- or 'cycle'
       layout_strategy = 'flex', -- 'flex', 'horizontal', 'vertical',
       layout_config = {
+         flex = {
+            flip_columns = 180,
+         },
          horizontal = {
+            width = 0.85,
             mirror = false,
             prompt_position = 'top',
-            preview_width = 82,
+            -- preview_width = 82,
          },
          vertical = {
+            -- width = 0.8,
             -- mirror = true,
             prompt_position = 'top',
             preview_height = 0.5,
