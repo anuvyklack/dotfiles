@@ -10,6 +10,7 @@
       - ncurses-term     # true color support
       - jq               # json
       - transmission-cli # torrent
+      - bfs              # https://github.com/tavianator/bfs
       - ffmpegthumbnailer
       - antiword         # doc
       # - catdoc           # doc
