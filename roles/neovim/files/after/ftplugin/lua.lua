@@ -4,12 +4,26 @@ vim.bo.softtabstop = 3
 vim.bo.shiftwidth  = 3
 vim.wo.foldmethod  = 'expr'
 
--- require('pretty-fold').ft_setup('lua', {fill_char = '*'})
+local pretty_fold_available, pretty_fold = pcall(require, 'pretty-fold')
+if pretty_fold_available then
+   pretty_fold.ft_setup('lua', {
+      process_comment_signs = false ,
+      matchup_patterns = {
+         { '^%s*do$', 'end' }, -- `do ... end` blocks
+         { '^%s*if', 'end' },  -- if
+         { '^%s*for%s', 'end' }, -- for
+         { 'function%s*%(', 'end' }, -- 'function( or 'function (''
+         { '{', '}' },
+         { '%(', ')' }, -- % to escape lua pattern char
+         { '%[', ']' }, -- % to escape lua pattern char
+      }
+   })
+end
 
 -- Keybindings -----------------------------------------------------------------
 
-require('util').keymap.set(
-   {'n','v'}, 'gK', 'K', {desc = 'Show :help', buffer = true})
+-- require('util').keymap.set({'n','v'}, 'gK', 'K', {desc = 'Show :help', buffer = true})
+vim.keymap.set({'n','v'}, 'gK', 'K', {desc = 'Show :help', buffer = true})
 
 --------------------------------------------------------------------------------
 
@@ -30,6 +44,6 @@ vim.bo.keywordprg = ":help"
 
 -- The same as 'setlocal path+='
 local path = vim.opt_local.path
-path:append( vim.fn.stdpath("config") .. "/lua")
+path:append( vim.fn.stdpath("config") .. "/lua" )
 
 --------------------------------------------------------------------------------

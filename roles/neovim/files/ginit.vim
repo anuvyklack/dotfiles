@@ -112,3 +112,5 @@ elseif exists('g:fvim_loaded')
 " "}}}
 
 endif
+
+" vim: fdm=marker

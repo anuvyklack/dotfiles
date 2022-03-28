@@ -72,9 +72,9 @@ cmp.setup {
    --   :help cmp-config.sources
    --   :help cmp-config.sources[n].group_index
    sources = cmp.config.sources({
+      { name = 'path' },
       { name = 'nvim_lsp' },
       { name = 'luasnip' },
-      { name = 'path' },
       { name = 'nvim_lua' }, -- Neovim's Lua runtime API such 'vim.lsp.*'
    },{
       { name = 'buffer',
@@ -83,7 +83,10 @@ cmp.setup {
               return api.nvim_list_bufs()
            end
         },
-      }
+      },
+      -- { name = "dictionary",
+      --   keyword_length = 2,
+      -- },
    }),
 
    completion = {
@@ -154,6 +157,17 @@ cmp.setup.cmdline(':', {
       },
    }
 })
+
+-- require('cmp_dictionary').setup({
+--     dic = {
+--         ["norg,text,markdown"] = { vim.fn.stdpath('config')..'/dict/ru' },
+--     },
+--     -- The following are default values, so you don't need to write them if you don't want to change them
+--     -- exact = 2,
+--     -- first_case_insensitive = false,
+--     async = false,
+--     -- capacity = 5,
+-- })
 
 local available_autopairs, autopairs_cmp = pcall(require, 'nvim-autopairs.completion.cmp')
 if available_autopairs then

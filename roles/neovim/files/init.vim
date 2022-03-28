@@ -15,6 +15,7 @@ endif
 
 " set verbose=1
 
+" https://github.com/lewis6991/impatient.nvim
 lua require('impatient')
 
 " General Config                                                       {{{
@@ -119,10 +120,12 @@ endif
 " Indentation                                                          {{{
 " ========================================================================
 
-
 set autoindent      " Use the current indentation when creating a new line
                     " in Insert mode, both through normal Enter or o/O.
-set smartindent     " Включить “умную” расстановку отступов.
+
+ set smartindent    " does the right thing (mostly) in programs
+ set cindent        " stricter rules for C programs
+
 set smarttab        " “Умная” расстановка отступов.
 set expandtab       " Заменять табуляцию пробелами.
 set tabstop=4       " Количество пробелов в одном символе табуляции.
@@ -222,8 +225,8 @@ set spelllang=ru_ru,en_us
 
 " https://github.com/tpope/vim-markdown
 let g:markdown_fenced_languages = [
-      \ 'lua', 'vim', 'shell=sh', 'bash=sh', 'cpp', 'python', 'json', 'html'
-      \ ]
+    \ 'lua', 'vim', 'shell=sh', 'bash=sh', 'cpp', 'python', 'json', 'html'
+    \ ]
 let g:markdown_minlines = 100   " Syntax highlight is synchronized in 100 lines.
 
 " let g:markdown_folding = 1
@@ -297,25 +300,25 @@ set splitright
 " set wildmenu      " Enable ctrl-n and ctrl-p to scroll through matches.
 "
 " filetype plugin indent on
-"         " Is a short form of these commands:
-"         "
-"         "     filetype on
-"         "     filetype plugin on
-"         "     filetype indent on
-"         "
-"         " The first command turns on filetype detection for Vim to help set
-"         " syntax highlighting and other options. The plugin part will load
-"         " plugins for specific filetype if they exist. The last bit will
-"         " load indent file for specific filetype if they exist too.
-"         "
-"         " For example, if you want to activate certain plugins for only
-"         " Python language, then you can create a file
-"         " ~/.vim/ftplugin/python.vim. Put all the plugins and commands you
-"         " want specifically for Python inside that file.
-"         "
-"         " A good practice is to separate the indent configuration inside
-"         " another file (~/.vim/indent/python.vim).  However, I usually just
-"         " put the indents inside the plugin file.
+"       " Is a short form of these commands:
+"       "
+"       "     filetype on
+"       "     filetype plugin on
+"       "     filetype indent on
+"       "
+"       " The first command turns on filetype detection for Vim to help
+"       " set syntax highlighting and other options. The plugin part will
+"       " load plugins for specific filetype if they exist. The last bit
+"       " will load indent file for specific filetype if they exist too.
+"       "
+"       " For example, if you want to activate certain plugins for only
+"       " Python language, then you can create a file
+"       " ~/.vim/ftplugin/python.vim. Put all the plugins and commands you
+"       " want specifically for Python inside that file.
+"       "
+"       " A good practice is to separate the indent configuration inside
+"       " another file (~/.vim/indent/python.vim).  However, I usually
+"       " just put the indents inside the plugin file.
 
 " ---------------------------------------------------------------------}}}
 
@@ -592,6 +595,5 @@ endf "}}}
 "     set winwidth=80
 "     wincmd =
 " endfunction
-
 
 " vim: fdm=marker number tw=76 cc=+1

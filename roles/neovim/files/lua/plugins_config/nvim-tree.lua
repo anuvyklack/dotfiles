@@ -1,81 +1,83 @@
-local g = vim.g
+-- Settings via global variables.
+do
+   local g = vim.g
 
--- Display indent markers when folders are open.
-g.nvim_tree_indent_markers = 1
+   -- Display indent markers when folders are open.
+   g.nvim_tree_indent_markers = 1
 
--- Highlight changed git files.
-g.nvim_tree_git_hl = 0
+   -- Highlight changed git files.
+   g.nvim_tree_git_hl = 0
 
--- See :help filename-modifiers for more options.
-g.nvim_tree_root_folder_modifier = ':~'
+   -- See :help filename-modifiers for more options.
+   g.nvim_tree_root_folder_modifier = ':~'
 
--- Append a trailing slash to folder names.
-g.nvim_tree_add_trailing = 0
+   -- Append a trailing slash to folder names.
+   g.nvim_tree_add_trailing = 0
 
--- Compact folders that only contain a single folder into one node in the file tree.
-g.nvim_tree_group_empty = 1
+   -- Compact folders that only contain a single folder into one node in the file tree.
+   g.nvim_tree_group_empty = 1
 
--- List of filenames that gets highlighted with NvimTreeSpecialFile
-g.nvim_tree_special_files = {
-    'README', 'README.md', 'Makefile', 'MAKEFILE', 'CMakeLists.txt'
-}
-
--- Used as a separator between symlinks' source and target.
-g.nvim_tree_symlink_arrow = ' -> '
-
--- Will change cwd of nvim-tree to that of new buffer's when opening nvim-tree.
-g.nvim_tree_respect_buf_cwd = 1
-
-g.nvim_tree_show_icons = {
-   git = 0,
-   folders = 1,
-   files = 1,
-   folder_arrows = 1,
-}
-
---   diff
---   diff added
---   diff ignored
---   diff modified
---   diff removed
---   diff renamed
-
---    
--- 
---  
---  
--- 
-
-g.nvim_tree_icons = {
-   default = '',
-   symlink = '',
-   git = {
-      unstaged  = "•", --   ✗  
-      staged    = "", -- ✓   ﯂  
-      unmerged  = "",
-      renamed   = "", --  
-      untracked = "★",
-      deleted   = "",
-      ignored   = "" --   ◌ 
-   },
-   folder = {
-      arrow_open   = "", --   
-      arrow_closed = "", --   
-      default      = "",
-      open         = "",
-      empty        = "",
-      empty_open   = "",
-      symlink      = "",
-      symlink_open = "",
-   },
-   lsp = {
-      hint    = "",
-      info    = "",
-      warning = "",
-      error   = "",
+   -- List of filenames that gets highlighted with NvimTreeSpecialFile
+   g.nvim_tree_special_files = {
+       'README', 'README.md', 'Makefile', 'MAKEFILE', 'CMakeLists.txt'
    }
-}
 
+   -- Used as a separator between symlinks' source and target.
+   g.nvim_tree_symlink_arrow = ' -> '
+
+   -- Will change cwd of nvim-tree to that of new buffer's when opening nvim-tree.
+   g.nvim_tree_respect_buf_cwd = 1
+
+   g.nvim_tree_show_icons = {
+      git = 0,
+      folders = 1,
+      files = 1,
+      folder_arrows = 1,
+   }
+
+   --   diff
+   --   diff added
+   --   diff ignored
+   --   diff modified
+   --   diff removed
+   --   diff renamed
+
+   --    
+   -- 
+   --  
+   --  
+   -- 
+
+   g.nvim_tree_icons = {
+      default = '',
+      symlink = '',
+      git = {
+         unstaged  = "•", --   ✗  
+         staged    = "", -- ✓   ﯂  
+         unmerged  = "",
+         renamed   = "", --  
+         untracked = "★",
+         deleted   = "",
+         ignored   = "" --   ◌ 
+      },
+      folder = {
+         arrow_open   = "", --   
+         arrow_closed = "", --   
+         default      = "",
+         open         = "",
+         empty        = "",
+         empty_open   = "",
+         symlink      = "",
+         symlink_open = "",
+      },
+      lsp = {
+         hint    = "",
+         info    = "",
+         warning = "",
+         error   = "",
+      }
+   }
+end
 
 local tree_cb = require('nvim-tree.config').nvim_tree_callback
 
@@ -87,9 +89,6 @@ require('nvim-tree').setup {
    -- Will not open on setup if the filetype is in this list.
    ignore_ft_on_setup = {},
 
-   -- Closes neovim automatically when the tree is the last **WINDOW** in the view.
-   auto_close = true,
-
    -- Opens the tree when changing/opening a new tab if the tree wasn't
    -- previously opened.
    open_on_tab = false,
@@ -99,7 +98,12 @@ require('nvim-tree').setup {
 
    diagnostics = {  -- Show lsp diagnostics in the signcolumn.
       enable = false,
-      icons = { hint = "", info = "", warning = "", error = "" }
+      icons = {
+         hint    = "",
+         info    = "",
+         warning = "",
+         error   = ""
+      }
    },
 
    -- Updates the root directory of the tree on `DirChanged` (when your run
@@ -161,3 +165,14 @@ require('nvim-tree').setup {
 }
 
 require('keybindings').nvim_tree()
+
+-- vim.cmd [[
+-- autocmd BufEnter * ++nested if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif
+-- ]]
+
+vim.api.nvim_create_autocmd('BufEnter', {
+   nested = true,
+   command = [[
+      if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif
+   ]]
+})

@@ -51,7 +51,6 @@ require('neorg').setup({
                   icon = "",
                },
             },
-
             list = {
                enabled = false,
                level_1 = {
@@ -93,7 +92,6 @@ require('neorg').setup({
                --    query = "(unordered_list6_prefix) @icon",
                -- },
             },
-
             definition = { enabled = false },
             delimiter = { enabled = false },
          }
@@ -121,4 +119,4 @@ require('neorg').setup({
    },
 })
 
--- vim: fdc=1
+-- vim: fdc=1 fml=1

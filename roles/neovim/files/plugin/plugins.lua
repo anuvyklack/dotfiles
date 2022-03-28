@@ -34,12 +34,15 @@ end
 
 require('packer').init { --{{{
    display = {
-      -- open_cmd = '80vnew [packer]',  -- set the width of the packer split
+      -- open_cmd = '90vnew [packer]',  -- set the width of the packer split
       open_fn = function()
-         return require("packer.util").float({ border = "rounded" })
-         -- return require("packer.util").float()
+         return require("packer.util").float({
+            border = "rounded",
+            -- width  = math.ceil(vim.o.columns * 0.7),
+            height = math.ceil(vim.o.lines * 0.8)
+         })
       end,
-      working_sym = '', --      plugin being installed/updated
+      working_sym = '', --   plugin being installed/updated
       error_sym = '',   -- plugin with an error in installation/updating
       done_sym = '',    --   plugin which has completed installation/updating
       --       ﯇ 
@@ -271,6 +274,7 @@ require('packer').startup(function()
          'hrsh7th/cmp-buffer',
          'hrsh7th/cmp-path',
          'hrsh7th/cmp-cmdline',
+         -- 'uga-rosa/cmp-dictionary'
       }
    }
 
@@ -312,34 +316,43 @@ require('packer').startup(function()
    -- use { "rcarriga/nvim-dap-ui",  as = 'dap-ui' }
    ----------------------------------------------------------------------}}}
 
-   ---------------------------- Text editing -------------------------------
+   --                          Text editing                              {{{
+   -------------------------------------------------------------------------
 
-   use 'matze/vim-move'       -- перемещение строк и частей строк
+   -- use 'matze/vim-move'       -- перемещение строк и частей строк
+   use { 'booperlv/nvim-gomove', as = 'gomove', --{{{
+      config = function() require("gomove").setup({
+         -- Whether to not to move past last column when moving blocks
+         -- horizontally. (true/false)
+         move_past_end_col = true,
+      }) end
+   } --}}}
+
    use 'wellle/targets.vim'   -- plugin that provides additional text objects
    use 'tpope/vim-unimpaired' -- Different bidirectional motions: switch
                               -- buffers, add blank lines, etc.
    use 'junegunn/vim-easy-align'
 
-   -- Comments {{{
+    -- Comments {{{
 
-   -- Also define `gc` - comment textobject.
-   -- Doesn't work in visual mode. Works in operator mode (:help mapmode-o).
-   use { 'echasnovski/mini.nvim',
-      config = function()
-         require('mini.comment').setup{}
-         --
-         which_key{
-            gc = { name = 'Comment' },
-            gcc = 'Comment out current line',
-            ['gc*'] = "which_key_ignore",
-            ['gc#'] = "which_key_ignore",
-         }
-      end
-   }
+    -- Also define `gc` - comment textobject.
+    -- Doesn't work in visual mode. Works in operator mode (:help mapmode-o).
+    use { 'echasnovski/mini.nvim', --{{{
+       config = function()
+          require('mini.comment').setup{}
+          --
+          require('which-key').register {
+             gc = { name = 'Comment' },
+             gcc = 'Comment out current line',
+             ['gc*'] = "which_key_ignore",
+             ['gc#'] = "which_key_ignore",
+          }
+       end
+    } --}}}
 
-   -- use 'tomtom/tcomment_vim'
+    -- use 'tomtom/tcomment_vim'
 
-   -- }}}
+    -- }}}
 
    -- Surround {{{
 
@@ -361,60 +374,64 @@ require('packer').startup(function()
    -- }}}
 
    -- Makes *-operator works the way it should by default.
-   use { 'haya14busa/vim-asterisk', as = 'asterisk',
+   use { 'haya14busa/vim-asterisk', as = 'asterisk', --{{{
       config = function()
          vim.g['asterisk#keeppos'] = 0 -- Keep cursor position inside word between jumps.
          require('keybindings').asterisks()
       end
-   }
+   } --}}}
 
    -- use { 'kevinhwang91/nvim-hlslens', as = 'hlslens',
    --    config = function() require('plugins_config/hlslens') end
    -- }
 
    -- Подсвечивать и удалять висящие пробелы в конце строк
-   use { 'ntpeters/vim-better-whitespace', as = 'better-whitespace',
+   use { 'ntpeters/vim-better-whitespace', as = 'better-whitespace', --{{{
       config = function()
          -- vim.cmd("exe 'source'..stdpath('config')..'/lua/plugins_config/better-whitespace.vim'")
          vim.cmd "source ~/.config/nvim/lua/plugins_config/better-whitespace.vim"
       end
-   }
+   } --}}}
 
    use { 'AndrewRadev/splitjoin.vim', as = 'splitjoin' }
 
    -- -- The same as 'splitjoin', but in lua and may be some day will using treesitter.
-   -- use { 'AckslD/nvim-revJ.lua',
+   -- use { 'AckslD/nvim-revJ.lua', --{{{
    --    requires = 'wellle/targets.vim',
-   --    config = function()
-   --       require("revj").setup{
-   --          keymaps = {
-   --              operator = '<Leader>J', -- for operator (+motion)
-   --              line = '<Leader>j', -- for formatting current line
-   --              visual = '<Leader>j', -- for formatting visual selection
-   --          },
-   --       }
-   --    end
-   -- }
+   --    config = function() require("revj").setup{
+   --       keymaps = {
+   --           operator = '<Leader>J', -- for operator (+motion)
+   --           line = '<Leader>j', -- for formatting current line
+   --           visual = '<Leader>j', -- for formatting visual selection
+   --       },
+   --    } end
+   -- } --}}}
 
    -- Multiple cursors
    -- https://github.com/mg979/vim-visual-multi
    use { 'mg979/vim-visual-multi', as = 'multiple-cursors'}
 
-   ----------------------------- Clipboard ---------------------------------
+   ----------------------------------------------------------------------}}}
 
-   use { 'AckslD/nvim-neoclip.lua',
+   --                      Clipboard and registers                       {{{
+   -------------------------------------------------------------------------
+
+   use { 'AckslD/nvim-neoclip.lua', --{{{
       requires = {
          { 'tami5/sqlite.lua', module = 'sqlite' },
       },
-      config = function()
-         require('neoclip').setup()
-      end,
-   }
+      config = function() require('neoclip').setup() end
+   } --}}}
 
-   --------------------------- Visual tweaks -------------------------------
+   -- use 'tversteeg/registers.nvim'
 
-   -- Подсвечивает все такие же слова как и слово под курсором.
-   use { 'RRethy/vim-illuminate' }
+   ----------------------------------------------------------------------}}}
+
+   --                          Visual tweaks                             {{{
+   -------------------------------------------------------------------------
+
+   -- Highlight all other words the same as under the cursor.
+   use 'RRethy/vim-illuminate'
 
    -- Indentation guides {{{
    use { 'lukas-reineke/indent-blankline.nvim',
@@ -422,30 +439,31 @@ require('packer').startup(function()
          'python',
          -- 'lua'
       },
-      config = function()
-         require("indent_blankline").setup {
-            filetype = {
-               'python',
-               -- 'lua'
-            },
-            use_treesitter = true,
-            show_current_context = true,
-            show_current_context_start = false,
-            show_end_of_line = true,
-            context_highlight_list = {'Error', 'Warning'},
-            show_first_indent_level = false,
-            max_indent_increase = 1,
-            show_trailing_blankline_indent = false,
-         }
-      end
+      config = function() require("indent_blankline").setup({
+         filetype = {
+            'python',
+            -- 'lua'
+         },
+         use_treesitter = true,
+         show_current_context = true,
+         show_current_context_start = false,
+         show_end_of_line = true,
+         context_highlight_list = {'Error', 'Warning'},
+         show_first_indent_level = false,
+         max_indent_increase = 1,
+         show_trailing_blankline_indent = false,
+      }) end
    }
    --}}}
 
-   -------------------- Windows and buffers managment ----------------------
+   ----------------------------------------------------------------------}}}
+
+   --                   Windows and buffers managment                    {{{
+   -------------------------------------------------------------------------
 
    -- use 'matbme/JABS.nvim'
 
-   use { 'jlanzarotta/bufexplorer',
+   use { 'jlanzarotta/bufexplorer', --{{{
       -- requires = 'ryanoasis/vim-devicons', -- Install to enable devicons.
       config = function()
          vim.g.bufExplorerDisableDefaultKeyMapping = 1 -- Disable default mappings.
@@ -453,35 +471,73 @@ require('packer').startup(function()
          vim.g.bufExplorerShowNoName = 1  -- Show "No Name" buffers.
          vim.g.bufExplorerShowRelativePath = 1 -- Show relative paths.
       end
-   }
+   } --}}}
 
    -- -- Broken friendship with barbar-tabline
-   -- use { 'vim-ctrlspace/vim-ctrlspace',
+   -- use { 'vim-ctrlspace/vim-ctrlspace', --{{{
    --    config = function ()
    --       vim.g.CtrlSpaceDefaultMappingKey = "<C-space> "
    --    end
-   -- }
+   -- } --}}}
 
    use { 'roxma/vim-window-resize-easy', as = 'window-resize-easy' }
 
-   -- use { 'simeji/winresizer',
+   -- use { 'simeji/winresizer', --{{{
    --   config = function()
-   --     vim.g.winresizer_vert_resize  = 1
-   --     vim.g.winresizer_horiz_resize = 1
-   --     vim.g.winresizer_start_key = '<leader>w'
-   --     -- require("util").set_keymap('n', '<leader>w', 'Window resize mode', '<cmd>WinResizerStartResize<CR>', {noremap = true, silent = true})
+   --      vim.g.winresizer_vert_resize  = 1
+   --      vim.g.winresizer_horiz_resize = 1
+   --      -- vim.g.winresizer_start_key = '<leader>w'
+   --      vim.keymap.set('n', '<leader>w', '<cmd>WinResizerStartResize<CR>', { desc = 'Window resize mode', silent = true })
    --   end
-   -- }
+   -- } --}}}
 
-   ----------------------------- Movements ---------------------------------
+   -- use{ 'mrjones2014/smart-splits.nvim', as = 'smart-splits', --{{{
+   --    config = function()
+   --       -- resizing splits
+   --       vim.keymap.set('n', '<A-h>', require('smart-splits').resize_left)
+   --       vim.keymap.set('n', '<A-j>', require('smart-splits').resize_down)
+   --       vim.keymap.set('n', '<A-k>', require('smart-splits').resize_up)
+   --       vim.keymap.set('n', '<A-l>', require('smart-splits').resize_right)
+   --       -- moving between splits
+   --       vim.keymap.set('n', '<C-h>', require('smart-splits').move_cursor_left)
+   --       vim.keymap.set('n', '<C-j>', require('smart-splits').move_cursor_down)
+   --       vim.keymap.set('n', '<C-k>', require('smart-splits').move_cursor_up)
+   --       vim.keymap.set('n', '<C-l>', require('smart-splits').move_cursor_right)
+   --    end
+   -- } --}}}
 
-   -- use { 'easymotion/vim-easymotion', as = 'easymotion',
+   -- use { 'beauwilliams/focus.nvim', --{{{
+   --    -- cmd = { "FocusSplitNicely", "FocusSplitCycle" }, module = "focus",
+   --    config = function() require('focus').setup {
+   --       -- Prevents focus automatically resizing windows based on configured
+   --       -- excluded filetypes or buftypes.
+   --       excluded_filetypes = { 'toggleterm', 'qf' },
+   --       excluded_buftypes = {
+   --          'quickfix', 'nofile', 'prompt', 'popup', -- Default, should always be.
+   --       },
+   --       -- Enable resizing for excluded filetypes using forced_filetypes.
+   --       forced_filetypes = {}, -- 'dan_repl'
+   --       --
+   --       -- Displays line numbers in the focussed window only and
+   --       -- not display in unfocussed windows.
+   --       number = false,
+   --       cursorline = false,
+   --       cursorcolumn = false
+   --    } end
+   -- } --}}}
+
+   ----------------------------------------------------------------------}}}
+
+   --                            Movements                               {{{
+   -------------------------------------------------------------------------
+
+   -- use { 'easymotion/vim-easymotion', as = 'easymotion', --{{{
    --    config = function()
    --       vim.cmd("source ~/.config/nvim/lua/plugins_config/easymotion.vim")
    --    end
-   -- }
+   -- } --}}}
 
-   use { 'phaazon/hop.nvim', as = 'easymotion-hop',
+   use { 'phaazon/hop.nvim', as = 'easymotion-hop', --{{{
       config = function()
          require'hop'.setup {
             winblend = 30,
@@ -492,14 +548,14 @@ require('packer').startup(function()
          }
          require('keybindings').hop()
       end
-   }
+   } --}}}
 
    -- use {'ggandor/lightspeed.nvim', }
 
    --                          Smooth scroll                             {{{
    -------------------------------------------------------------------------
 
-   -- use { 'psliwka/vim-smoothie',
+   -- use { 'psliwka/vim-smoothie', --{{{
    --    config = function()
    --       -- Time (in milliseconds) between subseqent screen/cursor postion
    --       -- updates.  Lower value produces smoother animation.
@@ -510,7 +566,7 @@ require('packer').startup(function()
    --       -- slower (and easier to follow) animation.
    --       vim.g.smoothie_base_speed = 7
    --    end
-   -- }
+   -- } --}}}
 
    use { 'karb94/neoscroll.nvim',
       config = function() require('plugins_config/neoscroll') end
@@ -519,27 +575,52 @@ require('packer').startup(function()
    ----------------------------------------------------------------------}}}
 
    -- -- Clever-f
-   -- use { 'rhysd/clever-f.vim',
+   -- use { 'rhysd/clever-f.vim', --{{{
    --    config = function()
    --       vim.g.clever_f_ignore_case = 1
    --       vim.g.clever_f_smart_case = 1
    --       vim.g.clever_f_show_prompt = 1
    --       vim.g.clever_f_chars_match_any_signs = ';'
    --    end
-   -- }
+   -- } --}}}
 
    -- use 'chaoren/vim-wordmotion'  -- More useful word motions for Vim
 
+   ----------------------------------------------------------------------}}}
+
+   --                           IDE features                             {{{
    -------------------------------------------------------------------------
 
-   ---------------------------- IDE features -------------------------------
+   -- Litee {{{
 
-   use { 'filipdutescu/renamer.nvim', as = 'renamer', branch = 'master',
-      requires = 'nvim-lua/plenary.nvim',
-      config = function()
-         require('renamer').setup {}
-      end
+   use { 'ldelossa/litee.nvim',
+      config = function() require('litee.lib').setup({
+         tree = {
+            icon_set = "codicons"
+         },
+         -- panel = {
+         --    orientation = 'right',
+         --    panel_size  = 30
+         -- }
+      }) end
    }
+
+   use { 'ldelossa/litee-calltree.nvim',
+      config = function() require('litee.calltree').setup() end
+   }
+
+   -- use { 'ldelossa/litee-symboltree.nvim',
+   --    config = function() require('litee.symboltree').setup({
+   --       icon_set = "codicons",
+   --       -- on_open = 'panel', -- "panel" or "popout"
+   --    }) end
+   -- }
+
+   -- use { 'ldelossa/litee-bookmarks.nvim',
+   --    config = function() require('litee.bookmarks').setup({}) end
+   -- }
+
+   -- }}}
 
    -- use 'tpope/vim-apathy'  -- Make 'gf' keybinding work in different filetypes.
    --                         -- For instructions of what it can do more look:
@@ -552,19 +633,17 @@ require('packer').startup(function()
       cmd = { 'Dispatch', 'Make', 'Focus', 'Start' }
    }
 
-   -- use { 'lewis6991/gitsigns.nvim',
+   -- use { 'lewis6991/gitsigns.nvim', --{{{
    --    requires = 'nvim-lua/plenary.nvim' ,
    --    config = function()
    --       require('gitsigns').setup()
    --    end
-   -- }
+   -- } --}}}
 
-   use { 'TimUntersberger/neogit',
+   use { 'TimUntersberger/neogit', --{{{
       requires = 'nvim-lua/plenary.nvim',
-      config = function()
-         require('neogit').setup{}
-      end
-   }
+      config = function() require('neogit').setup{} end
+   } --}}}
 
    ----------------------------------------------------------------------}}}
 
@@ -599,39 +678,60 @@ require('packer').startup(function()
    -- }
    -------------------------------------------------------------------------
 
-   ----------------------- Vim additional modules --------------------------
+   --                      Vim additional modules                        {{{
+   -------------------------------------------------------------------------
+
+   use 'yegappan/mru'
 
    -- bufferline / tabline
 
-   use { 'romgrk/barbar.nvim', as = 'barbar-tabline',
+   use { 'romgrk/barbar.nvim', as = 'barbar-tabline', --{{{
       requires = 'kyazdani42/nvim-web-devicons',
       config = function() require('plugins_config/barbar') end
-   }
+   } --}}}
 
-   use { 'anuvyklack/pretty-fold.nvim', as = 'pretty-fold', branch = 'nightly',
-   -- use { '~/Git/my_neovim_plugins/pretty-fold.nvim', as = 'pretty-fold',
+   use { 'stevearc/dressing.nvim', --{{{
+      -- requires = 'MunifTanjim/nui.nvim',
+      config = function() require('dressing').setup {
+         input = {
+            insert_only = false, -- When true, <Esc> will close the modal.
+
+            -- These are passed to nvim_open_win
+            anchor = "NW",
+
+            winblend = 0, -- Window transparency (0-100)
+            winhighlight = 'Normal:Normal,FloatBorder:Grey'
+         },
+         select = {
+            -- Priority list of preferred vim.select implementations
+            backend = { 'builtin', 'nui', 'telescope', 'fzf_lua', 'fzf' },
+         }
+      } end
+   } --}}}
+
+   -- -- Not work in Neovim 0.7 yet.
+   -- use { 'filipdutescu/renamer.nvim', as = 'renamer', branch = 'master', --{{{
+   --    requires = 'nvim-lua/plenary.nvim',
+   --    config = function()
+   --       require('renamer').setup {}
+   --    end
+   -- } --}}}
+
+   use { 'anuvyklack/pretty-fold.nvim', as = 'pretty-fold', branch = 'nightly', -- {{{
+   -- use { '~/code/neovim_plugins/pretty-fold.nvim', as = 'pretty-fold',
       config = function()
          vim.opt.fillchars:append('fold:•')
          require('pretty-fold').setup {
             {
                add_close_pattern = true, -- true, 'last_line' or false
-               matchup_patterns = {
-                  { '^%s*do$', 'end' }, -- `do ... end` blocks
-                  { 'function%s*%(', 'end' }, -- 'function( or 'function (''
-                  { '{', '}' },
-                  { '%(', ')' }, -- % to escape lua pattern char
-                  { '%[', ']' }, -- % to escape lua pattern char
-               }
             },
             -- marker = { comment_signs = 'spaces' },
             marker = { process_comment_signs = 'spaces' },
             expr = { process_comment_signs = false }
          }
-         require('pretty-fold.preview').setup {
-            -- border = 'shadow'
-         }
+         require('pretty-fold.preview').setup()
       end
-   }
+   } --}}}
 
    use { 'sindrets/diffview.nvim',
       requires = 'nvim-lua/plenary.nvim'
@@ -639,92 +739,106 @@ require('packer').startup(function()
 
    -- Marks
    -- use 'kshenoy/vim-signature'  -- display and navigate marks
-   use { 'chentau/marks.nvim',
-      config = function()
-         require'marks'.setup {
-            -- force_write_shada = true,
-            default_mappings = true,
-            -- builtin_marks = { ".", "<", ">", "^", "'" },
-            signs = true,
-            excluded_filetypes = { 'gitcommit' },
-            mappings = {}
-         }
-      end
-   }
+   use { 'chentau/marks.nvim', --{{{
+      config = function() require'marks'.setup {
+         -- force_write_shada = true,
+         default_mappings = true,
+         -- builtin_marks = { ".", "<", ">", "^", "'" },
+         signs = true,
+         excluded_filetypes = { 'gitcommit' },
+         mappings = {}
+      } end
+   } --}}}
 
    -- use { 'akinsho/nvim-bufferline.lua',
    --    requires = 'kyazdani42/nvim-web-devicons',
    --    config = function() require('plugins_config/nvim-bufferline') end
    -- }
 
+   -- Visualize undo tree
    -- -- use 'simnalamburt/vim-mundo'  -- another undo tree visualizer
-   -- use { 'mbbill/undotree',         -- visualize undo tree
+   -- use { 'mbbill/undotree', --{{{
    --    config = function()
    --       vim.g.undotree_HighlightChangedWithSign = 0
    --       vim.g.undotree_WindowLayout = 2
    --    end
-   -- }
+   -- } --}}}
 
    use { 'kevinhwang91/nvim-bqf', as = 'better-quickfix',
       ft = 'qf'
    }
 
-   use { 'https://gitlab.com/yorickpeterse/nvim-pqf', as = 'pretty-quickfix',
-      ft = 'qf',
-      config = function() require('pqf').setup() end
-   }
+   use { 'https://gitlab.com/yorickpeterse/nvim-pqf', as = 'pretty-quickfix', --{{{
+      config = function() require('pqf').setup {
+         -- signs = {
+         --    error = 'E',
+         --    warning = 'W',
+         --    info = 'I',
+         --    hint = 'H'
+         -- }
+      } end
+   } --}}}
 
    -- <leader>? : 40-column cheat sheet
    use { 'anuvyklack/vim-cheat40', as = 'cheat40' } -- my fork
+   -- use { 'sudormrfbin/cheatsheet.nvim', --{{{
+   --    requires = {
+   --       -- { 'nvim-telescope/telescope.nvim', as = 'telescope' },
+   --       'nvim-lua/popup.nvim',
+   --       'nvim-lua/plenary.nvim',
+   --    },
+   --    config = function()
+   --       require("cheatsheet").setup({})
+   --    end
+   -- } --}}}
 
    -- -- TODO Need to rewrite in lua.
-   -- use { 'camspiers/lens.vim',
+   -- use { 'camspiers/lens.vim', --{{{
    --    requires = 'camspiers/animate.vim',
    --    config = function() vim.cmd("source ~/.config/nvim/lua/plugins_config/lens.vim") end
-   -- }
+   -- } --}}}
 
-   use { 'norcalli/nvim-colorizer.lua', as = 'colorizer',
-      ft = {'vim', 'lua', 'conf', 'tmux', 'kitty', 'vifm', 'markdown'},
-      config = function()
-         require'colorizer'.setup {
-            'markdown'
-         }
-      end
-   }
+   use { 'norcalli/nvim-colorizer.lua', as = 'colorizer', --{{{
+      ft = {'vim', 'lua', 'conf', 'tmux', 'kitty', 'vifm', 'markdown', 'zsh'},
+      config = function() require'colorizer'.setup {
+         'markdown'
+      } end
+   } --}}}
 
-   use { 'anuvyklack/help-vsplit.nvim', as = 'help-vsplit',
+   use { 'anuvyklack/help-vsplit.nvim', as = 'help-vsplit', --{{{
    -- use { '~/Git/my_neovim_plugins/help-vsplit.nvim', as = 'help-vsplit',
-      config = function()
-         require('help-vsplit').setup {
-            side = 'left'
-         }
-      end
-   }
+      config = function() require('help-vsplit').setup {
+         always = true,
+         side = 'left'
+      } end
+   } --}}}
 
    -- Execute :StartupTime to get an averaged startup profile.
    use { 'tweekmonster/startuptime.vim', as = 'startuptime',
       cmd = 'StartupTime'
    }
 
-   -------------------------------------------------------------------------
+   ----------------------------------------------------------------------}}}
 
-   ----------------- Syntaxes and programming languages --------------------
+   --                Syntaxes and programming languages                  {{{
+   -------------------------------------------------------------------------
 
    -- Show syntax highlighting attributes of character under cursor.
    use 'vim-scripts/SyntaxAttr.vim'
 
-   -- Automatically adjusts 'shiftwidth' and 'expandtab' heuristically
-   -- based on the current file.
-   use { 'tpope/vim-sleuth',
-      cmd = { 'Sleuth', 'verbose Sleuth' },
-      config = function()
-         vim.g.sleuth_automatic = 0 -- Turn off automatic detection, потому что
-                                    -- думает за меня и думает лишнего.
-      end
-   }
+   -- -- Automatically adjusts 'shiftwidth' and 'expandtab' heuristically
+   -- -- based on the current file.
+   -- use { 'tpope/vim-sleuth', --{{{
+   --    cmd = { 'Sleuth', 'verbose Sleuth' },
+   --    config = function()
+   --       -- Turn off automatic detection, потому что
+   --       -- думает за меня и думает лишнего.
+   --       vim.g.sleuth_automatic = 0
+   --    end
+   -- } --}}}
 
    -- -- Подсветка синтаксисов для разных языков.
-   -- use { 'sheerun/vim-polyglot',
+   -- use { 'sheerun/vim-polyglot', --{{{
    --    setup = function()  -- run before plugin load
    --       -- This variable should be declared before polyglot is loaded!
    --       vim.g.polyglot_disabled = {
@@ -737,7 +851,7 @@ require('packer').startup(function()
    --          -- 'txt',
    --       }
    --    end
-   -- }
+   -- } --}}}
 
    use { 'Neui/cmakecache-syntax.vim', as = 'syntax-cmakecache' }
    -- use { 'zinit-zsh/zinit-vim-syntax', ft = 'zsh' } -- zinit syntaxis
@@ -749,7 +863,7 @@ require('packer').startup(function()
    -- Kitty terminal conf file syntax highlight.
    use { "fladson/vim-kitty", as = 'syntax-kitty-conf' }
 
-   -------------------------------------------------------------------------
+   ----------------------------------------------------------------------}}}
 
    --                           File manager                             {{{
    -------------------------------------------------------------------------
@@ -759,22 +873,22 @@ require('packer').startup(function()
       config = function() require('plugins_config/nvim-tree') end
    }
 
-   -- use { 'elihunter173/dirbuf.nvim',
+   -- use { 'elihunter173/dirbuf.nvim', --{{{
    --    config = function()
    --      require('dirbuf').setup {
    --          hash_padding = 2,
    --          show_hidden = true,
    --      }
    --    end
-   -- }
+   -- } --}}}
 
-   -- use { 'tamago324/lir.nvim', as = 'lir-filemanager',
+   -- use { 'tamago324/lir.nvim', as = 'lir-filemanager', --{{{
    --    requires = {
    --       'nvim-lua/plenary.nvim',
    --       'kyazdani42/nvim-web-devicons',
    --    },
    --    config = function() require('plugins_config/lir') end
-   -- }
+   -- } --}}}
 
    use { 'mcchrish/nnn.vim',
       config = function() require('plugins_config/nnn-vim') end
@@ -786,10 +900,10 @@ require('packer').startup(function()
 
    -- other {{{
 
-   -- use { 'vifm/vifm.vim',
-   --    -- TODO Open issue to packer: help tags not generated automaticaly.
-   --    run = ':helptags ALL',
-   -- }
+   use { 'vifm/vifm.vim',
+      -- TODO Open issue to packer: help tags not generated automaticaly.
+      -- run = ':helptags ALL',
+   }
 
    -- use 'tpope/vim-vinegar'
 
@@ -842,15 +956,13 @@ require('packer').startup(function()
       config = function() require('plugins_config/neorg') end
    }
 
-   ----------------------------------------------------------------------}}}
+--    ----------------------------------------------------------------------}}}
 
    --                         Tmux integration                           {{{
    -------------------------------------------------------------------------
+   use 'tmux-plugins/vim-tmux' -- tmux.conf syntax
 
-   use {
-      'anuvyklack/vim-tmux-navigator',  -- my fork
-      -- 'christoomey/vim-tmux-navigator',  -- original
-
+   use { 'anuvyklack/vim-tmux-navigator', -- my fork
       config = function()
          -- Activate autoupdate on exit.
          vim.g.tmux_navigator_save_on_switch = 0
@@ -859,9 +971,6 @@ require('packer').startup(function()
          vim.g.tmux_navigator_disable_when_zoomed = 1
       end
    }
-
-   -- use 'tmux-plugins/vim-tmux-focus-events'
-   -- use 'tmux-plugins/vim-tmux'
    ----------------------------------------------------------------------}}}
 
    --                              Pandoc                                {{{
@@ -1015,6 +1124,14 @@ require('packer').startup(function()
             end
          }
       end, --}}}
+      -- vim-paper {{{
+      ['vim-paper'] = function()
+         use { 'https://gitlab.com/yorickpeterse/vim-paper.git',
+            config = function()
+               vim.cmd 'colorscheme paper'
+            end
+         }
+      end, --}}}
    }
 
    local theme = 'gruvbox-material-dark'
@@ -1024,21 +1141,18 @@ require('packer').startup(function()
    -- local theme = 'mellow'
    -- local theme = 'moonshine'
    -- local theme = 'srcery'
+   -- local theme = 'vim-paper'
 
-   if color_themes[theme] then
-      color_themes[theme]()
-   end
+   if color_themes[theme] then color_themes[theme]() end
 
-   use { 'folke/lsp-colors.nvim',
-      config = function()
-         require('lsp-colors').setup{
-            Error       = "#db4b4b",
-            Warning     = "#e0af68",
-            Information = "#0db9d7",
-            Hint        = "#10B981"
-         }
-      end
-   }
+   use { 'folke/lsp-colors.nvim', --{{{
+      config = function() require('lsp-colors').setup {
+         Error       = "#db4b4b",
+         Warning     = "#e0af68",
+         Information = "#0db9d7",
+         Hint        = "#10B981"
+      } end
+   } --}}}
    ----------------------------------------------------------------------}}}
 
 end)

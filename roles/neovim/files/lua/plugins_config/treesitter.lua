@@ -8,7 +8,7 @@ local config = {
    ensure_installed = {
       'lua', 'python', 'regex', 'comment', 'query', 'bash',
       'c', 'cpp', 'make', 'cmake', 'json', 'html', 'http', 'ninja', 'fennel',
-      'go', 'latex', 'bibtex', 'rust', 'toml',
+      'go', 'gomod', 'gowork', 'latex', 'bibtex', 'rust', 'toml',
       'markdown',
       -- 'vim',
       -- 'yaml',
@@ -24,7 +24,10 @@ local config = {
        -- also be a list of languages.
        additional_vim_regex_highlighting = false,
    },
-   indent = { enable = true },
+   indent = {
+      enable = true,
+      disable = {"python"}
+   },
    incremental_selection = {
       enable = true,
       keymaps = {
