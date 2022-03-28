@@ -18,7 +18,7 @@ require('lspkind').init({
       -- f1e6:   (plug) Font Awesome 5 Pro Solid
       Interface     = '', --    
 
-      Module        = '', -- 
+      Module        = '󰘦', --  󰘦
       Property      = '', -- 
 
       -- f545:   (ruler) Font Awesome 5 Pro Solid
@@ -42,5 +42,4 @@ require('lspkind').init({
       Operator      = '', -- 
       TypeParameter = '𝙏', -- 𝙏
    },
-
 })

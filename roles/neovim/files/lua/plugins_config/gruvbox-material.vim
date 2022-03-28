@@ -1,17 +1,31 @@
 " Colors {{{
 
-" fg0:        #e2cca9
-" fg1:        #e2cca9
-" red:        #f2594b
-" orange:     #f28534
-" yellow:     #e9b143
-" green:      #b0b846
-" aqua:       #8bba7f
-" blue:       #80aa9e
-" purple:     #d3869b
-" bg_red:     #db4740
-" bg_green:   #b0b846
-" bg_yellow:  #e9b143
+" grey0   #7c6f64
+" grey1   #928374
+" grey2   #a89984
+
+" fg0     #e2cca9
+" red     #f2594b
+" orange  #f28534
+" yellow  #e9b143
+" green   #b0b846
+" aqua    #8bba7f
+" blue    #80aa9e
+" purple  #d3869b
+" bg_red  #db4740
+
+" bg0     #32302f
+" bg1     #3c3836
+" bg2     #3c3836
+" bg3     #504945
+" bg4     #504945
+" bg5     #665c54
+
+" }}}
+" Cursor {{{
+
+hi lCursor guifg=#282828 guibg=#e9b143
+" hi Cursor   ctermfg=235 ctermbg=109 guifg=#282828 guibg=#80aa9e
 
 " }}}
 " Folds {{{
@@ -53,7 +67,17 @@ highlight HopNextKey2  guifg=#e3a84e
 " highlight HopUnmatched guifg=#aaaaaa
 
 " }}}
-" Lsp signature {{{
+" LSP {{{
+
+" highlight! LspReferenceText  guifg=none guibg=#a89984 gui=bold
+" highlight! LspReferenceText  gui=underline
+
+" highlight! LspReferenceText guibg=#423d3a
+" highlight! link LspReferenceWrite LspReferenceText
+" highlight! link LspReferenceRead  LspReferenceText
+
+" }}}
+" LSP signature {{{
 
 " highlight LspSignatureActiveParameter guifg=#ffb912 gui=bold
 highlight! link LspSignatureActiveParameter WarningMsg
@@ -122,10 +146,25 @@ highlight! NeorgUnorderedList3 guifg=#80aa9e
 highlight! NeorgUnorderedList4 guifg=#80aa9e
 highlight! NeorgUnorderedList5 guifg=#80aa9e
 
-" highlight! link NeorgDefinitionTitle Yellow
-" highlight! link NeorgDefinitionTitle YellowBold
-" highlight! link NeorgDefinitionTitle Purple
+" highlight! link NeorgDefinitionTitle AquaBold
+highlight! link NeorgDefinitionTitle PurpleBold
 
+
+" }}}
+" Fidget {{{
+
+" highlight FidgetTitle ctermfg=110 guifg=#6cb6eb
+" highlight FidgetTitle guifg=#fa9041
+highlight FidgetTitle guifg=#ffa059
+" highlight link FidgetTask Comment
+highlight FidgetTask guifg=#b8a78c
+
+" }}}
+" Dressing {{{
+
+" highlight! link FloatTitle Grey
+" highlight! FloatTitle guifg=#a89984
+highlight! link FloatTitle Normal
 
 " }}}
 

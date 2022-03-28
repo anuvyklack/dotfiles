@@ -117,8 +117,8 @@ require('packer').startup(function()
    --                              LSP                                   {{{
    -------------------------------------------------------------------------
 
-   use { 'neovim/nvim-lspconfig', as = 'lspconfig',
-      config = function() require 'plugins_config/lspconfig' end,
+   use { 'neovim/nvim-lspconfig', as = 'lspconfig', --{{{
+      config = function() require 'plugins_config/lsp_config' end,
       requires = {
          {  -- LSP servers installer.
             'williamboman/nvim-lsp-installer', as = 'lsp-installer'
@@ -127,42 +127,110 @@ require('packer').startup(function()
             'folke/lua-dev.nvim', as = 'lua-dev'
          }
       }
+   } --}}}
+
+   use { 'tami5/lspsaga.nvim', as = 'lspsaga', --{{{
+      config = function() require('plugins_config/lspsaga') end
+   } --}}}
+
+   use { 'weilbith/nvim-code-action-menu', as = 'code-action-menu',
+      cmd = 'CodeActionMenu',
    }
+
+   use { 'RishabhRD/nvim-lsputils', as = 'lsputils', --{{{
+      requires = 'RishabhRD/popfix',
+      config = function()
+         vim.lsp.handlers['textDocument/codeAction']     = require'lsputil.codeAction'.code_action_handler
+         vim.lsp.handlers['textDocument/references']     = require'lsputil.locations'.references_handler
+         vim.lsp.handlers['textDocument/definition']     = require'lsputil.locations'.definition_handler
+         vim.lsp.handlers['textDocument/declaration']    = require'lsputil.locations'.declaration_handler
+         vim.lsp.handlers['textDocument/typeDefinition'] = require'lsputil.locations'.typeDefinition_handler
+         vim.lsp.handlers['textDocument/implementation'] = require'lsputil.locations'.implementation_handler
+         vim.lsp.handlers['textDocument/documentSymbol'] = require'lsputil.symbols'.document_handler
+         vim.lsp.handlers['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
+      end
+   } --}}}
 
    -- Lsp signature hint when you type.
    use { 'ray-x/lsp_signature.nvim', as = 'lsp-signature',
       config = function() require('plugins_config/lsp_signature') end
    }
 
-   -- use { 'glepnir/lspsaga.nvim',  -- original
-   use { 'tami5/lspsaga.nvim',  -- maintained fork
-      as = 'lspsaga',
-      config = function() require('plugins_config/lspsaga') end
-   }
+   use { 'j-hui/fidget.nvim', -- {{{
+      config = function() require('fidget').setup {
+         text = {
+            -- spinner = 'line',
+            spinner = 'dots',
+            -- character shown when all tasks are complete
+            done = "󰸞", -- f0e1e: 󰸞  (mdi-check-bold)
+            commenced = "Started",    -- message shown when task starts
+            completed = "Completed",  -- message shown when task completes
+         },
+         window = {
+            blend = 0,  -- &winblend for the window
+         },
+         fmt = {
+            stack_upwards = true,  -- list of tasks grows upwards
+         }
+      } end
+   } -- }}}
 
-   use { 'folke/trouble.nvim',
+   -- use { "https://git.sr.ht/~whynothugo/lsp_lines.nvim", --{{{
+   --    config = function()
+   --       require("lsp_lines").register_lsp_virtual_lines()
+   --       -- Disable virtual_text since it's redundant due to lsp_lines.
+   --       vim.diagnostic.config {
+   --          virtual_text = false,
+   --       }
+   --    end,
+   -- } --}}}
+
+   -- use { "narutoxy/dim.lua", --{{{
+   --   config = function() require('dim').setup({}) end
+   -- } --}}}
+
+   use { 'jubnzv/virtual-types.nvim' }
+
+   use { 'folke/trouble.nvim', --{{{
       requires = 'kyazdani42/nvim-web-devicons',
       cmd = {'Trouble', 'TroubleToggle'},
       config = function() require('plugins_config/trouble') end
+   } --}}}
+
+   use { 'liuchengxu/vista.vim',
+      config = function() vim.cmd 'source ~/.config/nvim/lua/plugins_config/vista.vim' end
    }
 
-   -- use { 'simrat39/symbols-outline.nvim', as = 'symbols-outline',
-   --    config = function() require('plugins_config/symbols-outline') end
-   -- }
+   -- use { 'simrat39/symbols-outline.nvim', as = 'symbols-outline', --{{{
+   --    config = function()
+   --       require('plugins_config/symbols-outline')
+   --       vim.cmd 'source ~/.config/nvim/lua/plugins_config/symbols-outline.vim'
+   --    end
+   -- } --}}}
 
-   use { 'ahmedkhalf/project.nvim',
-      config = function()
-         require('project_nvim').setup {
-            detection_methods = { 'lsp', 'pattern' },
-            patterns = {
-               '.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json',
-               '>.config', '>roles'
-            },
-            silent_chdir = true, -- When set to false, you will get a message
-                                 -- when project.nvim changes your directory.
-         }
-      end
-   }
+   -- use { 'stevearc/aerial.nvim', as = 'aerial', --{{{
+   --    config = function() require("aerial").setup({
+   --       show_guides = false,
+   --    }) end
+   -- } --}}}
+
+   use { 'ahmedkhalf/project.nvim', --{{{
+      config = function() require('project_nvim').setup {
+         detection_methods = { 'lsp', 'pattern' },
+         patterns = {
+            '.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json',
+            '>.config', '>roles'
+         },
+         -- When set to false, you will get a message
+         -- when project.nvim changes your directory.
+         silent_chdir = true,
+      } end
+   } --}}}
+
+   use { 'https://gitlab.com/yorickpeterse/nvim-dd.git', --{{{
+      as = 'deferring-diagnostics',
+      config = function() require('dd').setup() end
+   } --}}}
 
    ----------------------------------------------------------------------}}}
 
