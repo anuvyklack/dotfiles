@@ -5,7 +5,7 @@
     dest: "{{ config }}"
     state: directory
 
-- name: Symlink kitty config files
+- name: Symlink config files
   file:
     src: "{{ role_files }}/fonts.conf"
     dest: "{{ config }}/fonts.conf"
