@@ -8,54 +8,56 @@
 -- ░░   ░░  ░░░░░    █████      ░░░░░░  ░░ ░░   ░░  ░░░░░░ ░░ ░░   ░░   █████ ░░░░░░
 --                  ░░░░░                                              ░░░░░
 
-local keymap = require "util".keymap
 local M = {}
+local keymap = vim.keymap
+local which_key = require('util').which_key
 
 local n, v = 'n', 'v'
-local function cmd(command) return table.concat({'<cmd>', command, '<CR>'}) end
+local function cmd(command) return table.concat({ '<cmd>', command, '<CR>' }) end
 
 -- Dealing with word wrap:
 -- If cursor is inside very long line in the file than wraps around several rows
 -- on the screen, then 'j' key moves you to the next line in the file, but not
 -- to the next row on the screen under your previous position as in other
--- editors.  These bindings fixes this.
-keymap.set(n, 'k', function() return vim.v.count > 0 and 'k' or 'gk' end, {silent = true, expr = true})
-keymap.set(n, 'j', function() return vim.v.count > 0 and 'j' or 'gj' end, {silent = true, expr = true})
+-- editors. These bindings fixes this.
+keymap.set(n, 'k', function() return vim.v.count > 0 and 'k' or 'gk' end, { silent = true, expr = true })
+keymap.set(n, 'j', function() return vim.v.count > 0 and 'j' or 'gj' end, { silent = true, expr = true })
 
 -- Hop (Easymotion) {{{
 function M.hop()
-   keymap.set({n,v}, ';w', function() vim.cmd('HopWordAC') end, {desc = 'Easymotion forward word'})
-   keymap.set({n,v}, ';b', function() vim.cmd('HopWordBC') end, {desc = 'Easymotion bacward word'})
+   keymap.set({n,v}, ';w', function() vim.cmd('HopWordAC') end, { desc = 'Easymotion forward word' })
+   keymap.set({n,v}, ';b', function() vim.cmd('HopWordBC') end, { desc = 'Easymotion bacward word' })
 
-   keymap.set({n,v}, ';j', cmd 'HopLineAC', {desc = 'Easymotion line up'})
-   keymap.set({n,v}, ';k', cmd 'HopLineBC', {desc = 'Easymotion line down'})
+   keymap.set({n,v}, ';j', cmd 'HopLineAC', { desc = 'Easymotion line up' })
+   keymap.set({n,v}, ';k', cmd 'HopLineBC', { desc = 'Easymotion line down' })
 
-   keymap.set({n,v}, 's', cmd 'HopChar1', {desc = 'Easymotion char'})
+   keymap.set({n,v}, 's', cmd 'HopChar1', { desc = 'Easymotion char' })
 
-   keymap.set(n, 't', cmd 'HopChar2', {desc = 'Easymotion 2 chars'})
+   keymap.set(n, 't', cmd 'HopChar2', { desc = 'Easymotion 2 chars' })
 end -- }}}
 
 -- Telescope {{{
 function M.telescope()
-   keymap.set(n, '<C-;>', cmd 'Telescope commands',        {desc = 'Execute command'})
-   keymap.set(n, 'q:',    cmd 'Telescope command_history', {desc = 'Command-line history'})
-   keymap.set(n, 'q/',    cmd 'Telescope search_history',  {desc = 'Search history'})
-   keymap.set(n, 'q?',    cmd 'Telescope search_history',  {desc = 'Search history'})
+   keymap.set(n, '<C-;>', cmd 'Telescope commands',        { desc = 'Execute command' })
+   keymap.set(n, 'q:',    cmd 'Telescope command_history', { desc = 'Command-line history' })
+   keymap.set(n, 'q/',    cmd 'Telescope search_history',  { desc = 'Search history' })
+   keymap.set(n, 'q?',    cmd 'Telescope search_history',  { desc = 'Search history' })
 
-   keymap.set(n, 'z=',    cmd 'Telescope spell_suggest',   {desc = 'Spell Suggest'})
+   keymap.set(n, 'z=',    cmd 'Telescope spell_suggest',   { desc = 'Spell Suggest' })
 
    which_key.name(n, '<leader>f', 'Telescope')
 
-   keymap.set(n, '<leader>ff', cmd 'Telescope find_files', {desc = 'Find files'})
-   keymap.set(n, '<leader>fg', cmd 'Telescope live_grep',  {desc = 'Live grep'})
-   keymap.set(n, '<leader>fb', cmd 'Telescope buffers',    {desc = 'Buffers'})
-   keymap.set(n, '<leader>fh', cmd 'Telescope help_tags',  {desc = 'Help tags'})
-   keymap.set(n, '<leader>fp', cmd 'Telescope projects',   {desc = 'Projects'})
-   keymap.set(n, '<leader>fo', cmd 'Telescope vim_options',{desc = 'Vim Options'})
+   keymap.set(n, '<leader>fa', cmd 'Telescope builtin',    { desc = 'List all pickers' })
+   keymap.set(n, '<leader>ff', cmd 'Telescope find_files', { desc = 'Find files' })
+   keymap.set(n, '<leader>fg', cmd 'Telescope live_grep',  { desc = 'Live grep' })
+   -- keymap.set(n, '<leader>fb', cmd 'Telescope buffers',    { desc = 'Buffers' })
+   keymap.set(n, '<leader>fh', cmd 'Telescope help_tags',  { desc = 'Help tags' })
+   keymap.set(n, '<leader>fp', cmd 'Telescope projects',   { desc = 'Projects' })
+   keymap.set(n, '<leader>fo', cmd 'Telescope oldfiles',   { desc = 'Recently opened files' })
 
-   keymap.set(n, '<leader>fm', cmd 'MarksListBuf', {desc = 'Marks'})
+   keymap.set(n, '<leader>fm', cmd 'MarksListBuf', { desc = 'Marks' })
 
-   keymap.set(n, '<C-/>', cmd 'Telescope current_buffer_fuzzy_find', {desc = 'Search in buffer'})
+   keymap.set(n, '<C-/>', cmd 'Telescope current_buffer_fuzzy_find', { desc = 'Search in buffer' })
 end -- }}}
 
 -- LSP {{{
@@ -65,78 +67,98 @@ function M.lspconfig(bufnr)
    -- Lspconfig bindings {{{
    -- See `:help vim.lsp.*` for documentation on any of the below functions
 
-   keymap.set(n, '<F2>',   vim.lsp.buf.definition,  {desc = 'LSP: go to definition', buffer = bufnr})
-   keymap.set(n, '<S-F2>', vim.lsp.buf.declaration, {desc = 'LSP: go to declaration', buffer = bufnr})
+   keymap.set(n, 'gd', vim.lsp.buf.definition,     { desc = 'LSP: go to definition',         buffer = bufnr })
+   keymap.set(n, 'gD', vim.lsp.buf.declaration,    { desc = 'LSP: go to declaration',        buffer = bufnr })
+   keymap.set(n, 'gi', vim.lsp.buf.implementation, { desc = 'LSP: list all implementations', buffer = bufnr })
+   -- keymap.set(n, '<F2>',   vim.lsp.buf.definition,  { desc = 'LSP: go to definition',  buffer = bufnr })
+   -- keymap.set(n, '<S-F2>', vim.lsp.buf.declaration, { desc = 'LSP: go to declaration', buffer = bufnr })
+
+   keymap.set(n, '<leader>lr', vim.lsp.buf.rename, { desc = 'Rename', buffer = bufnr })
+
+   -- Code action
+   -- keymap.set(n, '<leader>la', cmd 'CodeActionMenu', { desc = 'Code action', buffer = bufnr })
+   -- keymap.set(n, '<leader>la', vim.lsp.buf.code_action, { desc = 'Code action', buffer = bufnr })
 
    if vim.bo.filetype ~= 'vim' then
-      keymap.set(n, 'K', vim.lsp.buf.hover, {desc = 'LSP: Hover doc', buffer = bufnr})
+      keymap.set(n, 'K', vim.lsp.buf.hover, { desc = 'LSP: hover doc', buffer = bufnr })
    end
 
-   -- keymap.set(n, 'gi',         vim.lsp.buf.implementation,          { buffer = bufnr })
-   -- keymap.set(n, '<C-k>',      vim.lsp.buf.signature_help,          { buffer = bufnr })
-   -- keymap.set(n, '<leader>wa', vim.lsp.buf.add_workspace_folder,    { buffer = bufnr })
-   -- keymap.set(n, '<leader>wr', vim.lsp.buf.remove_workspace_folder, { buffer = bufnr })
-   -- keymap.set(n, '<leader>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, { buffer = bufnr })
+   -- Signature help
+   -- WARNING <C-k> conflicts with vim windows and tmux panes navigation.
+   -- keymap.set(n, '<C-k>', vim.lsp.buf.signature_help, { buffer = bufnr })
 
-   keymap.set(n, '<leader>lt', vim.lsp.buf.type_definition, {desc = 'LSP: Type definition', buffer = bufnr})
+   -- Type definition
+   keymap.set(n, '<leader>lt', vim.lsp.buf.type_definition, { desc = 'LSP: type definition', buffer = bufnr })
 
-   -- keymap.set(n, '<leader>rn', vim.lsp.buf.rename,      { buffer = bufnr })
-   -- keymap.set(n, '<leader>ca', vim.lsp.buf.code_action, { buffer = bufnr })
-   -- keymap.set(n, 'gr',         vim.lsp.buf.references,  { buffer = bufnr })
+   -- Find the cursor word definition and reference.
+   -- keymap.set(n, 'gr',         vim.lsp.buf.references,  { desc = 'References', buffer = bufnr })
+   -- keymap.set(n, '<leader>lf', vim.lsp.buf.references,  { desc = 'References', buffer = bufnr })
 
-   keymap.set(n, '<leader>le', vim.lsp.diagnostic.show_line_diagnostics, {desc = 'Show errors', buffer = bufnr})
+   -- keymap.set(n, '<leader>lf', vim.lsp.buf.formatting, { buffer = bufnr })
 
-   -- keymap.set(n, '[d',        vim.lsp.diagnostic.goto_prev,   { buffer = bufnr })
-   -- keymap.set(n, ']d',        vim.lsp.diagnostic.goto_next,   { buffer = bufnr })
-   -- keymap.set(n, '<leader>q', vim.lsp.diagnostic.set_loclist, { buffer = bufnr })
-   -- keymap.set(n, '<leader>f', vim.lsp.buf.formatting,         { buffer = bufnr })
+   keymap.set(n, '<leader>lv', cmd 'Vista nvim_lsp', { desc = 'LSP: show symbols', buffer = bufnr })
+
+   which_key.name(n, '<leader>lw', 'LSP: workspace')
+   keymap.set(n, '<leader>lwl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end,
+                                { desc = 'List workspace folders', buffer = bufnr })
+   keymap.set(n, '<leader>lwa', vim.lsp.buf.add_workspace_folder,    { desc = 'Add workspace folder', buffer = bufnr })
+   keymap.set(n, '<leader>lwr', vim.lsp.buf.remove_workspace_folder, { desc = 'Remove workspace folder', buffer = bufnr })
 
    --}}}
 
    -- Lspsaga {{{
 
-   keymap.set(n, '<leader>le', cmd('Lspsaga lsp_finder'), {desc = 'Show line diagnostics', buffer = bufnr})
+   local saga_codeaction = require('lspsaga.codeaction')
+   local saga_provider   = require('lspsaga.provider')
+   -- local saga_action     = require('lspsaga.action')
 
-   -- wk.register({ ['<leader>c'] = {name = 'LSP: Code action'}  }, {mode = 'n'})
-   -- wk.register({ ['<leader>c'] = {name = 'LSP: Code action'}  }, {mode = 'v'})
+   keymap.set(n, '<leader>lf', saga_provider.lsp_finder, { desc = 'LSP finder', buffer = bufnr })
+   --
+   -- -- Preview definition
+   -- keymap.set(n, '<leader>ld', cmd 'Lspsaga preview_definition', { desc = 'Preview definition', buffer = bufnr })
 
-   keymap.set(n, '<leader>la', cmd 'Lspsaga code_action',            {desc = 'Code action',            buffer = bufnr})
-   keymap.set(v, '<leader>la', cmd '<C-U>Lspsaga range_code_action', {desc = 'LSP: Range code action', buffer = bufnr})
+   -- Code action
+   keymap.set(n, '<leader>la', saga_codeaction.code_action,    { desc = 'Code action', buffer = bufnr })
+   -- keymap.set(n, '<leader>la', cmd 'Lspsaga code_action', { desc = 'Code action', buffer = bufnr })
+   -- keymap.set('x', '<leader>la', codeaction.range_code_action,         { desc = 'Range code action', buffer = bufnr })
+   keymap.set('x', '<leader>la', cmd '<C-U>Lspsaga range_code_action', { desc = 'Range code action', buffer = bufnr })
 
-   -- rename
-   -- keymap.set('n',         'gr', cmd 'Lspsaga rename', {desc = 'Rename', buffer = bufnr})
-   -- keymap.set('n', '<leader>lr', cmd 'Lspsaga rename', {desc = 'Rename', buffer = bufnr})
-
-   -- preview definition
-   keymap.set(n, '<leader>ld', cmd 'Lspsaga preview_definition', {desc = 'Preview definition', buffer = bufnr})
-
-   -- -- hover doc
-   -- buf_set_keymap(bufnr, 'n', 'K', 'Hover doc', cmd 'Lspsaga hover_doc')
-
-   -- show signature help
-   keymap.set(n, '<C-k>', cmd 'Lspsaga signature_help', {desc = 'LSP: Show sinature help', buffer = bufnr})
-
-   -- Show Diagnostics
-   keymap.set(n, '<leader>le', cmd 'Lspsaga show_line_diagnostics', {desc = 'Show diagnostic', buffer = bufnr})
-   -- only show diagnostic if cursor is over the area
-   -- buf_set_keymap(bufnr, 'n', '<leader>le', 'Show diagnostic', require'lspsaga.diagnostic'.show_cursor_diagnostics)
-
-   -- -- jump diagnostic
-   -- buf_set_keymap(bufnr, 'n', ']e', cmd 'Lspsaga diagnostic_jump_next')
-   -- buf_set_keymap(bufnr, 'n', '[e', cmd 'Lspsaga diagnostic_jump_prev')
-
-
+   -- -- Hover doc
+   -- if vim.bo.filetype ~= 'vim' then
+   --    keymap.set(n, 'K', cmd 'Lspsaga hover_doc', { desc = 'LSP: hover doc', buffer = bufnr })
+   -- end
+   --
+   -- -- Show signature help
+   -- keymap.set(n, '<C-k>', cmd 'Lspsaga signature_help', { desc = 'Show sinature help', buffer = bufnr })
+   --
    -- -- scroll down / up inside different preview windows
-   -- buf_set_keymap(bufnr, 'n', '<C-f>', cmd "lua require('lspsaga.action').smart_scroll_with_saga(1)")
-   -- buf_set_keymap(bufnr, 'n', '<C-b>', cmd "lua require('lspsaga.action').smart_scroll_with_saga(-1)")
+   -- keymap.set(n, '<C-u>', function() saga_action.smart_scroll_with_saga(-1, '<c-u>') end, { buffer = bufnr })
+   -- keymap.set(n, '<C-d>', function() saga_action.smart_scroll_with_saga( 1, '<c-d>') end, { buffer = bufnr })
+   -- -- keymap.set(n, '<C-u>', vim.cmd "lua require('lspsaga.action').smart_scroll_with_saga(-1, '<c-u>')", { buffer = bufnr })
+   -- -- keymap.set(n, '<C-d>', vim.cmd "lua require('lspsaga.action').smart_scroll_with_saga(1, '<c-d>')",  { buffer = bufnr })
 
    --}}}
+
+   -- Diagnostics {{{
+
+   -- keymap.set(n, '<leader>ll', vim.diagnostic.setloclist, { desc = 'Diagnostics in loclist', buffer = bufnr })
+
+   keymap.set(n, '<leader>le', vim.diagnostic.open_float, { desc = 'Show errors',         buffer = bufnr })
+   keymap.set(n,    '[e',      vim.diagnostic.goto_prev,  { desc = 'Previous diagnostic', buffer = bufnr })
+   keymap.set(n,    ']e',      vim.diagnostic.goto_next,  { desc = 'Next diagnostic',     buffer = bufnr })
+
+   -- -- Lspsaga
+   -- keymap.set(n, '<leader>le', cmd 'Lspsaga show_line_diagnostics', { desc = 'Show diagnostic',     buffer = bufnr })
+   -- keymap.set(n,    '[e',      cmd 'Lspsaga diagnostic_jump_next',  { desc = 'Previous diagnostic', buffer = bufnr, silent = true })
+   -- keymap.set(n,    ']e',      cmd 'Lspsaga diagnostic_jump_prev',  { desc = 'Next diagnostic',     buffer = bufnr, silent = true })
+
+   -- }}}
 
    -- Renamer {{{
 
    -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>lr', cmd 'Lspsaga rename', {silent = true, noremap = true})
 
-   keymap.set({n,v}, '<leader>lr', cmd 'lua require("renamer").rename()', { buffer = bufnr })
+   -- keymap.set({n,v}, '<leader>lr', cmd 'lua require("renamer").rename()', { buffer = bufnr })
 
    -- keymap.set({n,v}, '<leader>lr', cmd 'lua require("renamer").rename()', { buffer = bufnr })
    -- keymap.set({n,v},         'gr', cmd 'lua require("renamer").rename()', { buffer = bufnr })
@@ -292,10 +314,10 @@ end -- }}}
 function M.asterisks()
    keymap.set('', '*', '<Plug>(asterisk-z*)')
    keymap.set('', '#', '<Plug>(asterisk-z#)')
-   -- keymap.set('', 'g*', '<Plug>(asterisk-gz*)', {desc = ':help gstar'})
-   -- keymap.set('', 'g#', '<Plug>(asterisk-gz#)', {desc = ':help g#'})
-   keymap.set('', 'g*', '<Plug>(asterisk-gz*)', {desc = 'which_key_ignore'})
-   keymap.set('', 'g#', '<Plug>(asterisk-gz#)', {desc = 'which_key_ignore'})
+   -- keymap.set('', 'g*', '<Plug>(asterisk-gz*)', { desc = ':help gstar' })
+   -- keymap.set('', 'g#', '<Plug>(asterisk-gz#)', { desc = ':help g#' })
+   keymap.set('', 'g*', '<Plug>(asterisk-gz*)', { desc = 'which_key_ignore' })
+   keymap.set('', 'g#', '<Plug>(asterisk-gz#)', { desc = 'which_key_ignore' })
 end -- }}}
 
 return M

@@ -68,33 +68,38 @@ require('packer').startup(function()
 
    --                          Key Mappings                              {{{
    -------------------------------------------------------------------------
-
-   -- use { 'folke/which-key.nvim', as = 'which-key', -- WhichKey
-   --    config = function ()
-   --       require('which-key').setup {
-   --          plugins = {
-   --             spelling = { -- Enabling this module will show WhichKey when
-   --                          -- pressing z= to select spelling suggestions.
-   --                enabled = false,
-   --                suggestions = 20, -- How many suggestions should be shown in the list?
-   --             },
-   --             presets = {
-   --                operators = true,
-   --             },
-   --          },
-   --          operators = {
-   --             gc = "Comments"
-   --          },
-   --          -- ignore_missing = true, -- Enable this to hide mappings for which you
-   --          --                        -- didn't specify a label.
-   --          hidden = { -- hide mapping boilerplate
-   --             "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ ",
-   --             "<SNR>", "<Plug>"
-   --          },
-   --       }
-   --    end
-   -- }
-
+   -- Not work in 0.7 yet.
+   use { 'xiyaowong/which-key.nvim',
+   -- use { 'folke/which-key.nvim',
+      as = 'which-key', -- WhichKey
+      config = function () require('which-key').setup {
+         plugins = {
+            -- Enabling this module will show WhichKey when pressing z=
+            -- to select spelling suggestions.
+            spelling = {
+               enabled = false,
+               suggestions = 20, -- How many suggestions should be shown in the list?
+            },
+            presets = {
+               operators = true,
+            },
+         },
+         operators = {
+            gc = "Comments"
+         },
+         icons = {
+            breadcrumb = "»",
+            separator = "", -- U+279c: ➜ (Unicode Heavy Round-Tipped Rightwards Arrow)
+            group = "+",
+         },
+         -- Enable this to hide mappings for which you didn't specify a label.
+         -- ignore_missing = true,
+         hidden = { -- hide mapping boilerplate
+            "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ ",
+            "<SNR>", "<Plug>"
+         },
+      } end
+   }
    --------------------------------------------------------------------}}}
 
    --                           Treesitter                               {{{
@@ -870,12 +875,12 @@ require('packer').startup(function()
          vim.g.XkbSwitchAssistNKeymap = 1  -- for commands r and f
          vim.g.XkbSwitchAssistSKeymap = 1  -- for search lines
          -- vim.g.XkbSwitchIMappings = {'ru'}
-
-         which_key{
-            gh = 'which_key_ignore',
-            gH = 'test description',
-            ['g<C-H>'] = 'which_key_ignore'
-         }
+         --
+         -- require('which-key').register {
+         --    gh = 'which_key_ignore',
+         --    gH = 'test description',
+         --    ['g<C-H>'] = 'which_key_ignore'
+         -- }
       end
    }
    -- use 'powerman/vim-plugin-ruscmd'
