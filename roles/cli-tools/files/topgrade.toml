@@ -5,7 +5,7 @@ assume_yes = true
 disable = ["emacs", "vim"]
 
 # Ignore failures for these steps
-ignore_failures = ["git_repos"]
+ignore_failures = ["git_repos", "github_cli_extensions"]
 
 # Run only specific steps - same options as the command line flag
 # only = ["tmux"]
@@ -28,7 +28,8 @@ pull_predefined = false
 #max_concurrency = 5
 # Additional git repositories to pull
 repos = [
-   "~/Git/**"
-   # "~/src/*/",
-   # "~/.config/something"
+    "~/code/git_repos/**"
+    # "~/Git/**"
+    # "~/src/*/",
+    # "~/.config/something"
 ]
