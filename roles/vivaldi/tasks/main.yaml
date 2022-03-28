@@ -16,7 +16,6 @@
   become: yes
   apt:
     name: vivaldi-stable
-    force_apt_get: yes  # Force usage of apt-get instead of aptitude
     state: present
     update_cache: yes
     cache_valid_time: 3600  # One hour
