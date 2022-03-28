@@ -566,21 +566,30 @@ require('packer').startup(function()
       end
    }
 
-   --------------------------- Fuzzy finder --------------------------------
+   ----------------------------------------------------------------------}}}
 
-   use { 'nvim-telescope/telescope.nvim', as = 'telescope',
+   --------------------------- Fuzzy finder --------------------------------
+   use { 'nvim-telescope/telescope.nvim', as = 'telescope', --{{{
       requires = {
          'nvim-lua/plenary.nvim',
          { 'nvim-telescope/telescope-fzf-native.nvim', as = 'telescope-fzf-native',
             run = 'make'
          },
+         { "natecraddock/telescope-zf-native.nvim", as = 'telescope-zf-native' },
+         -- { "nvim-telescope/telescope-frecency.nvim", as = 'telescope-frecency',
+         --    requires = "tami5/sqlite.lua"
+         -- },
+         { 'jvgrootveld/telescope-zoxide',
+            requires = 'nvim-lua/popup.nvim'
+         }
          -- 'famiu/bufdelete.nvim',
       },
       config = function() require('plugins_config/telescope') end,
       -- event = 'VimEnter',
       -- cmd = 'Telescope',
       -- keys = {'<leader>f', '<leader>fh'}
-   }
+   } --}}}
+   -------------------------------------------------------------------------
 
    ----------------------------- Statusline --------------------------------
    -- use { 'glepnir/galaxyline.nvim',

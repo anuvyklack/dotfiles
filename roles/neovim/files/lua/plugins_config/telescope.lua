@@ -1,8 +1,9 @@
 local available, telescope = pcall(require, "telescope")
 if not available then return end
 
-local actions = require('telescope.actions')
-local action_state = require('telescope.actions.state')
+local actions = require "telescope.actions"
+local action_state = require "telescope.actions.state"
+local action_set = require "telescope.actions.set"
 local custom_actions = {}
 
 function custom_actions.auto_multi_selection_open_qflist(prompt_bufnr)
@@ -83,7 +84,7 @@ telescope.setup {
             flip_columns = 180,
          },
          horizontal = {
-            width = 0.85,
+            width = 0.80,
             mirror = false,
             prompt_position = 'top',
             -- preview_width = 82,
@@ -127,7 +128,40 @@ telescope.setup {
       },
    },
    pickers = {
+      -- builtin = {
+      --    -- theme = 'dropdown',
+      --    layout_strategy = 'center',
+      --    previewer = false,
+      --    layout_config = {
+      --       center = {
+      --          height = 0.7,
+      --       }
+      --    },
+      --    borderchars = {
+      --       { '─', '│', '─', '│', '╭', '╮', '╯', '╰'},
+      --       prompt  = { "─", "│", " ", "│", '╭', '╮', "│", "│" },
+      --       results = { "─", "│", "─", "│", "├", "┤", "╯", "╰" },
+      --       preview = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
+      --    },
+      -- },
       find_files = {
+         -- https://github.com/tmhedberg/SimpylFold/issues/130
+         hidden = false, -- show hidden files
+         -- attach_mappings = function(_)
+         --    action_set.select:enhance({
+         --       post = function()
+         --          vim.cmd("normal! zx")
+         --          -- vim.cmd(":normal! zx")
+         --       end
+         --    })
+         --    return true
+         -- end,
+         layout_config = {
+            vertical = {
+               mirror = true,
+               preview_height = 0.5,
+            },
+         },
          mappings = {
             i = {
                ["<cr>"] = custom_actions.multi_selection_open,
@@ -168,7 +202,7 @@ telescope.setup {
          layout_config = {
             vertical = {
                mirror = true,
-               preview_height = 0.4,
+               preview_height = 0.5,
             },
          },
          mappings = {
@@ -267,7 +301,7 @@ telescope.setup {
          layout_config = {
             vertical = {
                width = 90,
-               mirror = true,
+               -- mirror = true,
                preview_height = 0.5,
             },
          },
@@ -280,24 +314,43 @@ telescope.setup {
             }
          }
       },
+      highlights = {
+         layout_strategy = 'vertical',
+         layout_config = {
+            vertical = {
+               width = 90,
+               mirror = true,
+               preview_height = 0.2,
+            },
+         },
+      },
    },
    extensions = {
-      -- Your extension configuration goes here:
-      -- extension_name = {
-      --   extension_config_key = value,
-      -- }
-      -- please take a look at the readme of the extension you want to configure
+      ["zf-native"] = {
+         file = { -- options for sorting file-like items
+            enable = true, -- override default telescope file sorter
+            highlight_results = true, -- highlight matching text in results
+            match_filename = true, -- enable zf filename match priority
+         },
+         generic = { -- options for sorting all other items
+            enable = false, -- override default telescope generic item sorter
+        },
+      }
    }
 }
 
+-- https://github.com/nvim-telescope/telescope.nvim/issues/559
+vim.cmd('autocmd BufRead * autocmd BufWinEnter * ++once normal! zx zM')
+
 ------------------------------ Extensions --------------------------------------
 
+-- local available, _ = pcall(require, 'neoclip')
 telescope.load_extension('fzf')  -- use fzf module in C
-
-local project_available, _ = pcall(require, 'project_nvim')
-if project_available then telescope.load_extension('projects') end
-
--- telescope.load_extension('neoclip')
+telescope.load_extension("zf-native")
+telescope.load_extension('zoxide')
+-- telescope.load_extension("frecency")
+telescope.load_extension('projects')
+telescope.load_extension('neoclip')
 
 require('keybindings').telescope()
 
