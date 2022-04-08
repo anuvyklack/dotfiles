@@ -12,13 +12,13 @@ function util.file_exists(path)
    end
 end
 
-local which_key_available, which_key = pcall(require, "which-key")
 
 ---The wrapper around the 'which-key.register()' function.
 ---Doesn't throw an error if 'which-key' plugin doesn't available.
 util.which_key = setmetatable({}, {
    __call = function (_, ...) -- the first argument is self
-      if which_key_available then which_key.register(...) end
+      local available, which_key = pcall(require, "which-key")
+      if available then which_key.register(...) end
    end
 })
 
@@ -27,8 +27,8 @@ util.which_key = setmetatable({}, {
 ---@param name string
 util.which_key.name = function(mode, lhs, name)
    util.which_key({
-      [lhs] = { name = name, mode = mode }
-   })
+      [lhs] = { name = name }
+   }, { mode = mode })
 end
 
 return util
