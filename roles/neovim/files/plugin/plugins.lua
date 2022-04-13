@@ -664,9 +664,6 @@ require('packer').startup(function()
          -- 'famiu/bufdelete.nvim',
       },
       config = function() require('plugins_config/telescope') end,
-      -- event = 'VimEnter',
-      -- cmd = 'Telescope',
-      -- keys = {'<leader>f', '<leader>fh'}
    } --}}}
    -------------------------------------------------------------------------
 

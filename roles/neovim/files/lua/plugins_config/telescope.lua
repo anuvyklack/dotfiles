@@ -1,9 +1,9 @@
-local available, telescope = pcall(require, "telescope")
+local available, telescope = pcall(require, 'telescope')
 if not available then return end
 
-local actions = require "telescope.actions"
-local action_state = require "telescope.actions.state"
-local action_set = require "telescope.actions.set"
+local actions = require 'telescope.actions'
+local action_state = require 'telescope.actions.state'
+local action_set = require 'telescope.actions.set'
 local custom_actions = {}
 
 function custom_actions.auto_multi_selection_open_qflist(prompt_bufnr)
@@ -349,8 +349,14 @@ telescope.load_extension('fzf')  -- use fzf module in C
 telescope.load_extension("zf-native")
 telescope.load_extension('zoxide')
 -- telescope.load_extension("frecency")
-telescope.load_extension('projects')
-telescope.load_extension('neoclip')
+
+-- Projects extension
+available, _ = pcall(require, 'project_nvim')
+if available then telescope.load_extension('projects') end
+
+-- Neoclip extension
+available, _ = pcall(require, 'neoclip')
+if available then telescope.load_extension('neoclip') end
 
 require('keybindings').telescope()
 
