@@ -717,20 +717,10 @@ require('packer').startup(function()
    --    end
    -- } --}}}
 
-   use { 'anuvyklack/pretty-fold.nvim', as = 'pretty-fold', branch = 'nightly', -- {{{
+   use { 'anuvyklack/pretty-fold.nvim', as = 'pretty-fold', -- {{{
+      -- branch = 'nightly',
    -- use { '~/code/neovim_plugins/pretty-fold.nvim', as = 'pretty-fold',
-      config = function()
-         vim.opt.fillchars:append('fold:•')
-         require('pretty-fold').setup {
-            {
-               add_close_pattern = true, -- true, 'last_line' or false
-            },
-            -- marker = { comment_signs = 'spaces' },
-            marker = { process_comment_signs = 'spaces' },
-            expr = { process_comment_signs = false }
-         }
-         require('pretty-fold.preview').setup()
-      end
+      config = function() require('plugins_config/pretty-fold') end
    } --}}}
 
    use { 'sindrets/diffview.nvim',
