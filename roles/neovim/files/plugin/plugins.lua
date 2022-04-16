@@ -931,11 +931,17 @@ require('packer').startup(function()
    -------------------------------------------------------------------------
    use { 'rafcamlet/nvim-luapad', as = 'luapad',
       config = function()
-         local command = vim.api.nvim_add_user_command
+         local command = vim.api.nvim_create_user_command
          local luapad = require('luapad')
+
          command('LuaAttach', luapad.attach, { bang = true })
          command('LuaDetach', luapad.detach, { bang = true })
          command('LuaToggle', luapad.toggle, { bang = true })
+
+         vim.api.nvim_create_autocmd('BufEnter', {
+            pattern = '*_Luapad.lua',
+            command = 'setlocal bufhidden=hide'
+         })
       end
    }
    ----------------------------------------------------------------------}}}
