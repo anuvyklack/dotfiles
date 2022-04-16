@@ -26,20 +26,29 @@ nmap ga <Plug>(EasyAlign)
 " ----------------------------------------------------------------
 let g:tmux_navigator_no_mappings = 1
 
-" nnoremap <silent> <C-g><C-H> <cmd>TmuxNavigateLeft<cr>
-" nnoremap <silent> <C-g><C-J> <cmd>TmuxNavigateDown<cr>
-" nnoremap <silent> <C-g><C-K> <cmd>TmuxNavigateUp<cr>
-" nnoremap <silent> <C-g><C-L> <cmd>TmuxNavigateRight<cr>
+nnoremap <silent> <C-H> <Cmd>TmuxNavigateLeft<CR>
+nnoremap <silent> <C-J> <Cmd>TmuxNavigateDown<CR>
+nnoremap <silent> <C-K> <Cmd>TmuxNavigateUp<CR>
+nnoremap <silent> <C-L> <Cmd>TmuxNavigateRight<CR>
 
-nnoremap <silent> <C-H> <cmd>TmuxNavigateLeft<cr>
-nnoremap <silent> <C-J> <cmd>TmuxNavigateDown<cr>
-nnoremap <silent> <C-K> <cmd>TmuxNavigateUp<cr>
-nnoremap <silent> <C-L> <cmd>TmuxNavigateRight<cr>
-
-" nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
+" nnoremap <silent> {Previous-Mapping} <Cmd>TmuxNavigatePrevious<CR>
 " -------------------------------------------------------------}}}
 
-nnoremap <silent> gb <cmd>call ChooseBuffer()<CR>
+"                         Vim-Smartword                        {{{
+" ----------------------------------------------------------------
+" Make vim treat all word delimiters like it treats spaces (for word motions).
+map w   <Plug>(smartword-w)
+map b   <Plug>(smartword-b)
+map e   <Plug>(smartword-e)
+map ge  <Plug>(smartword-ge)
+
+noremap ,w  w
+noremap ,b  b
+noremap ,e  e
+noremap ,ge ge
+" -------------------------------------------------------------}}}
+
+nnoremap <silent> gb <Cmd>call ChooseBuffer()<CR>
 function! ChooseBuffer()  "{{{
     " Количество открытых буферов
     let num_of_buffers = len(getbufinfo({'buflisted':1}))
@@ -52,13 +61,13 @@ function! ChooseBuffer()  "{{{
     endif
 endfunction "}}}
 
-" nnoremap <Leader>u <cmd>UndotreeToggle<CR>
+" nnoremap <Leader>u <Cmd>UndotreeToggle<CR>
 
 " nmap <leader>vw <Plug>(wiki-index)
 
 " Показать syntax group для участка кода, а также цвет этой группы.
 " Удобно при создании своей цветовой схемы
-nnoremap <silent> <C-g> <cmd>TSHighlightCapturesUnderCursor<CR>
+nnoremap <silent> <C-g> <Cmd>TSHighlightCapturesUnderCursor<CR>
 " nnoremap <C-g> <cmd>call SyntaxAttr()<CR>
 
 " vim: tw=76 fdm=marker

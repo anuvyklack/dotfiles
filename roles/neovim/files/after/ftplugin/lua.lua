@@ -6,8 +6,7 @@ vim.wo.foldmethod  = 'expr'
 
 -- Keybindings -----------------------------------------------------------------
 
--- require('util').keymap.set({'n','v'}, 'gK', 'K', {desc = 'Show :help', buffer = true})
-vim.keymap.set({'n','v'}, 'gK', 'K', {desc = 'Show :help', buffer = true})
+vim.keymap.set({'n','v'}, 'gK', 'K', { desc = 'Show :help', buffer = true })
 
 --------------------------------------------------------------------------------
 

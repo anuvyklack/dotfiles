@@ -9,10 +9,9 @@
 --                  ░░░░░                                              ░░░░░
 
 local M = {}
-local keymap = vim.keymap
+local keymap = require('util').keymap
 local which_key = require('util').which_key
-
-local n, v = 'n', 'v'
+local n, v, x = 'n', 'v', 'x'
 local function cmd(command) return table.concat({ '<cmd>', command, '<CR>' }) end
 
 -- Dealing with word wrap:
@@ -36,137 +35,153 @@ function M.hop()
    keymap.set(n, 't', cmd 'HopChar2', { desc = 'Easymotion 2 chars' })
 end -- }}}
 
+-- Fuzzy finders and pickers (telescope, fzf, etc) {{{
+
 -- Telescope {{{
 function M.telescope()
-   keymap.set(n, '<C-;>', cmd 'Telescope commands',        { desc = 'Execute command' })
-   keymap.set(n, 'q:',    cmd 'Telescope command_history', { desc = 'Command-line history' })
-   keymap.set(n, 'q/',    cmd 'Telescope search_history',  { desc = 'Search history' })
-   keymap.set(n, 'q?',    cmd 'Telescope search_history',  { desc = 'Search history' })
+   keymap.set(n, '<C-;>', cmd 'Telescope commands',        { desc = 'Execute command',      requires = 'telescope' })
+   keymap.set(n, 'q:',    cmd 'Telescope command_history', { desc = 'Command-line history', requires = 'telescope' })
+   keymap.set(n, 'q/',    cmd 'Telescope search_history',  { desc = 'Search history',       requires = 'telescope' })
+   keymap.set(n, 'q?',    cmd 'Telescope search_history',  { desc = 'Search history',       requires = 'telescope' })
 
-   keymap.set(n, 'z=',    cmd 'Telescope spell_suggest',   { desc = 'Spell Suggest' })
+   keymap.set(n, 'z=',    cmd 'Telescope spell_suggest',   { desc = 'Spell Suggest', requires = 'telescope' })
 
    which_key.name(n, '<leader>f', 'Telescope')
 
-   keymap.set(n, '<leader>fa', cmd 'Telescope builtin',    { desc = 'List all pickers' })
-   keymap.set(n, '<leader>ff', cmd 'Telescope find_files', { desc = 'Find files' })
-   keymap.set(n, '<leader>fg', cmd 'Telescope live_grep',  { desc = 'Live grep' })
-   -- keymap.set(n, '<leader>fb', cmd 'Telescope buffers',    { desc = 'Buffers' })
-   keymap.set(n, '<leader>fh', cmd 'Telescope help_tags',  { desc = 'Help tags' })
-   keymap.set(n, '<leader>fp', cmd 'Telescope projects',   { desc = 'Projects' })
-   keymap.set(n, '<leader>fo', cmd 'Telescope oldfiles',   { desc = 'Recently opened files' })
+   keymap.set(n, '<leader>fa', cmd 'Telescope builtin',    { desc = 'List all pickers', requires = 'telescope' })
+   keymap.set(n, '<leader>ff', cmd 'Telescope find_files', { desc = 'Find files',       requires = 'telescope' })
+   keymap.set(n, '<leader>fg', cmd 'Telescope live_grep',  { desc = 'Live grep',        requires = 'telescope' })
+   -- keymap.set(n, '<leader>fb', cmd 'Telescope buffers',    { desc = 'Buffers',   requires = 'telescope' })
+   keymap.set(n, '<leader>fh', cmd 'Telescope help_tags',  { desc = 'Help tags', requires = 'telescope' })
+   keymap.set(n, '<leader>fp', cmd 'Telescope projects',   { desc = 'Projects',  requires = 'telescope' })
+   keymap.set(n, '<leader>fo', cmd 'Telescope oldfiles',   { desc = 'Recently opened files', requires = 'telescope' })
 
-   keymap.set(n, '<leader>fm', cmd 'MarksListBuf', { desc = 'Marks' })
+   keymap.set(n, '<C-/>', cmd 'Telescope current_buffer_fuzzy_find', { desc = 'Search in buffer', requires = 'telescope' })
+end --}}}
 
-   keymap.set(n, '<C-/>', cmd 'Telescope current_buffer_fuzzy_find', { desc = 'Search in buffer' })
-end -- }}}
+keymap.set(n, '<leader>fm', cmd 'MarksListBuf', { desc = 'Marks', requires = 'marks' })
+
+-- }}}
 
 -- LSP {{{
 function M.lspconfig(bufnr)
+   -- See `:help vim.lsp.*` for documentation functions
+
+   local opts = setmetatable({ --{{{
+      buffer = bufnr
+   }, {
+      __call = function (self, opt)
+         for key, value in pairs(opt) do
+            self[key] = value
+         end
+         return self
+      end
+   }) --}}}
+
    which_key.name(n, '<leader>l', 'LSP')
 
-   -- Lspconfig bindings {{{
-   -- See `:help vim.lsp.*` for documentation on any of the below functions
+   keymap.set(n, '<leader>lv', cmd 'Vista nvim_lsp', opts{ desc = 'LSP: show symbols' })
 
-   keymap.set(n, 'gd', vim.lsp.buf.definition,     { desc = 'LSP: go to definition',         buffer = bufnr })
-   keymap.set(n, 'gD', vim.lsp.buf.declaration,    { desc = 'LSP: go to declaration',        buffer = bufnr })
-   keymap.set(n, 'gi', vim.lsp.buf.implementation, { desc = 'LSP: list all implementations', buffer = bufnr })
-   -- keymap.set(n, '<F2>',   vim.lsp.buf.definition,  { desc = 'LSP: go to definition',  buffer = bufnr })
-   -- keymap.set(n, '<S-F2>', vim.lsp.buf.declaration, { desc = 'LSP: go to declaration', buffer = bufnr })
+   -- Go to definiton, declaration, references, etc {{{
 
-   keymap.set(n, '<leader>lr', vim.lsp.buf.rename, { desc = 'Rename', buffer = bufnr })
+   keymap.set(n, 'gd', vim.lsp.buf.definition,     opts{ desc = 'LSP: go to definition' })
+   keymap.set(n, 'gD', vim.lsp.buf.declaration,    opts{ desc = 'LSP: go to declaration' })
+   keymap.set(n, 'gi', vim.lsp.buf.implementation, opts{ desc = 'LSP: list all implementations' })
+   -- keymap.set(n, '<F2>',   vim.lsp.buf.definition,  opt{ desc = 'LSP: go to definition' })
+   -- keymap.set(n, '<S-F2>', vim.lsp.buf.declaration, opt{ desc = 'LSP: go to declaration' })
 
-   -- Code action
-   -- keymap.set(n, '<leader>la', cmd 'CodeActionMenu', { desc = 'Code action', buffer = bufnr })
-   -- keymap.set(n, '<leader>la', vim.lsp.buf.code_action, { desc = 'Code action', buffer = bufnr })
 
-   if vim.bo.filetype ~= 'vim' then
-      keymap.set(n, 'K', vim.lsp.buf.hover, { desc = 'LSP: hover doc', buffer = bufnr })
-   end
-
-   -- Signature help
-   -- WARNING <C-k> conflicts with vim windows and tmux panes navigation.
-   -- keymap.set(n, '<C-k>', vim.lsp.buf.signature_help, { buffer = bufnr })
-
-   -- Type definition
-   keymap.set(n, '<leader>lt', vim.lsp.buf.type_definition, { desc = 'LSP: type definition', buffer = bufnr })
+   -- Preview definition
+   keymap.set(n, '<leader>ld', cmd 'Lspsaga preview_definition', opts{ desc = 'Preview definition', requires = 'lspsaga' })
 
    -- Find the cursor word definition and reference.
-   -- keymap.set(n, 'gr',         vim.lsp.buf.references,  { desc = 'References', buffer = bufnr })
-   -- keymap.set(n, '<leader>lf', vim.lsp.buf.references,  { desc = 'References', buffer = bufnr })
-
-   -- keymap.set(n, '<leader>lf', vim.lsp.buf.formatting, { buffer = bufnr })
-
-   keymap.set(n, '<leader>lv', cmd 'Vista nvim_lsp', { desc = 'LSP: show symbols', buffer = bufnr })
-
-   which_key.name(n, '<leader>lw', 'LSP: workspace')
-   keymap.set(n, '<leader>lwl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end,
-                                { desc = 'List workspace folders', buffer = bufnr })
-   keymap.set(n, '<leader>lwa', vim.lsp.buf.add_workspace_folder,    { desc = 'Add workspace folder', buffer = bufnr })
-   keymap.set(n, '<leader>lwr', vim.lsp.buf.remove_workspace_folder, { desc = 'Remove workspace folder', buffer = bufnr })
-
-   --}}}
-
-   -- Lspsaga {{{
-
-   local saga_codeaction = require('lspsaga.codeaction')
-   local saga_provider   = require('lspsaga.provider')
-   -- local saga_action     = require('lspsaga.action')
-
-   keymap.set(n, '<leader>lf', saga_provider.lsp_finder, { desc = 'LSP finder', buffer = bufnr })
-   --
-   -- -- Preview definition
-   -- keymap.set(n, '<leader>ld', cmd 'Lspsaga preview_definition', { desc = 'Preview definition', buffer = bufnr })
-
-   -- Code action
-   keymap.set(n, '<leader>la', saga_codeaction.code_action,    { desc = 'Code action', buffer = bufnr })
-   -- keymap.set(n, '<leader>la', cmd 'Lspsaga code_action', { desc = 'Code action', buffer = bufnr })
-   -- keymap.set('x', '<leader>la', codeaction.range_code_action,         { desc = 'Range code action', buffer = bufnr })
-   keymap.set('x', '<leader>la', cmd '<C-U>Lspsaga range_code_action', { desc = 'Range code action', buffer = bufnr })
-
-   -- -- Hover doc
-   -- if vim.bo.filetype ~= 'vim' then
-   --    keymap.set(n, 'K', cmd 'Lspsaga hover_doc', { desc = 'LSP: hover doc', buffer = bufnr })
-   -- end
-   --
-   -- -- Show signature help
-   -- keymap.set(n, '<C-k>', cmd 'Lspsaga signature_help', { desc = 'Show sinature help', buffer = bufnr })
-   --
-   -- -- scroll down / up inside different preview windows
-   -- keymap.set(n, '<C-u>', function() saga_action.smart_scroll_with_saga(-1, '<c-u>') end, { buffer = bufnr })
-   -- keymap.set(n, '<C-d>', function() saga_action.smart_scroll_with_saga( 1, '<c-d>') end, { buffer = bufnr })
-   -- -- keymap.set(n, '<C-u>', vim.cmd "lua require('lspsaga.action').smart_scroll_with_saga(-1, '<c-u>')", { buffer = bufnr })
-   -- -- keymap.set(n, '<C-d>', vim.cmd "lua require('lspsaga.action').smart_scroll_with_saga(1, '<c-d>')",  { buffer = bufnr })
-
-   --}}}
-
-   -- Diagnostics {{{
-
-   -- keymap.set(n, '<leader>ll', vim.diagnostic.setloclist, { desc = 'Diagnostics in loclist', buffer = bufnr })
-
-   keymap.set(n, '<leader>le', vim.diagnostic.open_float, { desc = 'Show errors',         buffer = bufnr })
-   keymap.set(n,    '[e',      vim.diagnostic.goto_prev,  { desc = 'Previous diagnostic', buffer = bufnr })
-   keymap.set(n,    ']e',      vim.diagnostic.goto_next,  { desc = 'Next diagnostic',     buffer = bufnr })
-
-   -- -- Lspsaga
-   -- keymap.set(n, '<leader>le', cmd 'Lspsaga show_line_diagnostics', { desc = 'Show diagnostic',     buffer = bufnr })
-   -- keymap.set(n,    '[e',      cmd 'Lspsaga diagnostic_jump_next',  { desc = 'Previous diagnostic', buffer = bufnr, silent = true })
-   -- keymap.set(n,    ']e',      cmd 'Lspsaga diagnostic_jump_prev',  { desc = 'Next diagnostic',     buffer = bufnr, silent = true })
+   keymap.set(n, 'gr',         vim.lsp.buf.references, opts{ desc = 'References' })
+   -- keymap.set(n, '<leader>lr', vim.lsp.buf.references, opt{ desc = 'References' })
+   -- keymap.set(n, '<leader>lf', require('lspsaga.provider').lsp_finder, opt{ desc = 'LSP finder',  requires = 'lspsaga' })
 
    -- }}}
 
    -- Renamer {{{
 
-   -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>lr', cmd 'Lspsaga rename', {silent = true, noremap = true})
+   keymap.set(n, '<leader>lr', vim.lsp.buf.rename, opts{ desc = 'Rename' })
 
-   -- keymap.set({n,v}, '<leader>lr', cmd 'lua require("renamer").rename()', { buffer = bufnr })
-
-   -- keymap.set({n,v}, '<leader>lr', cmd 'lua require("renamer").rename()', { buffer = bufnr })
-   -- keymap.set({n,v},         'gr', cmd 'lua require("renamer").rename()', { buffer = bufnr })
-
-   -- keymap.set({n,v}, '<leader>lr', require('renamer').rename, { buffer = bufnr })
-   -- keymap.set({n,v},         'gr', require('renamer').rename, { buffer = bufnr })
+   -- keymap.set({n,v}, '<leader>lr', require('renamer').rename, opt{ desc = 'Rename', requires = 'renamer' })
+   -- keymap.set({n,v},         'gr', require('renamer').rename, opt{ desc = 'Rename', requires = 'renamer' })
 
    -- }}}
+
+   -- Code action {{{
+
+   -- keymap.set(n, '<leader>la', vim.lsp.buf.code_action, opt{ desc = 'Code action' })
+
+   -- keymap.set(n, '<leader>la', cmd 'CodeActionMenu',
+   --                             opt{ desc = 'Code action', requires = 'code_action_menu' })
+
+   keymap.set(n, '<leader>la', require('lspsaga.codeaction').code_action,
+                               opts{ desc = 'Code action', requires = 'lspsaga' })
+   keymap.set(x, '<leader>la', require('lspsaga.codeaction').range_code_action,
+                               opts{ desc = 'Range code action', requires = 'lspsaga' })
+
+   -- }}}
+
+   -- Diagnostics {{{
+
+   -- keymap.set(n, '<leader>ll', vim.diagnostic.setloclist, opt{ desc = 'Diagnostics in loclist' })
+
+   keymap.set(n, '<leader>le', vim.diagnostic.open_float, opts{ desc = 'Show errors' })
+   keymap.set(n,    '[e',      vim.diagnostic.goto_prev,  opts{ desc = 'Previous diagnostic' })
+   keymap.set(n,    ']e',      vim.diagnostic.goto_next,  opts{ desc = 'Next diagnostic' })
+
+   -- -- Lspsaga
+   -- keymap.set(n, '<leader>le', cmd 'Lspsaga show_line_diagnostics',
+   --                     opt{ desc = 'Show diagnostic', requires = 'lspsaga' })
+   -- keymap.set(n, '[e', cmd 'Lspsaga diagnostic_jump_next',
+   --                     opt{ desc = 'Previous diagnostic', silent = true, requires = 'lspsaga' })
+   -- keymap.set(n, ']e', cmd 'Lspsaga diagnostic_jump_prev',
+   --                     opt{ desc = 'Next diagnostic', silent = true, requires = 'lspsaga' })
+
+   -- }}}
+
+   -- Hover doc
+   keymap.set(n, 'K', vim.lsp.buf.hover, opts{ desc = 'LSP: hover doc', ft_ignore = { 'vim' } })
+   -- keymap.set(n, 'K', cmd 'Lspsaga hover_doc', opts{ desc = 'LSP: hover doc', ft_ignore = { 'vim' }, requires = 'lspsaga' })
+
+   -- Signature help
+   -- <C-k> conflicts with vim windows and tmux panes navigation.
+   keymap.set(n, '<leader>ls', vim.lsp.buf.signature_help, opts{ desc = 'Show sinature help' })
+   -- keymap.set(n, '<leader>ls', cmd 'Lspsaga signature_help', opt{ desc = 'Show sinature help', requires = 'lspsaga' })
+
+   -- Type definition
+   keymap.set(n, '<leader>lt', vim.lsp.buf.type_definition, opts{ desc = 'LSP: type definition' })
+
+   -- Formatting
+   keymap.set(n, '<leader>lf', vim.lsp.buf.formatting, opts)
+
+   -- Workspace {{{
+   which_key.name(n, '<leader>lw', 'LSP: workspace')
+
+   keymap.set(n, '<leader>lwl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end,
+                                opts{ desc = 'List workspace folders' })
+   keymap.set(n, '<leader>lwa', vim.lsp.buf.add_workspace_folder,    opts{ desc = 'Add workspace folder' })
+   keymap.set(n, '<leader>lwr', vim.lsp.buf.remove_workspace_folder, opts{ desc = 'Remove workspace folder' })
+
+   --}}}
+
+   -- Lspsaga {{{
+
+   -- -- scroll down / up inside different preview windows
+   -- keymap.set(n, '<C-u>', function()
+   --       require('lspsaga.action').smart_scroll_with_saga(-1, '<c-u>')
+   --    end,
+   --    opt{ requires = 'lspsaga' })
+   --
+   -- keymap.set(n, '<C-d>', function()
+   --       require('lspsaga.action').smart_scroll_with_saga( 1, '<c-d>')
+   --    end,
+   --    opt{ requires = 'lspsaga' })
+
+   --}}}
+
 
 end --}}}
 
@@ -253,56 +268,71 @@ function M.treesitter_textobjects()
    }
 end --}}}
 
--- nvim-tree {{{
+-- File managment {{{
 function M.nvim_tree()
-   keymap.set(n, '<F3>', cmd 'NvimTreeToggle', {desc = 'Open file-explorer'})
+   -- NvimTreeToggle
+   -- NvimTreeRefresh
+   -- NvimTreeFindFile
+   -- NvimTreeOpen
+   -- NvimTreeClose
+   -- NvimTreeFocus
+   -- NvimTreeFindFileToggle
+   -- NvimTreeResize
+   -- NvimTreeCollapse
+   -- NvimTreeCollapseKeepBuffers
+   keymap.set(n, '<F3>', cmd 'NvimTreeToggle', { desc = 'Open file-tree', requires = 'nvim-tree' })
+end
 
-   -- local tree_cb = require'nvim-tree.config'.nvim_tree_callback
-   -- vim.g.nvim_tree_bindings = {
-   --    { key = '?', cb = tree_cb("toggle_help") }  -- help UI
-   -- }
+function M.neo_tree()
+   -- keymap.set('n', [[\]], '<cmd>Neotree reveal<cr>', { desc = 'Open file-explorer', requires = 'neo-tree' })
+   keymap.set('n', '<F3>', '<cmd>Neotree toggle reveal<cr>', { desc = 'Open file-tree', requires = 'neo-tree' })
+end
 
-end --}}}
-
--- nnn file manager {{{
+-- nnn (file manager)
 function M.nnn()
-   keymap.set(n, '<F4>', cmd 'NnnPicker', {desc = 'Open file-explorer'})
-   -- keymap.set(n, '<F3>', cmd 'NnnExplorer', {desc = 'Open file-explorer'})
-end --}}}
+   keymap.set(n, '<F4>', cmd 'NnnPicker', { desc = 'Open file-tree' })
+   -- keymap.set(n, '<F3>', cmd 'NnnExplorer', { desc = 'Open file-explorer' })
+end
+--}}}
 
 -- Barbar (tabline) {{{
 function M.barbar()
-   local opts = { silent = true }
 
-   -- Move to previous/next
-   keymap.set(n, '<A-,>', cmd 'BufferPrevious', opts)
-   keymap.set(n, '<A-.>', cmd 'BufferNext', opts)
+   local opt = setmetatable({ --{{{
+      silent = true
+   }, {
+      __call = function (self, opt)
+         for key, value in pairs(opt) do
+            self[key] = value
+         end
+         return self
+      end
+   }) --}}}
+
+   -- Keys with '<', '>': move to previous/next
+   keymap.set(n, '<A-,>', cmd 'BufferPrevious', opt)
+   keymap.set(n, '<A-.>', cmd 'BufferNext', opt)
+
    -- Re-order to previous/next
-   keymap.set(n, '<A-<>', cmd 'BufferMovePrevious', opts)
-   keymap.set(n, '<A->>', cmd 'BufferMoveNext', opts)
-   -- Goto buffer in position...
-   keymap.set(n, '<A-1>', cmd 'BufferGoto 1', opts)
-   keymap.set(n, '<A-2>', cmd 'BufferGoto 2', opts)
-   keymap.set(n, '<A-3>', cmd 'BufferGoto 3', opts)
-   keymap.set(n, '<A-4>', cmd 'BufferGoto 4', opts)
-   keymap.set(n, '<A-5>', cmd 'BufferGoto 5', opts)
-   keymap.set(n, '<A-6>', cmd 'BufferGoto 6', opts)
-   keymap.set(n, '<A-7>', cmd 'BufferGoto 7', opts)
-   keymap.set(n, '<A-8>', cmd 'BufferGoto 8', opts)
-   keymap.set(n, '<A-9>', cmd 'BufferLast', opts)
+   keymap.set(n, '<A-<>', cmd 'BufferMovePrevious', opt)
+   keymap.set(n, '<A->>', cmd 'BufferMoveNext', opt)
+
    -- Close buffer
-   keymap.set(n, '<A-c>', cmd 'BufferClose', opts)
+   keymap.set(n, '<A-c>', cmd 'BufferClose', opt)
+
    -- Wipeout buffer
    --                          BufferWipeout
    -- Close commands
    --                          BufferCloseAllButCurrent
    --                          BufferCloseBuffersLeft
    --                          BufferCloseBuffersRight
+
    -- Magic buffer-picking mode
-   keymap.set(n, '<C-s>',    cmd 'BufferPick', opts)
+   keymap.set(n, '<C-s>',    cmd 'BufferPick', opt)
+
    -- Sort automatically by...
-   keymap.set(n, '<Space>bd', cmd 'BufferOrderByDirectory', opts)
-   keymap.set(n, '<Space>bl', cmd 'BufferOrderByLanguage', opts)
+   keymap.set(n, '<Space>bd', cmd 'BufferOrderByDirectory', opt)
+   keymap.set(n, '<Space>bl', cmd 'BufferOrderByLanguage', opt)
 
    -- Other:
    -- :BarbarEnable - enables barbar (enabled by default)
@@ -322,4 +352,4 @@ end -- }}}
 
 return M
 
--- vim: fdm=marker
+-- vim: fml=1 fdm=marker
