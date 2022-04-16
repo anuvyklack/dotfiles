@@ -71,9 +71,8 @@ require('packer').startup(function()
 
    --                          Key Mappings                              {{{
    -------------------------------------------------------------------------
-   -- Not work in 0.7 yet.
    use { 'xiyaowong/which-key.nvim',
-   -- use { 'folke/which-key.nvim',
+   -- use { 'folke/which-key.nvim', -- original
       as = 'which-key', -- WhichKey
       config = function () require('which-key').setup {
          plugins = {
@@ -319,6 +318,14 @@ require('packer').startup(function()
    --                          Text editing                              {{{
    -------------------------------------------------------------------------
 
+   -- Makes *-operator works the way it should by default.
+   use { 'haya14busa/vim-asterisk', as = 'asterisk', --{{{
+      config = function()
+         vim.g['asterisk#keeppos'] = 0 -- Keep cursor position inside word between jumps.
+         require('keybindings').asterisks()
+      end
+   } --}}}
+
    -- use 'matze/vim-move'       -- перемещение строк и частей строк
    use { 'booperlv/nvim-gomove', as = 'gomove', --{{{
       config = function() require("gomove").setup({
@@ -333,26 +340,26 @@ require('packer').startup(function()
                               -- buffers, add blank lines, etc.
    use 'junegunn/vim-easy-align'
 
-    -- Comments {{{
+   -- Comments {{{
 
-    -- Also define `gc` - comment textobject.
-    -- Doesn't work in visual mode. Works in operator mode (:help mapmode-o).
-    use { 'echasnovski/mini.nvim', --{{{
-       config = function()
-          require('mini.comment').setup{}
-          --
-          require('which-key').register {
-             gc = { name = 'Comment' },
-             gcc = 'Comment out current line',
-             ['gc*'] = "which_key_ignore",
-             ['gc#'] = "which_key_ignore",
-          }
-       end
-    } --}}}
+   -- -- Also define `gc` - comment textobject.
+   -- -- Doesn't work in visual mode. Works in operator mode (:help mapmode-o).
+   -- use { 'echasnovski/mini.nvim', --{{{
+   --    config = function()
+   --       require('mini.comment').setup{}
+   --       --
+   --       require('which-key').register {
+   --          gc = { name = 'Comment' },
+   --          gcc = 'Comment out current line',
+   --          ['gc*'] = "which_key_ignore",
+   --          ['gc#'] = "which_key_ignore",
+   --       }
+   --    end
+   -- } --}}}
 
-    -- use 'tomtom/tcomment_vim'
+   use 'tomtom/tcomment_vim'
 
-    -- }}}
+   -- }}}
 
    -- Surround {{{
 
@@ -372,14 +379,6 @@ require('packer').startup(function()
    -- }
 
    -- }}}
-
-   -- Makes *-operator works the way it should by default.
-   use { 'haya14busa/vim-asterisk', as = 'asterisk', --{{{
-      config = function()
-         vim.g['asterisk#keeppos'] = 0 -- Keep cursor position inside word between jumps.
-         require('keybindings').asterisks()
-      end
-   } --}}}
 
    -- use { 'kevinhwang91/nvim-hlslens', as = 'hlslens',
    --    config = function() require('plugins_config/hlslens') end
@@ -506,30 +505,36 @@ require('packer').startup(function()
    --    end
    -- } --}}}
 
-   -- use { 'beauwilliams/focus.nvim', --{{{
-   --    -- cmd = { "FocusSplitNicely", "FocusSplitCycle" }, module = "focus",
-   --    config = function() require('focus').setup {
-   --       -- Prevents focus automatically resizing windows based on configured
-   --       -- excluded filetypes or buftypes.
-   --       excluded_filetypes = { 'toggleterm', 'qf' },
-   --       excluded_buftypes = {
-   --          'quickfix', 'nofile', 'prompt', 'popup', -- Default, should always be.
-   --       },
-   --       -- Enable resizing for excluded filetypes using forced_filetypes.
-   --       forced_filetypes = {}, -- 'dan_repl'
-   --       --
-   --       -- Displays line numbers in the focussed window only and
-   --       -- not display in unfocussed windows.
-   --       number = false,
-   --       cursorline = false,
-   --       cursorcolumn = false
-   --    } end
-   -- } --}}}
+   use { 'beauwilliams/focus.nvim', --{{{
+      -- cmd = { "FocusSplitNicely", "FocusSplitCycle" }, module = "focus",
+      config = function() require('focus').setup {
+         -- Prevents focus automatically resizing windows based on configured
+         -- excluded filetypes or buftypes.
+         excluded_filetypes = { 'toggleterm', 'qf' },
+         excluded_buftypes = {
+            'quickfix', 'nofile', 'prompt', 'popup', -- Default, should always be.
+         },
+         -- Enable resizing for excluded filetypes using forced_filetypes.
+         forced_filetypes = {}, -- 'dan_repl'
+         --
+         -- Displays line numbers in the focussed window only and
+         -- not display in unfocussed windows.
+         signcolumn = false,
+         number = false,
+         cursorline = false,
+         cursorcolumn = false
+      } end
+   } --}}}
 
    ----------------------------------------------------------------------}}}
 
    --                            Movements                               {{{
    -------------------------------------------------------------------------
+
+   -- Make vim treat all word delimiters like it treats spaces (for word motions).
+   -- use 'kana/vim-smartword'
+   use { '~/code/neovim_plugins/vim-smartword' }
+
 
    -- use { 'easymotion/vim-easymotion', as = 'easymotion', --{{{
    --    config = function()
@@ -751,9 +756,7 @@ require('packer').startup(function()
    --    end
    -- } --}}}
 
-   use { 'kevinhwang91/nvim-bqf', as = 'better-quickfix',
-      ft = 'qf'
-   }
+   use { 'kevinhwang91/nvim-bqf', as = 'better-quickfix' }
 
    use { 'https://gitlab.com/yorickpeterse/nvim-pqf', as = 'pretty-quickfix', --{{{
       config = function() require('pqf').setup {
@@ -954,7 +957,7 @@ require('packer').startup(function()
       config = function() require('plugins_config/neorg') end
    }
 
---    ----------------------------------------------------------------------}}}
+   ----------------------------------------------------------------------}}}
 
    --                         Tmux integration                           {{{
    -------------------------------------------------------------------------

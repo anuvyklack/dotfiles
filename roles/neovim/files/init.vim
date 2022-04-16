@@ -66,7 +66,7 @@ syntax enable   " Включить подсветку синтаксиса
 " ========================================================================
 
 set foldmethod=marker
-" set foldmethod=expr     " use folding based on treesitter
+" set foldmethod=expr     " use folding based on treesitter by default
 set foldexpr=nvim_treesitter#foldexpr()
 
 set foldcolumn=auto:2
@@ -94,7 +94,6 @@ elseif has('win32')
     let g:python3_host_prog = 'C:/scoop/apps/miniconda3/current/python.exe'
     let g:python_host_prog  = 'C:/scoop/apps/miniconda2/current/envs/nvimpy2/python.exe'
 endif
-
 " }}}
 
 " Clipboard                                                            {{{
@@ -408,7 +407,7 @@ command! W w
 " nnoremap <expr> zz "zz" . (winheight(0) * 0.1)->float2nr() . "<c-e>"
 
 " Копировать, вставить
-" vnoremap <silent> <C-c> "+y <cmd>let @*=@+<CR>
+" vnoremap <silent> <C-c> "+y <Cmd>let @*=@+<CR>
 nnoremap yc    "+y
 nnoremap ycc   "+yy
 nnoremap <C-c> "+y
@@ -424,7 +423,7 @@ noremap H ^
 noremap L $
 
 " Отключить подсветку только что найденного текста
-nnoremap <silent> <Esc> <cmd>nohlsearch<CR><Esc>
+nnoremap <silent> <Esc> <Cmd>nohlsearch<CR><Esc>
 
 
 " При нажатии <Enter> вставлять пустую сроку снизу если буфер имеет
@@ -464,7 +463,7 @@ map vv <C-W>v
 " map ss <C-W>s
 
 " Close preview window if exists, else close current window
-map <silent> Q <cmd>call CloseWindow()<CR>
+map <silent> Q <Cmd>call CloseWindow()<CR>
 function! CloseWindow() "{{{
     if bufexists("[Command Line]")
         close  " Close command line window like q:, q/, q? etc.
