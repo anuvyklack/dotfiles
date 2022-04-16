@@ -855,19 +855,30 @@ require('packer').startup(function()
    --                           File manager                             {{{
    -------------------------------------------------------------------------
 
-   use { 'kyazdani42/nvim-tree.lua',
-      requires = 'kyazdani42/nvim-web-devicons',
-      config = function() require('plugins_config/nvim-tree') end
+   -- use { 'kyazdani42/nvim-tree.lua',
+   --    requires = 'kyazdani42/nvim-web-devicons',
+   --    config = function() require('plugins_config/nvim-tree') end
+   -- }
+
+   use { "nvim-neo-tree/neo-tree.nvim",
+      branch = "v2.x",
+      requires = {
+         'nvim-lua/plenary.nvim',
+         'kyazdani42/nvim-web-devicons',
+         'MunifTanjim/nui.nvim'
+      },
+      config = function() require('plugins_config/neo-tree') end
    }
 
-   -- use { 'elihunter173/dirbuf.nvim', --{{{
-   --    config = function()
-   --      require('dirbuf').setup {
-   --          hash_padding = 2,
-   --          show_hidden = true,
-   --      }
-   --    end
-   -- } --}}}
+   use { 'elihunter173/dirbuf.nvim', --{{{
+      config = function()
+        require('dirbuf').setup {
+           sort_order = "directories_first",
+           show_hidden = false,
+           hash_padding = 2,
+        }
+      end
+   } --}}}
 
    -- use { 'tamago324/lir.nvim', as = 'lir-filemanager', --{{{
    --    requires = {

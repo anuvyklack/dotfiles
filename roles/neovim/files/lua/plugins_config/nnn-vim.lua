@@ -10,6 +10,7 @@ vim.env.NNN_PLUG = 'z:autojump'
 -- end
 
 nnn.setup({
+   replace_netrw = 0,
    -- command = "nnn -oCG",
    command = "nnn -oC", -- -G - show git status
    session = 'local', -- Use n³ sessions to remember the location when it is reopened.
@@ -21,7 +22,6 @@ nnn.setup({
          highlight = 'Comment'
       }
    },
-   replace_netrw = 1,
    set_default_mappings = 0,
    action = {
       ["<C-t>"] = "tab split",
