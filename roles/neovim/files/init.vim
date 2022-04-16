@@ -50,8 +50,7 @@ set timeoutlen=1000 " Время в мс в течении которого Vim 
                     " многосимвольной команды.
 
 " set completeopt-=preview  " Not to show preview window on complection
-set completeopt=menuone,noselect
-" set completeopt=menu,menuone,noselect
+set completeopt=menu,menuone,noselect
 
 set title
 set titlestring=%t  " tile

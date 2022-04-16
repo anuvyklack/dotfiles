@@ -1,66 +1,76 @@
+local cmp = require('cmp')
+local cmp_types = require("cmp.types")
+local cmp_str = require("cmp.utils.str")
 local api = vim.api
-
-local available_cmp, cmp = pcall(require, 'cmp')
 local available_luasnip, luasnip = pcall(require, 'luasnip')
-if not available_cmp and not available_luasnip then return end
+
+if not available_luasnip then return end
 
 local function has_words_before()
    local line, col = unpack(api.nvim_win_get_cursor(0))
    return col ~= 0 and api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
-local function tab(fallback)
-   if cmp.visible() then
-      cmp.select_next_item()
-   -- elseif luasnip.expand_or_jumpable() then
-   elseif luasnip.expand_or_locally_jumpable() then
-      luasnip.expand_or_jump()
-   elseif has_words_before() then
-      cmp.complete()
-   else
-      fallback()
+local custom_mapping = {
+   select_next = function(fallback)
+      if cmp.visible() then
+         cmp.select_next_item()
+      -- elseif luasnip.expand_or_jumpable() then
+      elseif luasnip.expand_or_locally_jumpable() then
+         luasnip.expand_or_jump()
+      elseif has_words_before() then
+         cmp.complete()
+      else
+         fallback()
+      end
+   end,
+   select_prev = function(fallback)
+      if cmp.visible() then
+         cmp.select_prev_item()
+      elseif luasnip.jumpable(-1) then
+         luasnip.jump(-1)
+      else
+         fallback()
+      end
    end
-end
-
-local function shift_tab(fallback)
-   if cmp.visible() then
-      cmp.select_prev_item()
-   elseif luasnip.jumpable(-1) then
-      luasnip.jump(-1)
-   else
-      fallback()
-   end
-end
+}
 
 cmp.setup {
    snippet = {
       expand = function(args)
-         luasnip.lsp_expand(args.body) -- For `luasnip` users.
+         luasnip.lsp_expand(args.body)
       end,
    },
+   window = {
+      -- completion = cmp.config.window.bordered(),
+      -- documentation = vim.tbl_extend('force', cmp.config.window.bordered(), {
+      --    max_width = 100
+      -- }),
+      documentation = {
+         max_width = 90
+      }
+   },
    mapping = {
-      ['<C-p>'] = cmp.mapping.select_prev_item(),
-      ['<C-n>'] = cmp.mapping.select_next_item(),
+      ['<Down>'] = cmp.mapping.select_next_item({ behavior = 'insert' }),
+      ['<Up>']   = cmp.mapping.select_prev_item({ behavior = 'insert' }),
 
-      ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), {'i','c'}),
-      ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), {'i','c'}),
-      ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), {'i','c'}),
-
-      -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
-      ['<C-y>'] = cmp.config.disable,
-
-      -- ['<Esc>'] = cmp.mapping({
-      ['<C-e>'] = cmp.mapping({
-         i = cmp.mapping.abort(),
-         c = cmp.mapping.close(),
-      }),
+      ["<Tab>"]   = cmp.mapping(custom_mapping.select_next, {'i','s'}),
+      ["<S-Tab>"] = cmp.mapping(custom_mapping.select_prev, {'i','s'}),
 
       -- Accept currently selected item. Set `select` to `false`
       -- to only confirm explicitly selected items.
       ['<CR>'] = cmp.mapping.confirm({ select = true }),
+      ['<C-y>'] = cmp.mapping.confirm({ select = false }),
 
-      ["<Tab>"] = cmp.mapping(tab, {'i','s'}),
-      ["<S-Tab>"] = cmp.mapping(shift_tab, {'i','s'}),
+      -- ['<Esc>'] = cmp.mapping.abort(),
+      ['<C-Space>'] = cmp.mapping.abort(),
+      ['<C-e>'] = cmp.mapping.abort(),
+
+      -- Scroll docs windows.
+      ['<C-d>'] = cmp.mapping.scroll_docs(4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-u>'] = cmp.mapping.scroll_docs(-4),
    },
 
    -- If you are interested in why sources are separated into two groups - this
@@ -72,13 +82,21 @@ cmp.setup {
    --   :help cmp-config.sources
    --   :help cmp-config.sources[n].group_index
    sources = cmp.config.sources({
-      { name = 'path' },
+      { name = 'path',
+        option = {
+           -- Specify if completed directory names should include a trailing
+           -- slash. Enabling this option makes this source behave like Vim's
+           -- built-in path completion.
+           trailing_slash = true  -- default: false
+        }
+      },
       { name = 'nvim_lsp' },
       { name = 'luasnip' },
       { name = 'nvim_lua' }, -- Neovim's Lua runtime API such 'vim.lsp.*'
    },{
       { name = 'buffer',
         option = {
+           -- Use all buffers for completion.
            get_bufnrs = function()
               return api.nvim_list_bufs()
            end
@@ -89,20 +107,6 @@ cmp.setup {
       -- },
    }),
 
-   completion = {
-      border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
-      scrollbar = "║"
-   },
-   window = {
-      documentation = {
-         border = "rounded",
-         scrollbar = "║",
-      },
-      completion = {
-         border = "rounded",
-         scrollbar = "║",
-      },
-   },
    formatting = {
       fields = {
          cmp.ItemField.Abbr,
@@ -110,11 +114,11 @@ cmp.setup {
          cmp.ItemField.Menu,
       },
       format = require('lspkind').cmp_format({  -- lspkind icons
-         with_text = false, -- enables text annotations
+         with_text = true, -- Show text annotations besides icons.
 
-         -- Prevent the popup from showing more than provided characters.
-         -- (e.g 50 will not show more than 50 characters)
-         maxwidth = 50,
+         -- -- Prevent the popup from showing more than provided characters.
+         -- -- (e.g 50 will not show more than 50 characters)
+         -- maxwidth = 50,
 
          -- menu = ({
          --    buffer   = "｢Buffer｣",
@@ -135,17 +139,79 @@ cmp.setup {
    },
 }
 
--- Use buffer source for `/`
--- (if you enabled `native_menu`, this won't work anymore).
+-- cmp.setup.filetype('gitcommit', {
+--    sources = cmp.config.sources({
+--       { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
+--    }, {
+--       { name = 'buffer' },
+--    })
+-- })
+
+cmp.setup.filetype('norg', {
+   window = {
+      completion = cmp.config.window.bordered(),
+      documentation = cmp.config.window.bordered(),
+   },
+   formatting = {
+      fields = {
+         cmp.ItemField.Kind,
+         cmp.ItemField.Abbr,
+         cmp.ItemField.Menu,
+      },
+      format = require('lspkind').cmp_format({  -- lspkind icons
+         with_text = false,
+         before = function(entry, vim_item)
+            -- Get the full snippet (and only keep first line)
+            local word = entry:get_insert_text()
+            if entry.completion_item.insertTextFormat == cmp_types.lsp.InsertTextFormat.Snippet
+            then
+               word = vim.lsp.util.parse_snippet(word)
+            end
+            word = cmp_str.oneline(word)
+
+            -- concatenates the string
+            -- local max = 50
+            -- if string.len(word) >= max then
+            --    local before = string.sub(word, 1, math.floor((max - 3) / 2))
+            --    word = before .. "..."
+            -- end
+
+            if entry.completion_item.insertTextFormat == cmp_types.lsp.InsertTextFormat.Snippet
+               and string.sub(vim_item.abbr, -1, -1) == "~"
+            then
+               word = word .. "~"
+            end
+            vim_item.abbr = word
+
+            return vim_item
+         end
+      })
+   },
+   sources = cmp.config.sources({
+      { name = 'path' },
+      { name = 'neorg' }
+   },{
+      { name = 'buffer',
+        option = {
+           get_bufnrs = function()
+              return vim.api.nvim_list_bufs()
+           end
+        },
+      }
+   }),
+})
+
+-- `/` cmdline setup.
 cmp.setup.cmdline('/', {
+   mapping = cmp.mapping.preset.cmdline(),
    sources = {
-      { name = 'buffer' }
+      { name = 'buffer' }  -- Use buffer source for `/`
    }
 })
 
--- Use cmdline & path source for ':'
--- (if you enabled `native_menu`, this won't work anymore).
+-- `:` cmdline setup.
 cmp.setup.cmdline(':', {
+   mapping = cmp.mapping.preset.cmdline(),
    sources = cmp.config.sources({
       { name = 'path' }
    },{
@@ -169,14 +235,14 @@ cmp.setup.cmdline(':', {
 --     -- capacity = 5,
 -- })
 
-local available_autopairs, autopairs_cmp = pcall(require, 'nvim-autopairs.completion.cmp')
+local available_autopairs, autopairs_cmp = pcall(require, 'nvim-autopairs/completion/cmp')
 if available_autopairs then
    -- If you want insert `(` after select function or method item
-   cmp.event:on( 'confirm_done', autopairs_cmp.on_confirm_done{
+   cmp.event:on('confirm_done', autopairs_cmp.on_confirm_done{
       map_char = {
          tex = ''
       }
    })
 end
 
--- vim: fml=3 foldnestmax=3
+-- vim: fml=2 foldnestmax=3
