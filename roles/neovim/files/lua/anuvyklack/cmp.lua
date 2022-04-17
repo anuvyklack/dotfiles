@@ -57,6 +57,9 @@ cmp.setup {
       ["<Tab>"]   = cmp.mapping(custom_mapping.select_next, {'i','s'}),
       ["<S-Tab>"] = cmp.mapping(custom_mapping.select_prev, {'i','s'}),
 
+      ['<C-j>'] = cmp.mapping.select_next_item({ behavior = 'insert' }),
+      ['<C-k>'] = cmp.mapping.select_prev_item({ behavior = 'insert' }),
+
       -- Accept currently selected item. Set `select` to `false`
       -- to only confirm explicitly selected items.
       ['<CR>'] = cmp.mapping.confirm({ select = true }),
@@ -71,6 +74,14 @@ cmp.setup {
       ['<C-f>'] = cmp.mapping.scroll_docs(4),
       ['<C-b>'] = cmp.mapping.scroll_docs(-4),
       ['<C-u>'] = cmp.mapping.scroll_docs(-4),
+
+      ['<C-l>'] = cmp.mapping(function(fallback)
+         if cmp.visible() then
+            return cmp.complete_common_string()
+         end
+         fallback()
+      end, { 'i', 'c' }),
+
    },
 
    -- If you are interested in why sources are separated into two groups - this
@@ -87,7 +98,7 @@ cmp.setup {
            -- Specify if completed directory names should include a trailing
            -- slash. Enabling this option makes this source behave like Vim's
            -- built-in path completion.
-           trailing_slash = true  -- default: false
+           trailing_slash = false  -- default: false
         }
       },
       { name = 'nvim_lsp' },
@@ -114,7 +125,8 @@ cmp.setup {
          cmp.ItemField.Menu,
       },
       format = require('lspkind').cmp_format({  -- lspkind icons
-         with_text = true, -- Show text annotations besides icons.
+          -- Options: 'text', 'text_symbol', 'symbol_text', 'symbol'
+          mode = 'symbol_text', -- Show text annotations besides icons.
 
          -- -- Prevent the popup from showing more than provided characters.
          -- -- (e.g 50 will not show more than 50 characters)
@@ -206,6 +218,11 @@ cmp.setup.cmdline('/', {
    mapping = cmp.mapping.preset.cmdline(),
    sources = {
       { name = 'buffer' }  -- Use buffer source for `/`
+   },
+   formatting = {
+      fields = {
+         cmp.ItemField.Abbr,
+      },
    }
 })
 

@@ -8,6 +8,12 @@ require('lspsaga').setup {
    diagnostic_header_icon = '  ', --  
 
    code_action_icon = ' ',
+   code_action_prompt = {
+      enable = true,
+      sign = true,
+      sign_priority = 40,
+      virtual_text = false,
+   },
 
    rename_prompt_prefix = '', -- ➤ 
 
@@ -37,6 +43,10 @@ require('lspsaga').setup {
       exec = '<CR>'
    },
 
+   server_filetype_map = {},
+   diagnostic_prefix_format = "%d. ",
+   diagnostic_message_format = "%m %c",
+   highlight_prefix = false,
 }
 
 --    襁         diff             This symbols take two places if the could.

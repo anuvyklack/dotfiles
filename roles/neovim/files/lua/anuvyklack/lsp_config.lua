@@ -1,5 +1,7 @@
 local lsp_installer = require("nvim-lsp-installer")
 local lsputil = require("lspconfig").util
+local available_virtypes, virtualtypes = pcall(require, 'virtualtypes')
+local available_illuminate, illuminate = pcall(require, 'illuminate')
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 local available_cmp, cmp_nvim_lsp = pcall(require, 'cmp_nvim_lsp')
@@ -12,9 +14,13 @@ local function on_attach(client, bufnr)
    vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
    vim.bo[bufnr].formatexpr = 'v:lua.vim.lsp.formatexpr()'
 
-   require('virtualtypes').on_attach()
+   if available_virtypes then
+      virtualtypes.on_attach()
+   end
 
-   require('illuminate').on_attach(client)
+   if available_illuminate then
+      illuminate.on_attach(client)
+   end
 
    -- Load lsp keybindings.
    require("keybindings").lspconfig(bufnr)

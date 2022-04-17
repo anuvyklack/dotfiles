@@ -1,25 +1,23 @@
 " Colors {{{
 
-" grey0   #7c6f64
-" grey1   #928374
-" grey2   #a89984
-
-" fg0     #e2cca9
-" red     #f2594b
-" orange  #f28534
-" yellow  #e9b143
-" green   #b0b846
-" aqua    #8bba7f
-" blue    #80aa9e
-" purple  #d3869b
-" bg_red  #db4740
-
-" bg0     #32302f
-" bg1     #3c3836
-" bg2     #3c3836
-" bg3     #504945
-" bg4     #504945
-" bg5     #665c54
+" fg0        #e2cca9   bg0               #32302f
+" fg1        #e2cca9   bg1               #3c3836
+"                      bg2               #3c3836
+" grey0      #7c6f64   bg3               #504945
+" grey1      #928374   bg4               #504945
+" grey2      #a89984   bg5               #665c54
+"                      bg_current_word   #45403d
+" aqua       #8bba7f   bg_diff_blue      #0f3a42
+" blue       #80aa9e   bg_diff_green     #3d4220
+" green      #b0b846   bg_diff_red       #472322
+" orange     #f28534
+" purple     #d3869b   bg_statusline1    #3c3836
+" red        #f2594b   bg_statusline2    #46413e
+" yellow     #e9b143   bg_statusline3    #5b534d
+"                      bg_visual_blue    #404946
+" bg_yellow  #e9b143   bg_visual_green   #424a3e
+" bg_green   #b0b846   bg_visual_red     #543937
+" bg_red     #db4740   bg_visual_yellow  #574833
 
 " }}}
 " Cursor {{{
@@ -75,6 +73,9 @@ highlight HopNextKey2  guifg=#e3a84e
 " highlight! LspReferenceText guibg=#423d3a
 " highlight! link LspReferenceWrite LspReferenceText
 " highlight! link LspReferenceRead  LspReferenceText
+
+" highlight! link LspSagaLightBulbSign Orange
+highlight! link LspSagaLightBulbSign Yellow
 
 " }}}
 " LSP signature {{{
@@ -165,6 +166,11 @@ highlight FidgetTask guifg=#b8a78c
 " highlight! link FloatTitle Grey
 " highlight! FloatTitle guifg=#a89984
 highlight! link FloatTitle Normal
+
+" }}}
+" Nvim Tree {{{
+
+" highlight! link NvimTreeOpenedFile Blue
 
 " }}}
 

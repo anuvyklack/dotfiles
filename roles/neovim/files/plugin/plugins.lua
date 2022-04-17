@@ -54,13 +54,7 @@ require('packer').init { --{{{
 } --}}}
 
 -- -- Auto compile when there are changes in plugins.lua
--- -- vim.cmd 'autocmd BufWritePost plugins.lua PackerCompile'
--- vim.cmd [[
---   augroup Packer
---     autocmd!
---     autocmd BufWritePost plugins.lua PackerCompile
---   augroup end
--- ]]
+-- vim.cmd 'autocmd BufWritePost plugins.lua PackerCompile'
 
 -----------------------------------------------------------------------------}}}
 
@@ -117,7 +111,7 @@ require('packer').startup(function()
          {'p00f/nvim-ts-rainbow',                        as = 'treesitter-rainbow'},
       },
       run = ':TSUpdate',
-      config = function() require('plugins_config/treesitter') end
+      config = function() require('anuvyklack/treesitter') end
    }
    ----------------------------------------------------------------------}}}
 
@@ -125,7 +119,7 @@ require('packer').startup(function()
    -------------------------------------------------------------------------
 
    use { 'neovim/nvim-lspconfig', as = 'lspconfig', --{{{
-      config = function() require 'plugins_config/lsp_config' end,
+      config = function() require 'anuvyklack/lsp_config' end,
       requires = {
          {  -- LSP servers installer.
             'williamboman/nvim-lsp-installer', as = 'lsp-installer'
@@ -137,7 +131,6 @@ require('packer').startup(function()
    } --}}}
 
    use { 'tami5/lspsaga.nvim', as = 'lspsaga', --{{{
-      config = function() require('plugins_config/lspsaga') end
    } --}}}
 
    use { 'weilbith/nvim-code-action-menu', as = 'code-action-menu',
@@ -160,7 +153,7 @@ require('packer').startup(function()
 
    -- Lsp signature hint when you type.
    use { 'ray-x/lsp_signature.nvim', as = 'lsp-signature',
-      config = function() require('plugins_config/lsp_signature') end
+      config = function() require('anuvyklack/lsp_signature') end
    }
 
    use { 'j-hui/fidget.nvim', -- {{{
@@ -201,17 +194,17 @@ require('packer').startup(function()
    use { 'folke/trouble.nvim', --{{{
       requires = 'kyazdani42/nvim-web-devicons',
       cmd = {'Trouble', 'TroubleToggle'},
-      config = function() require('plugins_config/trouble') end
+      config = function() require('anuvyklack/trouble') end
    } --}}}
 
    use { 'liuchengxu/vista.vim',
-      config = function() vim.cmd 'source ~/.config/nvim/lua/plugins_config/vista.vim' end
+      config = function() vim.cmd 'source ~/.config/nvim/lua/anuvyklack/vista.vim' end
    }
 
    -- use { 'simrat39/symbols-outline.nvim', as = 'symbols-outline', --{{{
    --    config = function()
-   --       require('plugins_config/symbols-outline')
-   --       vim.cmd 'source ~/.config/nvim/lua/plugins_config/symbols-outline.vim'
+   --       require('anuvyklack/symbols-outline')
+   --       vim.cmd 'source ~/.config/nvim/lua/anuvyklack/symbols-outline.vim'
    --    end
    -- } --}}}
 
@@ -255,18 +248,18 @@ require('packer').startup(function()
    -- cmp {{{
 
    use { 'L3MON4D3/LuaSnip',
-      config = function() require('plugins_config/luasnip') end,
+      config = function() require('anuvyklack/luasnip') end,
    }
 
    -- The community driven  collection of snippets.
    -- use { 'rafamadriz/friendly-snippets' }
 
    use { 'hrsh7th/nvim-cmp', as = 'cmp',
-      config = function() require('plugins_config/cmp') end,
+      config = function() require('anuvyklack/cmp') end,
       requires = {
          {  -- Icons in completion menu.
             'onsails/lspkind-nvim', as = 'lspkind',
-            config = function() require('plugins_config/lspkind') end
+            config = function() require('anuvyklack/lspkind') end
          },
          'saadparwaiz1/cmp_luasnip', -- source for LuaSnip snippet plugin
          'hrsh7th/cmp-nvim-lsp', -- source for neovim's Lua runtime API such 'vim.lsp.*'
@@ -290,8 +283,8 @@ require('packer').startup(function()
    --          'ms-jpq/coq.thirdparty', branch = '3p'
    --       }
    --    },
-   --    setup  = function() require('plugins_config/coq_nvim').setup() end,
-   --    config = function() require('plugins_config/coq_nvim').config() end,
+   --    setup  = function() require('anuvyklack/coq_nvim').setup() end,
+   --    config = function() require('anuvyklack/coq_nvim').config() end,
    -- }
    -- --}}}
    --
@@ -303,7 +296,7 @@ require('packer').startup(function()
    --    },
    --    run = ':UpdateRemotePlugins',
    --    event = 'CmdlineEnter',
-   --    config = function() vim.cmd("source ~/.config/nvim/lua/plugins_config/wilder.vim") end
+   --    config = function() vim.cmd("source ~/.config/nvim/lua/anuvyklack/wilder.vim") end
    -- }
    -- --}}}
 
@@ -381,14 +374,14 @@ require('packer').startup(function()
    -- }}}
 
    -- use { 'kevinhwang91/nvim-hlslens', as = 'hlslens',
-   --    config = function() require('plugins_config/hlslens') end
+   --    config = function() require('anuvyklack/hlslens') end
    -- }
 
    -- Подсвечивать и удалять висящие пробелы в конце строк
    use { 'ntpeters/vim-better-whitespace', as = 'better-whitespace', --{{{
       config = function()
-         -- vim.cmd("exe 'source'..stdpath('config')..'/lua/plugins_config/better-whitespace.vim'")
-         vim.cmd "source ~/.config/nvim/lua/plugins_config/better-whitespace.vim"
+         -- vim.cmd("exe 'source'..stdpath('config')..'/lua/anuvyklack/better-whitespace.vim'")
+         vim.cmd "source ~/.config/nvim/lua/anuvyklack/better-whitespace.vim"
       end
    } --}}}
 
@@ -538,7 +531,7 @@ require('packer').startup(function()
 
    -- use { 'easymotion/vim-easymotion', as = 'easymotion', --{{{
    --    config = function()
-   --       vim.cmd("source ~/.config/nvim/lua/plugins_config/easymotion.vim")
+   --       vim.cmd("source ~/.config/nvim/lua/anuvyklack/easymotion.vim")
    --    end
    -- } --}}}
 
@@ -574,7 +567,7 @@ require('packer').startup(function()
    -- } --}}}
 
    use { 'karb94/neoscroll.nvim',
-      config = function() require('plugins_config/neoscroll') end
+      config = function() require('anuvyklack/neoscroll') end
    }
 
    ----------------------------------------------------------------------}}}
@@ -595,6 +588,10 @@ require('packer').startup(function()
 
    --                           IDE features                             {{{
    -------------------------------------------------------------------------
+
+   -- use { 'sidebar-nvim/sidebar.nvim',
+   --    config = function() require('anuvyklack/sidebar') end
+   -- }
 
    -- Litee {{{
 
@@ -668,7 +665,7 @@ require('packer').startup(function()
          }
          -- 'famiu/bufdelete.nvim',
       },
-      config = function() require('plugins_config/telescope') end,
+      config = function() require('anuvyklack/telescope') end,
    } --}}}
    -------------------------------------------------------------------------
 
@@ -719,10 +716,11 @@ require('packer').startup(function()
    --    end
    -- } --}}}
 
-   use { 'anuvyklack/pretty-fold.nvim', as = 'pretty-fold', -- {{{
-      -- branch = 'nightly',
+   -- use { 'anuvyklack/pretty-fold.nvim', as = 'pretty-fold', -- {{{
+   --    branch = 'nightly',
    -- use { '~/code/neovim_plugins/pretty-fold.nvim', as = 'pretty-fold',
-      config = function() require('plugins_config/pretty-fold') end
+   use { '~/code/neovim_plugins/pretty-fold-nightly', as = 'pretty-fold-nightly',
+      config = function() require('anuvyklack/pretty-fold') end
    } --}}}
 
    use { 'sindrets/diffview.nvim',
@@ -785,7 +783,7 @@ require('packer').startup(function()
    -- -- TODO Need to rewrite in lua.
    -- use { 'camspiers/lens.vim', --{{{
    --    requires = 'camspiers/animate.vim',
-   --    config = function() vim.cmd("source ~/.config/nvim/lua/plugins_config/lens.vim") end
+   --    config = function() vim.cmd("source ~/.config/nvim/lua/anuvyklack/lens.vim") end
    -- } --}}}
 
    use { 'norcalli/nvim-colorizer.lua', as = 'colorizer', --{{{
@@ -860,7 +858,7 @@ require('packer').startup(function()
 
    -- use { 'kyazdani42/nvim-tree.lua',
    --    requires = 'kyazdani42/nvim-web-devicons',
-   --    config = function() require('plugins_config/nvim-tree') end
+   --    config = function() require('anuvyklack/nvim-tree') end
    -- }
 
    use { "nvim-neo-tree/neo-tree.nvim",
@@ -870,7 +868,7 @@ require('packer').startup(function()
          'kyazdani42/nvim-web-devicons',
          'MunifTanjim/nui.nvim'
       },
-      config = function() require('plugins_config/neo-tree') end
+      config = function() require('anuvyklack/neo-tree') end
    }
 
    use { 'elihunter173/dirbuf.nvim', --{{{
@@ -888,15 +886,15 @@ require('packer').startup(function()
    --       'nvim-lua/plenary.nvim',
    --       'kyazdani42/nvim-web-devicons',
    --    },
-   --    config = function() require('plugins_config/lir') end
+   --    config = function() require('anuvyklack/lir') end
    -- } --}}}
 
    use { 'mcchrish/nnn.vim',
-      config = function() require('plugins_config/nnn-vim') end
+      config = function() require('anuvyklack/nnn-vim') end
    }
 
    -- use { 'luukvbaal/nnn.nvim',
-   --    config = function() require('plugins_config/nnn-nvim') end
+   --    config = function() require('anuvyklack/nnn-nvim') end
    -- }
 
    -- other {{{
@@ -920,7 +918,7 @@ require('packer').startup(function()
    -- }
 
    -- use { 'is0n/fm-nvim',
-   --    config = function() require('plugins_config/fm-nvim') end
+   --    config = function() require('anuvyklack/fm-nvim') end
    -- }
 
    -- }}}
@@ -960,7 +958,7 @@ require('packer').startup(function()
    use { 'nvim-neorg/neorg',
       requires = "nvim-lua/plenary.nvim",
       after = "treesitter",
-      config = function() require('plugins_config/neorg') end
+      config = function() require('anuvyklack/neorg') end
    }
 
    ----------------------------------------------------------------------}}}
@@ -986,7 +984,7 @@ require('packer').startup(function()
    --    requires = {'vim-pandoc/vim-pandoc-syntax', opt = true},
    --    ft = {'markdown', 'pandoc'},
    --    config = function()
-   --       vim.cmd("source ~/.config/nvim/lua/plugins_config/pandoc.vim")
+   --       vim.cmd("source ~/.config/nvim/lua/anuvyklack/pandoc.vim")
    --    end
    -- }
    ----------------------------------------------------------------------}}}
@@ -1051,7 +1049,7 @@ require('packer').startup(function()
                vim.g.gruvbox_material_better_performance = 1
 
                vim.cmd 'colorscheme gruvbox-material'
-               vim.cmd("source ~/.config/nvim/lua/plugins_config/gruvbox-material.vim")
+               vim.cmd("source ~/.config/nvim/lua/anuvyklack/gruvbox-material.vim")
             end
          }
       end, --}}}
@@ -1082,7 +1080,7 @@ require('packer').startup(function()
                vim.g.gruvbox_material_better_performance = 1
 
                vim.cmd 'colorscheme gruvbox-material'
-               vim.cmd("source ~/.config/nvim/lua/plugins_config/gruvbox-material.vim")
+               vim.cmd("source ~/.config/nvim/lua/anuvyklack/gruvbox-material.vim")
             end
          }
       end, --}}}
@@ -1116,7 +1114,7 @@ require('packer').startup(function()
                vim.o.background = 'light'
                -- vim.o.background = 'dark'
                vim.cmd 'colorscheme mellow'
-               vim.cmd("source ~/.config/nvim/lua/plugins_config/mellow.vim")
+               vim.cmd("source ~/.config/nvim/lua/anuvyklack/mellow.vim")
             end
          }
       end, --}}}

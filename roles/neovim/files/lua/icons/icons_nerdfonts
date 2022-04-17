@@ -124,7 +124,34 @@ nvim_tree_icons
   
 
 -------------------------------------------------------------------------------
-Symbols Nerd Font
+Unicode
+
+▁▁ ▂▂ ▃▃ ▄▄ ▅▅ ▆▆ ▇▇ ██
+
+▁▂▃▄▅▆▇█
+
+▁  ▂  ▃  ▄  ▅  ▆  ▇  █
+                     ^
+                     full block
+
+U+2588	█	Full block
+U+2589	▉	Left seven eighths block
+U+258A	▊	Left three quarters block
+U+258B	▋	Left five eighths block
+U+258C	▌	Left half block
+U+258D	▍	Left three eighths block
+U+258E	▎	Left one quarter block
+U+258F	▏	Left one eighth block
+U+2590	▐	Right half block
+
+
+🭶 🭷 🭸 🭹 🭺 🭻
+
+🯰  🯱  🯲  🯳  🯴  🯵  🯶  🯷  🯸  🯹
+
+-------------------------------------------------------------------------------
+Symbols Nerd Font diapasons
+
 23fb - 23fe ⏻  ⏼  ⏽ ⏾
 2b58        ⭘
 e200 - e2a9   - 
