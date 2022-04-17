@@ -43,16 +43,4 @@ util.which_key.name = function(mode, lhs, name)
    }, { mode = mode })
 end
 
----Check if file exists.
----@param path string
-function util.file_exists(path)
-   local f = io.open(path, "r")
-   if f ~= nil then
-      io.close(f)
-      return true
-   else
-      return false
-   end
-end
-
 return util
