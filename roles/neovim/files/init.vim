@@ -320,7 +320,26 @@ set splitright
 
 " ---------------------------------------------------------------------}}}
 
-"                     Autocommands and Functions                       {{{
+"                               Plugins                                {{{
+" ========================================================================
+
+let packer_path = stdpath('data')..'/site/pack/packer/opt/packer.nvim'
+if empty(glob(packer_path)) > 0
+    call system(['git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', packer_path])
+    packadd packer.nvim
+    lua require('plugins').sync()
+endif
+
+command! Packer        packadd packer.nvim | lua require('plugins')
+command! PackerInstall packadd packer.nvim | lua require('plugins').install()
+command! PackerUpdate  packadd packer.nvim | lua require('plugins').update()
+command! PackerSync    packadd packer.nvim | lua require('plugins').sync()
+command! PackerClean   packadd packer.nvim | lua require('plugins').clean()
+command! PackerCompile packadd packer.nvim | lua require('plugins').compile()
+
+" }}}
+
+"                              Commands                                {{{
 " ========================================================================
 
 " https://www.bobbywlindsey.com/2017/07/30/vim-functions/
@@ -334,6 +353,26 @@ function! ToTupleFunction() range "{{{
     silent execute "normal $xa)"
     silent execute "normal ggVGYY"
 endfunction "}}}
+
+" }}}
+
+"                     Autocommands and Functions                       {{{
+" ========================================================================
+
+" " Auto adjust width of the active window.
+" set winwidth=80
+"
+" set noequalalways
+" augroup ReduceNoise
+"     autocmd!
+"     " Automatically resize active split to 85 width
+"     autocmd WinEnter * :call ResizeSplits()
+" augroup END
+"
+" function! ResizeSplits()
+"     set winwidth=80
+"     wincmd =
+" endfunction
 
 
 " " Automatically deletes all trailing whitespace on save
@@ -579,19 +618,5 @@ endf "}}}
 " endf "}}}
 
 " }}}
-
-" set winwidth=80
-
-" set noequalalways
-" augroup ReduceNoise
-"     autocmd!
-"     " Automatically resize active split to 85 width
-"     autocmd WinEnter * :call ResizeSplits()
-" augroup END
-"
-" function! ResizeSplits()
-"     set winwidth=80
-"     wincmd =
-" endfunction
 
 " vim: fdm=marker number tw=76 cc=+1

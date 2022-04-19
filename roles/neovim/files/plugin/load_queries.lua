@@ -2,6 +2,9 @@
 -- Manually load treesitter queries to overload the default ones.
 -- https://github.com/nvim-treesitter/nvim-treesitter/issues/839#issuecomment-850027287
 
+local available, _ = pcall(require, 'plenary')
+if not available then return end
+
 local Path = require('plenary.path')
 local scan_dir = require('plenary.scandir').scan_dir
 

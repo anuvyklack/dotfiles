@@ -14,13 +14,13 @@ local which_key = require('util').which_key
 local n, v, x = 'n', 'v', 'x'
 local function cmd(command) return table.concat({ '<cmd>', command, '<CR>' }) end
 
--- Dealing with word wrap:
--- If cursor is inside very long line in the file than wraps around several rows
--- on the screen, then 'j' key moves you to the next line in the file, but not
--- to the next row on the screen under your previous position as in other
--- editors. These bindings fixes this.
-keymap.set(n, 'k', function() return vim.v.count > 0 and 'k' or 'gk' end, { silent = true, expr = true })
-keymap.set(n, 'j', function() return vim.v.count > 0 and 'j' or 'gj' end, { silent = true, expr = true })
+-- -- Dealing with word wrap:
+-- -- If cursor is inside very long line in the file than wraps around several rows
+-- -- on the screen, then 'j' key moves you to the next line in the file, but not
+-- -- to the next row on the screen under your previous position as in other
+-- -- editors. These bindings fixes this.
+-- keymap.set(n, 'k', function() return vim.v.count > 0 and 'k' or 'gk' end, { silent = true, expr = true })
+-- keymap.set(n, 'j', function() return vim.v.count > 0 and 'j' or 'gj' end, { silent = true, expr = true })
 
 -- Hop (Easymotion) {{{
 function M.hop()
