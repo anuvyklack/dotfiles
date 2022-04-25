@@ -754,6 +754,18 @@ use { 'TimUntersberger/neogit', --{{{
    config = function() require('neogit').setup{} end
 } --}}}
 
+use { 'lewis6991/gitsigns.nvim', as = 'gitsigns', -- {{{
+   requires = 'tpope/vim-repeat',
+   config = function()
+      require('gitsigns').setup {
+         signcolumn = false, -- Toggle with `:Gitsigns toggle_signs`
+         numhl      = false, -- Toggle with `:Gitsigns toggle_numhl`
+         linehl     = false, -- Toggle with `:Gitsigns toggle_linehl`
+         word_diff  = false, -- Toggle with `:Gitsigns toggle_word_diff`
+         on_attach = require('keybindings').gitsigns
+      }
+   end
+} --}}}
 ----------------------------------------------------------------------}}}
 
 --------------------------- Fuzzy finder --------------------------------
