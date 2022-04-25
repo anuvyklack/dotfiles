@@ -48,16 +48,3 @@ require('lspsaga').setup {
    diagnostic_message_format = "%m %c",
    highlight_prefix = false,
 }
-
---    襁         diff             This symbols take two places if the could.
---                 diff added          
---               diff ignored        
---               diff modified    
--- 廓卑喝           diff removed       
---               diff renamed         
---                                
---                                    
---                                   
---                                    
---                                    
---                                    ⚠️
