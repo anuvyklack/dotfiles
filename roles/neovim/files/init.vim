@@ -366,7 +366,7 @@ endfunction "}}}
 
 " }}}
 
-"                     Autocommands and Functions                       {{{
+"                            Autocommands                              {{{
 " ========================================================================
 
 " " Auto adjust width of the active window.

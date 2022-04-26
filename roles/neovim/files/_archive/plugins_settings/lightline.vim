@@ -361,3 +361,5 @@ fu! Col_num() abort " {{{
 endf  "}}}
 
 " }}}
+
+" vim: fdm=marker
