@@ -416,8 +416,8 @@ use { 'hrsh7th/nvim-cmp', as = 'cmp',
 
 --                  DAP (Debug Adapter Protocol)                      {{{
 -------------------------------------------------------------------------
--- use { "mfussenegger/nvim-dap", as = 'dap' }
--- use { "rcarriga/nvim-dap-ui",  as = 'dap-ui' }
+use { 'mfussenegger/nvim-dap', as = 'dap' }
+-- use { 'rcarriga/nvim-dap-ui',  as = 'dap-ui' }
 ----------------------------------------------------------------------}}}
 
 --                          Text editing                              {{{
@@ -1100,28 +1100,26 @@ use { 'romgrk/barbar.nvim', as = 'barbar-tabline', --{{{
    config = function() require('plugins-config/barbar') end
 } --}}}
 
--- use { 'nvim-lualine/lualine.nvim',
---    requires = 'kyazdani42/nvim-web-devicons',
---    config = function() require('plugins-config/lualine') end
---    -- config = function() require('lualine').setup() end
--- }
-
--- use { 'glepnir/galaxyline.nvim',
---    branch = 'main',
---    config = function() require'statusline' end,
---    requires = {'kyazdani42/nvim-web-devicons'}
--- }
+use { 'SmiteshP/nvim-gps',
+   config = function()
+      require("nvim-gps").setup{
+         icons = {
+            -- ["class-name"] = ' ',      --  Classes and class-like objects
+            ["class-name"] = ' ',      --  Classes and class-like objects
+            ["function-name"] = ' ',   -- Functions
+            ["method-name"] = '  ',    -- Methods (functions inside class-like objects)
+            ["container-name"] = ' ',  -- Containers (example: lua tables)
+            ["tag-name"] = '炙'         -- Tags (example: html tags)
+         },
+      }
+   end
+}
 
 use { 'rebelot/heirline.nvim',
+   requires = 'gitsigns',
    after = colorscheme,
    config = function() require('plugins-config/heirline') end
 }
-
--- use { 'feline-nvim/feline.nvim',
---    config = function ()
---       require('feline').setup()
---    end
--- }
 
 ----------------------------------------------------------------------}}}
 
