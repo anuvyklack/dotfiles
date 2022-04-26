@@ -199,34 +199,10 @@ use { 'neovim/nvim-lspconfig', as = 'lspconfig', --{{{
    }
 } --}}}
 
--- use { 'kosayoda/nvim-lightbulb', as = 'lightbulb', --{{{
---    requires = { 'antoinemadec/FixCursorHold.nvim' },
---    config = function ()
---       require'nvim-lightbulb'.setup({ --{{{
---          sign = {
---             enabled = true,
---             priority = 10, -- Priority of the gutter sign
---          },
---          virtual_text = {
---             enabled = false,
---             text = "",
---             -- highlight mode to use for virtual text (replace, combine,
---             -- blend), see :help nvim_buf_set_extmark() for reference
---             hl_mode = "replace",
---          },
---       }) --}}}
---       vim.fn.sign_define('LightBulbSign', { --{{{
---          text = "", --  
---          texthl = "LspDiagnosticsInformation",
---          linehl="LspDiagnosticsInformation",
---          numhl="LspDiagnosticsInformation"
---       }) ---}}}
---       vim.o.updatetime = 1000
---       vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
---          callback = require'nvim-lightbulb'.update_lightbulb
---       })
---    end
--- } --}}}
+use { 'kosayoda/nvim-lightbulb', as = 'lightbulb', --{{{
+   requires = { 'antoinemadec/FixCursorHold.nvim' },
+   config = function() require 'plugins-config/lightbulb' end
+} --}}}
 
 use { 'weilbith/nvim-code-action-menu', as = 'code-action-menu',
    cmd = 'CodeActionMenu',
