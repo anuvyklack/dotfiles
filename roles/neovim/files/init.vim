@@ -45,6 +45,9 @@ set novisualbell    " Отключаем пищалки и моргалки
 set autoread        " Reload files changed outside vim
 set termguicolors   " 24 bit color support
 
+" set iskeyword+=^_   " Consider underscore as word separator (for w, dw, ...).
+set iskeyword-=_   " Consider underscore as word separator (for w, dw, ...).
+
 set ttimeoutlen=50  " Время переключения между режимами (default 50)
 set timeoutlen=1000 " Время в мс в течении которого Vim ждёт продолжения
                     " многосимвольной команды.
