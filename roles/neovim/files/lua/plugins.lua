@@ -787,21 +787,7 @@ use { 'nvim-telescope/telescope.nvim', as = 'telescope', --{{{
 
 use { 'stevearc/dressing.nvim', --{{{
    -- requires = 'MunifTanjim/nui.nvim',
-   config = function() require('dressing').setup {
-      input = {
-         insert_only = false, -- When true, <Esc> will close the modal.
-
-         -- These are passed to nvim_open_win
-         anchor = "NW",
-
-         winblend = 0, -- Window transparency (0-100)
-         winhighlight = 'Normal:Normal,FloatBorder:Grey'
-      },
-      select = {
-         -- Priority list of preferred vim.select implementations
-         backend = { 'builtin', 'nui', 'telescope', 'fzf_lua', 'fzf' },
-      }
-   } end
+   config = function() require('plugins-config.dressing') end
 } --}}}
 
 -- -- Not work in Neovim 0.7 yet.
