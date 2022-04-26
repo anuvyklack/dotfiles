@@ -342,6 +342,11 @@ command! PackerCompile packadd packer.nvim | lua require('plugins').compile()
 "                              Commands                                {{{
 " ========================================================================
 
+" Open init.vim file
+command! I edit $MYVIMRC
+" Open plugins.lua file
+command! P execute('edit'..stdpath('config')..'/lua/plugins.lua')
+
 " https://www.bobbywlindsey.com/2017/07/30/vim-functions/
 " convert rows of numbers or text (as if pasted from excel column) to a tuple
 command! -range ToTuple <line1>,<line2> call ToTupleFunction()
@@ -578,14 +583,6 @@ cnoremap <C-l> <Right>
 
 " " Save changes in buffer
 " nmap <silent> <Leader>s :write<Enter>
-
-" открыть файл конфигурации .vimrc или init.vim
-command! I edit $MYVIMRC
-" открыть файл с плагинами
-if has('unix')
-    command! P edit ~/.config/nvim/plugin/plugins.lua
-    " command! P edit ~/.config/nvim/lua/plugins.lua
-endif
 
 " Включать и выклюяать проверку орфографии
 map <silent> <F6> :call ToggleSpell()<CR>
