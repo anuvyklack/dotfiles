@@ -199,14 +199,6 @@ use { 'neovim/nvim-lspconfig', as = 'lspconfig', --{{{
    }
 } --}}}
 
-use { 'tami5/lspsaga.nvim', as = 'lspsaga', --{{{
-   requires = { 'antoinemadec/FixCursorHold.nvim' },
-   config = function()
-      vim.o.updatetime = 1000
-      require('plugins-config/lspsaga')
-   end
-} --}}}
-
 -- use { 'kosayoda/nvim-lightbulb', as = 'lightbulb', --{{{
 --    requires = { 'antoinemadec/FixCursorHold.nvim' },
 --    config = function ()

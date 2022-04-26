@@ -91,13 +91,9 @@ function M.lspconfig(bufnr)
    -- keymap.set(n, '<S-F2>', vim.lsp.buf.declaration, opts{ desc = 'LSP: go to declaration' })
 
 
-   -- Preview definition
-   keymap.set(n, '<leader>ld', cmd 'Lspsaga preview_definition', opts{ desc = 'Preview definition', requires = 'lspsaga' })
-
    -- Find the cursor word definition and reference.
    keymap.set(n, 'gr',         vim.lsp.buf.references, opts{ desc = 'References' })
    -- keymap.set(n, '<leader>lr', vim.lsp.buf.references, opts{ desc = 'References' })
-   -- keymap.set(n, '<leader>lf', require('lspsaga.provider').lsp_finder, opts{ desc = 'LSP finder',  requires = 'lspsaga' })
 
    -- }}}
 
@@ -117,14 +113,6 @@ function M.lspconfig(bufnr)
    -- keymap.set(n, '<leader>la', cmd 'CodeActionMenu',
    --                             opts{ desc = 'Code action', requires = 'code_action_menu' })
 
-   keymap.set(n, '<leader>la', function()
-                 require('lspsaga.codeaction').code_action()
-              end, opts{ desc = 'Code action', requires = 'lspsaga' })
-
-   keymap.set(x, '<leader>la', function()
-                 require('lspsaga.codeaction').range_code_action()
-              end, opts{ desc = 'Range code action', requires = 'lspsaga' })
-
    -- }}}
 
    -- Diagnostics {{{
@@ -135,24 +123,14 @@ function M.lspconfig(bufnr)
    keymap.set(n,    '[e',      vim.diagnostic.goto_prev,  opts{ desc = 'Previous diagnostic' })
    keymap.set(n,    ']e',      vim.diagnostic.goto_next,  opts{ desc = 'Next diagnostic' })
 
-   -- -- Lspsaga
-   -- keymap.set(n, '<leader>le', cmd 'Lspsaga show_line_diagnostics',
-   --                     opts{ desc = 'Show diagnostic', requires = 'lspsaga' })
-   -- keymap.set(n, '[e', cmd 'Lspsaga diagnostic_jump_next',
-   --                     opts{ desc = 'Previous diagnostic', silent = true, requires = 'lspsaga' })
-   -- keymap.set(n, ']e', cmd 'Lspsaga diagnostic_jump_prev',
-   --                     opts{ desc = 'Next diagnostic', silent = true, requires = 'lspsaga' })
-
    -- }}}
 
    -- Hover doc
    keymap.set(n, 'K', vim.lsp.buf.hover, opts{ desc = 'LSP: hover doc', ft_ignore = { 'vim' } })
-   -- keymap.set(n, 'K', cmd 'Lspsaga hover_doc', opts{ desc = 'LSP: hover doc', ft_ignore = { 'vim' }, requires = 'lspsaga' })
 
    -- Signature help
    -- <C-k> conflicts with vim windows and tmux panes navigation.
    keymap.set(n, '<leader>ls', vim.lsp.buf.signature_help, opts{ desc = 'Show sinature help' })
-   -- keymap.set(n, '<leader>ls', cmd 'Lspsaga signature_help', opts{ desc = 'Show sinature help', requires = 'lspsaga' })
 
    -- Type definition
    keymap.set(n, '<leader>lt', vim.lsp.buf.type_definition, opts{ desc = 'LSP: type definition' })
@@ -169,22 +147,6 @@ function M.lspconfig(bufnr)
    keymap.set(n, '<leader>lwr', vim.lsp.buf.remove_workspace_folder, opts{ desc = 'Remove workspace folder' })
 
    --}}}
-
-   -- Lspsaga {{{
-
-   -- -- scroll down / up inside different preview windows
-   -- keymap.set(n, '<C-u>', function()
-   --       require('lspsaga.action').smart_scroll_with_saga(-1, '<c-u>')
-   --    end,
-   --    opts{ requires = 'lspsaga' })
-   --
-   -- keymap.set(n, '<C-d>', function()
-   --       require('lspsaga.action').smart_scroll_with_saga( 1, '<c-d>')
-   --    end,
-   --    opts{ requires = 'lspsaga' })
-
-   --}}}
-
 
 end --}}}
 
