@@ -19,22 +19,54 @@
 " bg_green   #b0b846   bg_visual_red     #543937
 " bg_red     #db4740   bg_visual_yellow  #574833
 
+" let config = gruvbox_material#get_configuration()
+" let palette = gruvbox_material#get_palette(&background, config.palette)
+" echo palette
+
 " }}}
 " Cursor {{{
 
-hi lCursor guifg=#282828 guibg=#e9b143
+highlight lCursor guifg=#282828 guibg=#e9b143
 " hi Cursor   ctermfg=235 ctermbg=109 guifg=#282828 guibg=#80aa9e
+
+" }}}
+" Diagnostics {{{
+
+" Undercurl
+" " highlight! ErrorText   gui=undercurl guisp=#f2594b
+" " highlight! WarningText gui=undercurl guisp=#e9b143
+highlight! InfoText    gui=undercurl guisp=#b0b846
+highlight! HintText    gui=undercurl guisp=#80aa9e
+
+" " Background
+" highlight! ErrorText   guibg=#543937
+" highlight! WarningText guibg=#574833
+" highlight! InfoText    guibg=#424a3e
+" highlight! HintText    guibg=#404946
+
+
+highlight! link InfoFloat Green
+highlight! link HintFloat Blue
+
+highlight! link DiagnosticSignInfo GreenSign
+" highlight! link DiagnosticSignHint BlueSign
+highlight! link DiagnosticSignHint AquaSign
+
+if g:gruvbox_material_diagnostic_virtual_text == 'colored'
+    highlight! link VirtualTextInfo Green
+    highlight! link VirtualTextHint Blue
+endif
 
 " }}}
 " Folds {{{
 
 " #DDAE52 #e6b24c #e8ae3c #ECA825
 
-hi Folded guifg=#e3a84e guibg=None
+highlight Folded guifg=#e3a84e guibg=None
 
-hi FoldColumn guifg=#e8ae3c
+highlight FoldColumn guifg=#e8ae3c
 
-hi link NormalFloat Pmenu
+highlight link NormalFloat Pmenu
 
 " }}}
 " Easymotion {{{

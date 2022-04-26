@@ -82,7 +82,11 @@ local color_themes = {
             -- Available values: 'auto', 'red', 'orange', 'yellow',
             -- 'green', 'aqua', 'blue', 'purple'
             vim.g.gruvbox_material_cursor = 'blue'
+
+            -- 'colored' or 'grey'
             vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
+            vim.g.gruvbox_material_diagnostic_text_highlight = 1 -- 0 or 1
+
             -- vim.g.gruvbox_material_diagnostic_virtual_text = 'grey'
             vim.g.gruvbox_material_current_word = 'grey background'
             vim.g.gruvbox_material_better_performance = 1
