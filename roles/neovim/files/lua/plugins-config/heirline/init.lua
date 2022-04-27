@@ -62,7 +62,7 @@ local VimModeNormal = {
       ReadOnly,
       {
          provider = icons.circle,
-         hl = function(self)
+         hl = function()
             if vim.bo.modified then
                return { fg = mode_colors.insert.bg }
                -- return { fg = colors.yellow }
@@ -73,7 +73,8 @@ local VimModeNormal = {
             end
          end
       }
-   }
+   },
+   Space
 }
 
 local VimModeActive = {
@@ -503,7 +504,7 @@ local HelpBufferStatusline = {
    condition = function()
       return vim.bo.filetype == "help"
    end,
-   Space, VimMode, Space,
+   Space, VimMode,
    {
       provider = function()
          local filename = vim.api.nvim_buf_get_name(0)

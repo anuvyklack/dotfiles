@@ -24,11 +24,11 @@ util.icons = {
       line_number   = '', column_number = '',
    },
    padlock      = '',
-   circle_small = '●',
-   circle       = ' ',
-   circle_plus  = ' ',
-   dot_circle_o = ' ',
-   circle_o     = '⭘ ',
+   circle_small = '●', -- ●
+   circle       = '', -- 
+   circle_plus  = '', -- 
+   dot_circle_o = '', -- 
+   circle_o     = '⭘', -- ⭘
 }
 
 util.mode = setmetatable({
