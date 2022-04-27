@@ -1,7 +1,7 @@
-local conditions = require('heirline.conditions')
-local heirline = require("heirline.utils")
 -- local os_sep = require("plenary.path").path.sep
 local os_sep = package.config:sub(1,1)
+local conditions = require('heirline.conditions')
+local heirline = require("heirline.utils")
 local devicons = require('nvim-web-devicons')
 local nvim_gps_available, nvim_gps = pcall(require, 'nvim-gps')
 local dap_available, dap = pcall(require, 'dap')
@@ -9,8 +9,8 @@ local util = require('plugins-config.heirline.util')
 local icons = util.icons
 local mode = util.mode
 
--- local theme = require('plugins-config/heirline/themes/'..vim.g.colors_name)
-local theme = require('plugins-config/heirline/themes/gruvbox-material')
+local theme = require('plugins-config/heirline/themes/'..vim.g.colors_name)
+-- local theme = require('plugins-config/heirline/themes/gruvbox-material')
 local hl = theme.highlight
 local colors = theme.colors
 local mode_colors = hl.ModeColors
@@ -25,19 +25,24 @@ local priority = {
 }
 
 local Align = { provider = '%=' }
-local Space = { provider = ' ' } -- Whitespace
+local Space = setmetatable({ provider = ' ' }, {
+   __call = function(_, n)
+      return { provider = string.rep(' ', n) }
+   end
+})
 local null  = { provider = '' }
 
 local LeftCap = {
-   -- provider = '▊',
    provider = '▌',
    -- provider = '',
    hl = mode_colors.normal
 }
 
 local ReadOnly = {
-   condition = function() return (not vim.bo.modifiable) or vim.bo.readonly end,
-   provider = ' ',
+   condition = function()
+      return not vim.bo.modifiable or vim.bo.readonly
+   end,
+   provider = icons.padlock,
    hl = function()
       if conditions.is_active() then
          return hl.ReadOnly
@@ -47,61 +52,28 @@ local ReadOnly = {
    end
 }
 
-local SearchResults = {
-   condition = function(self)
-      local lines = vim.api.nvim_buf_line_count(0)
-      if lines > 50000 then return end
-
-      local query = vim.fn.getreg("/")
-      if query == "" then return end
-
-      if query:find("@") then return end
-
-      local search_count = vim.fn.searchcount({ recompute = 1, maxcount = -1 })
-      local active = false
-      if vim.v.hlsearch and vim.v.hlsearch == 1 and search_count.total > 0 then
-         active = true
-      end
-      if not active then return end
-
-      query = query:gsub([[^\V]], "")
-      query = query:gsub([[\<]], ""):gsub([[\>]], "")
-
-      self.query = query
-      self.count = search_count
-      return true
-   end,
-   {
-      provider = function(self)
-         return table.concat {
-            -- ' ', self.query, ' ', self.count.current, '/', self.count.total, ' '
-            ' ', self.count.current, '/', self.count.total, ' '
-         }
-      end,
-      hl = hl.SearchResults
-   },
-   Space
-}
-
 local VimModeNormal = {
    condition = function(self)
       return self.mode == 'normal' or not conditions.is_active()
    end,
-   provider = ' ' .. icons.circle,
-   hl = function(self)
-      if vim.bo.modified then
-         -- return { fg = mode_colors.insert.bg }
-         return { fg = colors.yellow }
-      elseif conditions.is_active() then
-         return mode_colors.normal
-      else
-         return hl.VimMode.non_active
-      end
-   end
-}
-VimModeNormal = {
-   init = heirline.pick_child_on_condition,
-   ReadOnly, VimModeNormal
+   Space,
+   {
+      init = heirline.pick_child_on_condition,
+      ReadOnly,
+      {
+         provider = icons.circle,
+         hl = function(self)
+            if vim.bo.modified then
+               return { fg = mode_colors.insert.bg }
+               -- return { fg = colors.yellow }
+            elseif conditions.is_active() then
+               return mode_colors.normal
+            else
+               return hl.VimMode.non_active
+            end
+         end
+      }
+   }
 }
 
 local VimModeActive = {
@@ -115,16 +87,20 @@ local VimModeActive = {
          return mode_colors[self.mode].bg
       end,
       {
-         provider = function(self)
-            -- We can also add some vim statusline syntax to control the padding and make
-            -- sure our string is always at least 2 characters long. Plus a nice Icon.
-            -- return " %2("..util.mode_lable[self.mode].."%)"
-            return icons.circle .. util.mode_lable[self.mode]
-            -- return util.mode_lable[self.mode]
-         end,
+         {
+            init = heirline.pick_child_on_condition,
+            ReadOnly,
+            { provider = icons.circle }
+         },
+         Space,
+         {
+            provider = function(self)
+               return util.mode_lable[self.mode]
+            end,
+         },
          hl = function(self)
             return mode_colors[self.mode]
-         end,
+         end
       }
    )
 }
@@ -137,6 +113,9 @@ local VimMode = {
 }
 
 local FileIcon = {
+   condition = function()
+      return not ReadOnly.condition()
+   end,
    init = function(self)
       local filename = self.filename
       local extension = vim.fn.fnamemodify(filename, ":e")
@@ -149,12 +128,6 @@ local FileIcon = {
    hl = function(self)
       return { fg = self.icon_color }
    end
-}
-FileIcon = {
-   condition = function()
-      return not ReadOnly.condition()
-   end,
-   FileIcon
 }
 
 local WorkDir = {
@@ -187,7 +160,6 @@ local FileName = {
    provider = function(self) return self.filename end,
    hl = hl.FileName
 }
-FileName = { FileName, { provider = string.rep(' ', 3) } }
 
 local GPS = {
    condition = function()
@@ -212,49 +184,51 @@ local FileProperties = {
       -- self.encoding = encoding
 
       local fileformat = vim.bo.fileformat
+
+      -- if fileformat == 'dos' then
+      --    fileformat = ' '
+      -- elseif fileformat == 'mac' then
+      --    fileformat = ' '
+      -- else  -- unix'
+      --    fileformat = ' '
+      --    -- fileformat = nil
+      -- end
+
       if fileformat == 'dos' then
-         fileformat = ' '
+         fileformat = 'CRLF'
       elseif fileformat == 'mac' then
-         fileformat = ' '
+         fileformat = 'CR'
       else  -- unix'
-         -- fileformat = ' '
+         -- fileformat = 'LF'
          fileformat = nil
       end
+
       self.fileformat = fileformat
 
       return self.fileformat or self.encoding
    end,
-   heirline.surround(
-      { icons.powerline.left_rounded, icons.powerline.right_rounded },
-      colors.bg_statusline3,
-      {
-         hl = hl.FileProperties,
-         provider = function(self)
-            local sep
-            if self.fileformat and self.encoding then sep = ' ' end
-            return table.concat{ self.fileformat, sep, self.encoding }
-         end,
-      })
+   provider = function(self)
+      local sep
+      if self.fileformat and self.encoding then sep = ' ' end
+      return table.concat{ ' ', self.fileformat, sep, self.encoding, ' ' }
+   end,
+   hl = hl.FileProperties,
 }
 
 local FileNameBlock = {
-   init = function(self)
-      if conditions.is_active() then
-         self.pick_child = {1}
-      else
-         self.pick_child = {2}
-      end
-   end,
-   hl = function()
-      if not conditions.is_active() then
-         return hl.NonActive
-      end
-   end,
-   { FileIcon, WorkDir, CurrentPath, FileName },
-   { FileIcon, FileName }
+   {
+      init = heirline.pick_child_on_condition,
+      {
+         condition = conditions.is_active,
+         FileIcon, WorkDir, CurrentPath, FileName
+      },{
+         FileIcon, FileName,
+         hl = hl.NonActive
+      },
+   },
+   -- This means that the statusline is cut here when there's not enough space.
+   { provider = '%<' }
 }
--- This means that the statusline is cut here when there's not enough space.
-FileNameBlock = { FileNameBlock, { provider = '%<' } }
 
 local DapMessages = {
    -- display the dap messages only on the debugged file
@@ -323,7 +297,7 @@ local Diagnostics = {
       end,
       hl = hl.Diagnostic.hint
    },
-   { provider = string.rep(' ', 2) }
+   Space(2)
 }
 
 local GitBranch = {
@@ -338,12 +312,14 @@ local GitBranch = {
 }
 
 local GitChanges = {
-   condition = conditions.is_git_repo,
-   init = function(self)
-      self.git_status = vim.b.gitsigns_status_dict
-      self.has_changes = self.git_status.added   ~= 0 or
-                         self.git_status.removed ~= 0 or
-                         self.git_status.changed ~= 0
+   condition = function(self)
+      if conditions.is_git_repo() then
+         self.git_status = vim.b.gitsigns_status_dict
+         local has_changes = self.git_status.added   ~= 0 or
+                             self.git_status.removed ~= 0 or
+                             self.git_status.changed ~= 0
+         return has_changes
+      end
    end,
    {
       provider = function(self)
@@ -369,12 +345,13 @@ local GitChanges = {
       end,
       hl = hl.Git.removed
    },
-   { provider = string.rep(' ', 2) }
+   Space
 }
 
 local Git = heirline.make_flexible_component(priority.Git,
    { GitBranch, GitChanges },
-   { GitBranch })
+   { GitBranch }
+)
 
 local LspIndicator = {
    provider = icons.circle_small .. ' ',
@@ -382,19 +359,19 @@ local LspIndicator = {
 }
 
 local LspServer = {
-   provider = function(self)
-      local names = self.names
-      -- local names = {}
-      -- for _, server in pairs(vim.lsp.buf_get_clients(0)) do
-      --     table.insert(names, server.name)
-      -- end
-      if #names == 1 then
-         names = names[1]
-      else
-         names = table.concat(vim.tbl_flatten({ '[', names, ']' }), ' ')
-      end
-      return names .. string.rep(' ', 2)
-   end,
+   Space,
+   {
+      provider = function(self)
+         local names = self.lsp_names
+         if #names == 1 then
+            names = names[1]
+         else
+            names = table.concat(vim.tbl_flatten({ '[', names, ']' }), ' ')
+         end
+         return names
+      end,
+   },
+   Space(2),
    hl = hl.LspServer
 }
 
@@ -405,12 +382,12 @@ local Lsp = {
       for _, server in pairs(vim.lsp.buf_get_clients(0)) do
           table.insert(names, server.name)
       end
-      self.names = names
+      self.lsp_names = names
    end,
    heirline.make_flexible_component(priority.Lsp, LspServer, LspIndicator),
    hl = function(self)
       local color
-      for _, name in ipairs(self.names) do
+      for _, name in ipairs(self.lsp_names) do
          if lsp_colors[name] then
             color = lsp_colors[name]
             break
@@ -424,6 +401,42 @@ local Lsp = {
    end
 }
 
+local SearchResults = {
+   condition = function(self)
+      local lines = vim.api.nvim_buf_line_count(0)
+      if lines > 50000 then return end
+
+      local query = vim.fn.getreg("/")
+      if query == "" then return end
+
+      if query:find("@") then return end
+
+      local search_count = vim.fn.searchcount({ recompute = 1, maxcount = -1 })
+      local active = false
+      if vim.v.hlsearch and vim.v.hlsearch == 1 and search_count.total > 0 then
+         active = true
+      end
+      if not active then return end
+
+      query = query:gsub([[^\V]], "")
+      query = query:gsub([[\<]], ""):gsub([[\>]], "")
+
+      self.query = query
+      self.count = search_count
+      return true
+   end,
+   {
+      provider = function(self)
+         return table.concat {
+            -- ' ', self.query, ' ', self.count.current, '/', self.count.total, ' '
+            ' ', self.count.current, '/', self.count.total, ' '
+         }
+      end,
+      hl = hl.SearchResults
+   },
+   Space
+}
+
 local Ruler = {
    -- %-2 : make item takes at least 2 cells and be left justified
    -- %l  : current line number
@@ -434,7 +447,7 @@ local Ruler = {
    hl = { bold = true }
 }
 
-local ScrollPercentage =  {
+local ScrollPercentage = {
    condition = function() return conditions.width_percent_below(4, 0.035) end,
    -- %P  : percentage through file of displayed window
    provider = ' %3(%P%)',
@@ -449,7 +462,6 @@ local ScrollPercentage =  {
 
 local ScrollBar = {
    static = {
-      -- sbar = { '█', '▇', '▆', '▅', '▄', '▃', '▂', '▁', }
       sbar = { '🭶', '🭷', '🭸', '🭹', '🭺', '🭻' }
    },
    provider = function(self)
@@ -472,6 +484,7 @@ local ActiveStatusline = {
    LeftCap, VimMode,
    SearchResults,
    FileNameBlock,
+   Space(4),
    -- GPS,
    Align,
    DapMessages,

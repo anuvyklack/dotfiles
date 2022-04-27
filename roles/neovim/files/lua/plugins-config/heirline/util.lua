@@ -23,6 +23,7 @@ util.icons = {
       ----------------------------------------------
       line_number   = '', column_number = '',
    },
+   padlock      = '',
    circle_small = '●',
    circle       = ' ',
    circle_plus  = ' ',

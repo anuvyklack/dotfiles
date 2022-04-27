@@ -87,7 +87,7 @@ local hl = {
 
    GPS = { fg = colors.grey2 },
 
-   FileProperties = { bg = colors.bg_statusline3 },
+   FileProperties = nil,
 
    DapMessages = { fg = heirline.get_highlight('Debug').fg },
 
