@@ -111,7 +111,10 @@ local hl = {
    ScrollBar = {
       active     = { bg = colors.grey0, fg = colors.fg1 },
       non_active = { bg = colors.bg5, fg = colors.grey2 }
-   }
+   },
+
+   SearchResults = { fg = colors.black, bg = colors.aqua }
+
 }
 
 local mode_colors = {

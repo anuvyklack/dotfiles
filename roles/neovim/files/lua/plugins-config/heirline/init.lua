@@ -48,32 +48,37 @@ local ReadOnly = {
 }
 
 local SearchResults = {
-    condition = function(self)
-        local lines = vim.api.nvim_buf_line_count(0)
-        if lines > 50000 then return end
+   condition = function(self)
+      local lines = vim.api.nvim_buf_line_count(0)
+      if lines > 50000 then return end
 
-        local search_term = vim.fn.getreg("/")
-        if search_term == "" then return end
+      local query = vim.fn.getreg("/")
+      if query == "" then return end
 
-        if search_term:find("@") then return end
+      if query:find("@") then return end
 
-        local search_count = vim.fn.searchcount({ recompute = 1, maxcount = -1 })
-        local active = false
-        if vim.v.hlsearch and vim.v.hlsearch == 1 and search_count.total > 0 then
-           active = true
-        end
-        if not active then return end
+      local search_count = vim.fn.searchcount({ recompute = 1, maxcount = -1 })
+      local active = false
+      if vim.v.hlsearch and vim.v.hlsearch == 1 and search_count.total > 0 then
+         active = true
+      end
+      if not active then return end
 
-        search_term = search_term:gsub([[\<]], ""):gsub([[\>]], "")
-        self.search_results = table.concat {
-            -- ' ', search_term, ' [', search_count.current, '/', search_count.total, '] '
-            ' ', search_term, ' ', search_count.current, '/', search_count.total, ' '
-        }
-        return true
-    end,
+      query = query:gsub([[^\V]], "")
+      query = query:gsub([[\<]], ""):gsub([[\>]], "")
+
+      self.query = query
+      self.count = search_count
+      return true
+   end,
    {
-      provider = function(self) return self.search_results end,
-      hl = { fg = colors.black, bg = colors.aqua, bold = true }
+      provider = function(self)
+         return table.concat {
+            -- ' ', self.query, ' ', self.count.current, '/', self.count.total, ' '
+            ' ', self.count.current, '/', self.count.total, ' '
+         }
+      end,
+      hl = hl.SearchResults
    },
    Space
 }
@@ -424,7 +429,8 @@ local Ruler = {
    -- %l  : current line number
    -- %L  : number of lines in the buffer
    -- %c  : column number
-   provider = ' %7(%l:%3L%)  %-2c ',
+   -- provider = ' %7(%l:%3L%)  %-2c ',
+   provider = ' %7(%l:%L%)  %-2c ',
    hl = { bold = true }
 }
 
