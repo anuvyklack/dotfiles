@@ -92,7 +92,8 @@ function M.lspconfig(bufnr)
 
 
    -- Find the cursor word definition and reference.
-   keymap.set(n, 'gr',         vim.lsp.buf.references, opts{ desc = 'References' })
+   keymap.set(n, 'gr', vim.lsp.buf.references,                  opts { desc = 'LSP References' })
+   keymap.set(n, 'gR', '<Cmd>TroubleToggle lsp_references<CR>', opts { desc = 'LSP references', requires = 'trouble' })
    -- keymap.set(n, '<leader>lr', vim.lsp.buf.references, opts{ desc = 'References' })
 
    -- }}}
@@ -149,6 +150,15 @@ function M.lspconfig(bufnr)
    --}}}
 
 end --}}}
+
+-- Trouble {{{
+function M.trouble()
+   keymap.set(n, '<leader>ee', '<cmd>TroubleToggle<cr>',                       { desc = 'Trouble: toggle win' })
+   keymap.set(n, '<leader>ew', '<cmd>TroubleToggle workspace_diagnostics<cr>', { desc = 'workspace diagnostics' })
+   keymap.set(n, '<leader>ed', '<cmd>TroubleToggle document_diagnostics<cr>',  { desc = 'buffer diagnostics' })
+   keymap.set(n, '<leader>eq', '<cmd>TroubleToggle quickfix<cr>',              { desc = 'Trouble: show quickfix' })
+   keymap.set(n, '<leader>el', '<cmd>TroubleToggle loclist<cr>',               { desc = 'Trouble: show loclist' })
+end -- }}}
 
 -- LuaSnip {{{
 function M.luasnip()

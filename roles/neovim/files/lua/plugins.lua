@@ -268,8 +268,8 @@ use { 'jubnzv/virtual-types.nvim' }
 
 use { 'folke/trouble.nvim', --{{{
    requires = 'kyazdani42/nvim-web-devicons',
-   cmd = {'Trouble', 'TroubleToggle'},
-   config = function() require('plugins-config/trouble') end
+   -- cmd = { 'Trouble', 'TroubleToggle' },
+   config = function() require 'plugins-config/trouble' end
 } --}}}
 
 use { 'liuchengxu/vista.vim',
