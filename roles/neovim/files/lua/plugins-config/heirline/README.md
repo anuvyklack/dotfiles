@@ -22,6 +22,8 @@ Filename block has tree sections:
 
 ![Screencast from 04-27-2022 10_06_13 PM](https://user-images.githubusercontent.com/13056013/165602535-998f0929-7c2b-44b2-a628-bbacf996d615.gif)
 
+![Flexible compenents](https://user-images.githubusercontent.com/13056013/165708529-ac3bc4fd-8e39-4aea-a306-c0ac4e216c7b.png)
+
 ## Read only file
 
 ![Screenshot from 2022-04-27 23-01-58](https://user-images.githubusercontent.com/13056013/165621605-e7900b6d-5691-4685-9f74-7b604c87d2c9.png)
