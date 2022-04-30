@@ -551,7 +551,7 @@ local StatusLines = {
          pwd = vim.fn.fnamemodify(pwd, ':~')
          current_path = nil
          filename = ' [No Name]'
-      elseif current_path:find(vim.pesc(pwd)) then
+      elseif current_path:find(pwd, 1, true) then
          filename = vim.fn.fnamemodify(current_path, ':t')
          current_path = vim.fn.fnamemodify(current_path, ':~:.:h')
          pwd = vim.fn.fnamemodify(pwd, ':~') .. os_sep
