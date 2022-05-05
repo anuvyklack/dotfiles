@@ -181,7 +181,7 @@ local FileProperties = {
 
       local encoding = (vim.bo.fileencoding ~= '' and vim.bo.fileencoding)
                        or vim.o.encoding
-      self.encoding = (encoding ~= 'utf-8') and encoding
+      self.encoding = (encoding ~= 'utf-8') and encoding or nil
       -- self.encoding = encoding
 
       local fileformat = vim.bo.fileformat
@@ -211,7 +211,7 @@ local FileProperties = {
    provider = function(self)
       local sep
       if self.fileformat and self.encoding then sep = ' ' end
-      return table.concat{ ' ', self.fileformat, sep, self.encoding, ' ' }
+      return table.concat{ ' ', self.fileformat or '', sep or '', self.encoding or '', ' ' }
    end,
    hl = hl.FileProperties,
 }
