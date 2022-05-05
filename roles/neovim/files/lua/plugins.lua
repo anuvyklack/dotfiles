@@ -1098,7 +1098,10 @@ use { 'SmiteshP/nvim-gps',
 use { 'rebelot/heirline.nvim',
    requires = 'gitsigns',
    after = colorscheme,
-   config = function() require('plugins-config/heirline') end
+   config = function()
+      vim.o.showmode = false
+      require('plugins-config/heirline')
+   end
 }
 
 ----------------------------------------------------------------------}}}
