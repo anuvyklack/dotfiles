@@ -3,9 +3,9 @@
   hosts: local
   roles:
 
-    # - role: test
-    #   tags:
-    #     - test
+    - role: test
+      tags:
+        - test
 
     - role: systemd
       tags:
@@ -60,10 +60,10 @@
       tags:
         - neovim
 
-    - role: nodejs
-      tags:
-        - nodejs
-      when: ansible_pkg_mgr == 'apt'
+    # - role: nodejs
+    #   tags:
+    #     - nodejs
+    #   when: ansible_pkg_mgr == 'apt'
 
     - role: power-managment
       tags:
