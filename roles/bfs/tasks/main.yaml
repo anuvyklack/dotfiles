@@ -1,0 +1,10 @@
+- name: Install bfs (apt)
+  become: yes
+  apt:
+    name: bfs
+    state: latest
+  when: ansible_os_family == 'Debian'
+
+- name: Build bfs from source
+  include_tasks: build-bfs.yaml
+  when: ansible_distribution == 'Fedora'

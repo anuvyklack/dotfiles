@@ -1,0 +1,6 @@
+app: bfs
+repo: https://github.com/tavianator/bfs
+
+# Directories
+src: "{{ software }}/{{ app }}"
+build: "{{ src }}"

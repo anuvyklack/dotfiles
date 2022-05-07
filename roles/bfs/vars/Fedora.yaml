@@ -1,0 +1,5 @@
+packages:
+  - libacl-devel
+  - libattr-devel
+  - libcap-devel
+  - oniguruma-devel

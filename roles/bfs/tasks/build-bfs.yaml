@@ -1,0 +1,45 @@
+- name: Include variables
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_distribution }}.yaml"
+        - "{{ ansible_os_family }}.yaml"
+      paths:
+        - "vars"
+
+- name: Install dependencies based on the OS type
+  become: yes
+  package:
+    state: present
+    name: "{{ packages }}"
+  #   name: "{{ item }}"
+  # loop: "{{ packages }}"
+
+- name: "Clone {{ app }} repo"
+  git:
+    repo: "{{ repo }}"
+    dest: "{{ src }}"
+    depth: 1
+    update: yes
+  register: git_status
+
+# - debug: var=git_status
+
+- name: "Build {{ app }}"
+  community.general.make:
+    chdir: "{{ build }}"
+  # when: git_status.before != git_status.after
+  register: make
+
+# - debug: var=make
+
+- name: "Install {{ app }}"
+  become: yes
+  community.general.make:
+    chdir: "{{ build }}"
+    target: install
+  register: make_install
+
+# - debug:
+#     var: make_install
