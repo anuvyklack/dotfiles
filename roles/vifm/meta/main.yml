@@ -1,5 +1,3 @@
 ---
-
 dependencies:
-  - role: cli-tools
   - role: bfs

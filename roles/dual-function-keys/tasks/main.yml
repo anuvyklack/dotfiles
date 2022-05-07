@@ -12,7 +12,7 @@
   become: yes
   community.general.make:
     chdir: "{{ build }}"
-  when: git_status.before != git_status.after
+  # when: git_status.before != git_status.after
   register: make
 
 # - debug:
@@ -23,7 +23,7 @@
   community.general.make:
     chdir: "{{ build }}"
     target: install
-  when: make is not skipped
+  # when: make is not skipped
   register: make_install
 
 # - debug:
@@ -31,7 +31,7 @@
 
 
 # ---------------------------------------------------------------------------
-# Copy config files
+#  Copy config files
 # ---------------------------------------------------------------------------
 # Use copy because systemd doesn't work with symlinks from another partition.
 
@@ -63,7 +63,7 @@
 
 
 # ---------------------------------------------------------------------------
-# Systemd service
+#  Systemd service
 # ---------------------------------------------------------------------------
 # This task is the same as next command:
 # $ sudo systemctl enable --now udevmon

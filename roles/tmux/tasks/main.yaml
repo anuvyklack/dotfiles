@@ -1,14 +1,15 @@
 ---
 
-# - name: Install tmux
-#   become: yes
-#   apt:
-#     name: tmux
-#     state: present
-#     update_cache: yes
+- name: Install tmux (dnf)
+  become: yes
+  dnf:
+    name: tmux
+    state: latest
+  when: ansible_distribution == 'Fedora'
 
 - name: Build tmux from source
-  include: build-tmux.yaml
+  include_tasks: build-tmux.yaml
+  when: ansible_os_family == 'Debian'
 
 - name: Symlink tmux config file
   file:

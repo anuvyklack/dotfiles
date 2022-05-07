@@ -1,0 +1,81 @@
+- name: Check if kitty is installed
+  shell: which kitty  # "command -v kitty"
+  register: check_kitty
+  failed_when: false
+  changed_when: check_kitty.rc != 0
+
+- name: Set fact if kitty is installed
+  set_fact:
+    kitty_installed: "{{ true if check_kitty.rc == 0 else false }}"
+
+# - debug: var=kitty_installed
+
+- name: Get current version info
+  command: kitty --version
+  register: kitty_current_ver
+  changed_when: no
+  when: kitty_installed
+
+- name: Get current version
+  set_fact:
+    kitty_current_ver: "{{ kitty_current_ver | regex_search('[0-9.]+') }}"
+  when: kitty_installed
+
+# - debug: var=kitty_current_ver
+
+- name: Get latest release info
+  uri:
+    url: "{{ kitty_release }}"
+    body_format: json
+    return_content: yes
+  register: latest_release
+
+# - debug: var=latest_release.json.tag_name
+
+- name: Get latest release version
+  set_fact:
+    kitty_latest_ver: "{{ latest_release.json.tag_name | regex_search('[0-9.]+') }}"
+
+# - debug: var=kitty_latest_ver
+
+- name: Delete old kitty version installed with package manager
+  become: yes
+  package:
+    name: kitty
+    state: absent
+  when:
+    - kitty_installed
+    - kitty_latest_ver is version(kitty_current_ver, '>')
+
+- name: Set the fact whether kitty absent or outdated
+  set_fact:
+    kitty_absent_or_outdated:
+      "{{ false if kitty_installed and kitty_latest_ver is version(kitty_current_ver, '==') else true }}"
+
+# - debug: var=kitty_absent_or_outdated
+
+# https://sw.kovidgoyal.net/kitty/binary/
+- name: Download latest kitty release
+  shell:
+    cmd: "curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin dest={{ stow_dir }} launch=n"
+    warn: false  # Do not rise warning about curl.
+  register: download_latest_kitty
+  when: kitty_absent_or_outdated
+
+- name: Delete empty folders in 'kitty.app' directory
+  command:
+    cmd: find -type d -empty -delete
+    chdir: "{{ stow_dir }}/kitty.app"
+  when: download_latest_kitty is not skipped
+
+- name: install stow (apt)
+  become: yes
+  package:
+    name: stow
+    state: present
+
+- name: stow kitty application
+  command:
+    cmd: stow --restow kitty.app
+    chdir: "{{ stow_dir }}"
+  when: download_latest_kitty is not skipped

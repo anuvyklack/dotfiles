@@ -1,6 +1,6 @@
 #!/usr/bin/zsh
 
-update_bat()
+bat_install_or_update()
 {
     current_version=$(bat --version 2>/dev/null | perl -ne '/^bat\s*([0-9.]+).*$/ && print "v$1"')
 

@@ -1,4 +1,2 @@
----
-
 # Version here does not matter too much, because later bin will manage itself.
-bin_base_version: 0.8.0
+bin_base_version: 0.14.0

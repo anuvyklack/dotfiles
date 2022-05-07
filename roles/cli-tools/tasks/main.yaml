@@ -1,20 +1,23 @@
----
-
-- name: Install prerequisites
-  become: yes
-  apt:
-    pkg:
-      - curl
-      - jq
-    state: present
-    update_cache: yes
-    cache_valid_time: 3600  # One hour
+# - name: Install prerequisites
+#   become: yes
+#   package:
+#     - curl
+#     - jq
 
 - name: Install bin
-  include: bin.yaml
+  include_tasks: bin.yaml
 
 - name: Install pipx
-  include: pipx.yaml
+  include_tasks: pipx.yaml
+  when: ansible_os_family == 'Debian'
+
+- name: Install packages
+  become: yes
+  dnf:
+    pkg:
+      - pipx
+      - python3-argcomplete
+  when: ansible_distribution == 'Fedora'
 
 - name: Symlink bat config files
   file:

@@ -1,7 +1,5 @@
 ---
 
-# - debug: var=home
-
 # - name: check if already installed
 #   stat:
 #     path: "{{ miniconda_home }}/bin/conda"
@@ -18,7 +16,7 @@
 
 # - debug: var=check_conda
 
-- name: download miniconda installer
+- name: Download miniconda installer
   get_url:
     url: "{{ miniconda_url }}"
     dest: /tmp/miniconda.sh
@@ -31,7 +29,7 @@
 
 # - debug: var=miniconda_downloaded
 
-- name: "install miniconda to {{ miniconda_home }}"
+- name: "Install miniconda to {{ miniconda_home }}"
   become: yes
   # become_user: "{{ user_name }}"
   shell:

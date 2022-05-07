@@ -1,15 +1,12 @@
 ---
 
-- name: Install git (apt)
+- name: Install git
   become: yes
-  apt:
-    pkg:
+  package:
+    name:
       - git
-      # - tig
+      - tig
     state: present
-    update_cache: yes
-    cache_valid_time: 3600  # One hour
-  when: ansible_pkg_mgr == 'apt'
 
 - name: Check if previous git configuration exists
   stat:

@@ -1,0 +1,14 @@
+- name: Import the vivaldi repo
+  become: yes
+  command:
+    cmd: dnf config-manager --add-repo https://repo.vivaldi.com/archive/vivaldi-fedora.repo
+    warn: false
+  # args:
+  #   creates: /etc/yum.repos.d/(something).repo
+
+- name: Install vivaldi-stable
+  become: yes
+  dnf:
+    name: vivaldi-stable
+    state: present
+    update_cache: yes

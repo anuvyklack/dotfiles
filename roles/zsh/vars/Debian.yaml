@@ -1,0 +1,4 @@
+packages:
+  - zsh
+  - unzip
+  - fd-find

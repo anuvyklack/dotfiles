@@ -1,31 +1,27 @@
 ---
-- name: Install neovim (apt)
-  become: yes
-  apt:
-    name:
-      - neovim
-      - curl
-      - par  # Paragraph formating utility for vim
-      - sqlite3
-      - libsqlite3-dev
-      # - python3-pynvim  # looks like it is autoinstalling in Ubuntu
-    state: present
-    force_apt_get: yes  # Force usage of apt-get instead of aptitude
-    update_cache: yes
-    cache_valid_time: 3600  # One hour
-  when: ansible_pkg_mgr == 'apt'
 
-- name: Uninstall vim (apt)
+- name: Include variables
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_distribution }}.yaml"
+        - "{{ ansible_os_family }}.yaml"
+      paths:
+        - "vars"
+
+- name: Install neovim with dependencies
   become: yes
-  apt:
+  package:
+    state: latest
+    name: "{{ packages }}"
+
+- name: Uninstall vim
+  when: packages_to_delete is defined
+  become: yes
+  package:
+    name: "{{ packages_to_delete }}"
     state: absent
-    force_apt_get: yes
-    pkg:
-      - vim
-      - vim-runtime
-      # - vim-common  # essential package in Ubuntu 21.10
-      # - vim-tiny    # essential package in Ubuntu 21.10
-  when: ansible_pkg_mgr == 'apt'
 
 - name: Symlink neovim config files
   file:

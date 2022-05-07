@@ -834,8 +834,7 @@ fi
 
 # In Debian and its derivatives in package ‘fd-find’ the executable
 # and the associated manpage were renamed from ‘fd’ to ‘fdfind’.
-if [[ $(grep -Es '^ID_LIKE=.*(?:ubuntu|debian)' /etc/os-release) ]]
-then
+if [[ $(grep -Es '^ID_LIKE=.*(?:ubuntu|debian)' /etc/os-release) ]]; then
   ialias fd=fdfind
 fi
 

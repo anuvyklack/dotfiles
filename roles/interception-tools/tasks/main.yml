@@ -1,17 +1,20 @@
 ---
 
-- name: "Install {{ app }} prerequisites"
+- name: Include variables
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_distribution }}.yaml"
+        - "{{ ansible_os_family }}.yaml"
+      paths:
+        - "vars"
+
+- name: Install prerequisites
   become: yes
-  apt:
-    pkg:
-      - libboost-dev
-      - libudev-dev
-      - libyaml-cpp-dev
-      - libevdev-dev
-      - cmake
-    state: present
-    update_cache: yes
-    cache_valid_time: 3600  # One hour
+  package:
+    state: latest
+    name: "{{ packages }}"
 
 - name: "Clone {{ app }} repo"
   git:
@@ -45,8 +48,8 @@
     cmd: "cmake .."
     chdir: "{{ build }}"
   register: cmake
-  when: (git_status.before != git_status.after) or
-        (not build_dir.stat.exists)
+  # when: (git_status.before != git_status.after) or
+  #       (not build_dir.stat.exists)
 
 # - debug:
 #     var: cmake

@@ -1,9 +1,9 @@
 ---
 
-- name: Delete nnn version installed with apt
+- name: Delete nnn version installed with package manager
   become: yes
-  apt:
-    pkg: nnn
+  package:
+    name: nnn
     state: absent
 
 - name: Check if nnn is present
@@ -47,4 +47,3 @@
   notify: Clean build files
 
 # - debug: var=make
-

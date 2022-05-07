@@ -1,0 +1,13 @@
+packages:
+  - neovim
+  # - python3-pynvim  # looks like it is autoinstalling in Ubuntu
+  - curl
+  - par  # Paragraph formating utility for vim
+  - sqlite3
+  - libsqlite3-dev
+
+packages_to_delete:
+  - vim
+  - vim-runtime
+  # - vim-common  # essential package in Ubuntu 21.10
+  # - vim-tiny    # essential package in Ubuntu 21.10

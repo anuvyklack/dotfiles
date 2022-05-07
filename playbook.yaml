@@ -2,79 +2,60 @@
   hosts: local
   roles:
 
-    - role: test
-      tags: test
+    # - role: test
+    #   tags: test
 
-    - role: bfs
-      tags: bfs
+    - role: systemd
+      tags:
+        - systemd
 
-    # - role: systemd
-    #   tags:
-    #     - systemd
-    #
-    # - role: hidpi
-    #   tags:
-    #     - hidpi
-    #
-    # - role: base
-    #   tags: base
-    #
-    # - role: git
-    #   tags:
-    #      git
-    #
-    # - role: kitty
-    #   tags:
-    #     - kitty
-    #
-    # - role: cli-tools
-    #   tags:
-    #     - cli-tools
-    #
-    # - role: tmux
-    #   tags:
-    #     - tmux
-    #
-    # - role: zsh
-    #   tags:
-    #     - zsh
-    #
-    # - role: ranger
-    #   tags:
-    #     - ranger
-    #
-    # - role: vifm
-    #   tags:
-    #     - vifm
-    #
-    # - role: nnn
-    #   tags:
-    #     - nnn
-    #
-    # - role: miniconda
-    #   tags:
-    #     - miniconda
-    #
-    # - role: neovim
-    #   tags:
-    #     - neovim
-    #
-    # # - role: nodejs
-    # #   tags:
-    # #     - nodejs
-    # #   when: ansible_pkg_mgr == 'apt'
-    #
+    - role: hidpi
+      tags:
+        - hidpi
+
+    - role: base
+      tags: base
+
+    - role: git
+      tags: git
+
+    - role: kitty
+      tags: kitty
+
+    - role: cli-tools
+      tags: cli-tools
+
+    - role: tmux
+      tags: tmux
+
+    - role: zsh
+      tags: zsh
+
+    - role: vifm
+      tags: vifm
+
+    - role: nnn
+      tags: nnn
+      when: ansible_os_family == 'Debian'
+
+    - role: miniconda
+      tags: miniconda
+
+    - role: neovim
+      tags: neovim
+
+    # - role: nodejs
+    #   tags: nodejs
+    #   when: ansible_os_family == 'Debian'
+
     # - role: power-managment
-    #   tags:
-    #     - power-managment
-    #
+    #   tags: power-managment
+
     # - role: gnome3
-    #   tags:
-    #     - gnome
-    #
-    # - role: dual-function-keys
-    #   tags:
-    #     - keyboard
-    #
-    # - role: vivaldi
-    #   tags: vivaldi
+    #   tags: gnome
+
+    - role: dual-function-keys
+      tags: keyboard
+
+    - role: vivaldi
+      tags: vivaldi

@@ -1,23 +1,19 @@
 ---
-- name: install vifm (apt)
+
+- name: Install packages
   become: yes
-  apt:
-    pkg:
-      # - vifm
-      # - python3-pip
+  package:
+    state: latest
+    name:
+      - vifm
       - poppler-utils    # pdf
       - tree
       - ncurses-term     # true color support
       - jq               # json
       - transmission-cli # torrent
-      - bfs              # https://github.com/tavianator/bfs
       - ffmpegthumbnailer
       - antiword         # doc
       # - catdoc           # doc
-    state: latest
-    update_cache: yes
-    cache_valid_time: 3600  # One hour
-  when: ansible_pkg_mgr == 'apt'
 
 - name: Make sure all vifm config folders are exist
   file:

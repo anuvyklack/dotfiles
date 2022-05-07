@@ -1,0 +1,4 @@
+packages:
+  - neovim
+  - gcc-c++
+  - curl

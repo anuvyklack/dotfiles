@@ -64,13 +64,13 @@ install_missing_programs()
   then
     print_title $(color blue bold 'bat')
 
-    # echo
-    # bin install https://github.com/sharkdp/bat
-    # echo
-    # print \$ $(color green bold 'bat') $(color white bold 'cache --build')
-    # bat cache --build
+    echo
+    bin install https://github.com/sharkdp/bat
+    echo
+    print \$ $(color green bold 'bat') $(color white bold 'cache --build')
+    bat cache --build
 
-    install_update_bat
+    # bat_install_or_update
 
     echo
   fi #}}}

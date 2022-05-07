@@ -1,0 +1,3 @@
+packages:
+  - libglib2.0-dev
+  - cmake

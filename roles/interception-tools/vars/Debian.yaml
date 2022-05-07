@@ -1,0 +1,7 @@
+---
+packages:
+  - cmake
+  - libevdev-dev
+  - libudev-dev
+  - libyaml-cpp-dev
+  - libboost-dev

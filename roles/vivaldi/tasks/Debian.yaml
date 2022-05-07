@@ -1,0 +1,18 @@
+- name: Import the vivaldi repo public key (to allow for verification of the APT repository)
+  become: yes
+  apt_key:
+    url: https://repo.vivaldi.com/archive/linux_signing_key.pub
+    state: present
+
+- name: Add vivaldi repository into sources list
+  become: yes
+  apt_repository:
+    repo: deb https://repo.vivaldi.com/archive/deb/ stable main
+    state: present
+
+- name: Install vivaldi-stable
+  become: yes
+  apt:
+    name: vivaldi-stable
+    state: present
+    update_cache: yes

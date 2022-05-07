@@ -7,14 +7,14 @@ update()
     topgrade
     print
 
-    # update bat {{{
-    string="―― $(date +%H:%M:%S) - Update bat "
-    color white bold ${(r:80::―:)string}
-
-    update_bat
-
-    print
-    # }}}
+    # # update bat {{{
+    # string="―― $(date +%H:%M:%S) - Update bat "
+    # color white bold ${(r:80::―:)string}
+    #
+    # update_bat
+    #
+    # print
+    # # }}}
 
     # clean apt cache {{{
     string="―― $(date +%H:%M:%S) - Clean apt cache and unused packages "

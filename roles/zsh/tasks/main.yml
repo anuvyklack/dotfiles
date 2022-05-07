@@ -1,20 +1,20 @@
 ---
 
-- name: Install zsh and dependencies (apt)
+- name: Include variables
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_distribution }}.yaml"
+        - "{{ ansible_os_family }}.yaml"
+      paths:
+        - "vars"
+
+- name: Install zsh and dependencies
   become: yes
-  become_user: root
-  become_method: sudo
-  apt:
-    pkg:
-      - zsh
-      - unzip
-      - git
-      - bfs
-      # - lua5.4
-    state: present
-    update_cache: yes
-    cache_valid_time: 3600  # One hour
-  when: ansible_pkg_mgr == 'apt'
+  package:
+    state: latest
+    name: "{{ packages }}"
 
 - name: Setup zsh as default shell for '{{ user_name }}'
   become: yes

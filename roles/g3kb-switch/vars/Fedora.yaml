@@ -1,0 +1,3 @@
+packages:
+  - glib2-devel
+  - cmake

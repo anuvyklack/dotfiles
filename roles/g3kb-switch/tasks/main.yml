@@ -1,12 +1,20 @@
 ---
 
-- name: "Install {{ app }} prerequisites"
+- name: Include variables
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_distribution }}.yaml"
+        - "{{ ansible_os_family }}.yaml"
+      paths:
+        - "vars"
+
+- name: Install prerequisites
   become: yes
   package:
-    name:
-      - libglib2.0-dev
-      - cmake
-    state: present
+    state: latest
+    name: "{{ packages }}"
 
 - name: "Clone {{ app }} repo"
   git:
@@ -69,16 +77,15 @@
         '..'
       }}"
 
-# - debug: var=g3kb_switch_cmake_command
+- debug: var=g3kb_switch_cmake_command
 
 - name: cmake
   command:
     cmd: "{{ g3kb_switch_cmake_command }}"
     chdir: "{{ build }}"
   register: cmake
-  when:
-    - (git_status.before != git_status.after) or
-      (not build_dir.stat.exists)
+  # when: (git_status.before != git_status.after) or
+  #       (not build_dir.stat.exists)
 
 # - debug: var=cmake
 

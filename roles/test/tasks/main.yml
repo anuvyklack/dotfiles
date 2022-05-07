@@ -3,6 +3,7 @@
 # - debug: var=ansible_facts
 # - debug: var=ansible_env # Environment variables
 - debug: var=ansible_distribution
+# - debug: var=ansible_facts["distribution"]
 - debug: var=ansible_os_family
 - debug: var=ansible_pkg_mgr
 

@@ -1,0 +1,7 @@
+---
+packages:
+  - cmake
+  - libevdev-devel
+  - systemd-devel
+  - yaml-cpp-devel
+  - boost-devel
