@@ -1,6 +1,17 @@
 require('neorg').setup({
    load = { -- what modules to load
-      ["core.defaults"] = {}, -- Load all the default modules.
+      ["core.defaults"] = { -- Load all the default modules.
+
+      },
+      ["core.norg.esupports.indent"] = { config = {
+         tweaks = {
+            heading2 = 1,
+            heading3 = 2,
+            heading4 = 3,
+            heading5 = 4,
+            heading6 = 5,
+         }
+      }},
       ["core.keybinds"] = { config = {
          default_keybinds = true, -- Generate the default keybinds
          neorg_leader = "<Leader>o" -- This is the default if unspecified
@@ -110,9 +121,9 @@ require('neorg').setup({
          -- The location to write and read the workspace cache file.
          last_workspace = vim.fn.stdpath("cache").."/neorg_last_workspace.txt"
       }},
-      ["core.gtd.base"] = { config = {
-         workspace = "example_gtd",
-      },},
+      -- ["core.gtd.base"] = { config = {
+      --    workspace = "example_gtd",
+      -- },},
       ["core.norg.completion"] = { config = {
          engine = "nvim-cmp"
       }}
