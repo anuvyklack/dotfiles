@@ -1,0 +1,7 @@
+---
+
+- include_tasks: "{{ lookup('first_found', file) }}"
+  vars:
+    file:
+      - "{{ ansible_distribution }}.yaml"
+      - "{{ ansible_os_family }}.yaml"

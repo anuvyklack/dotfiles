@@ -1,0 +1,11 @@
+---
+
+# - name: Import the vivaldi repo
+#   become: yes
+#   command: "dnf module install nodejs:{{ nodejs_version }}/common"
+
+- name: Install nodejs
+  become: yes
+  dnf:
+    name: nodejs
+    state: present
