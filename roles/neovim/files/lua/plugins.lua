@@ -52,59 +52,89 @@ use 'lewis6991/impatient.nvim' -- Improve startup time for Neovim.
 -- ░░█████ ░░█████ ░██░░█████  ███        ██████ ░░█████ ░██  ░██░░█████  ███ ░██ ░██░░█████
 --  ░░░░░   ░░░░░  ░░  ░░░░░  ░░░        ░░░░░░   ░░░░░  ░░   ░░  ░░░░░  ░░░  ░░  ░░  ░░░░░
 
+use 'rktjmp/lush.nvim'
 
 local color_themes = {
    -- gruvbox-material {{{
-   ['gruvbox-material'] = function(flavor)
-      use { 'sainnhe/gruvbox-material',
-         config = function()
-            if flavor == 'dark' then
+   ['gruvbox-material'] = {
+      dark = function() -- {{{
+         use { 'sainnhe/gruvbox-material',
+            config = function()
                vim.o.background = 'dark'
 
                -- Set contrast.
                -- available values: 'hard', 'medium'(default), 'soft'
                vim.g.gruvbox_material_background = 'medium'
 
-            elseif flavor == 'light' then
+               -- Set the color palette used in this color scheme.
+               -- material : material palette with soft contrast;
+               -- mix      : the mean of the other two;
+               -- original : the original gruvbox palette.
+               vim.g.gruvbox_material_palette = 'mix'
+
+               vim.g.gruvbox_material_enable_bold = 1
+               vim.g.gruvbox_material_enable_italic = 1
+
+               -- Available values: 'auto', 'red', 'orange', 'yellow',
+               -- 'green', 'aqua', 'blue', 'purple'
+               vim.g.gruvbox_material_cursor = 'aqua'
+
+               -- 'colored' or 'grey'
+               vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
+               vim.g.gruvbox_material_diagnostic_text_highlight = 1 -- 0 or 1
+
+               -- vim.g.gruvbox_material_diagnostic_virtual_text = 'grey'
+               vim.g.gruvbox_material_current_word = 'grey background'
+               vim.g.gruvbox_material_better_performance = 1
+
+               vim.cmd 'colorscheme gruvbox-material'
+               vim.cmd("source ~/.config/nvim/lua/plugins-config/gruvbox-material.vim")
+            end
+         }
+      end, -- }}}
+      light = function() -- {{{
+         use { 'sainnhe/gruvbox-material',
+            config = function()
                vim.o.background = 'light'
                vim.g.gruvbox_material_background = 'soft'
+               vim.g.gruvbox_material_palette = 'mix'
+               vim.g.gruvbox_material_enable_bold = 1
+               vim.g.gruvbox_material_enable_italic = 1
+               vim.g.gruvbox_material_cursor = 'aqua'
+
+               -- 'colored' or 'grey'
+               vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
+               vim.g.gruvbox_material_diagnostic_text_highlight = 1 -- 0 or 1
+
+               -- vim.g.gruvbox_material_diagnostic_virtual_text = 'grey'
+               vim.g.gruvbox_material_current_word = 'grey background'
+               vim.g.gruvbox_material_better_performance = 1
+
+               vim.cmd 'colorscheme gruvbox-material'
+               vim.cmd("source ~/.config/nvim/lua/plugins-config/gruvbox-material.vim")
             end
-
-            -- Set the color palette used in this color scheme.
-            -- material : material palette with soft contrast;
-            -- mix      : the mean of the other two;
-            -- original : the original gruvbox palette.
-            vim.g.gruvbox_material_palette = 'mix'
-
-            vim.g.gruvbox_material_enable_bold = 1
-            vim.g.gruvbox_material_enable_italic = 1
-
-            -- Available values: 'auto', 'red', 'orange', 'yellow',
-            -- 'green', 'aqua', 'blue', 'purple'
-            vim.g.gruvbox_material_cursor = 'blue'
-
-            -- 'colored' or 'grey'
-            vim.g.gruvbox_material_diagnostic_virtual_text = 'colored'
-            vim.g.gruvbox_material_diagnostic_text_highlight = 1 -- 0 or 1
-
-            -- vim.g.gruvbox_material_diagnostic_virtual_text = 'grey'
-            vim.g.gruvbox_material_current_word = 'grey background'
-            vim.g.gruvbox_material_better_performance = 1
-
-            vim.cmd 'colorscheme gruvbox-material'
-            vim.cmd("source ~/.config/nvim/lua/plugins-config/gruvbox-material.vim")
-         end
-      }
-   end, --}}}
+         }
+      end, -- }}}
+   }, --}}}
    -- melange {{{
-   ['melange'] = function()
-      use { 'savq/melange',
-         config = function()
-            vim.o.background = 'light'
-            vim.cmd 'colorscheme melange'
-         end
-      }
-   end, --}}}
+   ['melange'] = {
+      dark = function() -- {{{
+         use { 'savq/melange',
+            config = function()
+               vim.o.background = 'dark'
+               vim.cmd 'colorscheme melange'
+            end
+         }
+      end, -- }}}
+      light = function() -- {{{
+         use { 'savq/melange',
+            config = function()
+               vim.o.background = 'light'
+               vim.cmd 'colorscheme melange'
+            end
+         }
+      end -- }}}
+   }, --}}}
    -- moonshine {{{
    ['moonshine'] = function()
       use { 'karoliskoncevicius/moonshine-vim',
@@ -118,21 +148,39 @@ local color_themes = {
    -- srcery {{{
    ['srcery'] = function()
       use { 'srcery-colors/srcery-vim' }
-   end, --}}}
-   -- mellow {{{
-   ['mellow'] = function(flavor)
-      use { 'adigitoleo/vim-mellow', as = 'mellow',
+      use { 'srcery-colors/srcery-vim', as = 'srcery',
          config = function()
-            if flavor == 'dark' then
-               vim.o.background = 'dark'
-            else
-               vim.o.background = 'light'
-            end
-            vim.cmd 'colorscheme mellow'
-            vim.cmd("source ~/.config/nvim/lua/anuvyklack/mellow.vim")
+            vim.cmd 'colorscheme srcery'
          end
       }
    end, --}}}
+   -- mellow {{{
+   mellow = {
+      -- dark {{{
+      dark = function()
+         use { 'adigitoleo/vim-mellow', as = 'mellow',
+            config = function()
+               vim.o.background = 'dark'
+               vim.cmd 'colorscheme mellow'
+               vim.cmd 'source ~/.config/nvim/lua/plugins-config/mellow.vim'
+            end
+         }
+      end,
+      -- }}}
+      -- light {{{
+      light = function()
+         -- My fork of vim-mellow scheme.
+         -- https://github.com/adigitoleo/vim-mellow
+         use { '~/code/neovim-plugins/colorsheme/mellow.nvim', as = 'mellow',
+            config = function()
+               vim.o.background = 'light'
+               vim.cmd 'colorscheme mellow'
+               vim.cmd("source ~/.config/nvim/lua/plugins-config/mellow.vim")
+            end
+         }
+      end
+      -- }}}
+   }, --}}}
    -- tokyonight {{{
    ['tokyonight'] = function()
       use { 'folke/tokyonight.nvim',
@@ -144,30 +192,53 @@ local color_themes = {
          end
       }
    end, --}}}
-   -- vim-paper {{{
-   ['vim-paper'] = function()
-      use { 'https://gitlab.com/yorickpeterse/vim-paper.git',
+   -- everforest {{{
+   everforest = function()
+      use { 'sainnhe/everforest',
          config = function()
-            vim.cmd 'colorscheme paper'
+            vim.o.background = 'light'
+            vim.g.everforest_background = 'soft'
+            vim.g.everforest_better_performance = 1
+            vim.cmd 'colorscheme everforest'
          end
       }
-   end, --}}}
+   end,
+   -- }}}
+   -- manuscript {{{
+   manuscript = function()
+      -- My fork of vim-paper scheme.
+      -- https://gitlab.com/yorickpeterse/vim-paper.git
+      use { '~/code/neovim-plugins/colorsheme/manuscript',
+         config = function()
+            vim.cmd 'colorscheme manuscript'
+         end
+      }
+   end
+   -- }}}
 }
 
 local colorscheme = { 'gruvbox-material', 'dark' }
 -- local colorscheme = { 'gruvbox-material', 'light' }
 -- local colorscheme = 'tokyonight'
--- local colorscheme = 'melange'
+-- local colorscheme = { 'melange', 'light' }
+-- local colorscheme = { 'melange', 'dark' }
 -- local colorscheme = { 'mellow', 'light' }
+-- local colorscheme = { 'mellow', 'dark' }
 -- local colorscheme = 'moonshine'
 -- local colorscheme = 'srcery'
--- local colorscheme = 'vim-paper'
+-- local colorscheme = 'everforest'
+-- local colorscheme = 'manuscript'
 
-local flavor
-if type(colorscheme) == 'table' then
+local flavor; if type(colorscheme) == 'table' then
    colorscheme, flavor = colorscheme[1], colorscheme[2]
 end
-if color_themes[colorscheme] then color_themes[colorscheme](flavor) end
+if color_themes[colorscheme] then
+   if flavor then
+      color_themes[colorscheme][flavor]()
+   else
+      color_themes[colorscheme]()
+   end
+end
 
 use { 'folke/lsp-colors.nvim', --{{{
    config = function() require('lsp-colors').setup {
