@@ -116,16 +116,6 @@ function M.lspconfig(bufnr)
 
    -- }}}
 
-   -- Diagnostics {{{
-
-   -- keymap.set(n, '<leader>ll', vim.diagnostic.setloclist, opts{ desc = 'Diagnostics in loclist' })
-
-   keymap.set(n, '<leader>le', vim.diagnostic.open_float, opts{ desc = 'Show errors' })
-   keymap.set(n,    '[e',      vim.diagnostic.goto_prev,  opts{ desc = 'Previous diagnostic' })
-   keymap.set(n,    ']e',      vim.diagnostic.goto_next,  opts{ desc = 'Next diagnostic' })
-
-   -- }}}
-
    -- Hover doc
    keymap.set(n, 'K', vim.lsp.buf.hover, opts{ desc = 'LSP: hover doc', ft_ignore = { 'vim' } })
 
@@ -151,14 +141,33 @@ function M.lspconfig(bufnr)
 
 end --}}}
 
--- Trouble {{{
+-- Diagnostics {{{
 function M.trouble()
    keymap.set(n, '<leader>ee', '<cmd>TroubleToggle<cr>',                       { desc = 'Trouble: toggle win' })
    keymap.set(n, '<leader>ew', '<cmd>TroubleToggle workspace_diagnostics<cr>', { desc = 'workspace diagnostics' })
    keymap.set(n, '<leader>ed', '<cmd>TroubleToggle document_diagnostics<cr>',  { desc = 'buffer diagnostics' })
    keymap.set(n, '<leader>eq', '<cmd>TroubleToggle quickfix<cr>',              { desc = 'Trouble: show quickfix' })
    keymap.set(n, '<leader>el', '<cmd>TroubleToggle loclist<cr>',               { desc = 'Trouble: show loclist' })
-end -- }}}
+end
+
+
+-- keymap.set(n, '<leader>ll', vim.diagnostic.setloclist, { desc = 'Diagnostics in loclist' })
+keymap.set(n, '<leader>d',  vim.diagnostic.open_float, { desc = 'Show diagnostic' })
+keymap.set(n, '<leader>ds', vim.diagnostic.open_float, { desc = 'Show diagnostic' })
+keymap.set(n,    '[d',      vim.diagnostic.goto_prev,  { desc = 'Prev diagnostic' })
+keymap.set(n,    ']d',      vim.diagnostic.goto_next,  { desc = 'Next diagnostic' })
+
+local diagnostics_active = true
+keymap.set('n', '<leader>dt', function()
+   diagnostics_active = not diagnostics_active
+   if diagnostics_active then
+      vim.diagnostic.show()
+   else
+      vim.diagnostic.hide()
+   end
+end, { desc = 'Toggle diagnostics' })
+
+-- }}}
 
 -- LuaSnip {{{
 function M.luasnip()
