@@ -150,7 +150,8 @@ local ModeColors = setmetatable({
 
 local lsp_colors = {
    sumneko_lua = '#5EBCF6',
-   vimls = '#43BF6C'
+   vimls = '#43BF6C',
+   ansiblels = '#ffffff'
 }
 
 M.colors = colors
