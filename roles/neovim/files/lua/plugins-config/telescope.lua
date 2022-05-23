@@ -340,7 +340,7 @@ telescope.setup {
 }
 
 -- https://github.com/nvim-telescope/telescope.nvim/issues/559
-vim.cmd('autocmd BufRead * autocmd BufWinEnter * ++once normal! zx zM')
+vim.cmd 'autocmd BufRead * autocmd BufWinEnter * ++once normal! zxzM'
 
 ------------------------------ Extensions --------------------------------------
 
