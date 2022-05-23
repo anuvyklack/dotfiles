@@ -256,40 +256,47 @@ end --}}}
 function M.gitsigns(bufnr)
    local gs = package.loaded.gitsigns
 
-   local function map(mode, lhs, rhs, opts) --{{{
-      opts = opts or {}
-      opts.buffer = bufnr
-      vim.keymap.set(mode, lhs, rhs, opts)
-   end --}}}
+   local function opts(opt)
+      opt = opt or {}
+      opt.buffer = bufnr
+      return opt
+   end
+
+   -- local keymap = {}
+   -- function keymap.set(mode, lhs, rhs, opts) --{{{
+   --    opts = opts or {}
+   --    opts.buffer = bufnr
+   --    vim.keymap.set(mode, lhs, rhs, opts)
+   -- end --}}}
 
    -- Navigation
-   map('n', ']c', function()
+   keymap.set('n', ']g', function()
       if vim.wo.diff then return ']c' end
       vim.schedule(function() gs.next_hunk() end)
       return '<Ignore>'
-   end, { expr = true, desc = 'Git: next hunk' })
+   end, opts{ expr = true, desc = 'Git: next hunk' })
 
-   map('n', '[c', function()
+   keymap.set('n', '[g', function()
       if vim.wo.diff then return '[c' end
       vim.schedule(function() gs.prev_hunk() end)
       return '<Ignore>'
-   end, { expr = true, desc = 'Git: prev hunk' })
+   end, opts{ expr = true, desc = 'Git: prev hunk' })
 
    -- Actions
-   map({n,v}, '<leader>hs', '<Cmd>Gitsigns stage_hunk<CR>', { desc = 'Git: stage hunk' })
-   map({n,v}, '<leader>hr', '<Cmd>Gitsigns reset_hunk<CR>', { desc = 'Git: reset hunk' })
-   map(n, '<leader>hS', gs.stage_buffer, { desc = 'Git: stage buffer' })
-   map(n, '<leader>hu', gs.undo_stage_hunk)
-   map(n, '<leader>hR', gs.reset_buffer)
-   map(n, '<leader>hp', gs.preview_hunk, { desc = 'Git: preview buffer' })
-   map(n, '<leader>hb', function() gs.blame_line{ full=true } end)
-   map(n, '<leader>tb', gs.toggle_current_line_blame, { desc = 'Git: line blame' })
-   map(n, '<leader>hd', gs.diffthis)
-   map(n, '<leader>hD', function() gs.diffthis('~') end)
-   map(n, '<leader>td', gs.toggle_deleted, { desc = 'Git: toggle deleted' })
+   keymap.set({n,v}, '<leader>hs', '<Cmd>Gitsigns stage_hunk<CR>', opts{ desc = 'Git: stage hunk' })
+   keymap.set({n,v}, '<leader>hr', '<Cmd>Gitsigns reset_hunk<CR>', opts{ desc = 'Git: reset hunk' })
+   keymap.set(n, '<leader>hS', gs.stage_buffer, opts{ desc = 'Git: stage buffer' })
+   keymap.set(n, '<leader>hu', gs.undo_stage_hunk)
+   keymap.set(n, '<leader>hR', gs.reset_buffer)
+   keymap.set(n, '<leader>hp', gs.preview_hunk, opts{ desc = 'Git: preview buffer' })
+   keymap.set(n, '<leader>hb', function() gs.blame_line{ full=true } end)
+   keymap.set(n, '<leader>tb', gs.toggle_current_line_blame, opts{ desc = 'Git: line blame' })
+   keymap.set(n, '<leader>hd', gs.diffthis)
+   keymap.set(n, '<leader>hD', function() gs.diffthis('~') end)
+   keymap.set(n, '<leader>td', gs.toggle_deleted, opts{ desc = 'Git: toggle deleted' })
 
    -- Text object
-   map({'o','x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>', { desc = 'Git: inner hunk' })
+   keymap.set({'o','x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>', opts{ desc = 'Git: inner hunk' })
 end
 -- }}}
 
