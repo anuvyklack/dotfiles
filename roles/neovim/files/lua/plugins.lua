@@ -360,19 +360,6 @@ use { 'liuchengxu/vista.vim',
 --    }) end
 -- } --}}}
 
-use { 'ahmedkhalf/project.nvim', --{{{
-   config = function() require('project_nvim').setup {
-      detection_methods = { 'lsp', 'pattern' },
-      patterns = {
-         '.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json',
-         '>.config', '>roles'
-      },
-      -- When set to false, you will get a message
-      -- when project.nvim changes your directory.
-      silent_chdir = true,
-   } end
-} --}}}
-
 -- use { 'https://gitlab.com/yorickpeterse/nvim-dd.git', --{{{
 --    as = 'deferring-diagnostics',
 --    config = function() require('dd').setup() end
@@ -738,6 +725,32 @@ use { 'karb94/neoscroll.nvim',
 
 --                           IDE features                             {{{
 -------------------------------------------------------------------------
+
+use { 'ahmedkhalf/project.nvim', --{{{
+   config = function() require('project_nvim').setup {
+      detection_methods = { 'lsp', 'pattern' },
+      patterns = {
+         '.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json',
+         '>.config', '>roles'
+      },
+      -- When set to false, you will get a message
+      -- when project.nvim changes your directory.
+      silent_chdir = true,
+   } end
+} --}}}
+
+use { 'klen/nvim-config-local', as = 'per-project-config',
+   config = function()
+      require('config-local').setup {
+         -- Config file patterns to load (lua supported)
+          config_files = { '.vimrc.lua', '.vimrc' },
+          autocommands_create = true, -- Create autocommands (VimEnter, DirectoryChanged)
+          commands_create = false, -- Create commands (ConfigSource, ConfigEdit, ConfigTrust, ConfigIgnore)
+          silent = false, -- Disable plugin messages (Config loaded/ignored)
+          lookup_parents = true,-- Lookup config files in parent directories
+      }
+   end
+}
 
 -- use { 'sidebar-nvim/sidebar.nvim',
 --    config = function() require('plugins-config/sidebar') end
