@@ -1,3 +1,4 @@
 packages:
   - zsh
   - fd-find
+  - wl-clipboard

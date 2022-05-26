@@ -3,7 +3,9 @@
 - name: Install tmux (dnf)
   become: yes
   dnf:
-    name: tmux
+    name:
+      - tmux
+      - wl-clipboard  # Wayland clipboard
     state: latest
   when: ansible_distribution == 'Fedora'
 

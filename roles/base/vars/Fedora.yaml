@@ -3,3 +3,4 @@ packages:
   - cronie # for cron
   - cronie-anacron
   - fd-find
+  - wl-clipboard
