@@ -1,5 +1,7 @@
 ---
-
+# ---------------------------------------------------------------------------
+#  Build
+# ---------------------------------------------------------------------------
 - name: "Clone {{ app }} repo"
   git:
     repo: "{{ repo }}"
@@ -38,10 +40,12 @@
 - name: Copy dual-function-keys config file
   become: yes
   copy:
-    src: dual-function-keys.yaml
-    dest: /etc/interception-tools/dual-function-keys.yaml
+    src: "{{ item }}.yaml"
+    dest: "/etc/interception-tools/{{ item }}.yaml"
     force: yes
-    backup: yes
+  loop:
+    - kinesis-advantage2
+    - laptop-keyboard
 
 - name: Copy udevmon.yaml config file
   become: yes
@@ -49,7 +53,6 @@
     src: udevmon.yaml
     dest: /etc/udevmon.yaml
     force: yes
-    backup: yes
 
 - name: Copy udevmon.service file
   become: yes
@@ -72,5 +75,5 @@
   become: yes
   systemd:
     name: udevmon
-    state: started  # strat now
     enabled: yes    # strat on boot
+    state: started  # strat now

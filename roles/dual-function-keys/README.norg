@@ -1,0 +1,11 @@
+`dual-function-keys` supports per keyboard configuration.
+To get list of your devices, execute:
+@code bash
+    sudo libinput list-devices | rg Device | sort | uniq
+@end
+
+For my Kinesis Advantage 2 it returns this names:
+  - Kinesis Advantage2 Keyboard
+  - Kinesis Advantage2 Keyboard Consumer Control
+  - Kinesis Advantage2 Keyboard System Control
+Aunfortunatly no one works, so make the union configuration.
