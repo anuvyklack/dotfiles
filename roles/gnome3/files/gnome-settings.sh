@@ -44,11 +44,13 @@ gsettings set org.gnome.desktop.input-sources \
 gsettings set org.gnome.desktop.input-sources \
    per-window true
 
-# Make Caps Lock an adition Esc.
+# # Make Caps Lock an adition Esc.
+# gsettings set org.gnome.desktop.input-sources \
+#     xkb-options "['caps:escape']"
+
 # Switch keyboard layouts by pressing both Shifts together.
 gsettings set org.gnome.desktop.input-sources \
-    xkb-options "['caps:escape', 'grp:shifts_toggle']"
-
+    xkb-options "['grp:shifts_toggle']"
 
 # Windows and applications switching
 # -----------------------------------------------------------------------------
