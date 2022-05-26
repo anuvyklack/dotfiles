@@ -984,6 +984,8 @@ use 'vim-scripts/SyntaxAttr.vim'
 --    end
 -- } --}}}
 
+use 'pearofducks/ansible-vim'
+
 use { 'Neui/cmakecache-syntax.vim', as = 'syntax-cmakecache' }
 -- use { 'zinit-zsh/zinit-vim-syntax', ft = 'zsh' } -- zinit syntaxis
 
