@@ -4,10 +4,11 @@ util.keymap = {}
 
 ---Wrapper around vim.keymap.set() function. It accepts in {opts} parameter
 ---table next additional keys:
---- - **requires** (string) - package that should be available to set this keymap
---- - **ft_ignore** (string | list) - filetype or list of filetypes for which this keymap won't be set
+--- - **requires**: (string) Package that should be available to set this keymap.
+--- - **ft_ignore**: (string | string[]) Filetype or list of filetypes for which
+---   this keymap won't be set.
 util.keymap.set = function (...)
-   local decision = true -- To set keymap or not.
+   local decision = true -- The decision to set keymap or not.
    local opts = select(-1, ...)
    if type(opts) == 'table' then
       if opts.requires then

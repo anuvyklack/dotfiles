@@ -276,14 +276,11 @@ set colorcolumn=+1  " Показывать рулетку в следующей 
 set mousehide       " Hide the mouse when typing text.
 " set cursorline      " Выделять строку, на которой находится курсор.
 
-" set guicursor=a:blinkon100  " Turn on cursor blinking
-
-" hi Cursor guifg=NONE guibg=cyan
-" hi Cursor2 guifg=NONE guibg=red
-
 " Change cursor shape between modes
-set guicursor=n-v-c:block-Cursor/lCursor
-set guicursor+=i-ci-ve:ver25-Cursor2/lCursor2,r-cr:hor20,o:hor50
+hi Cursor guifg=green guibg=green
+hi Cursor2 guifg=red guibg=red
+set guicursor=n-v-c:block-Cursor/lCursor,i-ci-ve:ver25-Cursor2/lCursor2,r-cr:hor20,o:hor50
+" set guicursor=i-ci-ve:ver25-Cursor2/lCursor2,r-cr:hor20,o:hor50
 
 " ================== Window Splits =====================
 
@@ -472,7 +469,7 @@ noremap H ^
 noremap L $
 
 " Отключить подсветку только что найденного текста
-nnoremap <silent> <Esc> <Cmd>nohlsearch<CR><Esc>
+" nnoremap <silent> <Esc> <Cmd>nohlsearch<CR><Esc>
 
 
 " При нажатии <Enter> вставлять пустую сроку снизу если буфер имеет

@@ -12,7 +12,7 @@ local M = {}
 local keymap = require('util').keymap
 keymap.amend = require('keymap-amend')
 local which_key = require('util').which_key
-local n, v, x = 'n', 'v', 'x'
+local n, v = 'n', 'v'
 local function cmd(command) return table.concat({ '<cmd>', command, '<CR>' }) end
 
 -- -- Dealing with word wrap:
@@ -83,7 +83,7 @@ function M.lspconfig(bufnr)
 
    keymap.set(n, '<leader>lv', cmd 'Vista nvim_lsp', opts{ desc = 'LSP: show symbols' })
 
-   -- Go to definiton, declaration, references, etc {{{
+   -- Definiton, declaration, references {{{
 
    keymap.set(n, 'gd', vim.lsp.buf.definition,     opts{ desc = 'LSP: go to definition' })
    keymap.set(n, 'gD', vim.lsp.buf.declaration,    opts{ desc = 'LSP: go to declaration' })

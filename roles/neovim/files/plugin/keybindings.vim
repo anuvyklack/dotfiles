@@ -37,10 +37,10 @@ nnoremap <silent> <C-L> <Cmd>TmuxNavigateRight<CR>
 "                         Vim-Smartword                        {{{
 " ----------------------------------------------------------------
 " Make vim treat all word delimiters like it treats spaces (for word motions).
-map w   <Plug>(smartword-w)
-map b   <Plug>(smartword-b)
-map e   <Plug>(smartword-e)
-map ge  <Plug>(smartword-ge)
+map w  <Plug>(smartword-w)
+map b  <Plug>(smartword-b)
+map e  <Plug>(smartword-e)
+map ge <Plug>(smartword-ge)
 
 noremap ,w  w
 noremap ,b  b

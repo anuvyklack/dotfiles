@@ -256,7 +256,7 @@ use { 'folke/lsp-colors.nvim', --{{{
 use { 'xiyaowong/which-key.nvim',
 -- use { 'folke/which-key.nvim', -- original
    as = 'which-key', -- WhichKey
-   config = function () require('plugins-config/which-key') end
+   config = function() require('plugins-config/which-key') end
 }
 
 -- use { 'anuvyklack/nvim-keymap-amend', as = 'keymap-amend' }
@@ -555,8 +555,7 @@ use { 'AndrewRadev/splitjoin.vim', as = 'splitjoin' }
 -- } --}}}
 
 -- Multiple cursors
--- https://github.com/mg979/vim-visual-multi
-use { 'mg979/vim-visual-multi', as = 'multiple-cursors'}
+use { 'mg979/vim-visual-multi', as = 'multiple-cursors' }
 
 ----------------------------------------------------------------------}}}
 
@@ -668,7 +667,7 @@ use { 'beauwilliams/focus.nvim', --{{{
 
 -- Make vim treat all word delimiters like it treats spaces (for word motions).
 -- use 'kana/vim-smartword'
-use { '~/code/neovim_plugins/vim-smartword' }
+use '~/code/neovim-plugins/vim-smartword'
 
 
 -- use { 'easymotion/vim-easymotion', as = 'easymotion', --{{{
@@ -938,7 +937,7 @@ use { 'norcalli/nvim-colorizer.lua', as = 'colorizer', --{{{
 } --}}}
 
 use { 'anuvyklack/help-vsplit.nvim', as = 'help-vsplit', --{{{
--- use { '~/Git/my_neovim_plugins/help-vsplit.nvim', as = 'help-vsplit',
+-- use { '~/Git/my_neovim-plugins/help-vsplit.nvim', as = 'help-vsplit',
    config = function() require('help-vsplit').setup {
       always = true,
       side = 'left'
@@ -1165,12 +1164,12 @@ use { 'SmiteshP/nvim-gps',
    config = function()
       require("nvim-gps").setup{
          icons = {
-            -- ["class-name"] = ' ',      --  Classes and class-like objects
-            ["class-name"] = ' ',      --  Classes and class-like objects
-            ["function-name"] = ' ',   -- Functions
-            ["method-name"] = '  ',    -- Methods (functions inside class-like objects)
-            ["container-name"] = ' ',  -- Containers (example: lua tables)
-            ["tag-name"] = '炙'         -- Tags (example: html tags)
+            -- ["class-name"] = ' ',     --  Classes and class-like objects
+            ["class-name"] = ' ',     --  Classes and class-like objects
+            ["function-name"] = ' ',  -- Functions
+            ["method-name"] = '  ',   -- Methods (functions inside class-like objects)
+            ["container-name"] = ' ', -- Containers (example: lua tables)
+            ["tag-name"] = '炙'        -- Tags (example: html tags)
          },
       }
    end
@@ -1187,12 +1186,10 @@ use { 'rebelot/heirline.nvim',
 
 ----------------------------------------------------------------------}}}
 
-local plugins = setmetatable({}, {
+return setmetatable({}, {
    __index = function(_, key)
       return packer[key]
    end,
 })
-
-return plugins
 
 -- vim: fml=1 fdm=marker
