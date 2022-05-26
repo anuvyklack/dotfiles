@@ -252,11 +252,16 @@ use { 'folke/lsp-colors.nvim', --{{{
 
 --                          Key Mappings                              {{{
 -------------------------------------------------------------------------
+
 use { 'xiyaowong/which-key.nvim',
 -- use { 'folke/which-key.nvim', -- original
    as = 'which-key', -- WhichKey
    config = function () require('plugins-config/which-key') end
 }
+
+-- use { 'anuvyklack/nvim-keymap-amend', as = 'keymap-amend' }
+use { '~/code/neovim-plugins/nvim-keymap-amend', as = 'keymap-amend' }
+
 --------------------------------------------------------------------}}}
 
 --                              LSP                                   {{{
@@ -856,9 +861,8 @@ use { 'stevearc/dressing.nvim', --{{{
 -- } --}}}
 
 -- use { 'anuvyklack/pretty-fold.nvim', as = 'pretty-fold', -- {{{
---    branch = 'nightly',
--- use { '~/code/neovim_plugins/pretty-fold.nvim', as = 'pretty-fold',
-use { '~/code/neovim_plugins/pretty-fold-nightly', as = 'pretty-fold-nightly',
+use { '~/code/neovim-plugins/pretty-fold.nvim', as = 'pretty-fold',
+   requires = 'keymap-amend',
    config = function() require('plugins-config/pretty-fold') end
 } --}}}
 

@@ -10,6 +10,7 @@
 
 local M = {}
 local keymap = require('util').keymap
+keymap.amend = require('keymap-amend')
 local which_key = require('util').which_key
 local n, v, x = 'n', 'v', 'x'
 local function cmd(command) return table.concat({ '<cmd>', command, '<CR>' }) end
@@ -381,6 +382,14 @@ function M.asterisks()
    keymap.set('', 'g*', '<Plug>(asterisk-gz*)', { desc = 'which_key_ignore' })
    keymap.set('', 'g#', '<Plug>(asterisk-gz#)', { desc = 'which_key_ignore' })
 end -- }}}
+
+keymap.amend('n', '<Esc>', function(original)
+-- keymap.amend('n', '\27', function(original)
+   if vim.v.hlsearch and vim.v.hlsearch == 1 then
+      vim.cmd('nohlsearch')
+   end
+   original()
+end)
 
 return M
 
