@@ -871,7 +871,7 @@ use { 'sindrets/diffview.nvim',
 
 -- Marks
 -- use 'kshenoy/vim-signature'  -- display and navigate marks
-use { 'chentau/marks.nvim', --{{{
+use { 'chentoast/marks.nvim', --{{{
    config = function()
       require'marks'.setup {
          -- https://github.com/chentau/marks.nvim/issues/40
