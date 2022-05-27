@@ -23,9 +23,9 @@ local M = {}
 
 local colors
 do
-   local background = vim.opt.background:get()
-   local configuration = vim.fn['gruvbox_material#get_configuration']()
-   colors = vim.fn['gruvbox_material#get_palette'](background, configuration.palette)
+   local config = vim.fn['gruvbox_material#get_configuration']()
+   colors = vim.fn['gruvbox_material#get_palette'](config.background, config.foreground, config.colors_override)
+
    for key, color in pairs(colors) do
       colors[key] = color[1]
    end

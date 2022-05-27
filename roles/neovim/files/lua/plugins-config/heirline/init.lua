@@ -9,7 +9,7 @@ local util = require('plugins-config.heirline.util')
 local icons = util.icons
 local mode = util.mode
 
-local theme_available, theme = pcall(require, 'plugins-config/heirline/themes/'..vim.g.colors_name)
+local theme_available, theme = pcall(require, 'plugins-config/heirline/themes/' .. vim.g.colors_name)
 -- local theme_available, theme = true, require('plugins-config/heirline/themes/gruvbox-material')
 if not theme_available then return end
 local hl = theme.highlight
@@ -583,6 +583,6 @@ local StatusLines = {
    HelpBufferStatusline, InactiveStatusline, ActiveStatusline
 }
 
-require'heirline'.setup(StatusLines)
+require('heirline').setup(StatusLines)
 
 -- vim: fml=2
