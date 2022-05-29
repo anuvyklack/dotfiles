@@ -12,7 +12,7 @@ local M = {}
 local keymap = require('util').keymap
 keymap.amend = require('keymap-amend')
 local which_key = require('util').which_key
-local n, v = 'n', 'v'
+local n, x = 'n', 'x'
 local function cmd(command) return table.concat({ '<cmd>', command, '<CR>' }) end
 
 -- -- Dealing with word wrap:
@@ -25,13 +25,13 @@ local function cmd(command) return table.concat({ '<cmd>', command, '<CR>' }) en
 
 -- Hop (Easymotion) {{{
 function M.hop()
-   keymap.set({n,v}, ';w', function() vim.cmd('HopWordAC') end, { desc = 'Easymotion forward word' })
-   keymap.set({n,v}, ';b', function() vim.cmd('HopWordBC') end, { desc = 'Easymotion bacward word' })
+   keymap.set({n,x}, ';w', function() vim.cmd('HopWordAC') end, { desc = 'Easymotion forward word' })
+   keymap.set({n,x}, ';b', function() vim.cmd('HopWordBC') end, { desc = 'Easymotion bacward word' })
 
-   keymap.set({n,v}, ';j', cmd 'HopLineAC', { desc = 'Easymotion line up' })
-   keymap.set({n,v}, ';k', cmd 'HopLineBC', { desc = 'Easymotion line down' })
+   keymap.set({n,x}, ';j', cmd 'HopLineAC', { desc = 'Easymotion line up' })
+   keymap.set({n,x}, ';k', cmd 'HopLineBC', { desc = 'Easymotion line down' })
 
-   keymap.set({n,v}, 's', cmd 'HopChar1', { desc = 'Easymotion char' })
+   keymap.set({n,x}, 's', cmd 'HopChar1', { desc = 'Easymotion char' })
 
    keymap.set(n, 't', cmd 'HopChar2', { desc = 'Easymotion 2 chars' })
 end -- }}}
@@ -284,8 +284,8 @@ function M.gitsigns(bufnr)
    end, opts{ expr = true, desc = 'Git: prev hunk' })
 
    -- Actions
-   keymap.set({n,v}, '<leader>hs', '<Cmd>Gitsigns stage_hunk<CR>', opts{ desc = 'Git: stage hunk' })
-   keymap.set({n,v}, '<leader>hr', '<Cmd>Gitsigns reset_hunk<CR>', opts{ desc = 'Git: reset hunk' })
+   keymap.set({n,x}, '<leader>hs', '<Cmd>Gitsigns stage_hunk<CR>', opts{ desc = 'Git: stage hunk' })
+   keymap.set({n,x}, '<leader>hr', '<Cmd>Gitsigns reset_hunk<CR>', opts{ desc = 'Git: reset hunk' })
    keymap.set(n, '<leader>hS', gs.stage_buffer, opts{ desc = 'Git: stage buffer' })
    keymap.set(n, '<leader>hu', gs.undo_stage_hunk)
    keymap.set(n, '<leader>hR', gs.reset_buffer)
