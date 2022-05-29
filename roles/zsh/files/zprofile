@@ -287,6 +287,14 @@ export PYTHONBREAKPOINT="pudb.set_trace"
 # export SLEPC_DIR=~/src/slepc-3.14.2
 export DEAL_II_DIR=~/software/dealii-9.3.0/build
 
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+#  QT Applications
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+if [[ $XDG_SESSION_TYPE == 'wayland' ]]; then
+    export QT_QPA_PLATFORM=wayland
+fi
+export QT_AUTO_SCREEN_SCALE_FACTOR=1
+
 #  Intel-MKL {{{
 if [[ -s /opt/intel/mkl/bin/mklvars.sh ]]
 then
@@ -294,5 +302,6 @@ then
     export MKL_THREADING_LAYER=GNU
 fi
 #  }}}
+
 
 # vim: ft=zsh tw=80 ts=2 sw=2
