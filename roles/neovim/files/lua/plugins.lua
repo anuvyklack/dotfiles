@@ -12,8 +12,10 @@
 --------------------------------------------------------------------------------
 local packer = require('packer')
 local use = packer.use
+local join_paths = require('packer/util').join_paths
 
 packer.init { --{{{
+   compile_path = join_paths(vim.fn.stdpath('config'), 'plugin', '1_packer_compiled.lua'),
    display = {
       -- open_cmd = '90vnew [packer]',  -- set the width of the packer split
       open_fn = function()

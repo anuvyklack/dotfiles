@@ -1,3 +1,6 @@
+-- This file should be loaded before "1_packer_compiled.lua" since it defines
+-- diagnostic signs. Otherwise, heirline statusline wouldn't be loaded.
+
 local sign = vim.fn.sign_define
 
 --       󰂭
