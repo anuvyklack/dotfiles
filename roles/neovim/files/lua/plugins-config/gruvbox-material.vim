@@ -63,9 +63,7 @@ endif
 " #DDAE52 #e6b24c #e8ae3c #ECA825
 
 highlight Folded guifg=#e3a84e guibg=None
-
 highlight FoldColumn guifg=#e8ae3c
-
 highlight link NormalFloat Pmenu
 
 " }}}

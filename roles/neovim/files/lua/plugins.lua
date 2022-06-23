@@ -255,11 +255,10 @@ use { 'folke/lsp-colors.nvim', --{{{
 --                          Key Mappings                              {{{
 -------------------------------------------------------------------------
 
-use { 'xiyaowong/which-key.nvim',
 -- use { 'folke/which-key.nvim', -- original
-   as = 'which-key', -- WhichKey
-   config = function() require('plugins-config/which-key') end
-}
+--    as = 'which-key', -- WhichKey
+--    config = function() require('plugins-config/which-key') end
+-- }
 
 -- use { 'anuvyklack/nvim-keymap-amend', as = 'keymap-amend' }
 use { '~/code/neovim-plugins/nvim-keymap-amend', as = 'keymap-amend' }
@@ -517,30 +516,11 @@ use { 'tpope/vim-surround', as = 'surround',
    requires = 'tpope/vim-repeat'
 }
 
--- -- Not yet as usable as tpope/vim-surround.
--- use { 'blackCauldron7/surround.nvim', as = 'surround',
---    config = function()
---       require"surround".setup {
---          mappings_style = "surround",
---          load_autogroups = true,
---          map_insert_mode = false,
---       }
---    end
--- }
-
 -- }}}
 
 -- use { 'kevinhwang91/nvim-hlslens', as = 'hlslens',
 --    config = function() require('plugins-config/hlslens') end
 -- }
-
--- Подсвечивать и удалять висящие пробелы в конце строк
-use { 'ntpeters/vim-better-whitespace', as = 'better-whitespace', --{{{
-   config = function()
-      -- vim.cmd("exe 'source'..stdpath('config')..'/lua/plugins-config/better-whitespace.vim'")
-      vim.cmd "source ~/.config/nvim/lua/plugins-config/better-whitespace.vim"
-   end
-} --}}}
 
 use { 'AndrewRadev/splitjoin.vim', as = 'splitjoin' }
 
@@ -813,10 +793,10 @@ use { 'lewis6991/gitsigns.nvim', as = 'gitsigns', -- {{{
    requires = 'tpope/vim-repeat',
    config = function()
       require('gitsigns').setup {
-         signcolumn = false, -- Toggle with `:Gitsigns toggle_signs`
-         numhl      = false, -- Toggle with `:Gitsigns toggle_numhl`
-         linehl     = false, -- Toggle with `:Gitsigns toggle_linehl`
-         word_diff  = false, -- Toggle with `:Gitsigns toggle_word_diff`
+         signcolumn   = false, -- Toggle with ":Gitsigns toggle_signs"
+         numhl        = false, -- :Gitsigns toggle_numhl
+         linehl       = false, -- :Gitsigns toggle_linehl
+         word_diff    = false, -- :Gitsigns toggle_word_diff
          on_attach = require('keybindings').gitsigns
       }
    end
@@ -953,7 +933,7 @@ use { 'tweekmonster/startuptime.vim', as = 'startuptime',
 
 ----------------------------------------------------------------------}}}
 
---                Syntaxes and programming languages                  {{{
+--                              Syntax                                {{{
 -------------------------------------------------------------------------
 
 -- Show syntax highlighting attributes of character under cursor.

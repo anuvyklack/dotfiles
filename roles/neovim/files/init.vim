@@ -204,7 +204,7 @@ set pumblend=0      " Enables pseudo-transparency for the popup-menu.
 set scrolloff=0     " Start scrolling when we're n lines away from margins.
 setlocal scrolloff=0  " https://github.com/karb94/neoscroll.nvim/issues/28
 
-set sidescrolloff=4 " Сколько колонок должно остаться до конца экрана,
+set sidescrolloff=0 " Сколько колонок должно остаться до конца экрана,
                     " чтобы Vim начал прокручивать экран вбок.
 set sidescroll=1    "   Минимальное количество колонок на которое экран
                     " будет прокручиваться горизонтально за раз.
@@ -449,6 +449,8 @@ lua require('keybindings')
 
 " Fix writing :W to save
 command! W w
+command! Q q
+command! Qa qa
 
 " nnoremap <expr> zz "zz" . (winheight(0) * 0.1)->float2nr() . "<c-e>"
 
