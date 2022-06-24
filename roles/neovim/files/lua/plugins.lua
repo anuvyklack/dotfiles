@@ -487,25 +487,6 @@ use { 'booperlv/nvim-gomove', as = 'gomove', --{{{
 use 'wellle/targets.vim'   -- plugin that provides additional text objects
 use 'tpope/vim-unimpaired' -- Different bidirectional motions: switch
                            -- buffers, add blank lines, etc.
-
--- Comments {{{
-
--- -- Also define `gc` - comment textobject.
--- -- Doesn't work in visual mode. Works in operator mode (:help mapmode-o).
--- use { 'echasnovski/mini.nvim', --{{{
---    config = function()
---       require('mini.comment').setup{}
---       --
---       require('which-key').register {
---          gc = { name = 'Comment' },
---          gcc = 'Comment out current line',
---          ['gc*'] = "which_key_ignore",
---          ['gc#'] = "which_key_ignore",
---       }
---    end
--- } --}}}
-
-use 'tomtom/tcomment_vim'
 use { 'junegunn/vim-easy-align', as = 'easy-align',
    config = function() require('keybindings').easy_align() end
 }
@@ -847,6 +828,19 @@ use { 'stevearc/dressing.nvim', --{{{
 use { '~/code/neovim-plugins/pretty-fold.nvim', as = 'pretty-fold',
    requires = 'keymap-amend',
    config = function() require('plugins-config/pretty-fold') end
+} --}}}
+
+use { 'echasnovski/mini.nvim', --{{{
+   config = function()
+      -- Also define `gc` - comment textobject.
+      -- Works in operator mode (:help mapmode-o).
+      require('mini.comment').setup{}
+
+      -- Highlight and trim trailing whitespaces.
+      require('mini.trailspace').setup{}
+      vim.api.nvim_create_user_command(
+         'TrimWhitespaces', require('mini.trailspace').trim, { bang = true })
+   end
 } --}}}
 
 use { 'sindrets/diffview.nvim',
