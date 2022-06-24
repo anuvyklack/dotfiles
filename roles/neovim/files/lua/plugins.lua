@@ -269,6 +269,8 @@ use { '~/code/neovim-plugins/hydra.nvim', as = 'hydra',
    requires = { '~/code/neovim-plugins/keymap-layer.nvim', as = 'keymap-layer' }
 }
 
+-- use 'Iron-E/nvim-libmodal'
+
 --------------------------------------------------------------------}}}
 
 --                              LSP                                   {{{
@@ -574,6 +576,7 @@ use { 'jlanzarotta/bufexplorer', --{{{
       vim.g.bufExplorerFindActive = 0  -- Do not go to active window.
       vim.g.bufExplorerShowNoName = 1  -- Show "No Name" buffers.
       vim.g.bufExplorerShowRelativePath = 1 -- Show relative paths.
+      vim.g.bufExplorerSortBy = 'fullpath'
    end
 } --}}}
 
@@ -889,7 +892,15 @@ use { 'chentoast/marks.nvim', --{{{
 --    end
 -- } --}}}
 
-use { 'kevinhwang91/nvim-bqf', as = 'better-quickfix' }
+use { 'kevinhwang91/nvim-bqf', as = 'better-quickfix',
+   ft = 'qf',
+   config = function()
+      require('bqf').setup {
+          auto_enable = true,
+          auto_resize_height = true, -- highly recommended enable
+      }
+   end
+}
 
 use { 'https://gitlab.com/yorickpeterse/nvim-pqf', as = 'pretty-quickfix', --{{{
    config = function() require('pqf').setup {
@@ -1099,6 +1110,10 @@ use { 'rafcamlet/nvim-luapad', as = 'luapad',
       local command = vim.api.nvim_create_user_command
       local luapad = require('luapad')
 
+      -- command('Luapad', function()
+      --    vim.cmd 'vnew'
+      --    require('luapad.evaluator'):new { buf = 0 }:start()
+      -- end, {})
       command('LuaAttach', luapad.attach, { bang = true })
       command('LuaDetach', luapad.detach, { bang = true })
       command('LuaToggle', luapad.toggle, { bang = true })
