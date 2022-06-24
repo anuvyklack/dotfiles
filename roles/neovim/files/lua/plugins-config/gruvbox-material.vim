@@ -202,6 +202,16 @@ highlight! link FloatTitle Normal
 
 " highlight! link NvimTreeOpenedFile Blue
 
+" }}}
+" vim-visual-multi {{{
+
+" https://github.com/sainnhe/gruvbox-material/issues/131
+let g:VM_Mono_hl = 'Cursor'
+let g:VM_Extend_hl = 'Visual'
+let g:VM_Cursor_hl = 'Cursor'
+let g:VM_Insert_hl = 'Cursor'
+
+" }}}
 " Hydra {{{
 
 " HydraRed      #f2594b  #FF5733
