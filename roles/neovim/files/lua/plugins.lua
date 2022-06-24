@@ -640,8 +640,15 @@ use { 'beauwilliams/focus.nvim', --{{{
 
 -- Make vim treat all word delimiters like it treats spaces (for word motions).
 -- use 'kana/vim-smartword'
-use '~/code/neovim-plugins/vim-smartword'
+use 'anuvyklack/vim-smartword' -- fork
+-- use '~/code/neovim-plugins/quickword.nvim'
 
+ use 'chaoren/vim-wordmotion'
+-- use { 'chaoren/vim-wordmotion',
+--    config = function()
+--       vim.g.wordmotion_nomap = true -- disable default mappings
+--    end
+-- }
 
 -- use { 'easymotion/vim-easymotion', as = 'easymotion', --{{{
 --    config = function()
