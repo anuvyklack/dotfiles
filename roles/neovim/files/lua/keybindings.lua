@@ -11,6 +11,7 @@
 local M = {}
 local keymap = require('util').keymap
 keymap.amend = require('keymap-amend')
+local Hydra = require("hydra")
 local which_key = require('util').which_key
 local n, x = 'n', 'x'
 local function cmd(command) return table.concat({ '<cmd>', command, '<CR>' }) end
@@ -36,32 +37,81 @@ function M.hop()
    keymap.set(n, 't', cmd 'HopChar2', { desc = 'Easymotion 2 chars' })
 end -- }}}
 
--- Fuzzy finders and pickers (telescope, fzf, etc) {{{
-
 -- Telescope {{{
 function M.telescope()
-   keymap.set(n, '<C-;>', cmd 'Telescope commands',        { desc = 'Execute command',      requires = 'telescope' })
-   keymap.set(n, 'q:',    cmd 'Telescope command_history', { desc = 'Command-line history', requires = 'telescope' })
-   keymap.set(n, 'q/',    cmd 'Telescope search_history',  { desc = 'Search history',       requires = 'telescope' })
-   keymap.set(n, 'q?',    cmd 'Telescope search_history',  { desc = 'Search history',       requires = 'telescope' })
+local telescope = require('telescope')
 
-   keymap.set(n, 'z=',    cmd 'Telescope spell_suggest',   { desc = 'Spell Suggest', requires = 'telescope' })
+-- ╭───────────╮
+-- │ Telescope │
+-- ┴───────────┴
+
+-- ╭───────────╮
+-- │ Telescope │
+-- ╰───────────╯
+
+   local hint = [[
+ _f_: files       _m_: marks            _h_: vim help   _c_: execute command
+ _o_: old files   _g_: live grep        _k_: keymap     _;_: commands history 
+ _p_: projects    _/_: search in file   _r_: registers  _?_: search history
+ ^
+ ^ ^              ^ ^        _<Enter>_: Telescope       ^ ^            _<Esc>_
+]]
+
+--    local hint = [[
+--  _f_ files       _g_ live grep        _h_ vim help   _?_ search history
+--  _o_ old files   _m_ marks            _k_ keymap     _;_ commands history 
+--  _p_ projects    _/_ search in file   _r_ registers  _c_ execute command
+--  ^
+--  ^ ^              ^ ^      _<Enter>_: Telescope      ^ ^           _<Esc>_
+-- ]]
+
+   Hydra({
+      hint = hint,
+      config = {
+         color = 'teal',
+         invoke_on_body = true,
+         hint = {
+            position = 'middle',
+            border = 'rounded',
+         },
+      },
+      mode = 'n',
+      body = '<Leader>f',
+      heads = {
+
+         { 'f', cmd 'Telescope find_files' },
+         { 'g', cmd 'Telescope live_grep' },
+         { 'h', cmd 'Telescope help_tags', { desc = 'Vim help' } },
+         { 'o', cmd 'Telescope oldfiles', { desc = 'Recently opened files' } },
+
+         { 'm', cmd 'MarksListBuf', { desc = 'Marks' } },
+
+         { 'k', cmd 'Telescope keymaps' },
+
+         { 'r', cmd 'Telescope registers' },
+
+         -- { 'p', telescope.extensions.projects.projects },
+         { 'p', cmd 'Telescope projects', { desc = 'Projects' } },
+
+         { '/', cmd 'Telescope current_buffer_fuzzy_find', { desc = 'Search in file' } },
+         { '?', cmd 'Telescope search_history',  { desc = 'Search history' } },
+
+         { ';', cmd 'Telescope command_history', { desc = 'Command-line history' } },
+         { 'c', cmd 'Telescope commands', { desc = 'Execute command' } },
+
+         -- { 'j', ':lua require"utils.telescope".jump()<CR>' },
+         -- { 'l', telescope.extensions.neoclip.default },
+         -- { 'z', telescope.extensions.zoxide.list },
+
+         { '<Enter>', cmd 'Telescope', { exit = true, desc = 'List all pickers' } },
+         { '<Esc>', nil, { exit = true, nowait = true } },
+      }
+   })
+
+   keymap.set(n, 'z=', cmd 'Telescope spell_suggest', { desc = 'Spell Suggest', requires = 'telescope' })
 
    which_key.name(n, '<leader>f', 'Telescope')
-
-   keymap.set(n, '<leader>fa', cmd 'Telescope builtin',    { desc = 'List all pickers', requires = 'telescope' })
-   keymap.set(n, '<leader>ff', cmd 'Telescope find_files', { desc = 'Find files',       requires = 'telescope' })
-   keymap.set(n, '<leader>fg', cmd 'Telescope live_grep',  { desc = 'Live grep',        requires = 'telescope' })
-   -- keymap.set(n, '<leader>fb', cmd 'Telescope buffers',    { desc = 'Buffers',   requires = 'telescope' })
-   keymap.set(n, '<leader>fh', cmd 'Telescope help_tags',  { desc = 'Help tags', requires = 'telescope' })
-   keymap.set(n, '<leader>fp', cmd 'Telescope projects',   { desc = 'Projects',  requires = 'telescope' })
-   keymap.set(n, '<leader>fo', cmd 'Telescope oldfiles',   { desc = 'Recently opened files', requires = 'telescope' })
-
-   keymap.set(n, '<C-/>', cmd 'Telescope current_buffer_fuzzy_find', { desc = 'Search in buffer', requires = 'telescope' })
-end --}}}
-
-keymap.set(n, '<leader>fm', cmd 'MarksListBuf', { desc = 'Marks', requires = 'marks' })
-
+end
 -- }}}
 
 -- LSP {{{
@@ -253,53 +303,10 @@ function M.treesitter_textobjects()
    }
 end --}}}
 
--- Gitsigns {{{
-function M.gitsigns(bufnr)
-   local gs = package.loaded.gitsigns
-
-   local function opts(opt)
-      opt = opt or {}
-      opt.buffer = bufnr
-      return opt
-   end
-
-   -- local keymap = {}
-   -- function keymap.set(mode, lhs, rhs, opts) --{{{
-   --    opts = opts or {}
-   --    opts.buffer = bufnr
-   --    vim.keymap.set(mode, lhs, rhs, opts)
-   -- end --}}}
-
-   -- Navigation
-   keymap.set('n', ']g', function()
-      if vim.wo.diff then return ']c' end
-      vim.schedule(function() gs.next_hunk() end)
-      return '<Ignore>'
-   end, opts{ expr = true, desc = 'Git: next hunk' })
-
-   keymap.set('n', '[g', function()
-      if vim.wo.diff then return '[c' end
-      vim.schedule(function() gs.prev_hunk() end)
-      return '<Ignore>'
-   end, opts{ expr = true, desc = 'Git: prev hunk' })
-
-   -- Actions
-   keymap.set({n,x}, '<leader>hs', '<Cmd>Gitsigns stage_hunk<CR>', opts{ desc = 'Git: stage hunk' })
-   keymap.set({n,x}, '<leader>hr', '<Cmd>Gitsigns reset_hunk<CR>', opts{ desc = 'Git: reset hunk' })
-   keymap.set(n, '<leader>hS', gs.stage_buffer, opts{ desc = 'Git: stage buffer' })
-   keymap.set(n, '<leader>hu', gs.undo_stage_hunk)
-   keymap.set(n, '<leader>hR', gs.reset_buffer)
-   keymap.set(n, '<leader>hp', gs.preview_hunk, opts{ desc = 'Git: preview buffer' })
-   keymap.set(n, '<leader>hb', function() gs.blame_line{ full=true } end)
-   keymap.set(n, '<leader>tb', gs.toggle_current_line_blame, opts{ desc = 'Git: line blame' })
-   keymap.set(n, '<leader>hd', gs.diffthis)
-   keymap.set(n, '<leader>hD', function() gs.diffthis('~') end)
-   keymap.set(n, '<leader>td', gs.toggle_deleted, opts{ desc = 'Git: toggle deleted' })
-
-   -- Text object
-   keymap.set({'o','x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>', opts{ desc = 'Git: inner hunk' })
-end
--- }}}
+-- -- Gitsigns {{{
+-- function M.gitsigns(bufnr)
+-- end
+-- -- }}}
 
 -- File managment {{{
 function M.nvim_tree()
@@ -390,9 +397,8 @@ function M.easy_align()
 end
 
 keymap.amend('n', '<Esc>', function(original)
--- keymap.amend('n', '\27', function(original)
    if vim.v.hlsearch and vim.v.hlsearch == 1 then
-      vim.cmd('nohlsearch')
+      vim.cmd 'nohlsearch'
    end
    original()
 end)

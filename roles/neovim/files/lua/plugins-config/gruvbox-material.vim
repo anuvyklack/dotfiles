@@ -202,6 +202,24 @@ highlight! link FloatTitle Normal
 
 " highlight! link NvimTreeOpenedFile Blue
 
+" Hydra {{{
+
+" HydraRed      #f2594b  #FF5733
+" HydraBlue     #0091f7  #5EBCF6
+" HydraAmaranth #FF355E  #ff1757
+" HydraTeal     #009090  #00b5b5
+" HydraPink     #f766ad  #ff55de
+
+" #5EBCF6
+" #419eff
+" #4ba0ff
+
+highlight HydraRed        guifg=#FF5733 gui=bold
+highlight HydraBlue       guifg=#4ba0ff gui=bold
+highlight HydraAmaranth   guifg=#ff1757 gui=bold
+highlight HydraTeal       guifg=#00b5b5 gui=bold
+highlight HydraPink       guifg=#ff57af gui=bold
+
 " }}}
 
 " vim: fdm=marker

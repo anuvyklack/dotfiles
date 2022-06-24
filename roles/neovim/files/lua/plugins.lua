@@ -261,7 +261,13 @@ use { 'folke/lsp-colors.nvim', --{{{
 -- }
 
 -- use { 'anuvyklack/nvim-keymap-amend', as = 'keymap-amend' }
-use { '~/code/neovim-plugins/nvim-keymap-amend', as = 'keymap-amend' }
+use { '~/code/neovim-plugins/keymap-amend.nvim', as = 'keymap-amend' }
+
+-- use { 'anuvyklack/hydra.nvim', as = 'hydra',
+--    requires = { 'anuvyklack/keymap-layer.nvim', as = 'keymap-layer' }
+use { '~/code/neovim-plugins/hydra.nvim', as = 'hydra',
+   requires = { '~/code/neovim-plugins/keymap-layer.nvim', as = 'keymap-layer' }
+}
 
 --------------------------------------------------------------------}}}
 
@@ -578,7 +584,9 @@ use { 'jlanzarotta/bufexplorer', --{{{
 --    end
 -- } --}}}
 
-use { 'roxma/vim-window-resize-easy', as = 'window-resize-easy' }
+-- use { 'https://gitlab.com/yorickpeterse/nvim-window.git' }
+
+use 'sindrets/winshift.nvim'
 
 -- use { 'simeji/winresizer', --{{{
 --   config = function()
@@ -780,7 +788,7 @@ use { 'lewis6991/gitsigns.nvim', as = 'gitsigns', -- {{{
          numhl        = false, -- :Gitsigns toggle_numhl
          linehl       = false, -- :Gitsigns toggle_linehl
          word_diff    = false, -- :Gitsigns toggle_word_diff
-         on_attach = require('keybindings').gitsigns
+         -- on_attach = require('keybindings').gitsigns
       }
    end
 } --}}}
@@ -862,7 +870,6 @@ use { 'chentoast/marks.nvim', --{{{
          excluded_filetypes = { 'gitcommit' },
          mappings = {}
       }
-      -- vim.keymap.set('n', '<leader>fm', '<Cmd>MarksListBuf<CR>', { desc = 'Marks' })
    end
 } --}}}
 
