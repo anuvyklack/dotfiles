@@ -487,7 +487,6 @@ use { 'booperlv/nvim-gomove', as = 'gomove', --{{{
 use 'wellle/targets.vim'   -- plugin that provides additional text objects
 use 'tpope/vim-unimpaired' -- Different bidirectional motions: switch
                            -- buffers, add blank lines, etc.
-use 'junegunn/vim-easy-align'
 
 -- Comments {{{
 
@@ -507,6 +506,9 @@ use 'junegunn/vim-easy-align'
 -- } --}}}
 
 use 'tomtom/tcomment_vim'
+use { 'junegunn/vim-easy-align', as = 'easy-align',
+   config = function() require('keybindings').easy_align() end
+}
 
 -- }}}
 

@@ -383,6 +383,12 @@ function M.asterisks()
    keymap.set('', 'g#', '<Plug>(asterisk-gz#)', { desc = 'which_key_ignore' })
 end -- }}}
 
+function M.easy_align()
+   -- n : interactive EasyAlign for a motion/text object (e.g. gaip)
+   -- x : interactive EasyAlign in visual mode (e.g. vipga)
+   keymap.set({n,x}, '<leader>a', '<Plug>(EasyAlign)')
+end
+
 keymap.amend('n', '<Esc>', function(original)
 -- keymap.amend('n', '\27', function(original)
    if vim.v.hlsearch and vim.v.hlsearch == 1 then
