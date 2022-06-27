@@ -41,10 +41,12 @@ local hint_vert = [[
 ]]
 
 local git = {
+   name = 'Git',
    hint = hint,
    -- hint = hint_2,
    -- hint = hint_vert,
    config = {
+      debug = true,
       color = 'pink',
       invoke_on_body = true,
       hint = {
@@ -62,8 +64,9 @@ local git = {
          gitsigns.toggle_signs(false)
          gitsigns.toggle_linehl(false)
          gitsigns.toggle_deleted(false)
-         vim.cmd 'echo' -- clear the echo area
-      end
+         -- vim.cmd 'echo' -- clear the echo area
+      end,
+      -- timeout = 3000
    },
    mode = {'n','x'},
    body = '<leader>g',

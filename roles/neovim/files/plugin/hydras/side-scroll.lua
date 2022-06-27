@@ -4,6 +4,8 @@ Hydra({
    name = 'Side scroll',
    config = {
       timeout = 2000,
+      hint = false
+      -- hint = 'statusline'
    },
    mode = 'n',
    body = 'z',

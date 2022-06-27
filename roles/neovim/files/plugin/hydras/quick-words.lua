@@ -8,8 +8,10 @@ local Hydra = require('hydra')
 Hydra({
    name = 'Quick words',
    config = {
-      debug = true,
+      -- debug = true,
       color = 'pink',
+      hint = false
+      -- hint = 'statusline'
    },
    mode = {'n','x','o'},
    body = ',',

@@ -20,6 +20,7 @@ local hint = [[
 ]]
 
 local window = {
+   name = 'WINDOW',
    hint = hint,
    config = {
       timeout = 4000,

@@ -41,31 +41,44 @@ end -- }}}
 function M.telescope()
 local telescope = require('telescope')
 
--- ╭───────────╮
--- │ Telescope │
--- ┴───────────┴
-
--- ╭───────────╮
--- │ Telescope │
--- ╰───────────╯
+--    local hint = [[
+--  ^ ^             ^ ^             🭇🬭🬭🬭🬭🬭🬭🬭🬭🬼
+--  ^ ^             ^ ^            🭉🭁🭠🭘    🭣🭕🭌🬾
+--  ^ ^             ^ ^            🭅█ ▁     █🭐
+--  ^ ^             ^ ^            ██🬿      🭊██
+--  ^ ^             ^ ^           🭋█🬝🮄🮄🮄🮄🮄🮄🮄🮄🬆█🭀
+--  ^ ^             ^ ^           🭤🭒🬺🬹🬱🬭🬭🬭🬭🬵🬹🬹🭝🭙
+--  ^
+--  _f_: files       _m_: marks            _h_: vim help   _c_: execute command
+--  _o_: old files   _g_: live grep        _k_: keymap     _;_: commands history
+--  _p_: projects    _/_: search in file   _r_: registers  _?_: search history
+--  ^
+--  ^ ^              ^ ^        _<Enter>_: Telescope       ^ ^            _<Esc>_
+-- ]]
 
    local hint = [[
- _f_: files       _m_: marks            _h_: vim help   _c_: execute command
- _o_: old files   _g_: live grep        _k_: keymap     _;_: commands history 
- _p_: projects    _/_: search in file   _r_: registers  _?_: search history
+                 _f_: files       _m_: marks
+   🭇🬭🬭🬭🬭🬭🬭🬭🬭🬼    _o_: old files   _g_: live grep
+  🭉🭁🭠🭘    🭣🭕🭌🬾   _p_: projects    _/_: search in file
+  🭅█ ▁     █🭐   ^
+  ██🬿      🭊██   _h_: vim help    _c_: execute command
+ 🭋█🬝🮄🮄🮄🮄🮄🮄🮄🮄🬆█🭀  _k_: keymap      _;_: commands history
+ 🭤🭒🬺🬹🬱🬭🬭🬭🬭🬵🬹🬹🭝🭙  _r_: registers   _?_: search history
  ^
- ^ ^              ^ ^        _<Enter>_: Telescope       ^ ^            _<Esc>_
+                 _<Enter>_: Telescope           _<Esc>_ 
 ]]
 
 --    local hint = [[
---  _f_ files       _g_ live grep        _h_ vim help   _?_ search history
---  _o_ old files   _m_ marks            _k_ keymap     _;_ commands history 
---  _p_ projects    _/_ search in file   _r_ registers  _c_ execute command
---  ^
---  ^ ^              ^ ^      _<Enter>_: Telescope      ^ ^           _<Esc>_
+--    🭇🬭🬭🬭🬭🬭🬭🬭🬭🬼
+--   🭉🭁🭠🭘    🭣🭕🭌🬾  _f_: files       _m_: marks            _h_: vim help   _c_: execute command
+--   🭅█ ▁     █🭐  _o_: old files   _g_: live grep        _k_: keymap     _;_: commands history 
+--   ██🬿      🭊██  _p_: projects    _/_: search in file   _r_: registers  _?_: search history
+--  🭋█🬝🮄🮄🮄🮄🮄🮄🮄🮄🬆█🭀 ^
+--  🭤🭒🬺🬹🬱🬭🬭🬭🬭🬵🬹🬹🭝🭙 ^ ^              ^ ^        _<Enter>_: Telescope       ^ ^            _<Esc>_
 -- ]]
 
    Hydra({
+      name = 'Telescope',
       hint = hint,
       config = {
          color = 'teal',
@@ -78,7 +91,6 @@ local telescope = require('telescope')
       mode = 'n',
       body = '<Leader>f',
       heads = {
-
          { 'f', cmd 'Telescope find_files' },
          { 'g', cmd 'Telescope live_grep' },
          { 'h', cmd 'Telescope help_tags', { desc = 'Vim help' } },
