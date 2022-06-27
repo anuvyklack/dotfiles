@@ -1,5 +1,4 @@
 local heirline = require("heirline.utils")
-local M = {}
 
 --                      black             #282828
 -- fg0        #e2cca9   bg0               #32302f
@@ -135,7 +134,7 @@ local mode_colors = {
    none         = colors.red,
 }
 
-local ModeColors = setmetatable({
+hl.ModeColors = setmetatable({
    normal = { fg = mode_colors.normal }
 },{
    __index = function(_, mode)
@@ -148,15 +147,38 @@ local ModeColors = setmetatable({
    end
 })
 
-local lsp_colors = {
-   sumneko_lua = '#5EBCF6',
-   vimls = '#43BF6C',
-   ansiblels = '#ffffff'
+-- #008080
+-- #00a4a4
+-- #00aeae
+
+-- #f2594b
+-- #f36c62
+
+-- #ff1757
+-- #ff476b
+-- #ff5170
+
+-- #f063b2
+-- #f173b7
+
+local hydra = {
+   red = '#f36c62',
+   amaranth = '#ff5170',
+   teal = '#00aeae',
+   pink = '#f173b7'
 }
 
-M.colors = colors
-M.highlight = hl
-M.highlight.ModeColors = ModeColors
-M.lsp_colors = lsp_colors
+local lsp_colors = {
+   sumneko_lua = '#5EBCF6',
+   vimls       = '#43BF6C',
+   ansiblels   = '#ffffff'
+}
 
-return M
+local theme = {
+   colors = colors,
+   highlight = hl,
+   hydra = hydra,
+   lsp_colors = lsp_colors
+}
+
+return theme

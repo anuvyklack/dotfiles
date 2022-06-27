@@ -40,7 +40,7 @@ set noautochdir     " Set pwd as the dir of the active file.
 
 set showcmd         " Show incomplete cmds down the bottom
 set showmode        " Show current mode down the bottom
-set laststatus=2    " всегда отображать статусную строку
+set laststatus=3    " Use global statusline
 set novisualbell    " Отключаем пищалки и моргалки
 set autoread        " Reload files changed outside vim
 set termguicolors   " 24 bit color support

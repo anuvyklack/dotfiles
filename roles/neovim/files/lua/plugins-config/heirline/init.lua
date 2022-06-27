@@ -8,8 +8,9 @@ local dap_available, dap = pcall(require, 'dap')
 local util = require('plugins-config.heirline.util')
 local icons = util.icons
 local mode = util.mode
+local hydra = require('hydra.statusline')
 
-local theme_available, theme = pcall(require, 'plugins-config/heirline/themes/' .. vim.g.colors_name)
+local theme_available, theme = pcall(require, 'plugins-config/heirline/themes/'..vim.g.colors_name)
 -- local theme_available, theme = true, require('plugins-config/heirline/themes/gruvbox-material')
 if not theme_available then return end
 local hl = theme.highlight
@@ -53,10 +54,7 @@ local ReadOnly = {
    end
 }
 
-local VimModeNormal = {
-   condition = function(self)
-      return self.mode == 'normal' or not conditions.is_active()
-   end,
+local NormalModeIndicator = {
    Space,
    {
       init = heirline.pick_child_on_condition,
@@ -66,7 +64,6 @@ local VimModeNormal = {
          hl = function()
             if vim.bo.modified then
                return { fg = mode_colors.insert.bg }
-               -- return { fg = colors.yellow }
             elseif conditions.is_active() then
                return mode_colors.normal
             else
@@ -76,6 +73,110 @@ local VimModeNormal = {
       }
    },
    Space
+}
+
+local HydraActive = {
+   condition = hydra.is_active,
+   heirline.surround(
+      { icons.powerline.left_rounded, icons.powerline.right_rounded },
+      function() -- color
+         return theme.hydra[hydra.get_color()]
+      end,
+      {
+         { provider = icons.circle },
+         Space,
+         {
+            provider = function()
+               return hydra.get_name() or 'HYDRA'
+            end,
+         },
+         hl = { fg = hl.StatusLine.active.bg },
+      }
+   )
+}
+
+-- local HydraActive = {
+--    condition = hydra.is_active,
+--    heirline.surround(
+--       { icons.powerline.left_rounded, icons.powerline.right_rounded },
+--       function() -- color
+--          return theme.hydra[hydra.get_color()]
+--       end,
+--       {
+--          {
+--             init = heirline.pick_child_on_condition,
+--             ReadOnly,
+--             { provider = icons.circle }
+--          },
+--          Space,
+--          {
+--             provider = function()
+--                return hydra.get_name() or 'HYDRA'
+--             end,
+--          },
+--          hl = { fg = hl.StatusLine.active.bg },
+--       }
+--    )
+-- }
+
+-- local HydraActive = {
+--    condition = hydra.is_active,
+--    heirline.surround(
+--       { icons.powerline.left_rounded, icons.powerline.right_rounded },
+--       function() -- color
+--          return mode_colors.normal.fg
+--       end,
+--       {
+--          {
+--             provider = icons.circle,
+--             hl = function()
+--                return { fg = theme.hydra[hydra.get_color()] }
+--             end,
+--          },
+--          Space,
+--          {
+--             provider = function()
+--                return hydra.get_name() or 'HYDRA'
+--             end,
+--             hl = { fg = hl.StatusLine.active.bg },
+--          },
+--       }
+--    )
+-- }
+
+-- local HydraActive = {
+--    condition = hydra.is_active,
+--    Space,
+--    {
+--       provider = icons.circle,
+--       hl = function()
+--          return { fg = theme.hydra[hydra.get_color()] }
+--       end
+--    },
+--    Space,
+--    {
+--       provider = function()
+--          return hydra.get_name() or 'HYDRA'
+--       end,
+--       -- hl = { fg = hl.StatusLine.active.bg },
+--    },
+-- }
+
+local HydraHint = {
+   condition = hydra.get_hint,
+   provider = hydra.get_hint,
+}
+
+local VimModeNormal = {
+   condition = function(self)
+      return self.mode == 'normal' or
+             not conditions.is_active()
+   end,
+   {
+      init = heirline.pick_child_on_condition,
+      HydraActive,
+      NormalModeIndicator
+   }
 }
 
 local VimModeActive = {
@@ -220,6 +321,7 @@ local FileProperties = {
 local FileNameBlock = {
    {
       init = heirline.pick_child_on_condition,
+      HydraHint,
       {
          condition = conditions.is_active,
          FileIcon, WorkDir, CurrentPath, FileName
@@ -480,7 +582,6 @@ local ScrollBar = {
       end
    end
 }
-
 
 local ActiveStatusline = {
    LeftCap, VimMode,

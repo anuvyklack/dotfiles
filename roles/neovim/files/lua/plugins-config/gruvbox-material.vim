@@ -231,5 +231,10 @@ highlight HydraTeal       guifg=#00b5b5 gui=bold
 highlight HydraPink       guifg=#ff57af gui=bold
 
 " }}}
+" StatusLine {{{
+
+highlight StatusLine guifg=#e2cca9 guibg=#3c3836
+
+" }}}
 
 " vim: fdm=marker
