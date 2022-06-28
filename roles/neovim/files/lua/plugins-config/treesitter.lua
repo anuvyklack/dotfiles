@@ -9,7 +9,7 @@ local config = {
       'lua', 'python', 'regex', 'comment', 'query', 'bash',
       'c', 'cpp', 'make', 'cmake', 'json', 'html', 'http', 'ninja', 'fennel',
       'go', 'gomod', 'gowork', 'latex', 'bibtex', 'rust', 'toml',
-      'markdown',
+      -- 'markdown',
       -- 'vim',
       -- 'yaml',
    },

@@ -590,30 +590,7 @@ use { 'jlanzarotta/bufexplorer', --{{{
 -- use { 'https://gitlab.com/yorickpeterse/nvim-window.git' }
 
 use 'sindrets/winshift.nvim'
-
--- use { 'simeji/winresizer', --{{{
---   config = function()
---      vim.g.winresizer_vert_resize  = 1
---      vim.g.winresizer_horiz_resize = 1
---      -- vim.g.winresizer_start_key = '<leader>w'
---      vim.keymap.set('n', '<leader>w', '<cmd>WinResizerStartResize<CR>', { desc = 'Window resize mode', silent = true })
---   end
--- } --}}}
-
--- use{ 'mrjones2014/smart-splits.nvim', as = 'smart-splits', --{{{
---    config = function()
---       -- resizing splits
---       vim.keymap.set('n', '<A-h>', require('smart-splits').resize_left)
---       vim.keymap.set('n', '<A-j>', require('smart-splits').resize_down)
---       vim.keymap.set('n', '<A-k>', require('smart-splits').resize_up)
---       vim.keymap.set('n', '<A-l>', require('smart-splits').resize_right)
---       -- moving between splits
---       vim.keymap.set('n', '<C-h>', require('smart-splits').move_cursor_left)
---       vim.keymap.set('n', '<C-j>', require('smart-splits').move_cursor_down)
---       vim.keymap.set('n', '<C-k>', require('smart-splits').move_cursor_up)
---       vim.keymap.set('n', '<C-l>', require('smart-splits').move_cursor_right)
---    end
--- } --}}}
+use 'mrjones2014/smart-splits.nvim'
 
 use { 'beauwilliams/focus.nvim', --{{{
    -- cmd = { "FocusSplitNicely", "FocusSplitCycle" }, module = "focus",
@@ -647,11 +624,6 @@ use 'anuvyklack/vim-smartword' -- fork
 -- use '~/code/neovim-plugins/quickword.nvim'
 
  use 'chaoren/vim-wordmotion'
--- use { 'chaoren/vim-wordmotion',
---    config = function()
---       vim.g.wordmotion_nomap = true -- disable default mappings
---    end
--- }
 
 -- use { 'easymotion/vim-easymotion', as = 'easymotion', --{{{
 --    config = function()
@@ -798,10 +770,11 @@ use { 'lewis6991/gitsigns.nvim', as = 'gitsigns', -- {{{
          numhl        = false, -- :Gitsigns toggle_numhl
          linehl       = false, -- :Gitsigns toggle_linehl
          word_diff    = false, -- :Gitsigns toggle_word_diff
-         -- on_attach = require('keybindings').gitsigns
+         on_attach = require('keybindings').gitsigns
       }
    end
 } --}}}
+
 ----------------------------------------------------------------------}}}
 
 --------------------------- Fuzzy finder --------------------------------
@@ -821,6 +794,10 @@ use { 'nvim-telescope/telescope.nvim', as = 'telescope', --{{{
       -- 'famiu/bufdelete.nvim',
    },
    config = function() require('plugins-config/telescope') end,
+   -- config = function()
+   --    require('telescope').setup()
+   --    require('keybindings').telescope()
+   -- end
 } --}}}
 -------------------------------------------------------------------------
 
@@ -847,6 +824,13 @@ use { '~/code/neovim-plugins/pretty-fold.nvim', as = 'pretty-fold',
    requires = 'keymap-amend',
    config = function() require('plugins-config/pretty-fold') end
 } --}}}
+
+-- use { 'kevinhwang91/nvim-ufo',
+--    requires = 'kevinhwang91/promise-async',
+--    config = function()
+--       require('ufo').setup()
+--    end
+-- }
 
 use { 'echasnovski/mini.nvim', --{{{
    config = function()
@@ -939,13 +923,13 @@ use { 'norcalli/nvim-colorizer.lua', as = 'colorizer', --{{{
    } end
 } --}}}
 
-use { 'anuvyklack/help-vsplit.nvim', as = 'help-vsplit', --{{{
--- use { '~/Git/my_neovim-plugins/help-vsplit.nvim', as = 'help-vsplit',
-   config = function() require('help-vsplit').setup {
-      always = true,
-      side = 'left'
-   } end
-} --}}}
+-- use { 'anuvyklack/help-vsplit.nvim', as = 'help-vsplit', --{{{
+-- -- use { '~/Git/my_neovim-plugins/help-vsplit.nvim', as = 'help-vsplit',
+--    config = function() require('help-vsplit').setup {
+--       always = true,
+--       side = 'left'
+--    } end
+-- } --}}}
 
 -- Execute :StartupTime to get an averaged startup profile.
 use { 'tweekmonster/startuptime.vim', as = 'startuptime',
@@ -1195,6 +1179,7 @@ use { 'lyokha/vim-xkbswitch', as = 'xkbswitch',
 -------------------------------------------------------------------------
 
 use { 'romgrk/barbar.nvim', as = 'barbar-tabline', --{{{
+   commit = 'release/1.0.0',
    requires = 'kyazdani42/nvim-web-devicons',
    config = function() require('plugins-config/barbar') end
 } --}}}

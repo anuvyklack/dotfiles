@@ -11,7 +11,7 @@
 local M = {}
 local keymap = require('util').keymap
 keymap.amend = require('keymap-amend')
-local Hydra = require("hydra")
+local hydra_available, Hydra = pcall(require, "hydra")
 local which_key = require('util').which_key
 local n, x = 'n', 'x'
 local function cmd(command) return table.concat({ '<cmd>', command, '<CR>' }) end
@@ -39,7 +39,9 @@ end -- }}}
 
 -- Telescope {{{
 function M.telescope()
-local telescope = require('telescope')
+   if not hydra_available then return end
+
+-- local telescope = require('telescope')
 
 --    local hint = [[
 --  ^ ^             ^ ^             🭇🬭🬭🬭🬭🬭🬭🬭🬭🬼
@@ -77,7 +79,7 @@ local telescope = require('telescope')
 --  🭤🭒🬺🬹🬱🬭🬭🬭🬭🬵🬹🬹🭝🭙 ^ ^              ^ ^        _<Enter>_: Telescope       ^ ^            _<Esc>_
 -- ]]
 
-   Hydra({
+   Hydra({ -- {{{
       name = 'Telescope',
       hint = hint,
       config = {
@@ -95,11 +97,8 @@ local telescope = require('telescope')
          { 'g', cmd 'Telescope live_grep' },
          { 'h', cmd 'Telescope help_tags', { desc = 'Vim help' } },
          { 'o', cmd 'Telescope oldfiles', { desc = 'Recently opened files' } },
-
          { 'm', cmd 'MarksListBuf', { desc = 'Marks' } },
-
          { 'k', cmd 'Telescope keymaps' },
-
          { 'r', cmd 'Telescope registers' },
 
          -- { 'p', telescope.extensions.projects.projects },
@@ -118,7 +117,7 @@ local telescope = require('telescope')
          { '<Enter>', cmd 'Telescope', { exit = true, desc = 'List all pickers' } },
          { '<Esc>', nil, { exit = true, nowait = true } },
       }
-   })
+   }) -- }}}
 
    keymap.set(n, 'z=', cmd 'Telescope spell_suggest', { desc = 'Spell Suggest', requires = 'telescope' })
 
@@ -315,10 +314,85 @@ function M.treesitter_textobjects()
    }
 end --}}}
 
--- -- Gitsigns {{{
--- function M.gitsigns(bufnr)
--- end
--- -- }}}
+-- Git {{{
+function M.gitsigns(bufnr)
+   local gitsigns = require('gitsigns')
+
+   local hint = [[
+ _J_: next hunk   _s_: stage hunk        _d_: show deleted   _b_: blame line
+ _K_: prev hunk   _u_: undo last stage   _p_: preview hunk   _B_: blame show full 
+ ^ ^              _S_: stage buffer      ^ ^                 _/_: show base file
+ ^
+ ^ ^              _<Enter>_: Neogit              _q_: exit
+]]
+
+   Hydra({ -- {{{
+      name = 'Git',
+      hint = hint,
+      config = {
+         debug = true,
+         buffer = bufnr,
+         color = 'pink',
+         invoke_on_body = true,
+         hint = {
+            -- position = 'top-right',
+            -- position = 'bottom-right',
+            -- position = 'middle-right',
+            border = 'rounded'
+         },
+         on_enter = function()
+            vim.bo.modifiable = false
+            gitsigns.toggle_signs(true)
+            gitsigns.toggle_linehl(true)
+         end,
+         on_exit = function()
+            gitsigns.toggle_signs(false)
+            gitsigns.toggle_linehl(false)
+            gitsigns.toggle_deleted(false)
+            -- vim.cmd 'echo' -- clear the echo area
+         end,
+         -- timeout = 3000
+      },
+      mode = {'n','x'},
+      body = '<leader>g',
+      heads = {
+         { 'J',
+            function()
+               if vim.wo.diff then return ']c' end
+               vim.schedule(function() gitsigns.next_hunk() end)
+               return '<Ignore>'
+            end,
+            { expr = true, desc = 'next hunk' } },
+         { 'K',
+            function()
+               if vim.wo.diff then return '[c' end
+               vim.schedule(function() gitsigns.prev_hunk() end)
+               return '<Ignore>'
+            end,
+            { expr = true, desc = 'prev hunk' } },
+         { 's', ':Gitsigns stage_hunk<CR>', { silent = true, desc = 'stage hunk' } },
+         -- { 'r', ':Gitsigns reset_hunk<CR>', { desc = 'reset hunk' } }, -- need modifiable
+         { 'u', gitsigns.undo_stage_hunk, { desc = 'undo last stage' } },
+         { 'S', gitsigns.stage_buffer, { desc = 'stage buffer' } },
+         -- { 'v', gitsigns.select_hunk, { nowait = true, desc = 'select hunk' } },
+         { 'p', gitsigns.preview_hunk, { desc = 'preview hunk' } },
+         { 'd', gitsigns.toggle_deleted, { nowait = true, desc = 'toggle deleted' } },
+
+         { 'b', gitsigns.blame_line, { desc = 'blame' } },
+         { 'B', function() gitsigns.blame_line{ full = true } end,
+            { desc = 'blame show full' } },
+
+         { '/', gitsigns.show, { exit = true, desc = 'show base file' } }, -- show the base of the file
+
+         { '<Enter>', cmd 'Neogit', { exit = 'after', desc = 'Neogit' } },
+
+         { 'q', nil, { exit = true, nowait = true, desc = 'exit' } },
+         -- { '<Esc>', nil, { exit = true, desc = 'exit' } }
+      }
+   }) -- }}}
+
+end
+-- }}}
 
 -- File managment {{{
 function M.nvim_tree()
@@ -346,6 +420,66 @@ function M.nnn()
    -- keymap.set(n, '<F3>', cmd 'NnnExplorer', { desc = 'Open file-explorer' })
 end
 --}}}
+
+-- Windows managment {{{
+do
+   local splits_available, splits = pcall(require, 'smart-splits')
+   if not hydra_available or not splits_available then return end
+
+   local hint = [[
+    ^^^^^^     Move     ^^^^^^   ^^    Size   ^^   ^^     Split
+    ^^^^^^--------------^^^^^^   ^^-----------^^   ^^---------------
+    ^ ^ _k_ ^ ^   ^ ^ _K_ ^ ^    ^   _<C-k>_   ^   _s_: horizontally
+    _h_ ^ ^ _l_   _H_ ^ ^ _L_    _<C-h>_ _<C-l>_   _v_: vertically
+    ^ ^ _j_ ^ ^   ^ ^ _J_ ^ ^    ^   _<C-j>_   ^   _q_: close
+    focus^^^^^^   window^^^^^^   ^_=_: equalize    ^ ^
+    ^ ^ ^ ^ ^ ^   ^ ^ ^ ^ ^ ^    ^^ ^          ^   _b_: choose buffer 
+   ]]
+
+   Hydra({ -- {{{
+      name = 'WINDOWS',
+      hint = hint,
+      config = {
+         timeout = 4000,
+         hint = {
+            border = 'rounded',
+            position = 'top'
+         }
+      },
+      mode = 'n',
+      body = '<C-w>',
+      heads = {
+         { 'h', '<C-w>h' },
+         { 'j', '<C-w>j' },
+         { 'k', [[<cmd>try | wincmd k | catch /^Vim\%((\a\+)\)\=:E11:/ | close | endtry<CR>]] },
+         { 'l', '<C-w>l' },
+
+         { 'H', '<Cmd>WinShift left<CR>' },
+         { 'J', '<Cmd>WinShift down<CR>' },
+         { 'K', '<Cmd>WinShift up<CR>' },
+         { 'L', '<Cmd>WinShift right<CR>' },
+
+         { 's', '<C-w>s' },
+         { 'v', '<C-w>v' },
+
+         { '<C-h>', function() splits.resize_left(2)  end },
+         { '<C-j>', function() splits.resize_down(2)  end },
+         { '<C-k>', function() splits.resize_up(2)    end },
+         { '<C-l>', function() splits.resize_right(2) end },
+         { '=', '<C-w>=', { desc = 'equalize'} },
+
+         -- { 'w', require('nvim-window').pick, { exit = true, desc = 'choose window' }},
+         { 'b', '<Cmd>call ChooseBuffer()<CR>', { exit = true, desc = 'choose buffer' } },
+         -- { 'b', '<Cmd>BufExplorer<CR>', { exit = true, desc = 'choose buffer' } },
+
+         -- { 'q', '<Cmd>try | close | catch | endtry<CR>', { desc = 'close window' } },
+         { 'q', [[<Cmd>try | close | catch /^Vim\%((\a\+)\)\=:E444:/ | endtry<CR>]],
+                                                        { desc = 'close window' } },
+         { '<Esc>', nil,  { exit = true, desc = false }}
+      }
+   }) -- }}}
+end
+-- }}}
 
 -- Barbar (tabline) {{{
 function M.barbar()
@@ -401,6 +535,60 @@ function M.asterisks()
    keymap.set('', 'g*', '<Plug>(asterisk-gz*)', { desc = 'which_key_ignore' })
    keymap.set('', 'g#', '<Plug>(asterisk-gz#)', { desc = 'which_key_ignore' })
 end -- }}}
+
+-- Side-scroll {{{
+do
+   if not hydra_available then return end
+
+   Hydra({
+      name = 'Side scroll',
+      config = {
+         timeout = 2000,
+         hint = false
+         -- hint = 'statusline'
+      },
+      mode = 'n',
+      body = 'z',
+      heads = {
+         { 'h', '5zh' },
+         { 'l', '5zl', { desc = '←/→' } },
+         { 'H', 'zH' },
+         { 'L', 'zL', { desc = 'half screen ←/→' } },
+      }
+   })
+end
+-- }}}
+
+-- Quick words {{{
+do
+   if not hydra_available then return end
+
+   Hydra({
+      name = 'Quick words',
+      config = {
+         -- debug = true,
+         color = 'pink',
+         hint = false
+         -- hint = 'statusline'
+      },
+      mode = {'n','x','o'},
+      body = ',',
+      heads = {
+         -- { 'w',  '<Plug>(quickword-w)' },
+         -- { 'b',  '<Plug>(quickword-b)' },
+         -- { 'e',  '<Plug>(quickword-e)' },
+         -- { 'ge', '<Plug>(quickword-ge)' },
+
+         { 'w',  '<Plug>(smartword-w)' },
+         { 'b',  '<Plug>(smartword-b)' },
+         { 'e',  '<Plug>(smartword-e)' },
+         { 'ge', '<Plug>(smartword-ge)' },
+
+         { '<Esc>', nil, { exit = true, mode = 'n' } }
+      }
+   })
+end
+-- }}}
 
 function M.easy_align()
    -- n : interactive EasyAlign for a motion/text object (e.g. gaip)

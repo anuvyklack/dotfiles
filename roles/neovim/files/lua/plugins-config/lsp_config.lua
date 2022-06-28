@@ -4,6 +4,11 @@ local available_virtypes, virtualtypes = pcall(require, 'virtualtypes')
 local available_illuminate, illuminate = pcall(require, 'illuminate')
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+-- for nvim-ufo
+capabilities.textDocument.foldingRange = {
+   dynamicRegistration = false,
+   lineFoldingOnly = true
+}
 local available_cmp, cmp_nvim_lsp = pcall(require, 'cmp_nvim_lsp')
 if available_cmp then
    capabilities = cmp_nvim_lsp.update_capabilities( capabilities )

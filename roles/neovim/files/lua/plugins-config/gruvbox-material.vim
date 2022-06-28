@@ -24,6 +24,13 @@
 " echo palette
 
 " }}}
+" Built-in {{{
+
+highlight! StatusLine   guifg=#e2cca9 guibg=#3c3836
+" highlight! WinSeparator guifg=#a89984
+highlight! WinSeparator guifg=#928374
+
+" }}}
 " Cursor {{{
 
 highlight lCursor guifg=#282828 guibg=#e9b143
@@ -229,11 +236,6 @@ highlight HydraBlue       guifg=#4ba0ff gui=bold
 highlight HydraAmaranth   guifg=#ff1757 gui=bold
 highlight HydraTeal       guifg=#00b5b5 gui=bold
 highlight HydraPink       guifg=#ff57af gui=bold
-
-" }}}
-" StatusLine {{{
-
-highlight StatusLine guifg=#e2cca9 guibg=#3c3836
 
 " }}}
 
