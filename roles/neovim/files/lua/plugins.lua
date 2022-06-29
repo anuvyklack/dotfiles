@@ -1181,7 +1181,11 @@ use { 'lyokha/vim-xkbswitch', as = 'xkbswitch',
 use { 'romgrk/barbar.nvim', as = 'barbar-tabline', --{{{
    commit = 'release/1.0.0',
    requires = 'kyazdani42/nvim-web-devicons',
-   config = function() require('plugins-config/barbar') end
+   config = function()
+      require('bufferline').setup {
+        icon_pinned = '',
+      }
+   end
 } --}}}
 
 use { 'SmiteshP/nvim-gps',

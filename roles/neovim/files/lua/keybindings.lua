@@ -14,7 +14,10 @@ keymap.amend = require('keymap-amend')
 local hydra_available, Hydra = pcall(require, "hydra")
 local which_key = require('util').which_key
 local n, x = 'n', 'x'
-local function cmd(command) return table.concat({ '<cmd>', command, '<CR>' }) end
+
+local function cmd(command)
+   return table.concat({ '<Cmd>', command, '<CR>' })
+end
 
 -- -- Dealing with word wrap:
 -- -- If cursor is inside very long line in the file than wraps around several rows
@@ -349,7 +352,6 @@ function M.gitsigns(bufnr)
             gitsigns.toggle_signs(false)
             gitsigns.toggle_linehl(false)
             gitsigns.toggle_deleted(false)
-            -- vim.cmd 'echo' -- clear the echo area
          end,
          -- timeout = 3000
       },
@@ -421,29 +423,78 @@ function M.nnn()
 end
 --}}}
 
--- Windows managment {{{
+-- Buffers and windows managment {{{
 do
+   local barbar_available, _ = pcall(require, 'bufferline')
    local splits_available, splits = pcall(require, 'smart-splits')
-   if not hydra_available or not splits_available then return end
+   if not hydra_available or not barbar_available or not splits_available then
+      return
+   end
 
-   local hint = [[
-    ^^^^^^     Move     ^^^^^^   ^^    Size   ^^   ^^     Split
-    ^^^^^^--------------^^^^^^   ^^-----------^^   ^^---------------
-    ^ ^ _k_ ^ ^   ^ ^ _K_ ^ ^    ^   _<C-k>_   ^   _s_: horizontally
-    _h_ ^ ^ _l_   _H_ ^ ^ _L_    _<C-h>_ _<C-l>_   _v_: vertically
-    ^ ^ _j_ ^ ^   ^ ^ _J_ ^ ^    ^   _<C-j>_   ^   _q_: close
-    focus^^^^^^   window^^^^^^   ^_=_: equalize    ^ ^
-    ^ ^ ^ ^ ^ ^   ^ ^ ^ ^ ^ ^    ^^ ^          ^   _b_: choose buffer 
-   ]]
+   -- Keys with '<', '>': move to previous/next
+   keymap.set(n, '<A-,>', cmd 'BufferPrevious')
+   keymap.set(n, '<A-.>', cmd 'BufferNext')
+
+   local buffer_hydra = Hydra({ -- {{{
+      name = 'Buffer',
+      config = {
+         -- color = 'amaranth',
+         hint = false,
+         -- timeout = 2000,
+      },
+      heads = {
+         { 'h', cmd 'BufferPrevious' },
+         { 'l', cmd 'BufferNext', { desc = 'choose' } },
+
+         -- Execute async functions synchronously to preserve animation.
+         { 'H', function()
+               vim.cmd 'BufferMovePrevious'
+               vim.wait(200, function() vim.cmd 'redraw' end, 30, false)
+            end },
+         { 'L', function()
+               vim.cmd 'BufferMoveNext'
+               vim.wait(200, function() vim.cmd 'redraw' end, 30, false)
+            end, { desc = 'move' } },
+         { 'p',  cmd 'BufferPin', { desc = 'pin' } },
+         { 'q', function()
+               vim.cmd 'BufferClose'
+               vim.wait(200, function() vim.cmd 'redraw' end, 30, false)
+            end, { desc = 'close' } },
+
+         -- { 's', cmd 'BufferPick', { exit = true, desc = 'pick buffer' } },
+         { 'b',  cmd 'BufExplorer', { exit = true, desc = 'Explorer' } },
+         { 'od', cmd 'BufferOrderByDirectory', { desc = 'by directory' } },
+         { 'ol', cmd 'BufferOrderByLanguage',  { desc = 'by language' } },
+         { '<Esc>', nil, { exit = true } }
+      }
+   }) -- }}}
+
+   local function choose_buffer()
+      if #vim.fn.getbufinfo({ buflisted = true }) > 1 then
+         buffer_hydra:activate()
+      end
+   end
+
+   keymap.set(n, 'gb', choose_buffer)
+
+   local window_hint = [[
+ ^^^^^^     Move     ^^^^^^   ^^    Size   ^^   ^^     Split
+ ^^^^^^--------------^^^^^^   ^^-----------^^   ^^----------------
+ ^ ^ _k_ ^ ^   ^ ^ _K_ ^ ^    ^   _<C-k>_   ^   _s_: horizontally
+ _h_ ^ ^ _l_   _H_ ^ ^ _L_    _<C-h>_ _<C-l>_   _v_: vertically
+ ^ ^ _j_ ^ ^   ^ ^ _J_ ^ ^    ^   _<C-j>_   ^   _q_: close
+ focus^^^^^^   window^^^^^^   ^_=_ equalize ^   _b_: choose buffer 
+]]
 
    Hydra({ -- {{{
-      name = 'WINDOWS',
-      hint = hint,
+      name = 'Windows',
+      hint = window_hint,
       config = {
          timeout = 4000,
          hint = {
             border = 'rounded',
-            position = 'top'
+            -- position = 'top'
+            position = 'middle'
          }
       },
       mode = 'n',
@@ -469,8 +520,7 @@ do
          { '=', '<C-w>=', { desc = 'equalize'} },
 
          -- { 'w', require('nvim-window').pick, { exit = true, desc = 'choose window' }},
-         { 'b', '<Cmd>call ChooseBuffer()<CR>', { exit = true, desc = 'choose buffer' } },
-         -- { 'b', '<Cmd>BufExplorer<CR>', { exit = true, desc = 'choose buffer' } },
+         { 'b', choose_buffer, { exit = true, desc = 'choose buffer' } },
 
          -- { 'q', '<Cmd>try | close | catch | endtry<CR>', { desc = 'close window' } },
          { 'q', [[<Cmd>try | close | catch /^Vim\%((\a\+)\)\=:E444:/ | endtry<CR>]],
@@ -478,51 +528,6 @@ do
          { '<Esc>', nil,  { exit = true, desc = false }}
       }
    }) -- }}}
-end
--- }}}
-
--- Barbar (tabline) {{{
-function M.barbar()
-
-   local opt = setmetatable({ --{{{
-      silent = true
-   }, {
-      __call = function (self, opt)
-         for key, value in pairs(opt) do
-            self[key] = value
-         end
-         return self
-      end
-   }) --}}}
-
-   -- Keys with '<', '>': move to previous/next
-   keymap.set(n, '<A-,>', cmd 'BufferPrevious', opt)
-   keymap.set(n, '<A-.>', cmd 'BufferNext', opt)
-
-   -- Re-order to previous/next
-   keymap.set(n, '<A-<>', cmd 'BufferMovePrevious', opt)
-   keymap.set(n, '<A->>', cmd 'BufferMoveNext', opt)
-
-   -- Close buffer
-   keymap.set(n, '<A-c>', cmd 'BufferClose', opt)
-
-   -- Wipeout buffer
-   --                          BufferWipeout
-   -- Close commands
-   --                          BufferCloseAllButCurrent
-   --                          BufferCloseBuffersLeft
-   --                          BufferCloseBuffersRight
-
-   -- Magic buffer-picking mode
-   keymap.set(n, '<C-s>',    cmd 'BufferPick', opt)
-
-   -- Sort automatically by...
-   keymap.set(n, '<Space>bd', cmd 'BufferOrderByDirectory', opt)
-   keymap.set(n, '<Space>bl', cmd 'BufferOrderByLanguage', opt)
-
-   -- Other:
-   -- :BarbarEnable - enables barbar (enabled by default)
-   -- :BarbarDisable - very bad command, should never be used
 
 end -- }}}
 

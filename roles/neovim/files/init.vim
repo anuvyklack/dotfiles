@@ -36,7 +36,7 @@ set number          " Показывать нумерацию строк
 " set relativenumber
 set noautochdir     " Set pwd as the dir of the active file.
                     " WARNING: If set this option breakes
-                    " ahmedkhalf/project.nvim plugin.
+                    " `ahmedkhalf/project.nvim' plugin.
 
 set showcmd         " Show incomplete cmds down the bottom
 set showmode        " Show current mode down the bottom
@@ -441,14 +441,15 @@ aug end
 function! <SID>NewSplit()
     if (&bt ==? 'help' || &ft ==? 'man' || &ft ==? 'fugitive' || &ft ==? 'gitcommit')
         let p = winnr('#')
-        if winwidth(p) >= getwinvar(p, '&tw', 80) + 80
+        " if winwidth(p) >= getwinvar(p, '&tw', 80) + 80
+        if winwidth(p) >= getwinvar(p, '&tw', 80) + 20
             let b = bufnr()
             let bh = &l:bufhidden
             setlocal bufhidden=hide
             wincmd p
-            exe winnr('#').'wincmd q'
+            execute winnr('#')..'wincmd q'
             vsplit
-            exe b.'b'
+            execute b..'buffer'
             let &l:bufhidden = bh
         endif
     endif

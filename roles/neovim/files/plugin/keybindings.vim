@@ -20,7 +20,7 @@ nnoremap <silent> <C-L> <Cmd>TmuxNavigateRight<CR>
 " nnoremap <silent> {Previous-Mapping} <Cmd>TmuxNavigatePrevious<CR>
 " -------------------------------------------------------------}}}
 
-nnoremap <silent> gb <Cmd>call ChooseBuffer()<CR>
+" nnoremap <silent> gb <Cmd>call ChooseBuffer()<CR>
 function! ChooseBuffer()  "{{{
     " Количество открытых буферов
     let num_of_buffers = len(getbufinfo({'buflisted':1}))

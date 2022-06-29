@@ -83,14 +83,18 @@ local HydraActive = {
          return theme.hydra[hydra.get_color()]
       end,
       {
-         { provider = icons.circle },
+         {
+            init = heirline.pick_child_on_condition,
+            ReadOnly,
+            { provider = icons.circle }
+         },
          Space,
          {
             provider = function()
                return hydra.get_name() or 'HYDRA'
             end,
          },
-         hl = { fg = hl.StatusLine.active.bg },
+         hl = { fg = hl.StatusLine.active.bg, force = true },
       }
    )
 }
@@ -100,31 +104,8 @@ local HydraActive = {
 --    heirline.surround(
 --       { icons.powerline.left_rounded, icons.powerline.right_rounded },
 --       function() -- color
---          return theme.hydra[hydra.get_color()]
---       end,
---       {
---          {
---             init = heirline.pick_child_on_condition,
---             ReadOnly,
---             { provider = icons.circle }
---          },
---          Space,
---          {
---             provider = function()
---                return hydra.get_name() or 'HYDRA'
---             end,
---          },
---          hl = { fg = hl.StatusLine.active.bg },
---       }
---    )
--- }
-
--- local HydraActive = {
---    condition = hydra.is_active,
---    heirline.surround(
---       { icons.powerline.left_rounded, icons.powerline.right_rounded },
---       function() -- color
---          return mode_colors.normal.fg
+--          -- return mode_colors.normal.fg
+--          return colors.grey0
 --       end,
 --       {
 --          {
