@@ -1,24 +1,31 @@
 local util = {}
 
-util.void = function()
-   return setmetatable({}, {
-      __index = function(self) return self end,
-      __newindex = function() end,
-      __call = function() end
-   })
+function util.warn(msg)
+   vim.schedule(function()
+      vim.notify_once(msg, vim.log.levels.WARN)
+   end)
 end
 
+util.void = setmetatable({}, {
+   __index = function(self) return self end,
+   __newindex = function() end,
+   __call = function() end
+})
+
 ---Protected `require` function
----@param module string
+---@param module_name string
 ---@return any module
 ---@return boolean loaded if module was loaded or not
-util.prequire = function(module)
-   local available
-   available, module = pcall(require, module)
+util.prequire = function(module_name)
+   local available, module = pcall(require, module_name)
    if available then
       return module, true
    else
-      return util.void(), false
+      local source = debug.getinfo(2, "S").source:sub(2)
+      source = source:gsub(vim.fn.getenv('HOME'), '~')
+      util.warn(string.format('"%s" requested in "%s" not available',
+                              module_name, source))
+      return util.void, false
    end
 end
 
@@ -46,6 +53,10 @@ util.keymap.set = function (...)
       end
    end
    if decision then vim.keymap.set(...) end
+end
+
+util.keymap.cmd = function(command)
+   return table.concat({ '<Cmd>', command, '<CR>' })
 end
 
 local which_key = util.prequire('which-key')

@@ -14,7 +14,7 @@ end
 
 local nvim_config = Path.new(vim.fn.stdpath('config'))
 local queries_path = nvim_config / 'queries'
-local filetypes = scan_dir(tostring(queries_path), { depth = 1, only_dirs = true, })
+local filetypes = scan_dir(tostring(queries_path), { depth = 1, only_dirs = true })
 
 for _, ft in ipairs(filetypes) do
    local filetype = vim.fn.fnamemodify(ft, ':t')

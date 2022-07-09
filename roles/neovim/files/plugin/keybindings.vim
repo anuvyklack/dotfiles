@@ -1,45 +1,46 @@
-"  ██                           ██      ██              ██ ██
-" ░██                          ░██     ░░              ░██░░
-" ░██   ██  █████  ██   ██     ░██████  ██ ██████   ██████ ██ ██████   ██████  ██████
-" ░██  ██  ██░░░██░██  ░██     ░██░░░██░██░██░░░██ ██░░░██░██░██░░░██ ██░░░██ ██░░░░
-" ░█████  ░███████░██  ░██     ░██  ░██░██░██  ░██░██  ░██░██░██  ░██░██  ░██░░█████
-" ░██░░██ ░██░░░░ ░░██████     ░██  ░██░██░██  ░██░██  ░██░██░██  ░██░░██████ ░░░░░██
-" ░██ ░░██░░█████  ░░░░░██     ░██████ ░██░██  ░██░░██████░██░██  ░██ ░░░░░██ ██████
-" ░░   ░░  ░░░░░    █████      ░░░░░░  ░░ ░░   ░░  ░░░░░░ ░░ ░░   ░░   █████ ░░░░░░
-"                  ░░░░░                                              ░░░░░
+" Move to the beginning / end of a line with "Shift + h/l"
+nnoremap H ^
+nnoremap L $
+xnoremap H ^
+xnoremap L $
+onoremap H ^
+onoremap L $
 
-"                       Tmux integration                       {{{
-" ----------------------------------------------------------------
-let g:tmux_navigator_no_mappings = 1
+nnoremap <BS> :
+xnoremap <BS> :
 
-nnoremap <silent> <C-H> <Cmd>TmuxNavigateLeft<CR>
-nnoremap <silent> <C-J> <Cmd>TmuxNavigateDown<CR>
-nnoremap <silent> <C-K> <Cmd>TmuxNavigateUp<CR>
-nnoremap <silent> <C-L> <Cmd>TmuxNavigateRight<CR>
+" Yank
+nnoremap yc		"+y
+nnoremap ycc	"+yy
+nnoremap <C-c>	"+y
+xnoremap <C-c>	"+y
+nnoremap <C-c><C-c>  "+yy
 
-" nnoremap <silent> {Previous-Mapping} <Cmd>TmuxNavigatePrevious<CR>
-" -------------------------------------------------------------}}}
+" Paste
+nnoremap cp		"+p
+nnoremap cP		"+P
+xnoremap <C-p>	"+p
 
-" nnoremap <silent> gb <Cmd>call ChooseBuffer()<CR>
-function! ChooseBuffer()  "{{{
-    " Количество открытых буферов
-    let num_of_buffers = len(getbufinfo({'buflisted':1}))
-    if num_of_buffers > 2
-        " If you are interesting what is <C-z> check ':help wildcharm'.
-        " call feedkeys(":buffer \<C-z>")
-        ToggleBufExplorer
-    else
-        bnext
-    endif
-endfunction "}}}
+" Fix writing :W to save
+command! W	w
+command! Q	q
+command! Qa qa
 
-" nnoremap <Leader>u <Cmd>UndotreeToggle<CR>
+" In insert mode, move normally by using Ctrl
+inoremap <C-l> <Right>
 
-" nmap <leader>vw <Plug>(wiki-index)
+" In command mode, move normally by using Ctrl
+" cnoremap <C-h> <BS>
+cnoremap <C-h> <Left>
+cnoremap <C-j> <Down>
+cnoremap <C-k> <Up>
+cnoremap <C-l> <Right>
 
-" Показать syntax group для участка кода, а также цвет этой группы.
-" Удобно при создании своей цветовой схемы
-nnoremap <silent> <C-g> <Cmd>TSHighlightCapturesUnderCursor<CR>
-" nnoremap <C-g> <cmd>call SyntaxAttr()<CR>
+" " WARNING: Replaced with 'christoomey/vim-tmux-navigator' plugin
+" " Quick jumping between splits
+" map <C-J> <C-W>j
+" map <C-K> <C-W>k
+" map <C-H> <C-W>h
+" map <C-L> <C-W>l
 
-" vim: tw=76 fdm=marker
+" vim: fdm=marker cc=+1 ts=4 sts=4

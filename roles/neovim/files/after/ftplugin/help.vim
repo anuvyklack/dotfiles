@@ -1,7 +1,7 @@
 " Press Enter to jump to the subject (topic) under the cursor.
 " Press Backspace to return from the last jump.
 nnoremap <buffer> <CR> <C-]>
-nnoremap <buffer> <BS> <C-T>
+" nnoremap <buffer> <BS> <C-T>
 
 setlocal textwidth=80
 setlocal tabstop=8

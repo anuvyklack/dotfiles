@@ -5,5 +5,3 @@ setlocal textwidth=80
 setlocal colorcolumn=75,+1  " Показывать ограничительную линию в 75 колонке
                             " (для комментариев) и в следующей колонке после
                             " textwidth.
-
-setlocal foldmethod=expr    " use treesitter base folding
