@@ -1,5 +1,27 @@
 local util = {}
 
+util.void = function()
+   return setmetatable({}, {
+      __index = function(self) return self end,
+      __newindex = function() end,
+      __call = function() end
+   })
+end
+
+---Protected `require` function
+---@param module string
+---@return any module
+---@return boolean loaded if module was loaded or not
+util.prequire = function(module)
+   local available
+   available, module = pcall(require, module)
+   if available then
+      return module, true
+   else
+      return util.void(), false
+   end
+end
+
 util.keymap = {}
 
 ---Wrapper around vim.keymap.set() function. It accepts in {opts} parameter
@@ -26,12 +48,13 @@ util.keymap.set = function (...)
    if decision then vim.keymap.set(...) end
 end
 
+local which_key = util.prequire('which-key')
+
 ---The wrapper around the 'which-key.register()' function.
 ---Doesn't throw an error if 'which-key' plugin doesn't available.
 util.which_key = setmetatable({}, {
-   __call = function (_, ...) -- the first argument is self
-      local available, which_key = pcall(require, "which-key")
-      if available then which_key.register(...) end
+   __call = function (_, ...)
+      which_key.register(...)
    end
 })
 

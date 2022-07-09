@@ -35,7 +35,6 @@ require('dressing').setup {
          height = nil,
          max_height = 0.9,
          min_height = 3,
-      },
-
+      }
    }
 }

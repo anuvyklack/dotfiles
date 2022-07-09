@@ -1,4 +1,5 @@
-local available, telescope = pcall(require, 'telescope')
+local prequire = require('util').prequire
+local telescope, available = prequire('telescope')
 if not available then return end
 
 local actions = require 'telescope.actions'
@@ -151,7 +152,6 @@ telescope.setup {
          --    action_set.select:enhance({
          --       post = function()
          --          vim.cmd("normal! zx")
-         --          -- vim.cmd(":normal! zx")
          --       end
          --    })
          --    return true
@@ -163,12 +163,8 @@ telescope.setup {
             },
          },
          mappings = {
-            i = {
-               ["<cr>"] = custom_actions.multi_selection_open,
-            },
-            n = {
-               ["<cr>"] = custom_actions.multi_selection_open,
-            }
+            i = { ["<cr>"] = custom_actions.multi_selection_open, },
+            n = { ["<cr>"] = custom_actions.multi_selection_open, }
          }
       },
       buffers = {
@@ -344,18 +340,17 @@ vim.cmd 'autocmd BufRead * autocmd BufWinEnter * ++once normal! zxzM'
 
 ------------------------------ Extensions --------------------------------------
 
--- local available, _ = pcall(require, 'neoclip')
 telescope.load_extension('fzf')  -- use fzf module in C
 telescope.load_extension("zf-native")
 telescope.load_extension('zoxide')
 -- telescope.load_extension("frecency")
 
 -- Projects extension
-available, _ = pcall(require, 'project_nvim')
+_, available = prequire('project_nvim')
 if available then telescope.load_extension('projects') end
 
 -- Neoclip extension
-available, _ = pcall(require, 'neoclip')
+_, available = prequire('neoclip')
 if available then telescope.load_extension('neoclip') end
 
 require('keybindings').telescope()

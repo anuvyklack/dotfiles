@@ -15,22 +15,26 @@ endif
 
 " set verbose=1
 
-" https://github.com/lewis6991/impatient.nvim
-lua require('impatient')
+lua << EOF
+-- https://github.com/lewis6991/impatient.nvim
+if not pcall(require, 'impatient') then
+   print 'Failed to load impatient'
+end
+EOF
 
 " General Config                                                       {{{
 " ========================================================================
 " Список кодировок для автоматического их определения
 set fileencodings=utf-8,cp1251
 
-let mapleader = "\<Space>"  " set <leader> key
+let mapleader = "\<Space>"
 let maplocalleader = ','
 
 set virtualedit=block
 
 set mouse=a         " Enable mouse in all modes
-set hidden          " Buffers can exist in the background without being in
-                    " a window.
+" set hidden          " Buffers can exist in the background without being in
+"                     " a window.
 
 set number          " Показывать нумерацию строк
 " set relativenumber
@@ -38,19 +42,19 @@ set noautochdir     " Set pwd as the dir of the active file.
                     " WARNING: If set this option breakes
                     " `ahmedkhalf/project.nvim' plugin.
 
-set showcmd         " Show incomplete cmds down the bottom
-set showmode        " Show current mode down the bottom
+" set showcmd         " Show incomplete cmds down the bottom
+" set showmode        " Show current mode down the bottom
 set laststatus=3    " Use global statusline
-set novisualbell    " Отключаем пищалки и моргалки
-set autoread        " Reload files changed outside vim
+" set novisualbell    " Отключаем пищалки и моргалки
+" set autoread        " Reload files changed outside vim
 set termguicolors   " 24 bit color support
 
 " set iskeyword+=^_   " Consider underscore as word separator (for w, dw, ...).
 " set iskeyword-=_   " Consider underscore as word separator (for w, dw, ...).
 
-set ttimeoutlen=50  " Время переключения между режимами (default 50)
-set timeoutlen=1000 " Время в мс в течении которого Vim ждёт продолжения
-                    " многосимвольной команды.
+" set ttimeoutlen=50  " Время переключения между режимами (default 50)
+" set timeoutlen=1000 " Время в мс в течении которого Vim ждёт продолжения
+"                     " многосимвольной команды.
 
 set updatetime=1000 " The time until the CursorHold autocommand will triggered.
 
@@ -75,6 +79,7 @@ set foldmethod=marker
 set foldexpr=nvim_treesitter#foldexpr()
 
 set foldcolumn=auto:2
+set foldlevel=0
 set foldlevelstart=0    " 0: to always start editing with all folds closed
 set foldnestmax=20      " maximum nested fold level
 set foldminlines=4      " minimum lines required to create fold
@@ -123,16 +128,16 @@ endif
 " Indentation                                                          {{{
 " ========================================================================
 
-set autoindent      " Use the current indentation when creating a new line
-                    " in Insert mode, both through normal Enter or o/O.
+" set autoindent      " Use the current indentation when creating a new line
+"                     " in Insert mode, both through normal Enter or o/O.
 
- set smartindent    " does the right thing (mostly) in programs
- set cindent        " stricter rules for C programs
+set smartindent     " does the right thing (mostly) in programs
+set cindent         " stricter rules for C programs
 
 set smarttab        " “Умная” расстановка отступов.
 set expandtab       " Заменять табуляцию пробелами.
 set tabstop=4       " Количество пробелов в одном символе табуляции.
-set softtabstop=-1  " Sunchronize tabstop with shiftwidth.
+set softtabstop=-1  " Synchronize tabstop with shiftwidth.
 set shiftwidth=4    " Количество пробелов на которое будет сдвинута
                     " строка командами >> или <<.
 
@@ -141,8 +146,8 @@ set list listchars=tab:\ \ ,trail:· ",eol:¶ ",eol:¤
 
 " }}}
 
-" Formating text                                                        {{{
-" =========================================================================
+" Formating text                                                       {{{
+" ========================================================================
 
 set formatoptions=tcqj  " Default: tcqj
                         " The behavior of 'gw' command.
@@ -510,7 +515,6 @@ noremap L $
 " <C-g>u : break undo sequence, start new change (:help i_CTRL-G_u)
 inoremap <expr> <Enter> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
-
 " часто нужно отделять блоки кода пустой строкой, например, перед return
 nnoremap 2o o<CR>
 nnoremap 2O O<Esc>O
@@ -521,11 +525,6 @@ map <C-J> <C-W>j
 map <C-K> <C-W>k
 map <C-H> <C-W>h
 map <C-L> <C-W>l
-
-nnoremap <A-Up> <C-W>+
-nnoremap <A-Down> <C-W>-
-nnoremap <A-Left> <C-W><
-nnoremap <A-RIght> <C-W>>
 
 " Open new splits easily
 map vv <C-W>v
@@ -641,4 +640,4 @@ endf "}}}
 
 " }}}
 
-" vim: fdm=marker number tw=76 cc=+1
+" vim: fdm=marker

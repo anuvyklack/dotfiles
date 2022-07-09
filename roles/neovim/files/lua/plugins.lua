@@ -8,8 +8,8 @@
 -- ░██     ░░  ░░░░░    █████ ░░ ░░   ░░ ░░░░░░  ░░  ░░  ░░░░░   ░░░░░░░
 -- ░░                  ░░░░░
 
---                       Install and setup Packer                            {{{
---------------------------------------------------------------------------------
+--                     Install and setup Packer                       {{{
+-------------------------------------------------------------------------
 local packer = require('packer')
 local use = packer.use
 local join_paths = require('packer/util').join_paths
@@ -19,15 +19,15 @@ packer.init { --{{{
    display = {
       -- open_cmd = '90vnew [packer]',  -- set the width of the packer split
       open_fn = function()
-         return require("packer.util").float({
-            border = "rounded",
+         return require('packer/util').float({
+            border = 'rounded',
             -- width  = math.ceil(vim.o.columns * 0.7),
             height = math.ceil(vim.o.lines * 0.8)
          })
       end,
-      working_sym = '', --   plugin being installed/updated
-      error_sym = '',   -- plugin with an error in installation/updating
-      done_sym = '',    --  plugin which has completed installation/updating
+      working_sym = '',
+      error_sym = '',
+      done_sym = '',
    },
    git = {
       clone_timeout = 600  -- timeout, in seconds, for git clones
@@ -37,7 +37,7 @@ packer.init { --{{{
 -- -- Auto compile when there are changes in plugins.lua
 -- vim.cmd 'autocmd BufWritePost plugins.lua PackerCompile'
 
------------------------------------------------------------------------------}}}
+----------------------------------------------------------------------}}}
 
 use { 'wbthomason/packer.nvim', opt = true }
 
@@ -499,8 +499,6 @@ use { 'junegunn/vim-easy-align', as = 'easy-align',
    config = function() require('keybindings').easy_align() end
 }
 
--- }}}
-
 -- Surround {{{
 
 use { 'tpope/vim-surround', as = 'surround',
@@ -592,26 +590,26 @@ use { 'jlanzarotta/bufexplorer', --{{{
 use 'sindrets/winshift.nvim'
 use 'mrjones2014/smart-splits.nvim'
 
-use { 'beauwilliams/focus.nvim', --{{{
-   -- cmd = { "FocusSplitNicely", "FocusSplitCycle" }, module = "focus",
-   config = function() require('focus').setup {
-      -- Prevents focus automatically resizing windows based on configured
-      -- excluded filetypes or buftypes.
-      excluded_filetypes = { 'toggleterm', 'qf' },
-      excluded_buftypes = {
-         'quickfix', 'nofile', 'prompt', 'popup', -- Default, should always be.
-      },
-      -- Enable resizing for excluded filetypes using forced_filetypes.
-      forced_filetypes = {}, -- 'dan_repl'
-      --
-      -- Displays line numbers in the focussed window only and
-      -- not display in unfocussed windows.
-      signcolumn = false,
-      number = false,
-      cursorline = false,
-      cursorcolumn = false
-   } end
-} --}}}
+-- use { 'beauwilliams/focus.nvim', --{{{
+--    -- cmd = { "FocusSplitNicely", "FocusSplitCycle" }, module = "focus",
+--    config = function() require('focus').setup {
+--       -- Prevents focus automatically resizing windows based on configured
+--       -- excluded filetypes or buftypes.
+--       excluded_filetypes = { 'toggleterm', 'qf' },
+--       excluded_buftypes = {
+--          'quickfix', 'nofile', 'prompt', 'popup', -- Default, should always be.
+--       },
+--       -- Enable resizing for excluded filetypes using forced_filetypes.
+--       forced_filetypes = {}, -- 'dan_repl'
+--       --
+--       -- Displays line numbers in the focussed window only and
+--       -- not display in unfocussed windows.
+--       signcolumn = false,
+--       number = false,
+--       cursorline = false,
+--       cursorcolumn = false
+--    } end
+-- } --}}}
 
 ----------------------------------------------------------------------}}}
 
@@ -822,15 +820,11 @@ use { 'stevearc/dressing.nvim', --{{{
 -- use { 'anuvyklack/pretty-fold.nvim', as = 'pretty-fold', -- {{{
 use { '~/code/neovim-plugins/pretty-fold.nvim', as = 'pretty-fold',
    requires = 'keymap-amend',
-   config = function() require('plugins-config/pretty-fold') end
+   config = function()
+      require('plugins-config/pretty-fold')
+      require('pretty-fold/preview').setup()
+   end
 } --}}}
-
--- use { 'kevinhwang91/nvim-ufo',
---    requires = 'kevinhwang91/promise-async',
---    config = function()
---       require('ufo').setup()
---    end
--- }
 
 use { 'echasnovski/mini.nvim', --{{{
    config = function()

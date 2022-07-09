@@ -9,10 +9,12 @@
 --                  ░░░░░                                              ░░░░░
 
 local M = {}
-local keymap = require('util').keymap
-keymap.amend = require('keymap-amend')
-local hydra_available, Hydra = pcall(require, "hydra")
-local which_key = require('util').which_key
+local util = require('util')
+local prequire = util.prequire
+local keymap = util.keymap
+local which_key = util.which_key
+keymap.amend = prequire('keymap-amend')
+local Hydra = prequire("hydra")
 local n, x = 'n', 'x'
 
 local function cmd(command)
@@ -38,11 +40,12 @@ function M.hop()
    keymap.set({n,x}, 's', cmd 'HopChar1', { desc = 'Easymotion char' })
 
    keymap.set(n, 't', cmd 'HopChar2', { desc = 'Easymotion 2 chars' })
-end -- }}}
+end
+-- }}}
 
 -- Telescope {{{
 function M.telescope()
-   if not hydra_available then return end
+   -- if not hydra_available then return end
 
 -- local telescope = require('telescope')
 
@@ -204,7 +207,8 @@ function M.lspconfig(bufnr)
 
    --}}}
 
-end --}}}
+end
+--}}}
 
 -- Diagnostics {{{
 function M.trouble()
@@ -236,8 +240,9 @@ end, { desc = 'Toggle diagnostics' })
 
 -- LuaSnip {{{
 function M.luasnip()
-   local available_luasnip, luasnip = pcall(require, 'luasnip')
-   if not available_luasnip then return end
+   local luasnip = prequire('luasnip')
+   -- local available_luasnip, luasnip = pcall(require, 'luasnip')
+   -- if not available_luasnip then return end
 
    keymap.set(n, '<Tab>', function() --{{{
       -- if luasnip.expand_or_jumpable() then
@@ -257,7 +262,8 @@ function M.luasnip()
       end
    end) --}}}
 
-end --}}}
+end
+--}}}
 
 -- Treesitter {{{
 function M.treesitter_textobjects()
@@ -315,11 +321,12 @@ function M.treesitter_textobjects()
          },
       }, --}}}
    }
-end --}}}
+end
+--}}}
 
 -- Git {{{
 function M.gitsigns(bufnr)
-   local gitsigns = require('gitsigns')
+   local gitsigns = prequire('gitsigns')
 
    local hint = [[
  _J_: next hunk   _s_: stage hunk        _d_: show deleted   _b_: blame line
@@ -412,8 +419,8 @@ function M.nvim_tree()
 end
 
 function M.neo_tree()
-   -- keymap.set('n', [[\]], '<cmd>Neotree reveal<cr>', { desc = 'Open file-explorer', requires = 'neo-tree' })
-   keymap.set('n', '<F3>', '<cmd>Neotree toggle reveal<cr>', { desc = 'Open file-tree', requires = 'neo-tree' })
+   -- keymap.set('n', [[\]], cmd 'Neotree reveal', { desc = 'Open file-explorer', requires = 'neo-tree' })
+   keymap.set('n', '<F3>', cmd 'Neotree toggle reveal', { desc = 'Open file-tree', requires = 'neo-tree' })
 end
 
 -- nnn (file manager)
@@ -424,60 +431,62 @@ end
 --}}}
 
 -- Buffers and windows managment {{{
-do
-   local barbar_available, _ = pcall(require, 'bufferline')
-   local splits_available, splits = pcall(require, 'smart-splits')
-   if not hydra_available or not barbar_available or not splits_available then
-      return
+-- Keys with '<', '>': move to previous/next
+keymap.set(n, '<A-,>', cmd 'BufferPrevious')
+keymap.set(n, '<A-.>', cmd 'BufferNext')
+
+local function close_buffer()
+   vim.cmd 'BufferClose'
+   vim.wait(200, function() vim.cmd 'redraw' end, 30, false)
+end
+
+local buffer_hydra = Hydra({ -- {{{
+   -- name = 'Buffer',
+   name = 'Barbar',
+   config = {
+      -- color = 'amaranth',
+      -- hint = false,
+      -- hint = {
+      --    position = 'top'
+      -- },
+      -- timeout = 2000,
+   },
+   heads = {
+      { 'h', cmd 'BufferPrevious' },
+      { 'l', cmd 'BufferNext', { desc = 'choose' } },
+
+      -- Execute async functions synchronously to preserve animation.
+      { 'H', function()
+            vim.cmd 'BufferMovePrevious'
+            vim.wait(200, function() vim.cmd 'redraw' end, 30, false)
+         end },
+      { 'L', function()
+            vim.cmd 'BufferMoveNext'
+            vim.wait(200, function() vim.cmd 'redraw' end, 30, false)
+         end, { desc = 'move' } },
+      { 'p',  cmd 'BufferPin', { desc = 'pin' } },
+
+      { 'd', close_buffer, { desc = 'close' } },
+      { 'c', close_buffer, { desc = false } },
+      { 'q', close_buffer, { desc = false } },
+
+      -- { 's', cmd 'BufferPick', { exit = true, desc = 'pick buffer' } },
+      { 'b',  cmd 'BufExplorer', { exit = true, desc = 'Explorer' } },
+      { 'od', cmd 'BufferOrderByDirectory', { desc = 'by directory' } },
+      { 'ol', cmd 'BufferOrderByLanguage',  { desc = 'by language' } },
+      { '<Esc>', nil, { exit = true } }
+   }
+}) -- }}}
+
+local function choose_buffer()
+   if #vim.fn.getbufinfo({ buflisted = true }) > 1 then
+      buffer_hydra:activate()
    end
+end
 
-   -- Keys with '<', '>': move to previous/next
-   keymap.set(n, '<A-,>', cmd 'BufferPrevious')
-   keymap.set(n, '<A-.>', cmd 'BufferNext')
+keymap.set(n, 'gb', choose_buffer)
 
-   local buffer_hydra = Hydra({ -- {{{
-      name = 'Buffer',
-      config = {
-         -- color = 'amaranth',
-         hint = false,
-         -- timeout = 2000,
-      },
-      heads = {
-         { 'h', cmd 'BufferPrevious' },
-         { 'l', cmd 'BufferNext', { desc = 'choose' } },
-
-         -- Execute async functions synchronously to preserve animation.
-         { 'H', function()
-               vim.cmd 'BufferMovePrevious'
-               vim.wait(200, function() vim.cmd 'redraw' end, 30, false)
-            end },
-         { 'L', function()
-               vim.cmd 'BufferMoveNext'
-               vim.wait(200, function() vim.cmd 'redraw' end, 30, false)
-            end, { desc = 'move' } },
-         { 'p',  cmd 'BufferPin', { desc = 'pin' } },
-         { 'q', function()
-               vim.cmd 'BufferClose'
-               vim.wait(200, function() vim.cmd 'redraw' end, 30, false)
-            end, { desc = 'close' } },
-
-         -- { 's', cmd 'BufferPick', { exit = true, desc = 'pick buffer' } },
-         { 'b',  cmd 'BufExplorer', { exit = true, desc = 'Explorer' } },
-         { 'od', cmd 'BufferOrderByDirectory', { desc = 'by directory' } },
-         { 'ol', cmd 'BufferOrderByLanguage',  { desc = 'by language' } },
-         { '<Esc>', nil, { exit = true } }
-      }
-   }) -- }}}
-
-   local function choose_buffer()
-      if #vim.fn.getbufinfo({ buflisted = true }) > 1 then
-         buffer_hydra:activate()
-      end
-   end
-
-   keymap.set(n, 'gb', choose_buffer)
-
-   local window_hint = [[
+local window_hint = [[
  ^^^^^^     Move     ^^^^^^   ^^    Size   ^^   ^^     Split
  ^^^^^^--------------^^^^^^   ^^-----------^^   ^^----------------
  ^ ^ _k_ ^ ^   ^ ^ _K_ ^ ^    ^   _<C-k>_   ^   _s_: horizontally
@@ -486,50 +495,50 @@ do
  focus^^^^^^   window^^^^^^   ^_=_ equalize ^   _b_: choose buffer 
 ]]
 
-   Hydra({ -- {{{
-      name = 'Windows',
-      hint = window_hint,
-      config = {
-         timeout = 4000,
-         hint = {
-            border = 'rounded',
-            -- position = 'top'
-            position = 'middle'
-         }
-      },
-      mode = 'n',
-      body = '<C-w>',
-      heads = {
-         { 'h', '<C-w>h' },
-         { 'j', '<C-w>j' },
-         { 'k', [[<cmd>try | wincmd k | catch /^Vim\%((\a\+)\)\=:E11:/ | close | endtry<CR>]] },
-         { 'l', '<C-w>l' },
+local splits = prequire('smart-splits')
 
-         { 'H', '<Cmd>WinShift left<CR>' },
-         { 'J', '<Cmd>WinShift down<CR>' },
-         { 'K', '<Cmd>WinShift up<CR>' },
-         { 'L', '<Cmd>WinShift right<CR>' },
-
-         { 's', '<C-w>s' },
-         { 'v', '<C-w>v' },
-
-         { '<C-h>', function() splits.resize_left(2)  end },
-         { '<C-j>', function() splits.resize_down(2)  end },
-         { '<C-k>', function() splits.resize_up(2)    end },
-         { '<C-l>', function() splits.resize_right(2) end },
-         { '=', '<C-w>=', { desc = 'equalize'} },
-
-         -- { 'w', require('nvim-window').pick, { exit = true, desc = 'choose window' }},
-         { 'b', choose_buffer, { exit = true, desc = 'choose buffer' } },
-
-         -- { 'q', '<Cmd>try | close | catch | endtry<CR>', { desc = 'close window' } },
-         { 'q', [[<Cmd>try | close | catch /^Vim\%((\a\+)\)\=:E444:/ | endtry<CR>]],
-                                                        { desc = 'close window' } },
-         { '<Esc>', nil,  { exit = true, desc = false }}
+Hydra({ -- {{{
+   name = 'Windows',
+   hint = window_hint,
+   config = {
+      timeout = 4000,
+      hint = {
+         border = 'rounded',
+         -- position = 'top'
+         position = 'middle'
       }
-   }) -- }}}
+   },
+   mode = 'n',
+   body = '<C-w>',
+   heads = {
+      { 'h', '<C-w>h' },
+      { 'j', '<C-w>j' },
+      { 'k', cmd [[try | wincmd k | catch /^Vim\%((\a\+)\)\=:E11:/ | close | endtry]] },
+      { 'l', '<C-w>l' },
 
-end -- }}}
+      { 'H', cmd 'WinShift left' },
+      { 'J', cmd 'WinShift down' },
+      { 'K', cmd 'WinShift up' },
+      { 'L', cmd 'WinShift right' },
+
+      { '<C-h>', function() splits.resize_left(2)  end },
+      { '<C-j>', function() splits.resize_down(2)  end },
+      { '<C-k>', function() splits.resize_up(2)    end },
+      { '<C-l>', function() splits.resize_right(2) end },
+      { '=', '<C-w>=', { desc = 'equalize'} },
+
+      { 's', '<C-w>s' },
+      { 'v', '<C-w>v' },
+
+      -- { 'w', require('nvim-window').pick, { exit = true, desc = 'choose window' }},
+      { 'b', choose_buffer, { exit = true, desc = 'choose buffer' } },
+      { 'q', cmd [[try | close | catch /^Vim\%((\a\+)\)\=:E444:/ | endtry]],
+                                                     { desc = 'close window' } },
+      { '<Esc>', nil,  { exit = true, desc = false }}
+   }
+}) -- }}}
+
+-- }}}
 
 -- Asterisks {{{
 function M.asterisks()
@@ -539,60 +548,53 @@ function M.asterisks()
    -- keymap.set('', 'g#', '<Plug>(asterisk-gz#)', { desc = ':help g#' })
    keymap.set('', 'g*', '<Plug>(asterisk-gz*)', { desc = 'which_key_ignore' })
    keymap.set('', 'g#', '<Plug>(asterisk-gz#)', { desc = 'which_key_ignore' })
-end -- }}}
-
--- Side-scroll {{{
-do
-   if not hydra_available then return end
-
-   Hydra({
-      name = 'Side scroll',
-      config = {
-         timeout = 2000,
-         hint = false
-         -- hint = 'statusline'
-      },
-      mode = 'n',
-      body = 'z',
-      heads = {
-         { 'h', '5zh' },
-         { 'l', '5zl', { desc = '←/→' } },
-         { 'H', 'zH' },
-         { 'L', 'zL', { desc = 'half screen ←/→' } },
-      }
-   })
 end
 -- }}}
 
+-- Side-scroll {{{
+Hydra({
+   name = 'Side scroll',
+   config = {
+      timeout = 2000,
+      hint = false
+      -- hint = 'statusline'
+   },
+   mode = 'n',
+   body = 'z',
+   heads = {
+      { 'h', '5zh' },
+      { 'l', '5zl', { desc = '←/→' } },
+      { 'H', 'zH' },
+      { 'L', 'zL', { desc = 'half screen ←/→' } },
+   }
+})
+-- }}}
+
 -- Quick words {{{
-do
-   if not hydra_available then return end
+Hydra({
+   name = 'Quick words',
+   config = {
+      debug = true,
+      color = 'pink',
+      hint = false
+      -- hint = 'statusline'
+   },
+   mode = {'n','x','o'},
+   body = ',',
+   heads = {
+      -- { 'w',  '<Plug>(quickword-w)' },
+      -- { 'b',  '<Plug>(quickword-b)' },
+      -- { 'e',  '<Plug>(quickword-e)' },
+      -- { 'ge', '<Plug>(quickword-ge)' },
 
-   Hydra({
-      name = 'Quick words',
-      config = {
-         -- debug = true,
-         color = 'pink',
-         hint = false
-         -- hint = 'statusline'
-      },
-      mode = {'n','x','o'},
-      body = ',',
-      heads = {
-         -- { 'w',  '<Plug>(quickword-w)' },
-         -- { 'b',  '<Plug>(quickword-b)' },
-         -- { 'e',  '<Plug>(quickword-e)' },
-         -- { 'ge', '<Plug>(quickword-ge)' },
+      { 'w',  '<Plug>(smartword-w)' },
+      { 'b',  '<Plug>(smartword-b)' },
+      { 'e',  '<Plug>(smartword-e)' },
+      { 'ge', '<Plug>(smartword-ge)' },
 
-         { 'w',  '<Plug>(smartword-w)' },
-         { 'b',  '<Plug>(smartword-b)' },
-         { 'e',  '<Plug>(smartword-e)' },
-         { 'ge', '<Plug>(smartword-ge)' },
-
-         { '<Esc>', nil, { exit = true, mode = 'n' } }
-      }
-   })
-end
+      { '<Esc>', nil, { exit = true, mode = 'n' } }
+   }
+})
 -- }}}
 
 function M.easy_align()
@@ -606,7 +608,7 @@ keymap.amend('n', '<Esc>', function(original)
       vim.cmd 'nohlsearch'
    end
    original()
-end)
+end, { desc = 'disable search highlight' })
 
 return M
 

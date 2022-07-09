@@ -1,9 +1,9 @@
--- WARNING This file must be loaded before nvim-treesitter plugin.
 -- Manually load treesitter queries to overload the default ones.
 -- https://github.com/nvim-treesitter/nvim-treesitter/issues/839#issuecomment-850027287
 
 if not pcall(require, 'plenary') then return end
 
+local set_query = require("vim.treesitter.query").set_query
 local Path = require('plenary.path')
 local scan_dir = require('plenary.scandir').scan_dir
 
@@ -23,7 +23,7 @@ for _, ft in ipairs(filetypes) do
          local type = vim.fn.fnamemodify(query, ':t:r')
          query = Path.new(query)
          query = table.concat(query:readlines(), '\n')
-         require("vim.treesitter.query").set_query(filetype, type, query)
+         set_query(filetype, type, query)
       end
    end
 end

@@ -63,5 +63,3 @@ local cpp_fold_config = {
 }
 pretty_fold.ft_setup('c', cpp_fold_config)
 pretty_fold.ft_setup('cpp', cpp_fold_config)
-
-require('pretty-fold/preview').setup()

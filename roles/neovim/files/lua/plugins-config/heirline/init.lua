@@ -1,22 +1,30 @@
--- local os_sep = require("plenary.path").path.sep
+local heirline_available, _ = pcall(require, 'heirline')
+if not heirline_available then return end
+
+local prequire = require('util').prequire
+
 local os_sep = package.config:sub(1,1)
 local conditions = require('heirline.conditions')
 local heirline = require("heirline.utils")
-local devicons = require('nvim-web-devicons')
-local nvim_gps_available, nvim_gps = pcall(require, 'nvim-gps')
-local dap_available, dap = pcall(require, 'dap')
+local devicons = prequire('nvim-web-devicons')
+-- local nvim_gps_available, nvim_gps = pcall(require, 'nvim-gps')
+-- local dap_available, dap = pcall(require, 'dap')
+local nvim_gps = prequire('nvim-gps')
+local dap = prequire('dap')
 local util = require('plugins-config.heirline.util')
 local icons = util.icons
 local mode = util.mode
-local hydra = require('hydra.statusline')
+local hydra = prequire('hydra.statusline')
 
-local theme_available, theme = pcall(require, 'plugins-config/heirline/themes/'..vim.g.colors_name)
+local theme, theme_available = prequire('plugins-config/heirline/themes/'..vim.g.colors_name)
 -- local theme_available, theme = true, require('plugins-config/heirline/themes/gruvbox-material')
 if not theme_available then return end
 local hl = theme.highlight
 local colors = theme.colors
 local mode_colors = hl.ModeColors
 local lsp_colors = theme.lsp_colors
+
+vim.o.showmode = false
 
 -- Flexible components priorities
 local priority = {
@@ -144,7 +152,9 @@ local HydraActive = {
 -- }
 
 local HydraHint = {
-   condition = hydra.get_hint,
+   condition = function()
+      return hydra.get_hint() and hydra.get_name() ~= 'Barbar'
+   end,
    provider = hydra.get_hint,
 }
 
@@ -247,7 +257,8 @@ local FileName = {
 
 local GPS = {
    condition = function()
-      return nvim_gps_available and nvim_gps.is_available()
+      -- return nvim_gps_available and nvim_gps.is_available()
+      return nvim_gps.is_available()
    end,
    provider = function()
       local location = nvim_gps.get_location()
@@ -318,7 +329,8 @@ local FileNameBlock = {
 local DapMessages = {
    -- display the dap messages only on the debugged file
    condition = function()
-      local session = dap_available and dap.session()
+      -- local session = dap_available and dap.session()
+      local session = dap.session()
       if session then
          local filename = vim.api.nvim_buf_get_name(0)
          if session.config then

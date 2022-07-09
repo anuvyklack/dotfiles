@@ -131,8 +131,8 @@ cmp.setup {
          cmp.ItemField.Menu,
       },
       format = require('lspkind').cmp_format({  -- lspkind icons
-          -- Options: 'text', 'text_symbol', 'symbol_text', 'symbol'
-          mode = 'symbol_text', -- Show text annotations besides icons.
+         -- Options: 'text', 'text_symbol', 'symbol_text', 'symbol'
+         mode = 'symbol_text', -- Show text annotations besides icons.
 
          -- -- Prevent the popup from showing more than provided characters.
          -- -- (e.g 50 will not show more than 50 characters)

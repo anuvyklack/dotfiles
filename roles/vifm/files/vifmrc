@@ -947,7 +947,8 @@ fileviewer {*.[1-8]},<text/troff> man ./%c | col -b
 " Keybindings {{{
 
 " Single stroke to access command line.
-nmap ; :
+" nmap ; :
+nmap <BS> :
 
 " Quit vifm with saving state.
 nnoremap Q :qall<cr>
