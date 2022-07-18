@@ -48,11 +48,10 @@ use 'lewis6991/impatient.nvim' -- improve startup time
 -- use { 'anuvyklack/nvim-keymap-amend', as = 'keymap-amend' }
 use { '~/code/neovim-plugins/keymap-amend.nvim', as = 'keymap-amend' }
 
-use { 'anuvyklack/hydra.nvim', as = 'hydra',
-   requires = { 'anuvyklack/keymap-layer.nvim', as = 'keymap-layer' }
--- use { '~/code/neovim-plugins/hydra.nvim', as = 'hydra',
---    requires = { '~/code/neovim-plugins/keymap-layer.nvim', as = 'keymap-layer' }
-}
+use 'anuvyklack/hydra.nvim'
+use 'anuvyklack/keymap-layer.nvim'
+-- use '~/code/neovim-plugins/hydra.nvim'
+-- use '~/code/neovim-plugins/keymap-layer.nvim'
 
 use 'tpope/vim-repeat'
 
@@ -362,6 +361,7 @@ use { 'https://gitlab.com/yorickpeterse/nvim-window.git' }
 use { 'szw/vim-maximizer', -- {{{
    config = function()
       vim.g.maximizer_set_default_mapping = 0
+      vim.g.maximizer_restore_on_winleave = 1
    end
 } -- }}}
 
@@ -807,6 +807,12 @@ use { 'mg979/vim-visual-multi', as = 'multiple-cursors' }
 --       vim.g.peekaboo_window = 'vertical botright 40new'
 --    end
 -- }
+
+use { 'jbyuki/venn.nvim', -- Draw ASCII diagrams {{{
+   config = function()
+      require('keybindings').draw_diagrams()
+   end
+} -- }}}
 
 use { 'frabjous/knap', --{{{
    ft = { 'markdown', 'tex' },

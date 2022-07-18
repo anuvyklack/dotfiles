@@ -6,7 +6,8 @@ function util.warn(msg)
    end)
 end
 
-util.void = setmetatable({}, {
+---@class Void Void has eveything and nothing
+util.void = setmetatable({}, { ---@type Void
    __index = function(self) return self end,
    __newindex = function() end,
    __call = function() end
@@ -29,7 +30,10 @@ util.prequire = function(module_name)
    end
 end
 
-util.keymap = {}
+---@class util.Keymap
+---@field cmd function
+---@field set function
+util.keymap = {} ---@type util.Keymap
 
 ---Wrapper around vim.keymap.set() function. It accepts in {opts} parameter
 ---table next additional keys:

@@ -126,6 +126,7 @@ set nowrap				" Wrap lines
 set colorcolumn=+1		" Показывать рулетку в следующей колонке после textwidth.
 set mousehide			" Hide the mouse when typing text.
 " set cursorline		" Выделять строку, на которой находится курсор.
+set cursorlineopt=number,screenline
 
 " " Change cursor shape between modes
 " hi Cursor guifg=green guibg=green

@@ -10,11 +10,12 @@ nnoremap <BS> :
 xnoremap <BS> :
 
 " Yank
-nnoremap yc		"+y
-nnoremap ycc	"+yy
-nnoremap <C-c>	"+y
-xnoremap <C-c>	"+y
-nnoremap <C-c><C-c>  "+yy
+nnoremap yc			"+y
+nnoremap ycc		"+yy
+nnoremap <C-c>		"+y
+xnoremap <C-c>		"+y
+nnoremap <C-c>c		"+y$
+nnoremap <C-c><C-c>	"+yy
 
 " Paste
 nnoremap cp		"+p

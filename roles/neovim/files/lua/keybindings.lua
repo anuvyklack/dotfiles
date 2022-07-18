@@ -133,12 +133,11 @@ M.telescope = function()
                  _f_: files       _m_: marks
    🭇🬭🬭🬭🬭🬭🬭🬭🬭🬼    _o_: old files   _g_: live grep
   🭉🭁🭠🭘    🭣🭕🭌🬾   _p_: projects    _/_: search in file
-  🭅█ ▁     █🭐   ^
-  ██🬿      🭊██   _r_: resume      _c_: execute command
- 🭋█🬝🮄🮄🮄🮄🮄🮄🮄🮄🬆█🭀  _h_: vim help    _;_: commands history 
- 🭤🭒🬺🬹🬱🬭🬭🬭🬭🬵🬹🬹🭝🭙  _k_: keymaps     _?_: search history
- ^
-                 _u_: undotree
+  🭅█ ▁     █🭐
+  ██🬿      🭊██   _r_: resume      _u_: undotree
+ 🭋█🬝🮄🮄🮄🮄🮄🮄🮄🮄🬆█🭀  _h_: vim help    _c_: execute command
+ 🭤🭒🬺🬹🬱🬭🬭🬭🬭🬵🬹🬹🭝🭙  _k_: keymaps     _;_: commands history 
+                 _O_: options     _?_: search history
  ^
                  _<Enter>_: Telescope           _<Esc>_
 ]]
@@ -164,10 +163,11 @@ M.telescope = function()
          { 'g', cmd 'Telescope live_grep' },
          -- { 'g', telescope_pickers.grep },
 
-         { 'h', cmd 'Telescope help_tags', { desc = 'vim help' } },
          { 'o', cmd 'Telescope oldfiles', { desc = 'recently opened files' } },
+         { 'h', cmd 'Telescope help_tags', { desc = 'vim help' } },
          { 'm', cmd 'MarksListBuf', { desc = 'marks' } },
          { 'k', cmd 'Telescope keymaps' },
+         { 'O', cmd 'Telescope vim_options' },
          -- { 'r', cmd 'Telescope registers' },
          { 'r', cmd 'Telescope resume' },
 
@@ -180,7 +180,7 @@ M.telescope = function()
          { ';', cmd 'Telescope command_history', { desc = 'command-line history' } },
          { 'c', cmd 'Telescope commands', { desc = 'execute command' } },
 
-         { 'u', cmd 'UndotreeToggle', { desc = 'undotree' }},
+         { 'u', cmd 'silent! %foldopen! | UndotreeToggle', { desc = 'undotree' }},
 
          -- { 'j', ':lua require"utils.telescope".jump()<CR>' },
          -- { 'l', telescope.extensions.neoclip.default },
@@ -211,17 +211,16 @@ M.gitsigns = function(bufnr)
    --    config = {
    --       -- debug = true,
    --       buffer = bufnr,
-   --       color = 'red',
+   --       color = 'amaranth',
    --       invoke_on_body = true,
    --       hint = {
    --          border = 'rounded'
    --       },
+   --       on_key = function() vim.wait(50) end,
    --       on_enter = function()
-   --          vim.bo.modifiable = false
+   --          vim.cmd('silent! %foldopen!')
    --          gitsigns.toggle_signs(true)
    --          gitsigns.toggle_linehl(true)
-   --          vim.wait(50, function() vim.cmd 'redraw' end, 10, false)
-   --          -- vim.defer_fn(function() vim.cmd 'redraw' end, 50)
    --       end,
    --       on_exit = function()
    --          gitsigns.toggle_signs(false)
@@ -236,7 +235,6 @@ M.gitsigns = function(bufnr)
    --          function()
    --             if vim.wo.diff then return ']c' end
    --             vim.schedule(function() gitsigns.next_hunk() end)
-   --             vim.wait(50, function() vim.cmd 'redraw' end, 10, false)
    --             return '<Ignore>'
    --          end,
    --          { expr = true, desc = 'next hunk' } },
@@ -244,11 +242,21 @@ M.gitsigns = function(bufnr)
    --          function()
    --             if vim.wo.diff then return '[c' end
    --             vim.schedule(function() gitsigns.prev_hunk() end)
-   --             vim.wait(50, function() vim.cmd 'redraw' end, 10, false)
    --             return '<Ignore>'
    --          end,
    --          { expr = true, desc = 'prev hunk' } },
-   --       { 's', ':Gitsigns stage_hunk<CR>', { silent = true, desc = 'stage hunk' } },
+   --       { 's',
+   --          function()
+   --             local mode = vim.api.nvim_get_mode().mode:sub(1,1)
+   --             if mode == 'V' then -- visual-line mode
+   --                local esc = vim.api.nvim_replace_termcodes('<Esc>', true, true, true)
+   --                vim.api.nvim_feedkeys(esc, 'x', false) -- exit visual mode
+   --                vim.cmd("'<,'>Gitsigns stage_hunk")
+   --             else
+   --                vim.cmd("Gitsigns stage_hunk")
+   --             end
+   --          end,
+   --          { desc = 'stage hunk' } },
    --       -- { 'r', ':Gitsigns reset_hunk<CR>', { desc = 'reset hunk' } }, -- need modifiable
    --       { 'u', gitsigns.undo_stage_hunk, { desc = 'undo last stage' } },
    --       { 'S', gitsigns.stage_buffer, { desc = 'stage buffer' } },
@@ -258,7 +266,7 @@ M.gitsigns = function(bufnr)
    --       { 'd',
    --          function()
    --             gitsigns.toggle_deleted()
-   --             vim.wait(50, function() vim.cmd 'redraw' end, 10, false)
+   --             -- vim.wait(50, function() vim.cmd 'redraw' end, 10, false)
    --          end,
    --          { nowait = true, desc = 'toggle deleted' } },
    --
@@ -270,7 +278,7 @@ M.gitsigns = function(bufnr)
    --
    --       { '/', gitsigns.show, { exit = true, desc = 'show base file' } }, -- show the base of the file
    --
-   --       { '<Enter>', cmd 'Neogit', { exit = 'after', desc = 'Neogit' } },
+   --       { '<Enter>', function() vim.cmd('Neogit') end, { exit = true, desc = 'Neogit' } },
    --
    --       { 'q', nil, { exit = true, nowait = true, desc = 'exit' } },
    --       -- { '<Esc>', nil, { exit = true, desc = 'exit' } }
@@ -289,6 +297,7 @@ M.gitsigns = function(bufnr)
             border = 'rounded'
          },
          on_enter = function()
+            vim.cmd('silent! %foldopen!')
             vim.bo.modifiable = false
             gitsigns.toggle_signs(true)
             gitsigns.toggle_linehl(true)
@@ -333,7 +342,7 @@ M.gitsigns = function(bufnr)
 
          { '/', gitsigns.show, { exit = true, desc = 'show base file' } }, -- show the base of the file
 
-         { '<Enter>', cmd 'Neogit', { exit = 'after', desc = 'Neogit' } },
+         { '<Enter>', cmd 'Neogit', { exit = true, desc = 'Neogit' } },
 
          { 'q', nil, { exit = true, nowait = true, desc = 'exit' } },
          -- { '<Esc>', nil, { exit = true, desc = 'exit' } }
@@ -421,15 +430,17 @@ M.knap = function()
    Hydra({
       name = 'Knap',
       config = {
+         color = 'teal',
          invoke_on_body = true,
          hint = false
       },
       body = '<F7>',
       heads = {
-         { 'o', knap.process_once, { desc = 'processes once' } },
-         { 'q', knap.close_viewer, { desc = 'close viewer' } },
          { 'a', knap.toggle_autopreviewing, { desc = 'toggle auto-processing' } },
-         { 's', knap.forward_jump, { desc = 'SyncTeX forward search' } }
+         { 'q', knap.close_viewer, { desc = 'close viewer' } },
+         { 'o', knap.process_once, { desc = 'processes once' } },
+         { 's', knap.forward_jump, { desc = 'SyncTeX forward search' } },
+         { '<Esc>' }
       }
    })
 end
@@ -442,6 +453,44 @@ end
 M.nnn = function()
    keymap.set('n', '<F4>', cmd 'NnnPicker', { desc = 'nnn' })
    -- keymap.set(n, '<F3>', cmd 'NnnExplorer', { desc = 'Open file-explorer' })
+end
+
+M.draw_diagrams = function()
+
+   local hint = [[
+ Arrow^^^^^^   Select region with <C-v> 
+ ^ ^ _K_ ^ ^   _f_: surround it with box
+ _H_ ^ ^ _L_
+ ^ ^ _J_ ^ ^                      _<Esc>_
+]]
+
+
+   Hydra({
+      name = 'Draw Diagram',
+      hint = hint,
+      config = {
+         color = 'pink',
+         invoke_on_body = true,
+         hint = {
+            position = 'bottom',
+            border = 'rounded'
+         },
+         on_enter = function()
+            vim.o.virtualedit = 'all'
+         end,
+      },
+      mode = 'n',
+      body = '<leader>d',
+      heads = {
+         { 'H', '<C-v>h:VBox<CR>' },
+         { 'J', '<C-v>j:VBox<CR>' },
+         { 'K', '<C-v>k:VBox<CR>' },
+         { 'L', '<C-v>l:VBox<CR>' },
+
+         { 'f', ':VBox<CR>', { mode = 'v' }},
+         { '<Esc>', nil, { exit = true } },
+      }
+   })
 end
 
 return M
