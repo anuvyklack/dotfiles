@@ -26,7 +26,14 @@ ufo.setup {
    end
 }
 
+prequire('fold-preview').setup()
+
 -- https://github.com/nvim-telescope/telescope.nvim/issues/559
+--------------------------------------------------------------------------------
+-- BufWinEnter is needed to take into account modeline settings.  And why it is
+-- not used alone but after BufRead, is due to need to execute BufWinEnter
+-- autocommand only once for each buffer.
+--------------------------------------------------------------------------------
 -- vim.cmd 'autocmd BufRead * autocmd BufWinEnter * ++once normal zxzM'
 vim.api.nvim_create_autocmd('BufRead', {
    callback = function()
@@ -34,7 +41,7 @@ vim.api.nvim_create_autocmd('BufRead', {
          once = true,
          callback = function()
             vim.defer_fn(function()
-               vim.api.nvim_feedkeys('zxzM', '', false)
+               vim.api.nvim_feedkeys('zM', 'm', false)
             end, 70)
          end
       })
