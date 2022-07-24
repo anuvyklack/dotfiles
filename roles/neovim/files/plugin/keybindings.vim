@@ -1,13 +1,5 @@
-" Move to the beginning / end of a line with "Shift + h/l"
-nnoremap H ^
-nnoremap L $
-xnoremap H ^
-xnoremap L $
-onoremap H ^
-onoremap L $
-
-nnoremap <BS> :
-xnoremap <BS> :
+nmap <BS> :
+xmap <BS> :
 
 " Yank
 nnoremap yc			"+y
@@ -22,12 +14,17 @@ nnoremap cp		"+p
 nnoremap cP		"+P
 xnoremap <C-p>	"+p
 
+" Folds
+nmap zr zR
+nmap zm zM
+
 " Fix writing :W to save
 command! W	w
 command! Q	q
 command! Qa qa
 
 " In insert mode, move normally by using Ctrl
+inoremap <C-h> <Left>
 inoremap <C-l> <Right>
 
 " In command mode, move normally by using Ctrl

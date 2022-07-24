@@ -151,6 +151,7 @@ M.telescope = function()
          color = 'teal',
          invoke_on_body = true,
          hint = {
+            -- type = 'cmdline',
             position = 'middle',
             border = 'rounded',
          },
@@ -297,13 +298,19 @@ M.gitsigns = function(bufnr)
             border = 'rounded'
          },
          on_enter = function()
-            vim.cmd('silent! %foldopen!')
+            vim.cmd 'mkview'
+            vim.cmd 'silent! %foldopen!'
             vim.bo.modifiable = false
             gitsigns.toggle_signs(true)
             gitsigns.toggle_linehl(true)
             vim.wait(50, function() vim.cmd 'redraw' end, 10, false)
          end,
          on_exit = function()
+            local cursor_pos = vim.api.nvim_win_get_cursor(0)
+            vim.cmd 'loadview'
+            vim.api.nvim_win_set_cursor(0, cursor_pos)
+            -- vim.api.nvim_feedkeys('zv', '', false)
+            vim.api.nvim_input('zv')
             gitsigns.toggle_signs(false)
             gitsigns.toggle_linehl(false)
             gitsigns.toggle_deleted(false)
@@ -430,6 +437,7 @@ M.knap = function()
    Hydra({
       name = 'Knap',
       config = {
+         -- debug = true,
          color = 'teal',
          invoke_on_body = true,
          hint = false

@@ -48,9 +48,9 @@ use 'lewis6991/impatient.nvim' -- improve startup time
 -- use { 'anuvyklack/nvim-keymap-amend', as = 'keymap-amend' }
 use { '~/code/neovim-plugins/keymap-amend.nvim', as = 'keymap-amend' }
 
-use 'anuvyklack/hydra.nvim'
-use 'anuvyklack/keymap-layer.nvim'
--- use '~/code/neovim-plugins/hydra.nvim'
+-- use 'anuvyklack/hydra.nvim'
+-- use 'anuvyklack/keymap-layer.nvim'
+use '~/code/neovim-plugins/hydra.nvim'
 -- use '~/code/neovim-plugins/keymap-layer.nvim'
 
 use 'tpope/vim-repeat'
@@ -362,8 +362,11 @@ use { 'szw/vim-maximizer', -- {{{
    config = function()
       vim.g.maximizer_set_default_mapping = 0
       vim.g.maximizer_restore_on_winleave = 1
+      vim.o.winminwidth = 20
    end
 } -- }}}
+
+ use 'luukvbaal/stabilize.nvim'
 
 -- use { 'beauwilliams/focus.nvim', --{{{
 --    -- cmd = { "FocusSplitNicely", "FocusSplitCycle" }, module = "focus",
@@ -741,10 +744,12 @@ use { 'haya14busa/vim-asterisk', as = 'asterisk', --{{{
 } --}}}
 
 -- use 'AndrewRadev/splitjoin.vim'
--- use { 'AckslD/nvim-trevJ.lua', -- {{{
---    module = 'trevj', -- lazy load
---    config = function() require('trevj').setup() end
--- } -- }}}
+use { 'AckslD/nvim-trevJ.lua', -- {{{
+   module = 'trevj', -- lazy load
+   config = function()
+      require('trevj').setup()
+   end
+} -- }}}
 
 use { 'junegunn/vim-easy-align', as = 'easy-align',
    config = function() require('keybindings').easy_align() end }

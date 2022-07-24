@@ -3,7 +3,7 @@ local prequire = require('util').prequire
 local cmp = require 'cmp'
 local cmp_types = require 'cmp.types'
 local cmp_str = require 'cmp.utils.str'
-local cmap = cmp.mapping
+local cmpmap = cmp.mapping
 local luasnip = prequire 'luasnip'
 local autopairs_cmp = prequire 'nvim-autopairs/completion/cmp'
 
@@ -16,6 +16,7 @@ local custom_mapping = {
    select_next = function(fallback)
       if cmp.visible() then
          cmp.select_next_item()
+         cmp.complete_common_string()
       -- elseif luasnip.expand_or_jumpable() then
       elseif luasnip.expand_or_locally_jumpable() then
          luasnip.expand_or_jump()
@@ -56,36 +57,40 @@ cmp.setup {
       }
    },
    mapping = {
-      ['<Down>'] = cmap.select_next_item({ behavior = 'insert' }),
-      ['<Up>']   = cmap.select_prev_item({ behavior = 'insert' }),
+      ['<Down>'] = cmpmap.select_next_item({ behavior = 'insert' }),
+      ['<Up>']   = cmpmap.select_prev_item({ behavior = 'insert' }),
 
-      ["<Tab>"]   = cmap(custom_mapping.select_next, {'i','s'}),
-      ["<S-Tab>"] = cmap(custom_mapping.select_prev, {'i','s'}),
+      ["<Tab>"]   = cmpmap(custom_mapping.select_next, {'i','s'}),
+      ["<S-Tab>"] = cmpmap(custom_mapping.select_prev, {'i','s'}),
 
-      ['<C-j>'] = cmap.select_next_item({ behavior = 'insert' }),
-      ['<C-k>'] = cmap.select_prev_item({ behavior = 'insert' }),
+      ['<C-j>'] = cmpmap.select_next_item({ behavior = 'insert' }),
+      ['<C-k>'] = cmpmap.select_prev_item({ behavior = 'insert' }),
 
       -- Accept currently selected item. Set "select" to "false" to only confirm
       -- explicitly selected items.
-      ['<CR>'] = cmap.confirm({ select = true }),
-      ['<C-y>'] = cmap.confirm({ select = false }),
+      ['<CR>'] = cmpmap.confirm({ select = true }),
+      ['<C-y>'] = cmpmap.confirm({ select = false }),
 
-      ['<C-e>'] = cmap.abort(),
+      ['<C-l>'] = cmpmap.abort(),
+      -- ['<C-l>'] = cmpmap(function(fallback)
+      --    cmpmap.abort()
+      --    fallback()
+      -- end),
       -- ['<C-Space>'] = cmap.abort(),
       -- ['<Esc>'] = cmap.abort(),
 
       -- Scroll docs windows.
-      ['<C-d>'] = cmap.scroll_docs(4),
-      ['<C-f>'] = cmap.scroll_docs(4),
-      ['<C-b>'] = cmap.scroll_docs(-4),
-      ['<C-u>'] = cmap.scroll_docs(-4),
+      ['<C-d>'] = cmpmap.scroll_docs(4),
+      ['<C-f>'] = cmpmap.scroll_docs(4),
+      ['<C-b>'] = cmpmap.scroll_docs(-4),
+      ['<C-u>'] = cmpmap.scroll_docs(-4),
 
-      ['<C-l>'] = cmap(function(fallback)
-         if cmp.visible() then
-            return cmp.complete_common_string()
-         end
-         fallback()
-      end, {'i','c'}),
+      -- ['<C-l>'] = cmpmap(function(fallback)
+      --    if cmp.visible() then
+      --       return cmp.complete_common_string()
+      --    end
+      --    fallback()
+      -- end, {'i','c'}),
    },
 
    -- If you are interested in why sources are separated into two groups - this

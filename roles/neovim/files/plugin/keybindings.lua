@@ -15,13 +15,22 @@ local keymap = util.keymap
 local cmd = keymap.cmd
 keymap.amend = prequire('keymap-amend')
 
--- -- Dealing with word wrap:
--- -- If cursor is inside very long line in the file than wraps around several rows
--- -- on the screen, then 'j' key moves you to the next line in the file, but not
--- -- to the next row on the screen under your previous position as in other
--- -- editors. These bindings fixes this.
--- keymap.set('n', 'k', function() return vim.v.count > 0 and 'k' or 'gk' end, { silent = true, expr = true })
--- keymap.set('n', 'j', function() return vim.v.count > 0 and 'j' or 'gj' end, { silent = true, expr = true })
+keymap.set('x', '$', function()
+   -- xnoremap <expr> $ mode() == 'v' ? '$h' : '$'
+   local mode = vim.api.nvim_get_mode().mode
+   if mode == 'v' then return '$h' else return '$' end
+end, { expr = true })
+
+-- Move to the beginning / end of a line with "Shift + h/l"
+keymap.set({'n','x','o'}, 'H', '^', { remap = true })
+keymap.set({'n','x','o'}, 'L', '$', { remap = true })
+
+keymap.set('n', 'gJ', function() require('trevj').format_at_cursor() end)
+
+-- keymap.set('n', 'k', function() return vim.v.count > 0 and 'k' or 'gk' end,
+--                      { expr = true, desc = 'k or gk' })
+-- keymap.set('n', 'j', function() return vim.v.count > 0 and 'j' or 'gj' end,
+--                      { expr = true, desc = 'j or gj' })
 
 do -- Buffers and windows managment hydras
 
@@ -37,12 +46,13 @@ do -- Buffers and windows managment hydras
          on_key = function()
             -- Execute async functions synchronously to preserve animation.
             vim.wait(200, function() vim.cmd 'redraw' end, 30, false)
-         end
+         end,
          -- color = 'amaranth',
          -- hint = false,
-         -- hint = {
-         --    position = 'top'
-         -- },
+         hint = {
+            -- type = 'cmdline',
+            show_name = false
+         },
          -- timeout = 2000,
       },
       heads = {
@@ -69,6 +79,8 @@ do -- Buffers and windows managment hydras
    local function choose_buffer()
       if #vim.fn.getbufinfo({ buflisted = true }) > 1 then
          buffer_hydra:activate()
+      else
+         vim.cmd('BufExplorer')
       end
    end
 
@@ -96,8 +108,6 @@ do -- Buffers and windows managment hydras
 
    local splits = prequire('smart-splits')
 
-   -- keymap.set('n', '<C-w>z', cmd 'MaximizerToggle!', { remap = true })
-
    Hydra({
       name = 'Windows',
       hint = window_hint,
@@ -106,8 +116,9 @@ do -- Buffers and windows managment hydras
          invoke_on_body = true,
          -- timeout = 4000,
          hint = {
+            -- type = 'window',
             border = 'rounded',
-            -- position = 'middle'
+            -- offset = -1
          }
       },
       mode = 'n',
@@ -160,6 +171,9 @@ do -- Buffers and windows managment hydras
          { '<C-q>', cmd [[try | close | catch /^Vim\%((\a\+)\)\=:E444:/ | endtry]], { desc = false } },
          { '<C-c>', cmd [[try | close | catch /^Vim\%((\a\+)\)\=:E444:/ | endtry]], { desc = false } },
 
+         { 't', cmd 'tabnew', { desc = 'new tab'} },
+         { 'gt', cmd 'tabnext', { desc = 'new tab'} },
+
          { '<Esc>', nil,  { exit = true, desc = false }}
       }
    })
@@ -189,9 +203,10 @@ Hydra({ -- Quick words
    config = {
       -- debug = true,
       color = 'pink',
-      -- color = 'amaranth',
-      hint = false,
-      -- hint = 'statusline',
+      -- hint = false,
+      hint = {
+         show_name = false
+      },
       timeout = 6000,
    },
    mode = {'n','x','o'},
@@ -212,21 +227,6 @@ Hydra({ -- Quick words
 })
 
 do -- Options hydra
-
---    local hint = [[
---   ^^^^^         Options 
---   ^
---   %{nu}^^^  _n_umber
---   %{rnu}^^  _r_elative number  
---   %{ve}^^^  _v_irtual edit
---   %{list}^  _i_nvisible characters  
---   %{spell}  _s_pell
---   %{wrap}^  _w_rap
---   %{cul}^^  _c_ursor line
---   ^
---   ^^^^^                    _<Esc>_
--- ]]
-
    local hint = [[
   ^ ^        Options
   ^
@@ -241,7 +241,7 @@ do -- Options hydra
        ^^^^                _<Esc>_
 ]]
 
-   Hydra({ -- Options
+   Hydra({
       name = 'Options',
       hint = hint,
       config = {
@@ -296,10 +296,22 @@ do -- Options hydra
             end
          end, { exit = true, desc = 'spell' } },
          { 'w', function()
-            if vim.o.wrap == true then
-               vim.o.wrap = false
-            else
+            if vim.o.wrap ~= true then
                vim.o.wrap = true
+               -- Dealing with word wrap:
+               -- If cursor is inside very long line in the file than wraps
+               -- around several rows on the screen, then 'j' key moves you to
+               -- the next line in the file, but not to the next row on the
+               -- screen under your previous position as in other editors. These
+               -- bindings fixes this.
+               vim.keymap.set('n', 'k', function() return vim.v.count > 0 and 'k' or 'gk' end,
+                                        { expr = true, desc = 'k or gk' })
+               vim.keymap.set('n', 'j', function() return vim.v.count > 0 and 'j' or 'gj' end,
+                                        { expr = true, desc = 'j or gj' })
+            else
+               vim.o.wrap = false
+               vim.keymap.del('n', 'k')
+               vim.keymap.del('n', 'j')
             end
          end, { desc = 'wrap' } },
          { 'c', function()
@@ -309,38 +321,14 @@ do -- Options hydra
                vim.o.cursorline = true
             end
          end, { desc = 'cursor line' } },
-         -- { 'b', function()
-         --    if vim.o.background == 'dark' then
-         --       vim.o.background = 'light'
-         --    else
-         --       vim.o.background = 'dark'
-         --    end
-         -- end, { desc = 'background' } },
-         -- { 'cc', function()
-         --    if vim.o.cursorcolumn == true then
-         --       vim.o.cursorcolumn = false
-         --    else
-         --       vim.o.cursorcolumn = true
-         --    end
-         -- end, { desc = 'cursor column' } },
-         -- { 'cx', function()
-         --    if vim.o.cursorline == true and vim.o.cursorcolumn then
-         --       vim.o.cursorline = false
-         --       vim.o.cursorcolumn = false
-         --    else
-         --       vim.o.cursorline = true
-         --       vim.o.cursorcolumn = true
-         --    end
-         -- end, { desc = 'cursor cross' } },
          { '<Esc>', nil, { exit = true } }
       }
    })
 end
 
--- Turn off highlight of recently searched text
--- keymap.set('n', '<Esc>', '<Cmd>nohlsearch<CR><Esc>')
 keymap.amend('n', '<Esc>', function(original)
-   local key = vim.api.nvim_replace_termcodes('<Plug>(clever-f-reset)', true, true, true) --[[@as string]]
+   local key = vim.api.nvim_replace_termcodes(
+      '<Plug>(clever-f-reset)', true, true, true) --[[@as string]]
    vim.api.nvim_feedkeys(key, 'x', false)
 
    if vim.v.hlsearch and vim.v.hlsearch == 1 then
@@ -397,14 +385,12 @@ keymap.set('n', 'Q', function()
    end
 end, { desc = 'close service window' })
 
-keymap.set('n', '<leader>j', function() require('trevj').format_at_cursor() end)
-
-Hydra({
+Hydra({ -- https://github.com/anuvyklack/hydra.nvim/issues/19
      name = "Move",
      mode = "n",
-     body = "<Space>z",
+     -- body = "<Space>z",
      config = {
-         debug = true,
+         -- debug = true,
          color = 'amaranth',
      },
      heads = {
