@@ -497,17 +497,17 @@ use { 'nvim-telescope/telescope.nvim', as = 'telescope',
 
 -- Visual tweaks ----------------------------------------------------------- {{{
 
-use { '~/code/neovim-plugins/pretty-fold.nvim', as = 'pretty-fold', --{{{
-   -- use { 'anuvyklack/pretty-fold.nvim', as = 'pretty-fold',
-   requires = 'keymap-amend',
-   config = function()
-      -- require('anuvyklack/pretty-fold')
-      require('pretty-fold/preview').setup()
-   end
-} --}}}
+-- use { '~/code/neovim-plugins/pretty-fold.nvim', as = 'pretty-fold', --{{{
+--    -- use { 'anuvyklack/pretty-fold.nvim', as = 'pretty-fold',
+--    requires = 'keymap-amend',
+--    config = function()
+--       require('anuvyklack/pretty-fold')
+--    end
+-- } --}}}
 
-use { 'kevinhwang91/nvim-ufo', as = 'ufo',
-   requires = 'kevinhwang91/promise-async' }
+use { 'kevinhwang91/nvim-ufo', as = 'ufo', requires = 'kevinhwang91/promise-async' }
+
+use { '~/code/neovim-plugins/fold-preview.nvim', requires = 'keymap-amend' }
 
 use { 'https://gitlab.com/yorickpeterse/nvim-pqf', as = 'pretty-quickfix', --{{{
    config = function() require('pqf').setup {
