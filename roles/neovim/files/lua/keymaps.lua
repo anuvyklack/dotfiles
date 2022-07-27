@@ -101,15 +101,33 @@ keymap.set('n', 'gb', choose_buffer)
 --  ^^^^^^focus  ^^   window  ^^  ^^_=_ equal^^   _b_: choose buffer
 -- ]]
 
+-- local window_hint = [[
+--  ^^^^^^^^^^^^     Move      ^^    Size   ^^   ^^     Split       ^^   Tabs
+--  ^^^^^^^^^^^^-------------  ^^-----------^^   ^^---------------  ^^----------
+--  ^ ^ _k_ ^ ^  ^ ^ _K_ ^ ^   ^   _<C-k>_   ^   _s_: horizontally  _t_: new tab 
+--  _h_ ^ ^ _l_  _H_ ^ ^ _L_   _<C-h>_ _<C-l>_   _v_: vertically
+--  ^ ^ _j_ ^ ^  ^ ^ _J_ ^ ^   ^   _<C-j>_   ^   _q_, _c_: close
+--  focus^^^^^^  window^^^^^^  ^_=_: equalize^   _z_: maximize
+--  ^ ^ ^ ^ ^ ^  ^ ^ ^ ^ ^ ^   ^^ ^          ^   _o_: remain only   _b_: buffers
+-- ]]
+
+-- local window_hint = [[
+--  ^^^^^^^^^^^^     Move      ^^    Size   ^^   ^^     Split       ^^   Tabs
+--  ^^^^^^^^^^^^-------------  ^^-----------^^   ^^---------------  ^^----------
+--  ^ ^ _k_ ^ ^  ^ ^ _K_ ^ ^   ^   _<C-k>_   ^   _s_: hor, _v_: vert  _t_: new tab 
+--  _h_ ^ ^ _l_  _H_ ^ ^ _L_   _<C-h>_ _<C-l>_   _q_, _c_: close
+--  ^ ^ _j_ ^ ^  ^ ^ _J_ ^ ^   ^   _<C-j>_   ^   _z_: maximize
+--  focus^^^^^^  window^^^^^^  ^_=_: equalize^   _o_: remain only   _b_: buffers
+-- ]]
+
 local window_hint = [[
  ^^^^^^^^^^^^     Move      ^^    Size   ^^   ^^     Split
- ^^^^^^^^^^^^-------------  ^^-----------^^   ^^---------------
- ^ ^ _k_ ^ ^  ^ ^ _K_ ^ ^   ^   _<C-k>_   ^   _s_: horizontally
- _h_ ^ ^ _l_  _H_ ^ ^ _L_   _<C-h>_ _<C-l>_   _v_: vertically
- ^ ^ _j_ ^ ^  ^ ^ _J_ ^ ^   ^   _<C-j>_   ^   _q_, _c_: close
- focus^^^^^^  window^^^^^^  ^_=_: equalize^   _z_: maximize
- ^ ^ ^ ^ ^ ^  ^ ^ ^ ^ ^ ^   ^^ ^          ^   _o_: remain only
- _b_: choose buffer
+ ^^^^^^^^^^^^-------------  ^^-----------^^   ^^--------------- 
+ ^ ^ _k_ ^ ^  ^ ^ _K_ ^ ^   ^   _<C-k>_   ^   _s_: hor, _v_: vert 
+ _h_ ^ ^ _l_  _H_ ^ ^ _L_   _<C-h>_ _<C-l>_   _q_, _c_: close
+ ^ ^ _j_ ^ ^  ^ ^ _J_ ^ ^   ^   _<C-j>_   ^   _z_: maximize
+ focus^^^^^^  window^^^^^^  ^_=_: equalize^   _o_: remain only
+ ^^^^^ _t_:  new tab^^^^^^  ^^ ^              _b_: buffers
 ]]
 
 local splits = prequire('smart-splits')
@@ -172,8 +190,8 @@ Hydra({ -- {{{
       { '<C-q>', cmd [[try | close | catch /^Vim\%((\a\+)\)\=:E444:/ | endtry]], { desc = false } },
       { '<C-c>', cmd [[try | close | catch /^Vim\%((\a\+)\)\=:E444:/ | endtry]], { desc = false } },
 
-      { 't', cmd 'tabnew', { desc = 'new tab'} },
-      { 'gt', cmd 'tabnext', { desc = 'new tab'} },
+      { 't', cmd 'tab split', { desc = 'new tab'} },
+      -- { 'gt', cmd 'tabnext', { desc = 'new tab'} },
 
       { '<Esc>', nil,  { exit = true, desc = false }}
    }
