@@ -20,7 +20,7 @@ if not pcall(require, 'impatient') then
 	print 'Failed to load impatient'
 end
 
--- Prequire {{{
+-- prequire {{{
 
 ---Protected `require` function
 ---@param module_name string

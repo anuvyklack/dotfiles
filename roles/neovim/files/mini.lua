@@ -1,3 +1,4 @@
+-- Mini-config file for debugging.  To use run from shell:
 -- nvim --clean -u mini.lua mini.lua
 
 vim.o.packpath = '~/.local/share/nvim/site'

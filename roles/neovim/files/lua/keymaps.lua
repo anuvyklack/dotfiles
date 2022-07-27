@@ -516,7 +516,7 @@ M.telescope = function() -- {{{
   🭅█ ▁     █🭐
   ██🬿      🭊██   _r_: resume      _u_: undotree
  🭋█🬝🮄🮄🮄🮄🮄🮄🮄🮄🬆█🭀  _h_: vim help    _c_: execute command
- 🭤🭒🬺🬹🬱🬭🬭🬭🬭🬵🬹🬹🭝🭙  _k_: keymaps     _;_: commands history
+ 🭤🭒🬺🬹🬱🬭🬭🬭🬭🬵🬹🬹🭝🭙  _k_: keymaps     _;_: commands history 
                  _O_: options     _?_: search history
  ^
                  _<Enter>_: Telescope           _<Esc>_
@@ -880,9 +880,6 @@ M.draw_diagrams = function() -- {{{
    })
 end -- }}}
 
--- Показать syntax group для участка кода, а также цвет этой группы.
--- Удобно при создании своей цветовой схемы
--- nnoremap <silent> <C-g> <cmd>TSHighlightCapturesUnderCursor<CR>
 keymap.set('n', '<C-g>', cmd 'TSHighlightCapturesUnderCursor')
 -- nnoremap <C-g> <cmd>call SyntaxAttr()<CR>
 
