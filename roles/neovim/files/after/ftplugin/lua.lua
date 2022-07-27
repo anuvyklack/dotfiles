@@ -169,20 +169,27 @@ local lua_ts_handler = function(virt_text, lnum, end_lnum, available_width, trun
    end
 
    local continue = true
-   for i, chunk in ipairs(virt_text) do
-      if i ~= #virt_text then
+   if #virt_text == 2 and is_empty(virt_text[1]) and is_comment(virt_text[2]) then
+      for _, chunk in ipairs(virt_text) do
          continue = add_chunk(chunk)
-      elseif #virt_text == 1 or not is_comment(chunk) then
-         continue = add_chunk(chunk) and
-                    add_chunk({' '..folded_sign..' ', 'Comment'}) and
-                    add_end_virt_text()
-      else
-         continue = add_chunk({folded_sign..' ', 'Comment'}) and
-                    add_end_virt_text() and
-                    add_chunk({' ', 'UfoFoldedFg'}) and
-                    add_chunk(chunk)
+         if not continue then break end
       end
-      if not continue then break end
+   else
+      for i, chunk in ipairs(virt_text) do
+         if i ~= #virt_text then
+            continue = add_chunk(chunk)
+         elseif #virt_text == 1 or not is_comment(chunk) then
+            continue = add_chunk(chunk) and
+                       add_chunk({' '..folded_sign..' ', 'Comment'}) and
+                       add_end_virt_text()
+         else
+            continue = add_chunk({folded_sign..' ', 'Comment'}) and
+                       add_end_virt_text() and
+                       add_chunk({' ', 'UfoFoldedFg'}) and
+                       add_chunk(chunk)
+         end
+         if not continue then break end
+      end
    end
 
    if nvrt_width < original_text_with then
