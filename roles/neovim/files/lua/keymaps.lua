@@ -1,25 +1,387 @@
---  ██                           ██      ██              ██ ██
--- ░██                          ░██     ░░              ░██░░
--- ░██   ██  █████  ██   ██     ░██████  ██ ██████   ██████ ██ ██████   ██████  ██████
--- ░██  ██  ██░░░██░██  ░██     ░██░░░██░██░██░░░██ ██░░░██░██░██░░░██ ██░░░██ ██░░░░
--- ░█████  ░███████░██  ░██     ░██  ░██░██░██  ░██░██  ░██░██░██  ░██░██  ░██░░█████
--- ░██░░██ ░██░░░░ ░░██████     ░██  ░██░██░██  ░██░██  ░██░██░██  ░██░░██████ ░░░░░██
--- ░██ ░░██░░█████  ░░░░░██     ░██████ ░██░██  ░██░░██████░██░██  ░██ ░░░░░██ ██████
--- ░░   ░░  ░░░░░    █████      ░░░░░░  ░░ ░░   ░░  ░░░░░░ ░░ ░░   ░░   █████ ░░░░░░
---                  ░░░░░                                              ░░░░░
-
+--  ██
+-- ░██
+-- ░██   ██  █████  ██   ██ ██████████   █████   ██████   ██████
+-- ░██  ██  ██░░░██░██  ░██░░██░░██░░██ ░░░░░██ ░██░░░██ ██░░░░
+-- ░█████  ░███████░██  ░██ ░██ ░██ ░██  ██████ ░██  ░██░░█████
+-- ░██░░██ ░██░░░░ ░░██████ ░██ ░██ ░██ ██░░░██ ░██████  ░░░░░██
+-- ░██ ░░██░░█████  ░░░░░██ ███ ░██ ░██░░███████░██░░░   ██████
+-- ░░   ░░  ░░░░░    █████ ░░░  ░░  ░░  ░░░░░░░ ░██     ░░░░░░
+--                  ░░░░░                       ░░
 local M = {}
-local util = require('util')
-local prequire = util.prequire
 local Hydra = prequire("hydra")
+local util = require('util')
 local keymap = util.keymap
 keymap.amend = prequire('keymap-amend')
-local cmd = keymap.cmd
 local which_key = util.which_key
 local telescope_pickers = require('anuvyklack/telescope/pickers')
 
-M.lsp = function(bufnr)
-   local opts = setmetatable({ buffer = bufnr },{
+---@param command string
+---@return string `<Cmd>..command..<CR>`
+local function cmd(command)
+   return table.concat({ '<Cmd>', command, '<CR>' })
+end
+
+-- Move to the beginning / end of a line with "Shift + h/l"
+keymap.set({'n','x','o'}, 'H', '^', { remap = true })
+keymap.set({'n','x','o'}, 'L', '$', { remap = true })
+
+keymap.set('x', '$', function() -- {{{
+   -- xnoremap <expr> $ mode() == 'v' ? '$h' : '$'
+   local mode = vim.api.nvim_get_mode().mode
+   if mode == 'v' then return '$h' else return '$' end
+end, { expr = true }) -- }}}
+
+keymap.set('n', 'gJ', function() require('trevj').format_at_cursor() end)
+
+-- keymap.set('n', 'k', function() return vim.v.count > 0 and 'k' or 'gk' end,
+--                      { expr = true, desc = 'k or gk' })
+-- keymap.set('n', 'j', function() return vim.v.count > 0 and 'j' or 'gj' end,
+--                      { expr = true, desc = 'j or gj' })
+
+-- Buffers and windows managment {{{
+
+-- Keys with '<', '>': move to previous/next
+keymap.set('n', '<A-,>', cmd 'BufferPrevious')
+keymap.set('n', '<A-.>', cmd 'BufferNext')
+
+local buffer_hydra = Hydra({ -- {{{
+   -- name = 'Buffer',
+   name = 'Barbar',
+   config = {
+      -- debug = true,
+      on_key = function()
+         -- Execute async functions synchronously to preserve animation.
+         vim.wait(200, function() vim.cmd 'redraw' end, 30, false)
+      end,
+      -- color = 'amaranth',
+      -- hint = false,
+      hint = {
+         -- type = 'cmdline',
+         show_name = false
+      },
+      -- timeout = 2000,
+   },
+   heads = {
+      { 'h', function() vim.cmd 'BufferPrevious' end, { on_key = false } },
+      { 'l', function() vim.cmd 'BufferNext' end, { desc = 'choose', on_key = false } },
+
+      { 'H', function() vim.cmd 'BufferMovePrevious' end },
+      { 'L', function() vim.cmd 'BufferMoveNext' end, { desc = 'move' } },
+
+      { 'p', function() vim.cmd 'BufferPin' end, { desc = 'pin' } },
+
+      { 'd', function() vim.cmd 'BufferClose' end, { desc = 'close' } },
+      { 'c', function() vim.cmd 'BufferClose' end, { desc = false } },
+      { 'q', function() vim.cmd 'BufferClose' end, { desc = false } },
+
+      -- { 's', function() vim.cmd 'BufferPick' end, { exit = true, desc = 'pick buffer' } },
+      { 'b',  function() vim.cmd 'BufExplorer' end, { exit = true, desc = 'Explorer' } },
+      { 'od', function() vim.cmd 'BufferOrderByDirectory' end, { desc = 'by directory' } },
+      { 'ol', function() vim.cmd 'BufferOrderByLanguage' end,  { desc = 'by language' } },
+      { '<Esc>', nil, { exit = true } }
+   }
+}) -- }}}
+
+local function choose_buffer()
+   if #vim.fn.getbufinfo({ buflisted = true }) > 1 then
+      buffer_hydra:activate()
+   else
+      vim.cmd('BufExplorer')
+   end
+end
+
+keymap.set('n', 'gb', choose_buffer)
+
+--    local window_hint = [[
+--  ^^^^^       Move       ^^^^^  ^^^ Size  ^^^   ^^     Split
+--  ^^^^^------------------^^^^^  ^^^-------^^^   ^^----------------
+--  ^ ^ _k_ ^ ^  ^   _<C-k>_   ^   ^ ^ _K_ ^ ^    _s_: horizontally
+--  _h_ ^ ^ _l_  _<C-h>_ _<C-l>_   _H_ ^ ^ _L_    _v_: vertically
+--  ^ ^ _j_ ^ ^  ^   _<C-j>_   ^   ^ ^ _J_ ^ ^    _q_, _c_: close
+--  ^^^^^^focus  ^^   window  ^^  ^^_=_ equal^^   _b_: choose buffer
+-- ]]
+
+local window_hint = [[
+ ^^^^^^^^^^^^     Move      ^^    Size   ^^   ^^     Split
+ ^^^^^^^^^^^^-------------  ^^-----------^^   ^^---------------
+ ^ ^ _k_ ^ ^  ^ ^ _K_ ^ ^   ^   _<C-k>_   ^   _s_: horizontally
+ _h_ ^ ^ _l_  _H_ ^ ^ _L_   _<C-h>_ _<C-l>_   _v_: vertically
+ ^ ^ _j_ ^ ^  ^ ^ _J_ ^ ^   ^   _<C-j>_   ^   _q_, _c_: close
+ focus^^^^^^  window^^^^^^  ^_=_: equalize^   _z_: maximize
+ ^ ^ ^ ^ ^ ^  ^ ^ ^ ^ ^ ^   ^^ ^          ^   _o_: remain only
+ _b_: choose buffer
+]]
+
+local splits = prequire('smart-splits')
+
+-- local function resize_cur_win(offset)
+--    vim.fn.win_move_separator(0, offset)
+-- end
+
+Hydra({ -- {{{
+   name = 'Windows',
+   hint = window_hint,
+   config = {
+      -- debug = true,
+      invoke_on_body = true,
+      -- timeout = 4000,
+      hint = {
+         -- type = 'window',
+         border = 'rounded',
+         -- offset = -1
+      }
+   },
+   mode = 'n',
+   body = '<C-w>',
+   heads = {
+      { 'h', '<C-w>h' },
+      { 'j', '<C-w>j' },
+      { 'k', cmd [[try | wincmd k | catch /^Vim\%((\a\+)\)\=:E11:/ | close | endtry]] },
+      { 'l', '<C-w>l' },
+
+      { 'H', cmd 'WinShift left' },
+      { 'J', cmd 'WinShift down' },
+      { 'K', cmd 'WinShift up' },
+      { 'L', cmd 'WinShift right' },
+
+      { '<C-h>', function() splits.resize_left(2)  end },
+      { '<C-j>', function() splits.resize_down(2)  end },
+      { '<C-k>', function() splits.resize_up(2)    end },
+      { '<C-l>', function() splits.resize_right(2) end },
+
+      { '=', '<C-w>=', { desc = 'equalize'} },
+
+      { 's', '<C-w>s' }, { '<C-s>', '<C-w><C-s>', { desc = false } },
+      { 'v', '<C-w>v' }, { '<C-v>', '<C-w><C-v>', { desc = false } },
+
+      { 'w',     '<C-w>w', { exit = true, desc = false } },
+      { '<C-w>', '<C-w>w', { exit = true, desc = false } },
+
+      { 'z', cmd 'MaximizerToggle!', { desc = 'maximize' } },
+      { '<C-z>', cmd 'MaximizerToggle!', { exit = true, desc = false } },
+
+      { 'o', '<C-w>o', { exit = true, desc = 'remain only' } },
+      { '<C-o>', '<C-w>o', { exit = true, desc = false } },
+
+      -- { 'p', require('nvim-window').pick, { desc = 'pick window' }},
+
+      { 'b', choose_buffer, { exit = true, desc = 'choose buffer' } },
+
+      { 'c', cmd [[try | close | catch /^Vim\%((\a\+)\)\=:E444:/ | endtry]] },
+      { 'q', cmd [[try | close | catch /^Vim\%((\a\+)\)\=:E444:/ | endtry]], { desc = 'close window' } },
+      { '<C-q>', cmd [[try | close | catch /^Vim\%((\a\+)\)\=:E444:/ | endtry]], { desc = false } },
+      { '<C-c>', cmd [[try | close | catch /^Vim\%((\a\+)\)\=:E444:/ | endtry]], { desc = false } },
+
+      { 't', cmd 'tabnew', { desc = 'new tab'} },
+      { 'gt', cmd 'tabnext', { desc = 'new tab'} },
+
+      { '<Esc>', nil,  { exit = true, desc = false }}
+   }
+}) -- }}}
+
+-- }}}
+
+Hydra({ -- Side-scroll {{{
+   name = 'Side scroll',
+   config = {
+      -- debug = true,
+      -- timeout = 2000,
+      hint = false
+      -- hint = 'statusline'
+   },
+   mode = 'n',
+   body = 'z',
+   heads = {
+      { 'h', '5zh' },
+      { 'l', '5zl', { desc = '←/→' } },
+      { 'H', 'zH' },
+      { 'L', 'zL', { desc = 'half screen ←/→' } },
+   }
+}) -- }}}
+
+Hydra({ -- Quick words {{{
+   name = 'Quick words',
+   config = {
+      -- debug = true,
+      color = 'pink',
+      -- hint = false,
+      hint = {
+         show_name = false
+      },
+      timeout = 6000,
+   },
+   mode = {'n','x','o'},
+   body = ',',
+   heads = {
+      { 'w',  '<Plug>(smartword-w)'  },
+      { 'b',  '<Plug>(smartword-b)'  },
+      { 'e',  '<Plug>(smartword-e)'  },
+      { 'ge', '<Plug>(smartword-ge)' },
+      { '<Esc>', nil, { exit = true, mode = 'n' } }
+   }
+}) -- }}}
+
+-- Options hydra {{{
+local options_hint = [[
+  ^ ^        Options
+  ^
+  _v_ %{ve} virtual edit
+  _i_ %{list} invisible characters  
+  _s_ %{spell} spell
+  _w_ %{wrap} wrap
+  _c_ %{cul} cursor line
+  _n_ %{nu} number
+  _r_ %{rnu} relative number
+  ^
+       ^^^^                _<Esc>_
+]]
+
+Hydra({ -- {{{
+   name = 'Options',
+   hint = options_hint,
+   config = {
+      -- debug = true,
+      color = 'amaranth',
+      -- color = 'pink',
+      invoke_on_body = true,
+      hint = {
+         -- functions = func,
+         border = 'rounded',
+         position = 'middle'
+      }
+   },
+   mode = {'n','x'},
+   body = '<leader>o',
+   heads = {
+      -- { 'n', cmd 'set number!', { desc = 'number' } },
+      { 'n', function() -- {{{
+         if vim.o.number == true then
+            vim.o.number = false
+         else
+            vim.o.number = true
+         end
+      end, { desc = 'number' } }, -- }}}
+      { 'r', function() -- {{{
+         if vim.o.relativenumber == true then
+            vim.o.relativenumber = false
+         else
+            vim.o.number = true
+            vim.o.relativenumber = true
+         end
+      end, { desc = 'relativenumber' } }, -- }}}
+      { 'v', function() -- {{{
+         if vim.o.virtualedit == 'all' then
+            vim.o.virtualedit = 'block'
+         else
+            vim.o.virtualedit = 'all'
+         end
+      end, { desc = 'virtualedit' } }, -- }}}
+      { 'i', function() -- {{{
+         if vim.o.list == true then
+            vim.o.list = false
+         else
+            vim.o.list = true
+         end
+      end, { desc = 'show invisible' } }, -- }}}
+      { 's', function() -- {{{
+         if vim.o.spell == true then
+            vim.o.spell = false
+         else
+            vim.o.spell = true
+         end
+      end, { exit = true, desc = 'spell' } }, -- }}}
+      { 'w', function() -- {{{
+         if vim.o.wrap ~= true then
+            vim.o.wrap = true
+            -- Dealing with word wrap:
+            -- If cursor is inside very long line in the file than wraps
+            -- around several rows on the screen, then 'j' key moves you to
+            -- the next line in the file, but not to the next row on the
+            -- screen under your previous position as in other editors. These
+            -- bindings fixes this.
+            vim.keymap.set('n', 'k', function() return vim.v.count > 0 and 'k' or 'gk' end,
+                                     { expr = true, desc = 'k or gk' })
+            vim.keymap.set('n', 'j', function() return vim.v.count > 0 and 'j' or 'gj' end,
+                                     { expr = true, desc = 'j or gj' })
+         else
+            vim.o.wrap = false
+            vim.keymap.del('n', 'k')
+            vim.keymap.del('n', 'j')
+         end
+      end, { desc = 'wrap' } }, -- }}}
+      { 'c', function() -- {{{
+         if vim.o.cursorline == true then
+            vim.o.cursorline = false
+         else
+            vim.o.cursorline = true
+         end
+      end, { desc = 'cursor line' } },
+      { '<Esc>', nil, { exit = true } } -- }}}
+   }
+}) -- }}}
+-- }}}
+
+keymap.amend('n', '<Esc>', function(original) -- {{{
+   local key = vim.api.nvim_replace_termcodes(
+      '<Plug>(clever-f-reset)', true, true, true) --[[@as string]]
+   vim.api.nvim_feedkeys(key, 'x', false)
+
+   if vim.v.hlsearch and vim.v.hlsearch == 1 then
+      vim.cmd 'nohlsearch'
+   end
+   original()
+end, { desc = 'disable search highlight' }) -- }}}
+
+keymap.set('n', 'Q', function() -- {{{
+   -- Close command line window
+   if vim.fn.bufexists("[Command Line]") ~= 0 then
+      vim.cmd 'close'
+      return
+   end
+
+   -- Close preview window
+   for _, winnr in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+      if vim.wo[winnr].previewwindow then
+         vim.cmd 'pclose'
+         return
+      end
+   end
+
+   -- Close quickfix window
+   for _, winnr in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+      -- for _, ft in ipairs({'qf', 'quickfix'}) do
+      for _, ft in ipairs({'qf', 'quickfix', 'help'}) do
+         local bufnr = vim.api.nvim_win_get_buf(winnr)
+         if vim.bo[bufnr].buftype == ft then
+            vim.api.nvim_win_close(winnr, false)
+            return
+         end
+      end
+   end
+
+   -- for _, winnr in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+   --    local bufnr = vim.api.nvim_win_get_buf(winnr)
+   --    if vim.bo[bufnr].filetype == 'help' then
+   --       vim.cmd 'helpclose'
+   --       return
+   --    end
+   -- end
+
+   if #vim.api.nvim_tabpage_list_wins(0) == 2 then
+      local wins = vim.api.nvim_tabpage_list_wins(0) ---@type integer[]
+      local cur_win = vim.api.nvim_get_current_win()
+      wins = vim.tbl_filter(function(w)
+         if w ~= cur_win then
+            return true
+         end
+      end, wins) --[[@as integer[] ]]
+      local win = wins[1]
+      vim.api.nvim_win_close(win, false)
+   end
+end, { desc = 'close service window' }) -- }}}
+
+M.lsp = function(bufnr) -- {{{
+   local opts = setmetatable({ buffer = bufnr },{ -- {{{
       __call = function(self, input)
          local opts = vim.deepcopy(self)
          for key, value in pairs(input) do
@@ -27,7 +389,7 @@ M.lsp = function(bufnr)
          end
          return opts
       end
-   })
+   }) -- }}}
 
    keymap.set('n', 'gd', vim.lsp.buf.definition,     opts{ desc = 'LSP go to definition' })
    keymap.set('n', 'gD', vim.lsp.buf.declaration,    opts{ desc = 'LSP go to declaration' })
@@ -50,7 +412,7 @@ M.lsp = function(bufnr)
  _v_ Vista
 ]]
 
-   Hydra {
+   Hydra { -- {{{
       name = 'LSP',
       hint = hint,
       config = {
@@ -89,7 +451,7 @@ M.lsp = function(bufnr)
          { 'v', cmd 'Vista nvim_lsp', { desc = 'Vista' } },
          { '<Esc>', nil, { exit = true } }
       }
-   }
+   } -- }}}
 
    -- -- Workspace
    -- which_key.name('n', '<leader>lw', 'workspace')
@@ -99,13 +461,13 @@ M.lsp = function(bufnr)
    -- keymap.set('n', '<leader>lwa', vim.lsp.buf.add_workspace_folder,    opts{ desc = 'add workspace folder' })
    -- keymap.set('n', '<leader>lwr', vim.lsp.buf.remove_workspace_folder, opts{ desc = 'remove workspace folder' })
 
-end
+end -- }}}
 
-M.telescope = function()
+M.telescope = function() -- {{{
 
-   local hint; do
+   -- hint {{{
 
-   -- hint = [[
+--    local hint = [[
 --  ^ ^             ^ ^             🭇🬭🬭🬭🬭🬭🬭🬭🬭🬼
 --  ^ ^             ^ ^            🭉🭁🭠🭘    🭣🭕🭌🬾
 --  ^ ^             ^ ^            🭅█ ▁     █🭐
@@ -120,7 +482,7 @@ M.telescope = function()
 --  ^ ^              ^ ^        _<Enter>_: Telescope       ^ ^            _<Esc>_
 -- ]]
 
-   -- hint = [[
+--    local hint = [[
 --    🭇🬭🬭🬭🬭🬭🬭🬭🬭🬼
 --   🭉🭁🭠🭘    🭣🭕🭌🬾  _f_: files       _m_: marks            _h_: vim help   _c_: execute command
 --   🭅█ ▁     █🭐  _o_: old files   _g_: live grep        _k_: keymap     _;_: commands history
@@ -129,22 +491,22 @@ M.telescope = function()
 --  🭤🭒🬺🬹🬱🬭🬭🬭🬭🬵🬹🬹🭝🭙 ^ ^              ^ ^        _<Enter>_: Telescope       ^ ^            _<Esc>_
 -- ]]
 
-   hint = [[
+   local hint = [[
                  _f_: files       _m_: marks
    🭇🬭🬭🬭🬭🬭🬭🬭🬭🬼    _o_: old files   _g_: live grep
   🭉🭁🭠🭘    🭣🭕🭌🬾   _p_: projects    _/_: search in file
   🭅█ ▁     █🭐
   ██🬿      🭊██   _r_: resume      _u_: undotree
  🭋█🬝🮄🮄🮄🮄🮄🮄🮄🮄🬆█🭀  _h_: vim help    _c_: execute command
- 🭤🭒🬺🬹🬱🬭🬭🬭🬭🬵🬹🬹🭝🭙  _k_: keymaps     _;_: commands history 
+ 🭤🭒🬺🬹🬱🬭🬭🬭🬭🬵🬹🬹🭝🭙  _k_: keymaps     _;_: commands history
                  _O_: options     _?_: search history
  ^
                  _<Enter>_: Telescope           _<Esc>_
 ]]
 
-   end
+   -- }}}
 
-   Hydra({
+   Hydra({ -- {{{
       name = 'Telescope',
       hint = hint,
       config = {
@@ -190,12 +552,12 @@ M.telescope = function()
          { '<Enter>', cmd 'Telescope', { exit = true, desc = 'list all pickers' } },
          { '<Esc>', nil, { exit = true, nowait = true } },
       }
-   })
+   }) -- }}}
 
    keymap.set('n', 'z=', cmd 'Telescope spell_suggest', { desc = 'spell Suggest' })
-end
+end -- }}}
 
-M.gitsigns = function(bufnr)
+M.gitsigns = function(bufnr) -- {{{
    local gitsigns = prequire('gitsigns')
 
    local hint = [[
@@ -206,7 +568,7 @@ M.gitsigns = function(bufnr)
  ^ ^              _<Enter>_: Neogit              _q_: exit
 ]]
 
-   -- Hydra({
+   -- Hydra({ -- {{{
    --    name = 'Git',
    --    hint = hint,
    --    config = {
@@ -284,9 +646,9 @@ M.gitsigns = function(bufnr)
    --       { 'q', nil, { exit = true, nowait = true, desc = 'exit' } },
    --       -- { '<Esc>', nil, { exit = true, desc = 'exit' } }
    --    }
-   -- })
+   -- }) -- }}}
 
-   Hydra({
+   Hydra({ -- {{{
       name = 'Git',
       hint = hint,
       config = {
@@ -310,7 +672,7 @@ M.gitsigns = function(bufnr)
             vim.cmd 'loadview'
             vim.api.nvim_win_set_cursor(0, cursor_pos)
             -- vim.api.nvim_feedkeys('zv', '', false)
-            vim.api.nvim_input('zv')
+            vim.cmd 'normal zv'
             gitsigns.toggle_signs(false)
             gitsigns.toggle_linehl(false)
             gitsigns.toggle_deleted(false)
@@ -354,11 +716,11 @@ M.gitsigns = function(bufnr)
          { 'q', nil, { exit = true, nowait = true, desc = 'exit' } },
          -- { '<Esc>', nil, { exit = true, desc = 'exit' } }
       }
-   })
+   }) -- }}}
 
-end
+end -- }}}
 
-M.hop = function()
+M.hop = function() -- {{{
    keymap.set({'n','x'}, ';w', cmd 'HopWordAC', { desc = 'Easymotion forward word' })
    keymap.set({'n','x'}, ';b', cmd 'HopWordBC', { desc = 'Easymotion bacward word' })
 
@@ -368,19 +730,19 @@ M.hop = function()
    keymap.set({'n','x'}, 's', cmd 'HopChar1', { desc = 'Easymotion char' })
 
    keymap.set('n', 't', cmd 'HopChar2', { desc = 'Easymotion 2 chars' })
-end
+end -- }}}
 
-M.easy_align = function()
+M.easy_align = function() -- {{{
    -- n : interactive EasyAlign for a motion/text object (e.g. gaip)
    -- x : interactive EasyAlign in visual mode (e.g. vipga)
    keymap.set({'n','x'}, '<leader>a', '<Plug>(EasyAlign)')
-end
+end -- }}}
 
-M.iswap = function()
+M.iswap = function() -- {{{
    keymap.set({'n','x'}, 'gs', cmd 'ISwap')
-end
+end -- }}}
 
-M.luasnip = function()
+M.luasnip = function() -- {{{
    local luasnip = prequire('luasnip')
 
    keymap.amend('n', '<Tab>', function(original)
@@ -416,18 +778,18 @@ M.luasnip = function()
       end
    end)
 
-end
+end -- }}}
 
-M.asterisks = function()
+M.asterisks = function() -- {{{
    keymap.set('', '*', '<Plug>(asterisk-z*)')
    keymap.set('', '#', '<Plug>(asterisk-z#)')
    -- keymap.set('', 'g*', '<Plug>(asterisk-gz*)', { desc = ':help gstar' })
    -- keymap.set('', 'g#', '<Plug>(asterisk-gz#)', { desc = ':help g#' })
    keymap.set('', 'g*', '<Plug>(asterisk-gz*)', { desc = 'which_key_ignore' })
    keymap.set('', 'g#', '<Plug>(asterisk-gz#)', { desc = 'which_key_ignore' })
-end
+end -- }}}
 
-M.knap = function()
+M.knap = function() -- {{{
    local knap = require('knap')
 
    -- F5 processes the document once, and refreshes the view
@@ -451,19 +813,19 @@ M.knap = function()
          { '<Esc>' }
       }
    })
-end
+end -- }}}
 
-M.neo_tree = function()
+M.neo_tree = function() -- {{{
    -- keymap.set('n', [[\]], cmd 'Neotree reveal', { desc = 'File-explorer' })
    keymap.set('n', '<F3>', cmd 'Neotree toggle reveal', { desc = 'File-tree' })
-end
+end -- }}}
 
-M.nnn = function()
+M.nnn = function() -- {{{
    keymap.set('n', '<F4>', cmd 'NnnPicker', { desc = 'nnn' })
    -- keymap.set(n, '<F3>', cmd 'NnnExplorer', { desc = 'Open file-explorer' })
-end
+end -- }}}
 
-M.draw_diagrams = function()
+M.draw_diagrams = function() -- {{{
 
    local hint = [[
  Arrow^^^^^^   Select region with <C-v> 
@@ -471,7 +833,6 @@ M.draw_diagrams = function()
  _H_ ^ ^ _L_
  ^ ^ _J_ ^ ^                      _<Esc>_
 ]]
-
 
    Hydra({
       name = 'Draw Diagram',
@@ -499,8 +860,14 @@ M.draw_diagrams = function()
          { '<Esc>', nil, { exit = true } },
       }
    })
-end
+end -- }}}
+
+-- Показать syntax group для участка кода, а также цвет этой группы.
+-- Удобно при создании своей цветовой схемы
+-- nnoremap <silent> <C-g> <cmd>TSHighlightCapturesUnderCursor<CR>
+keymap.set('n', '<C-g>', cmd 'TSHighlightCapturesUnderCursor')
+-- nnoremap <C-g> <cmd>call SyntaxAttr()<CR>
 
 return M
 
--- vim: fml=1
+-- vim: fdm=marker fml=1

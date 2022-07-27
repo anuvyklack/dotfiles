@@ -1,5 +1,4 @@
 local api = vim.api
-local prequire = require('util').prequire
 local cmp = require 'cmp'
 local cmp_types = require 'cmp.types'
 local cmp_str = require 'cmp.utils.str'

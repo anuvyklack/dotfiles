@@ -161,7 +161,7 @@ require('nvim-tree').setup {
    },
 }
 
-require('keybindings').nvim_tree()
+require('keymaps').nvim_tree()
 
 -- vim.cmd [[
 -- autocmd BufEnter * ++nested if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif

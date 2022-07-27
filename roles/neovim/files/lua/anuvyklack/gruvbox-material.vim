@@ -156,9 +156,8 @@ highlight! link LspSignatureActiveParameter WarningMsg
 " {'guifgs': ['#c475c1', '#8ab7d8', '#98c369', '#ffff70', '#ea9d70', '#971717'] }
 " {'guifgs': ['#f28534', '#f2594b', '#80aa9e', '#e9b143', '#b0b846', '#d3869b'] }
 
-
 lua << EOF
-require'nvim-treesitter.configs'.setup {
+prequire('nvim-treesitter.configs').setup {
    rainbow = {
       colors = {
          '#f28534', '#80aa9e', '#e9b143', '#b0b846', '#d3869b', '#f2594b'

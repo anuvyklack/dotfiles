@@ -33,4 +33,4 @@ nnn.setup({
 
 -- WARNING
 -- Some keybindings are in the ~/.config/nvim/after/ftplugin/nnn.vim
-require('keybindings').nnn()
+require('keymaps').nnn()

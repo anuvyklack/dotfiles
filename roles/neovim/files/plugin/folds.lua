@@ -41,7 +41,8 @@ vim.api.nvim_create_autocmd('BufRead', {
          once = true,
          callback = function()
             vim.defer_fn(function()
-               vim.api.nvim_feedkeys('zM', 'm', false)
+               -- vim.api.nvim_feedkeys('zM', 'm', false)
+               vim.cmd 'normal zM'
             end, 70)
          end
       })

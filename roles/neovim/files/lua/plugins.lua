@@ -14,7 +14,7 @@ local use = packer.use
 local join_paths = require('packer.util').join_paths
 
 packer.init { --{{{
-   compile_path = join_paths(vim.fn.stdpath('config'), 'plugin', '1_packer_compiled.lua'),
+   compile_path = join_paths(vim.fn.stdpath('config'), 'lua', PackerCompiled..'.lua'),
    display = {
       -- open_cmd = '90vnew [packer]',  -- set the width of the packer split
       open_fn = function()
@@ -124,8 +124,8 @@ use { 'nvim-treesitter/nvim-treesitter', as = 'treesitter',
    requires = {
       { 'nvim-treesitter/nvim-treesitter-textobjects', as = 'treesitter-textobjects' },
       { 'RRethy/nvim-treesitter-textsubjects', as = 'treesitter-textsubjects' },
-   --    -- {'nvim-treesitter/nvim-treesitter-refactor',    as = 'treesitter-refactor'},
-   --    -- {'romgrk/nvim-treesitter-context',              as = 'treesitter-context'},
+      -- {'nvim-treesitter/nvim-treesitter-refactor',    as = 'treesitter-refactor'},
+      -- {'romgrk/nvim-treesitter-context',              as = 'treesitter-context'},
       { 'JoosepAlviste/nvim-ts-context-commentstring', as = 'treesitter-context-commentstring' },
       { 'p00f/nvim-ts-rainbow', as = 'treesitter-rainbow' },
    },
@@ -139,13 +139,13 @@ use { 'mizlan/iswap.nvim',
       require('iswap').setup {
          autoswap = true
       }
-      require('keybindings').iswap()
+      require('keymaps').iswap()
    end
 }
 
 use { 'nvim-treesitter/playground', as = 'treesitter-playground',
    requires = 'treesitter',
-   cmd = 'TSPlaygroundToggle'
+   cmd = { 'TSPlaygroundToggle', 'TSHighlightCapturesUnderCursor' }
 }
 --}}}
 
@@ -168,7 +168,7 @@ use { 'hrsh7th/nvim-cmp', -- {{{
          config = function()
             require("luasnip.loaders.from_vscode").lazy_load()
             require('anuvyklack/luasnip')
-            require('keybindings').luasnip()
+            require('keymaps').luasnip()
          end },
       { 'onsails/lspkind-nvim', -- Icons in completion menu.
          config = function() require('anuvyklack/lspkind') end },
@@ -231,24 +231,23 @@ use 'RRethy/vim-illuminate' -- Highlight all other words the same as under the c
 --    end
 -- } --}}}
 
-use { 'rmagatti/goto-preview', -- {{{
-   config = function()
-      require('goto-preview').setup {
-         default_mappings = true,
-         post_open_hook = function(bufnr, winnr)
-            vim.api.nvim_create_autocmd('WinLeave', {
-               callback = function() vim.api.nvim_win_close(winnr, false) end,
-               buffer = bufnr,
-               once = true
-            })
-
-            vim.keymap.set('n', '<Esc>', function()
-               vim.api.nvim_win_close(winnr, false)
-            end, { buffer = bufnr })
-         end
-      }
-   end
-} -- }}}
+-- use { 'rmagatti/goto-preview', -- {{{
+--    config = function()
+--       require('goto-preview').setup {
+--          default_mappings = true,
+--          post_open_hook = function(bufnr, winnr)
+--             vim.api.nvim_create_autocmd('WinLeave', {
+--                callback = function() vim.api.nvim_win_close(winnr, false) end,
+--                buffer = bufnr,
+--                once = true
+--             })
+--             vim.keymap.set('n', '<Esc>', function()
+--                vim.api.nvim_win_close(winnr, false)
+--             end, { buffer = bufnr })
+--          end
+--       }
+--    end
+-- } -- }}}
 
 -- use { 'kosayoda/nvim-lightbulb', as = 'lightbulb', --{{{
 --    requires = { 'antoinemadec/FixCursorHold.nvim' },
@@ -354,6 +353,18 @@ use { 'jlanzarotta/bufexplorer', --{{{
    end
 } --}}}
 
+-- use { 'ghillb/cybu.nvim',
+--   branch = 'main',
+--   requires = 'kyazdani42/nvim-web-devicons',
+--   config = function()
+--     require('cybu').setup()
+--     vim.keymap.set('n', 'K', '<Plug>(CybuPrev)')
+--     vim.keymap.set('n', 'J', '<Plug>(CybuNext)')
+--     vim.keymap.set({'n','v'}, '<C-S-Tab>', '<Plug>(CybuLastusedPrev)')
+--     vim.keymap.set({'n','v'}, '<C-Tab>', '<Plug>(CybuLastusedNext)')
+--   end,
+-- }
+
 use 'sindrets/winshift.nvim'
 use 'mrjones2014/smart-splits.nvim'
 use { 'https://gitlab.com/yorickpeterse/nvim-window.git' }
@@ -366,7 +377,9 @@ use { 'szw/vim-maximizer', -- {{{
    end
 } -- }}}
 
- use 'luukvbaal/stabilize.nvim'
+use { 'luukvbaal/stabilize.nvim',
+	config = function() require("stabilize").setup() end
+}
 
 -- use { 'beauwilliams/focus.nvim', --{{{
 --    -- cmd = { "FocusSplitNicely", "FocusSplitCycle" }, module = "focus",
@@ -447,7 +460,7 @@ use { 'phaazon/hop.nvim', -- {{{
          keys = 'asdghklqwertyuiopzxcvfjbn',
          uppercase_labels = false, -- Display labels as uppercase.
       }
-      require('keybindings').hop()
+      require('keymaps').hop()
    end
 } -- }}}
 
@@ -481,11 +494,11 @@ use { 'nvim-telescope/telescope.nvim', as = 'telescope',
    },
    config = function()
       require 'anuvyklack/telescope'
-      require('keybindings').telescope()
+      require('keymaps').telescope()
    end
    -- config = function()
    --    require('telescope').setup{}
-   --    -- require('anuvyklack/keybindings').telescope()
+   --    -- require('keymaps').telescope()
    -- end
 }
 
@@ -556,7 +569,7 @@ use { 'norcalli/nvim-colorizer.lua', as = 'colorizer', --{{{
 -- }
 
 use { 'nvim-neo-tree/neo-tree.nvim',
-   -- branch = 'v2.x',
+   branch = 'v2.x',
    requires = {
       'nvim-lua/plenary.nvim',
       'kyazdani42/nvim-web-devicons',
@@ -628,7 +641,7 @@ use { 'lewis6991/gitsigns.nvim', as = 'gitsigns', --{{{
          numhl      = false, -- :Gitsigns toggle_numhl
          linehl     = false, -- :Gitsigns toggle_linehl
          word_diff  = false, -- :Gitsigns toggle_word_diff
-         on_attach = require('keybindings').gitsigns
+         on_attach = require('keymaps').gitsigns
       }
    end
 } --}}}
@@ -739,7 +752,7 @@ use { 'tpope/vim-surround', as = 'surround', requires = 'tpope/vim-repeat' }
 use { 'haya14busa/vim-asterisk', as = 'asterisk', --{{{
    config = function()
       vim.g['asterisk#keeppos'] = 0 -- Keep cursor position inside word between jumps.
-      require('keybindings').asterisks()
+      require('keymaps').asterisks()
    end
 } --}}}
 
@@ -752,7 +765,7 @@ use { 'AckslD/nvim-trevJ.lua', -- {{{
 } -- }}}
 
 use { 'junegunn/vim-easy-align', as = 'easy-align',
-   config = function() require('keybindings').easy_align() end }
+   config = function() require('keymaps').easy_align() end }
 
 -- Marks
 -- use 'kshenoy/vim-signature'  -- display and navigate marks
@@ -815,7 +828,7 @@ use { 'mg979/vim-visual-multi', as = 'multiple-cursors' }
 
 use { 'jbyuki/venn.nvim', -- Draw ASCII diagrams {{{
    config = function()
-      require('keybindings').draw_diagrams()
+      require('keymaps').draw_diagrams()
    end
 } -- }}}
 
@@ -825,7 +838,7 @@ use { 'frabjous/knap', --{{{
       vim.g.knap_settings = {
          mdtohtml = "pandoc --standalone %docroot% -o %outputfile% --css ~/.config/nvim/assets/github-pandoc.css",
       }
-      require('keybindings').knap()
+      require('keymaps').knap()
    end
 } --}}}
 
@@ -1038,10 +1051,6 @@ use { 'anuvyklack/vim-tmux-navigator', -- my fork
 }
 ---------------------------------------------------------------------------- }}}
 
-return setmetatable({}, {
-   __index = function(_, key)
-      return packer[key]
-   end,
-})
+return setmetatable({}, { __index = function(_, key) return packer[key] end, })
 
 -- vim: fdm=marker fml=1

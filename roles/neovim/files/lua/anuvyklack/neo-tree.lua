@@ -117,4 +117,4 @@ require('neo-tree').setup({
    -- }
 })
 
-require('keybindings').neo_tree()
+require('keymaps').neo_tree()

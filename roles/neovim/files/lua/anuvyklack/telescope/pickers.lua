@@ -1,4 +1,3 @@
-local prequire = require('util').prequire
 local builtin = prequire 'telescope/builtin'
 local custom_actions = require 'anuvyklack/telescope/custom_actions'
 

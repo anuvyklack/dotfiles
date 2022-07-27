@@ -50,4 +50,4 @@ trouble.setup {
    }
 }
 
-require('keybindings').trouble()
+require('keymaps').trouble()

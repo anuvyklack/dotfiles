@@ -1,7 +1,5 @@
 if not pcall(require, 'heirline') then return end
 
-local prequire = require('util').prequire
-
 local os_sep = package.config:sub(1,1)
 local conditions = require('heirline.conditions')
 local heirline = require("heirline.utils")
@@ -15,7 +13,7 @@ local icons = util.icons
 local mode = util.mode
 local hydra = prequire('hydra.statusline')
 
-local theme, theme_available = prequire('anuvyklack/heirline/themes/'..vim.g.colors_name)
+local theme, theme_available = prequire('anuvyklack/heirline/themes/'..(vim.g.colors_name or ''))
 -- local theme_available, theme = true, require('anuvyklack/heirline/themes/gruvbox-material')
 if not theme_available then return end
 local hl = theme.highlight

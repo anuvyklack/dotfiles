@@ -6,29 +6,12 @@ function util.warn(msg)
    end)
 end
 
----@class Void Void has eveything and nothing
-util.void = setmetatable({}, { ---@type Void
+---@type Void
+util.void = setmetatable({}, {
    __index = function(self) return self end,
    __newindex = function() end,
    __call = function() end
 })
-
----Protected `require` function
----@param module_name string
----@return any module
----@return boolean loaded if module was loaded or not
-util.prequire = function(module_name)
-   local available, module = pcall(require, module_name)
-   if available then
-      return module, true
-   else
-      local source = debug.getinfo(2, "S").source:sub(2)
-      source = source:gsub(vim.fn.getenv('HOME'), '~')
-      util.warn(string.format('"%s" requested in "%s" not available',
-                              module_name, source))
-      return util.void, false
-   end
-end
 
 ---@class util.Keymap
 ---@field cmd function
@@ -59,11 +42,7 @@ util.keymap.set = function (...)
    if decision then vim.keymap.set(...) end
 end
 
-util.keymap.cmd = function(command)
-   return table.concat({ '<Cmd>', command, '<CR>' })
-end
-
-local which_key = util.prequire('which-key')
+local which_key = prequire('which-key')
 
 ---The wrapper around the 'which-key.register()' function.
 ---Doesn't throw an error if 'which-key' plugin doesn't available.
@@ -73,7 +52,7 @@ util.which_key = setmetatable({}, {
    end
 })
 
----Setup WhichKey group name.
+---Setup WhichKey group name
 ---@param lhs string
 ---@param name string
 util.which_key.name = function(mode, lhs, name)

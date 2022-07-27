@@ -24,7 +24,7 @@ vim.bo.keywordprg = ":help"
 local path = vim.opt_local.path
 path:append( vim.fn.stdpath("config") .. "/lua" )
 
--- Keybindings -----------------------------------------------------------------
+-- Keymaps ---------------------------------------------------------------------
 
 vim.keymap.set({'n','x'}, 'gK', 'K', { buffer = true, desc = 'Show :help' })
 

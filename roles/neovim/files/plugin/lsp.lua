@@ -1,10 +1,8 @@
-local ok, lspconfig = pcall(require, 'lspconfig')
+local lspconfig, ok = prequire('lspconfig')
 if not ok then return end
 
-local prequire = require('util').prequire
-
-local lsp_util = require 'lspconfig.util'
-local null_ls = prequire 'null-ls'
+local lsp_util = require('lspconfig.util')
+local null_ls = prequire('null-ls')
 local cmd_lsp_available, cmp_lsp = pcall(require, 'cmp_nvim_lsp')
 
 prequire('nvim-lsp-installer').setup {
@@ -89,7 +87,7 @@ local function common_on_attach(client, bufnr)
    vim.bo[bufnr].omnifunc = 'v:lua.vim.lsp.omnifunc'
    vim.bo[bufnr].formatexpr = 'v:lua.vim.lsp.formatexpr()'
 
-   require('keybindings').lsp(bufnr)
+   require('keymaps').lsp(bufnr)
 
    if client.config.flags then
       client.config.flags.allow_incremental_sync = true

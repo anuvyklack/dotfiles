@@ -1,3 +1,8 @@
+local void, ok = prequire('telescope')
+if not ok then
+   return void --[[@as Void]]
+end
+
 local actions = require 'telescope.actions'
 local action_state = require 'telescope.actions.state'
 local M = {}
