@@ -411,15 +411,6 @@ use { 'luukvbaal/stabilize.nvim',
 
 --}}}
 
--- Yank ring --------------------------------------------------------------- {{{
-
-use { 'AckslD/nvim-neoclip.lua', --{{{
-   requires = { { 'tami5/sqlite.lua', module = 'sqlite' }, },
-   config = function() require('neoclip').setup() end
-} --}}}
-
--- }}}
-
 -- Smooth scroll ----------------------------------------------------------- {{{
 
 -- use { 'psliwka/vim-smoothie', --{{{
@@ -481,14 +472,56 @@ use { 'rhysd/clever-f.vim', --{{{
 
 --}}}
 
+-- -- Multiple cursors
+use { 'mg979/vim-visual-multi', as = 'multiple-cursors' }
+
+-- Yank ring --------------------------------------------------------------- {{{
+
+-- use { '~/code/neovim-plugins/YankRing/YankRing.vim',
+--    setup = function()
+--       vim.g.yankring_clipboard_monitor = 0
+--    end
+-- }
+
+use { 'gbprod/yanky.nvim',
+   after = 'multiple-cursors',
+   config = function()
+      vim.o.clipboard = 'unnamed'
+      require('yanky').setup {
+         -- ring = {
+         --    storage = 'shada',
+         -- },
+         -- system_clipboard = {
+         --    sync_with_ring = true,
+         -- },
+         -- highlight = {
+         --    on_put = true,
+         --    on_yank = true,
+         --    timer = 500,
+         -- },
+      }
+
+      -- vim.cmd 'highlight link YankyYanked IncSearch'
+      require('keymaps').yanky()
+   end
+}
+
+-- use { 'AckslD/nvim-neoclip.lua', --{{{
+--    requires = { { 'tami5/sqlite.lua', module = 'sqlite' }, },
+--    config = function() require('neoclip').setup() end
+-- } --}}}
+
+-- }}}
+
 -- Fuzzy finder ------------------------------------------------------------ {{{
 use { 'nvim-telescope/telescope.nvim', as = 'telescope',
+   after = 'yanky.nvim',
    requires = {
       'nvim-lua/plenary.nvim',
       { 'nvim-telescope/telescope-fzf-native.nvim', as = 'telescope-fzf-native', run = 'make' },
-      { "natecraddock/telescope-zf-native.nvim", as = 'telescope-zf-native' },
-      -- { "nvim-telescope/telescope-frecency.nvim", as = 'telescope-frecency',
-      --    requires = "tami5/sqlite.lua" },
+      { 'natecraddock/telescope-zf-native.nvim', as = 'telescope-zf-native' },
+      -- { 'nvim-telescope/telescope-frecency.nvim', as = 'telescope-frecency',
+      --    requires = 'tami5/sqlite.lua' },
       { 'jvgrootveld/telescope-zoxide', requires = 'nvim-lua/popup.nvim' }
       -- 'famiu/bufdelete.nvim',
    },
@@ -813,9 +846,6 @@ use { 'mbbill/undotree', --{{{
       g.undotree_WindowLayout = 2
    end
 } --}}}
-
--- Multiple cursors
-use { 'mg979/vim-visual-multi', as = 'multiple-cursors' }
 
 -- use { 'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim' }
 

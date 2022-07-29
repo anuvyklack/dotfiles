@@ -273,6 +273,31 @@ if has('wsl') then
 		cache_enabled = 1,
 	}
 -- elseif has('unix') then
+elseif os.getenv('XDG_SESSION_TYPE') == 'wayland' then
+	-- g.clipboard = {
+	-- 	name = 'wl-clipboard',
+	-- 	copy = {
+	-- 		['+'] = 'wl-copy',
+	-- 		['*'] = 'wl-copy',
+	-- 	},
+	-- 	paste = {
+	-- 		['+'] = 'wl-paste',
+	-- 		['*'] = 'wl-paste',
+	-- 	},
+	-- 	cache_enabled = 1,
+	-- }
+	g.clipboard = {
+	  name = 'xsel_override',
+	  copy = {
+		 ['+'] = 'xsel --input --clipboard',
+		 ['*'] = 'xsel --input --primary',
+	  },
+	  paste = {
+		 ['+'] = 'xsel --output --clipboard',
+		 ['*'] = 'xsel --output --primary',
+	  },
+	  cache_enabled = 1,
+	}
 end
 -- }}}
 

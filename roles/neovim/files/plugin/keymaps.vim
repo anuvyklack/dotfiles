@@ -9,10 +9,10 @@ xnoremap <C-c>		"+y
 nnoremap <C-c>c		"+y$
 nnoremap <C-c><C-c>	"+yy
 
-" Paste
-nnoremap cp		"+p
-nnoremap cP		"+P
-xnoremap <C-p>	"+p
+" " Paste
+" nnoremap cp		"+p
+" nnoremap cP		"+P
+" xnoremap <C-p>	"+p
 
 " Folds
 nmap zr zR

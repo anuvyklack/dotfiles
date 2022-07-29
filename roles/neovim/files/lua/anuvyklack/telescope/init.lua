@@ -232,11 +232,15 @@ telescope.setup(config)
 telescope.load_extension('fzf')  -- use fzf module in C
 telescope.load_extension("zf-native")
 telescope.load_extension('zoxide')
+
 if pcall(require, 'project_nvim') then
    telescope.load_extension('projects')
 end
 if pcall(require, 'neoclip') then
    telescope.load_extension('neoclip')
+end
+if pcall(require, 'yanky') then
+   telescope.load_extension('yank_history')
 end
 
 -- https://github.com/nvim-telescope/telescope.nvim/issues/559

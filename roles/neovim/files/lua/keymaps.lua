@@ -398,6 +398,33 @@ keymap.set('n', 'Q', function() -- {{{
    end
 end, { desc = 'close service window' }) -- }}}
 
+M.yanky = function() -- {{{
+   local yanky = require('yanky')
+
+   keymap.set({'n','x'}, 'p', '<Plug>(YankyPutAfter)')
+   keymap.set({'n','x'}, 'P', '<Plug>(YankyPutBefore)')
+
+   -- keymap.set('n', '<C-n>', '<Plug>(YankyCycleForward)')
+   -- keymap.set('n', '<C-p>', '<Plug>(YankyCycleBackward)')
+
+   keymap.amend('n', '<C-p>', function(original)
+      if yanky.can_cycle() then
+         yanky.cycle(-1)
+      else
+         original()
+      end
+   end)
+
+   keymap.amend('n', '<C-n>', function(original)
+      if yanky.can_cycle() then
+         yanky.cycle(1)
+      else
+         original()
+      end
+   end)
+
+end -- }}}
+
 M.lsp = function(bufnr) -- {{{
    local opts = setmetatable({ buffer = bufnr },{ -- {{{
       __call = function(self, input)
