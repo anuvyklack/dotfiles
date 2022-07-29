@@ -71,7 +71,8 @@ local config = {
          },
       },
    },
-   pickers = {}
+   pickers = {},
+   extensions = {}
 }
 
 config.pickers.find_files = {
@@ -214,16 +215,18 @@ config.pickers.highlights = {
    },
 }
 
-config.extensions = {
-   ["zf-native"] = {
-      file = { -- options for sorting file-like items
-         enable = true, -- override default telescope file sorter
-         highlight_results = true, -- highlight matching text in results
-         match_filename = true, -- enable zf filename match priority
-      },
-      generic = { -- options for sorting all other items
-         enable = false, -- override default telescope generic item sorter
-      },
+config.pickers.builtin = {
+   include_extensions = true -- show the pickers of the installed extensions
+}
+
+config.extensions["zf-native"] = {
+   file = { -- options for sorting file-like items
+      enable = true, -- override default telescope file sorter
+      highlight_results = true, -- highlight matching text in results
+      match_filename = true, -- enable zf filename match priority
+   },
+   generic = { -- options for sorting all other items
+      enable = false, -- override default telescope generic item sorter
    }
 }
 
