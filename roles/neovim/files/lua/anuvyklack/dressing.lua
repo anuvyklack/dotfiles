@@ -1,29 +1,42 @@
 require('dressing').setup {
    input = {
-      insert_only = false, -- When true, <Esc> will close the modal.
-
-      -- These are passed to nvim_open_win
-      anchor = "NW",
-
+      insert_only = false, -- Close input window on exit indsert mode.
+      start_in_insert = true, -- Start input in insert mode.
+      -- anchor = "NW", -- These are passed to `nvim_open_win`
       winblend = 0, -- Window transparency (0-100)
-      winhighlight = 'Normal:Normal,FloatBorder:Grey'
+      -- winhighlight = 'Normal:Normal,FloatBorder:Grey'
    },
    select = {
       -- Priority list of preferred vim.select implementations
-      backend = { 'builtin', 'nui', 'telescope', 'fzf_lua', 'fzf' },
+      backend = { --[['builtin',]] 'nui', 'telescope', 'fzf_lua', 'fzf' },
 
-      -- Options for built-in selector
-      builtin = {
-         -- These are passed to nvim_open_win
-         anchor = 'NW',
-         border = 'rounded',
+      nui = { -- Options for nui Menu
+         -- position = "50%",
+         -- size = nil,
+         -- relative = "editor",
+         -- border = {
+         --   style = "rounded",
+         -- },
+         -- buf_options = {
+         --   swapfile = false,
+         --   filetype = "DressingSelect",
+         -- },
+         win_options = {
+           winblend = 0,
+         },
+         -- max_width = 80,
+         -- max_height = 40,
+         -- min_width = 40,
+         -- min_height = 10,
+      },
 
-         -- 'editor' and 'win' will default to being centered
-         relative = 'cursor',
+      builtin = { -- Options for built-in selector
+         -- anchor = 'NW',
+         -- border = 'rounded',
+         relative = 'cursor', -- 'editor' and 'win' will default to being centered
 
          winblend = 0, -- Window transparency (0-100)
 
-         -- Change default highlight groups (see :help winhl)
          winhighlight = 'Normal:Normal,FloatBorder:Normal,CursorLine:Visual,Search:None',
 
          -- These can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
@@ -34,7 +47,7 @@ require('dressing').setup {
          min_width = { 40, 0.2 },
          height = nil,
          max_height = 0.9,
-         min_height = 3,
+         min_height = 3
       }
    }
 }

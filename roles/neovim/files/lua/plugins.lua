@@ -740,7 +740,7 @@ use { 'tpope/vim-dispatch', -- {{{
 } -- }}}
 
 use { 'stevearc/dressing.nvim', --{{{
-   -- requires = 'MunifTanjim/nui.nvim',
+   requires = 'MunifTanjim/nui.nvim',
    config = function() require('anuvyklack/dressing') end
 } --}}}
 
