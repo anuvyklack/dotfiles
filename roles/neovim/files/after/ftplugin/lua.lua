@@ -94,6 +94,7 @@ local lua_ts_handler = function(virt_text, lnum, end_lnum, available_width, trun
    ---@param chunk ufo.TextChunk
    ---@return boolean
    local function is_empty(chunk)
+      if not chunk then return false end
       local text = chunk[1]
       if text:find(lua_patterns.empty_str) then
          return true
@@ -139,8 +140,9 @@ local lua_ts_handler = function(virt_text, lnum, end_lnum, available_width, trun
    end
 
    local function add_end_virt_text()
-      -- local first_chunk = context.end_virt_text[1]
-      -- first_chunk[1] = first_chunk[1]:gsub(lua_patterns.spaces_at_beginning, '')
+      if is_empty(context.end_virt_text[1]) then
+         table.remove(context.end_virt_text, 1)
+      end
 
       local last_chunk = context.end_virt_text[#context.end_virt_text]
       if last_chunk and is_comment(last_chunk) then
