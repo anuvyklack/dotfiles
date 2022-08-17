@@ -2,33 +2,31 @@ local lspconfig, ok = prequire('lspconfig')
 if not ok then return end
 
 local lsp_util = require('lspconfig.util')
-local null_ls = prequire('null-ls')
 local cmd_lsp_available, cmp_lsp = pcall(require, 'cmp_nvim_lsp')
+local null_ls = prequire('null-ls')
 
-prequire('nvim-lsp-installer').setup {
+require('mason').setup {
+   max_concurrent_installers = 10,
    -- automatic_installation = vim.fn.hostname() == 'zarathustra-huawei',
    ui = {
-      check_outdated_servers_on_open = false,
       icons = {
-         server_installed = '',
-         server_pending = '',
-         server_uninstalled = '',
-      }
-   }
+         package_installed = "",
+         package_pending = "",
+         package_uninstalled = "",
+      },
+   },
 }
+require("mason-lspconfig").setup {}
 
----@param opts table|nil
+---@param opts table | nil
 local function create_capabilities(opts)
-   opts = opts or { with_snippet_support = true }
-
    local capabilities = vim.lsp.protocol.make_client_capabilities()
-
-   capabilities.textDocument.completion.completionItem.snippetSupport = opts.with_snippet_support
-   if opts.with_snippet_support then
-      capabilities.textDocument.completion.completionItem.resolveSupport = {
-         properties = { 'documentation', 'detail', 'additionalTextEdits', }
-      }
-   end
+   capabilities.textDocument.completion.completionItem.snippetSupport = true
+   vim.list_extend(capabilities.textDocument.completion.completionItem.resolveSupport.properties, {
+      "documentation",
+      "detail",
+      "additionalTextEdits",
+   })
 
    -- For "kevinhwang91/nvim-ufo".
    -- Nvim hasn't added foldingRange to default capabilities, so tell the server
@@ -49,8 +47,8 @@ end
 local function buf_autocmd_codelens(bufnr)
    local augroup = vim.api.nvim_create_augroup("lsp_document_codelens", {})
    vim.api.nvim_create_autocmd({
-     "BufEnter", "InsertLeave", "BufWritePost", "CursorHold"
-   },{
+      "BufEnter", "InsertLeave", "BufWritePost", "CursorHold"
+   }, {
       buffer = bufnr,
       group = augroup,
       callback = vim.lsp.codelens.refresh
@@ -93,22 +91,25 @@ local function common_on_attach(client, bufnr)
       client.config.flags.allow_incremental_sync = true
    end
 
-   if client.supports_method 'textDocument/documentHighlight' then
-      prequire 'illuminate'.on_attach(client)
+   -- if client.supports_method 'textDocument/documentHighlight' then
+   --    prequire('illuminate').on_attach(client)
+   -- end
+
+   if client.supports_method 'textDocument/inlayHint' then
+      prequire('lsp-inlayhints').on_attach(bufnr, client)
    end
 
-   if client.supports_method "textDocument/codeLens" then
+   if client.supports_method 'textDocument/codeLens' then
       buf_autocmd_codelens(bufnr)
       vim.schedule(vim.lsp.codelens.refresh)
+   end
+
+   if client.supports_method 'textDocument/documentSymbol' then
+      prequire('nvim-navic').attach(client, bufnr)
    end
 end
 
 lsp_util.on_setup = lsp_util.add_hook_after(lsp_util.on_setup, function(config)
-   -- if config.on_attach then
-   --    config.on_attach = lsp_util.add_hook_after(config.on_attach, common_on_attach)
-   -- else
-   --    config.on_attach = common_on_attach
-   -- end
    config.on_attach = lsp_util.add_hook_after(config.on_attach, common_on_attach)
    config.capabilities = create_capabilities()
 end)
@@ -117,12 +118,11 @@ for server, config in pairs(require('anuvyklack/lsp_servers')) do
    lspconfig[server].setup(config)
 end
 
-null_ls.setup {
-   sources = {
-      null_ls.builtins.formatting.prettierd,
-      null_ls.builtins.formatting.stylua,
-      null_ls.builtins.diagnostics.shellcheck,
-   },
-   on_attach = common_on_attach,
-}
-
+-- null_ls.setup {
+--    sources = {
+--       null_ls.builtins.formatting.prettierd,
+--       null_ls.builtins.formatting.stylua,
+--       null_ls.builtins.diagnostics.shellcheck,
+--    },
+--    on_attach = common_on_attach,
+-- }

@@ -4,7 +4,7 @@ require('dressing').setup {
       start_in_insert = true, -- Start input in insert mode.
       -- anchor = "NW", -- These are passed to `nvim_open_win`
       winblend = 0, -- Window transparency (0-100)
-      -- winhighlight = 'Normal:Normal,FloatBorder:Grey'
+      winhighlight = 'Normal:Normal,FloatBorder:Grey'
    },
    select = {
       -- Priority list of preferred vim.select implementations

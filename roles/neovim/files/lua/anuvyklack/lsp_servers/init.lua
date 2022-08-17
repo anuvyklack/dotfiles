@@ -1,7 +1,7 @@
-local lsp_util = require 'lspconfig'.util
+local lsp_util = require('lspconfig').util
 local M = {}
 
-M.sumneko_lua = require("lua-dev").setup {
+M.sumneko_lua = require('lua-dev').setup {
    lspconfig = {
       root_dir = lsp_util.root_pattern('.root',
          '.luarc.json', '.luacheckrc', '.stylua.toml', 'selene.toml', '.git'),
@@ -26,6 +26,10 @@ M.sumneko_lua = require("lua-dev").setup {
                   indent_size = "3",
                }
             },
+            hint = {
+               enable = true, -- inline hints
+               setType = true
+            },
             runtime = {
                version = 'LuaJIT',
                path = vim.list_extend(vim.split(package.path, ';'), { "lua/?.lua", "lua/?/init.lua" }),
@@ -43,17 +47,17 @@ M.sumneko_lua = require("lua-dev").setup {
    }
 }
 
-M.ccls = {
-   -- A list of ccls available options:
-   -- https://github.com/MaskRay/ccls/wiki/Customization#initialization-options
-   init_options = {
-      -- compilationDatabaseDirectory = 'build';
-      compilationDatabaseDirectory = 'build-Debug';
-      index = {
-         threads = 0
-      }
-   }
-}
+-- M.ccls = {
+--    -- A list of ccls available options:
+--    -- https://github.com/MaskRay/ccls/wiki/Customization#initialization-options
+--    init_options = {
+--       -- compilationDatabaseDirectory = 'build';
+--       compilationDatabaseDirectory = 'build-Debug';
+--       index = {
+--          threads = 0
+--       }
+--    }
+-- }
 
 M.clangd = {
    cmd = {

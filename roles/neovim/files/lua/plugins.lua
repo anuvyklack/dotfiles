@@ -211,18 +211,22 @@ use { 'hrsh7th/nvim-cmp', -- {{{
 -- }}}
 
 -- LSP --------------------------------------------------------------------- {{{
-use { 'neovim/nvim-lspconfig', as = 'lspconfig',
-   requires = {
-      { 'williamboman/nvim-lsp-installer', as = 'lsp-installer' },
-      'folke/lua-dev.nvim',
-      { 'j-hui/fidget.nvim',
-         config = function() require 'anuvyklack/fidget' end },
-      { 'ray-x/lsp_signature.nvim',
-         config = function() require 'anuvyklack/lsp_signature' end }
-   }
-}
+use 'williamboman/mason.nvim'
+use { 'neovim/nvim-lspconfig', as = 'lspconfig' }
+use 'williamboman/mason-lspconfig.nvim'
+use 'jose-elias-alvarez/null-ls.nvim'
+use { 'ray-x/lsp_signature.nvim',
+   config = function() require 'anuvyklack/lsp_signature' end }
+use 'folke/lua-dev.nvim'
+use { 'j-hui/fidget.nvim',
+   config = function() require 'anuvyklack/fidget' end }
 
-use 'RRethy/vim-illuminate' -- Highlight all other words the same as under the cursor
+use { 'lvimuser/lsp-inlayhints.nvim',
+   config = function() require('lsp-inlayhints').setup() end }
+
+use 'SmiteshP/nvim-navic'
+
+-- use 'RRethy/vim-illuminate' -- Highlight all other words the same as under the cursor
 
 -- use { 'filipdutescu/renamer.nvim', as = 'renamer', branch = 'master', --{{{
 --    requires = 'nvim-lua/plenary.nvim',
@@ -271,15 +275,16 @@ use 'RRethy/vim-illuminate' -- Highlight all other words the same as under the c
 --    end
 -- } --}}}
 
--- use { "https://git.sr.ht/~whynothugo/lsp_lines.nvim", --{{{
---    config = function()
---       require("lsp_lines").register_lsp_virtual_lines()
---       -- Disable virtual_text since it's redundant due to lsp_lines.
---       vim.diagnostic.config {
---          virtual_text = false,
---       }
---    end,
--- } --}}}
+use { 'https://git.sr.ht/~whynothugo/lsp_lines.nvim', -- {{{
+   config = function()
+      require('lsp_lines').setup()
+      vim.diagnostic.config({
+         underline = false,
+         virtual_text = true,
+         virtual_lines = false,
+      })
+   end,
+} -- }}}
 
 -- use { "narutoxy/dim.lua", --{{{
 --   config = function() require('dim').setup({}) end
@@ -309,8 +314,13 @@ use { 'liuchengxu/vista.vim',
 --    }) end
 -- } --}}}
 
--- use { 'https://gitlab.com/yorickpeterse/nvim-dd.git', as = 'deferring-diagnostics',
---    config = function() require('dd').setup() end }
+use { 'https://gitlab.com/yorickpeterse/nvim-dd.git', as = 'deferring-diagnostics',
+   config = function()
+      require('dd').setup {
+        timeout = 1000 -- The time to wait before displaying newly produced diagnostics.
+      }
+   end
+}
 
 --}}}
 
@@ -378,7 +388,7 @@ use { 'szw/vim-maximizer', -- {{{
 } -- }}}
 
 use { 'luukvbaal/stabilize.nvim',
-	config = function() require("stabilize").setup() end
+   config = function() require('stabilize').setup() end
 }
 
 -- use { 'beauwilliams/focus.nvim', --{{{
@@ -440,7 +450,7 @@ use 'anuvyklack/vim-smartword' -- fork
 use 'chaoren/vim-wordmotion' -- More useful word motions for Vim
 
 -- use { 'easymotion/vim-easymotion', as = 'easymotion',
---    config = function() vim.cmd("source ~/.config/nvim/lua/anuvyklack/easymotion.vim") end }
+--    config = function() vim.cmd('source ~/.config/nvim/lua/anuvyklack/easymotion.vim') end }
 
 use { 'phaazon/hop.nvim', -- {{{
    config = function()
@@ -520,6 +530,7 @@ use { 'nvim-telescope/telescope.nvim', as = 'telescope',
       'nvim-lua/plenary.nvim',
       { 'nvim-telescope/telescope-fzf-native.nvim', as = 'telescope-fzf-native', run = 'make' },
       { 'natecraddock/telescope-zf-native.nvim', as = 'telescope-zf-native' },
+      -- { 'nvim-telescope/telescope-packer.nvim', as = 'telescope-packer' },
       -- { 'nvim-telescope/telescope-frecency.nvim', as = 'telescope-frecency',
       --    requires = 'tami5/sqlite.lua' },
       { 'jvgrootveld/telescope-zoxide', requires = 'nvim-lua/popup.nvim' }
@@ -583,7 +594,7 @@ use { 'lukas-reineke/indent-blankline.nvim',
 -- use { 'lewis6991/satellite.nvim',
 --   config = function() require('satellite').setup() end }
 
-use { 'norcalli/nvim-colorizer.lua', as = 'colorizer', --{{{
+use { 'NvChad/nvim-colorizer.lua', as = 'colorizer', --{{{
    ft = { 'vim', 'lua', 'conf', 'tmux', 'kitty', 'vifm', 'markdown', 'zsh' },
    config = function()
       require 'colorizer'.setup {
@@ -597,19 +608,20 @@ use { 'norcalli/nvim-colorizer.lua', as = 'colorizer', --{{{
 -- File manager ------------------------------------------------------------ {{{
 
 -- use { 'kyazdani42/nvim-tree.lua',
---    requires = 'kyazdani42/nvim-web-devicons',
---    config = function() require('anuvyklack/nvim-tree') end
--- }
-
-use { 'nvim-neo-tree/neo-tree.nvim',
-   branch = 'v2.x',
-   requires = {
-      'nvim-lua/plenary.nvim',
-      'kyazdani42/nvim-web-devicons',
-      'MunifTanjim/nui.nvim'
-   },
-   config = function() require('anuvyklack/neo-tree') end
+use { '~/code/neovim-plugins/nvim-tree.lua',
+   requires = 'kyazdani42/nvim-web-devicons',
+   config = function() require('anuvyklack/nvim-tree') end
 }
+
+-- use { 'nvim-neo-tree/neo-tree.nvim',
+--    branch = 'v2.x',
+--    requires = {
+--       'nvim-lua/plenary.nvim',
+--       'kyazdani42/nvim-web-devicons',
+--       'MunifTanjim/nui.nvim'
+--    },
+--    config = function() require('anuvyklack/neo-tree') end
+-- }
 
 use { 'elihunter173/dirbuf.nvim', --{{{
    config = function()
@@ -674,7 +686,7 @@ use { 'lewis6991/gitsigns.nvim', as = 'gitsigns', --{{{
          numhl      = false, -- :Gitsigns toggle_numhl
          linehl     = false, -- :Gitsigns toggle_linehl
          word_diff  = false, -- :Gitsigns toggle_word_diff
-         on_attach = require('keymaps').gitsigns
+         on_attach  = require('keymaps').gitsigns
       }
    end
 } --}}}
@@ -749,18 +761,18 @@ use { 'ahmedkhalf/project.nvim', -- {{{
    end
 } -- }}}
 
-use { 'klen/nvim-config-local', as = 'per-project-config', -- {{{
-   config = function()
-      require('config-local').setup {
-         -- Config file patterns to load (lua supported)
-         config_files = { '.vimrc.lua', '.vimrc' },
-         autocommands_create = true, -- Create autocommands (VimEnter, DirectoryChanged)
-         commands_create = false, -- Create commands (ConfigSource, ConfigEdit, ConfigTrust, ConfigIgnore)
-         silent = false, -- Disable plugin messages (Config loaded/ignored)
-         lookup_parents = true, -- Lookup config files in parent directories
-      }
-   end
-} --}}}
+-- use { 'klen/nvim-config-local', as = 'per-project-config', -- {{{
+--    config = function()
+--       require('config-local').setup {
+--          -- Config file patterns to load (lua supported)
+--          config_files = { '.vimrc.lua', '.vimrc' },
+--          autocommands_create = true, -- Create autocommands (VimEnter, DirectoryChanged)
+--          commands_create = false, -- Create commands (ConfigSource, ConfigEdit, ConfigTrust, ConfigIgnore)
+--          silent = false, -- Disable plugin messages (Config loaded/ignored)
+--          lookup_parents = true, -- Lookup config files in parent directories
+--       }
+--    end
+-- } --}}}
 
 -- -- Make 'gf' keybinding work in different filetypes.  For instructions of what
 -- -- it can do more see: https://github.com/tpope/vim-apathy and ":help include-search"
@@ -1081,6 +1093,6 @@ use { 'anuvyklack/vim-tmux-navigator', -- my fork
 }
 ---------------------------------------------------------------------------- }}}
 
-return setmetatable({}, { __index = function(_, key) return packer[key] end, })
+return setmetatable({}, { __index = function(_, key) return packer[key] end })
 
 -- vim: fdm=marker fml=1

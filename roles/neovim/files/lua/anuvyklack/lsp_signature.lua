@@ -2,8 +2,7 @@ require('lsp_signature').setup {
    doc_lines = 0,
 
    ---Show hint in a floating window, set to "false" for virtual text only mode.
-   -- floating_window = true,
-   floating_window = false,
+   floating_window = true,
 
    hint_enable = true,  -- virtual hint enable
    hint_prefix = "🐼 ", -- Panda for parameter

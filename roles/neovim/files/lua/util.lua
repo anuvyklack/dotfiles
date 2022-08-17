@@ -32,7 +32,7 @@ util.keymap.set = function (...)
          opts.requires = nil
       end
       if opts.ft_ignore then
-         if type(opts.ft_ignore) == "string" then
+         if type(opts.ft_ignore) == 'string' then
             opts.ft_ignore = { opts.ft_ignore }
          end
          decision = not vim.tbl_contains(opts.ft_ignore, vim.bo.filetype)
