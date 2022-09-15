@@ -36,7 +36,7 @@ vim.keymap.set({'n','x'}, 'gK', 'K', { buffer = true, desc = 'Show :help' })
 
 ---@class ufo.FoldContext
 ---@field text string
----@field end_virt_text ufo.TextChunk[]
+---@field get_fold_virt_text fun(lnum: integer): ufo.TextChunk[]
 ---@field winid integer
 ---@field bufnr integer
 
@@ -50,16 +50,17 @@ vim.keymap.set({'n','x'}, 'gK', 'K', { buffer = true, desc = 'Show :help' })
 local lua_ts_handler = function(virt_text, lnum, end_lnum, available_width, truncate, context)
    -- local folded_sign = '⋯'
    local folded_sign = '…'
-   -- local folded_sign = '...'
 
    local termguicolors = vim.o.termguicolors --[[@as boolean]]
 
    -- print(vim.api.nvim_get_hl_id_by_name('luaTSComment'))
    -- P(virt_text)
-   -- P(context)
+   -- P(context.get_fold_virt_text(end_lnum))
+
+   local last_line = context.get_fold_virt_text(end_lnum)
 
    ---@type integer
-   local original_text_with = context.text:len()
+   local original_text_width = context.text:len()
 
    local comment_tokens = { '--' }
    local comment_hl = vim.api.nvim_get_hl_by_name('Comment', termguicolors)
@@ -140,22 +141,22 @@ local lua_ts_handler = function(virt_text, lnum, end_lnum, available_width, trun
    end
 
    local function add_end_virt_text()
-      if is_empty(context.end_virt_text[1]) then
-         table.remove(context.end_virt_text, 1)
+      if is_empty(last_line[1]) then
+         table.remove(last_line, 1)
       end
 
-      local last_chunk = context.end_virt_text[#context.end_virt_text]
+      local last_chunk = last_line[#last_line]
       if last_chunk and is_comment(last_chunk) then
-         table.remove(context.end_virt_text)
+         table.remove(last_line)
       end
-      last_chunk = context.end_virt_text[#context.end_virt_text]
+      last_chunk = last_line[#last_line]
       if last_chunk and is_empty(last_chunk) then
-         table.remove(context.end_virt_text)
+         table.remove(last_line)
       end
 
-      -- for i, chunk in ipairs(context.end_virt_text) do
+      -- for i, chunk in ipairs(last_line) do
       --    if not (i == 1 and is_empty(chunk))
-      --       and not (i == #context.end_virt_text and is_comment(chunk))
+      --       and not (i == #last_line and is_comment(chunk))
       --    then
       --       continue = add_chunk(chunk)
       --       if not continue then break end
@@ -163,7 +164,7 @@ local lua_ts_handler = function(virt_text, lnum, end_lnum, available_width, trun
       -- end
 
       local continue = true
-      for _, chunk in ipairs(context.end_virt_text) do
+      for _, chunk in ipairs(last_line) do
          continue = add_chunk(chunk)
          if not continue then break end
       end
@@ -194,8 +195,8 @@ local lua_ts_handler = function(virt_text, lnum, end_lnum, available_width, trun
       end
    end
 
-   if nvrt_width < original_text_with then
-      add_chunk({string.rep(' ', original_text_with - nvrt_width), 'UfoFoldedFg'})
+   if nvrt_width < original_text_width then
+      add_chunk({string.rep(' ', original_text_width - nvrt_width), 'UfoFoldedFg'})
    end
 
    -- if continue then

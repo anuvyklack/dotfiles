@@ -20,7 +20,7 @@ local ft_map = {
 }
 
 ufo.setup {
-   enable_fold_end_virt_text = true,
+   enable_get_fold_virt_text = true,
    -- fold_virt_text_handler = handler,
    provider_selector = function(bufnr, filetype)
       return ft_map[filetype]  or { 'treesitter', 'indent' }
