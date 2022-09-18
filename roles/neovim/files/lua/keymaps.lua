@@ -13,7 +13,7 @@ local util = require('util')
 local keymap = util.keymap
 keymap.amend = prequire('keymap-amend')
 local which_key = util.which_key
-local ts_utils = require('nvim-treesitter.ts_utils')
+local ts_utils = prequire('nvim-treesitter.ts_utils')
 local telescope_pickers = require('anuvyklack/telescope/pickers')
 local cmd = require('hydra.keymap-util').cmd
 local pcmd = require('hydra.keymap-util').pcmd
@@ -51,7 +51,8 @@ end, { desc = 'disable search highlight' }) -- }}}
 
 keymap.set('n', 'Q', function() -- {{{
    -- Close command line window
-   if vim.fn.bufexists("[Command Line]") ~= 0 then
+   -- if vim.fn.bufexists('[Command Line]') ~= 0 then
+   if vim.fn.getcmdwintype() ~= '' then
       vim.cmd 'close'
       return
    end
@@ -107,159 +108,166 @@ keymap.set('n', '<A-c>', cmd 'BufferClose')
 keymap.set('n', '<A-<>', cmd 'BufferMovePrevious')
 keymap.set('n', '<A->>', cmd 'BufferMoveNext')
 
--- local buffer_hydra = Hydra({ -- {{{
---    -- name = 'Buffer',
---    name = 'Barbar',
---    config = {
---       -- debug = true,
---       on_key = function()
---          -- Execute async functions synchronously to preserve animation.
---          vim.wait(200, function() vim.cmd 'redraw' end, 30, false)
---       end,
---       -- color = 'amaranth',
---       -- hint = false,
---       hint = {
---          -- type = 'cmdline',
---          show_name = false
---       },
---       -- timeout = 2000,
---    },
---    heads = {
---       { 'h', function() vim.cmd 'BufferPrevious' end, { on_key = false } },
---       { 'l', function() vim.cmd 'BufferNext' end, { desc = 'choose', on_key = false } },
---
---       { 'H', function() vim.cmd 'BufferMovePrevious' end },
---       { 'L', function() vim.cmd 'BufferMoveNext' end, { desc = 'move' } },
---
---       { 'p', function() vim.cmd 'BufferPin' end, { desc = 'pin' } },
---
---       { 'c', function() vim.cmd 'BufferClose' end, { desc = false } },
---       { 'q', function() vim.cmd 'BufferClose' end, { desc = false } },
---       { 'd', function() vim.cmd 'BufferClose' end, { desc = 'close' } },
---
---       -- { 's', function() vim.cmd 'BufferPick' end, { exit = true, desc = 'pick buffer' } },
---       { 'b',  function() vim.cmd 'BufExplorer' end, { exit = true, desc = 'Explorer' } },
---       { 'od', function() vim.cmd 'BufferOrderByDirectory' end, { desc = 'by directory' } },
---       { 'ol', function() vim.cmd 'BufferOrderByLanguage' end,  { desc = 'by language' } },
---       { '<Esc>', nil, { exit = true } }
---    }
--- }) -- }}}
---
--- local function choose_buffer()
---    if #vim.fn.getbufinfo({ buflisted = true }) > 1 then
---       buffer_hydra:activate()
---    else
---       vim.cmd('BufExplorer')
---    end
--- end
---
--- keymap.set('n', 'gb', choose_buffer)
---
--- --    local window_hint = [[
--- --  ^^^^^       Move       ^^^^^  ^^^ Size  ^^^   ^^     Split
--- --  ^^^^^------------------^^^^^  ^^^-------^^^   ^^----------------
--- --  ^ ^ _k_ ^ ^  ^   _<C-k>_   ^   ^ ^ _K_ ^ ^    _s_: horizontally
--- --  _h_ ^ ^ _l_  _<C-h>_ _<C-l>_   _H_ ^ ^ _L_    _v_: vertically
--- --  ^ ^ _j_ ^ ^  ^   _<C-j>_   ^   ^ ^ _J_ ^ ^    _q_, _c_: close
--- --  ^^^^^^focus  ^^   window  ^^  ^^_=_ equal^^   _b_: choose buffer
--- -- ]]
---
--- -- local window_hint = [[
--- --  ^^^^^^^^^^^^     Move      ^^    Size   ^^   ^^     Split       ^^   Tabs
--- --  ^^^^^^^^^^^^-------------  ^^-----------^^   ^^---------------  ^^----------
--- --  ^ ^ _k_ ^ ^  ^ ^ _K_ ^ ^   ^   _<C-k>_   ^   _s_: horizontally  _t_: new tab
--- --  _h_ ^ ^ _l_  _H_ ^ ^ _L_   _<C-h>_ _<C-l>_   _v_: vertically
--- --  ^ ^ _j_ ^ ^  ^ ^ _J_ ^ ^   ^   _<C-j>_   ^   _q_, _c_: close
--- --  focus^^^^^^  window^^^^^^  ^_=_: equalize^   _z_: maximize
--- --  ^ ^ ^ ^ ^ ^  ^ ^ ^ ^ ^ ^   ^^ ^          ^   _o_: remain only   _b_: buffers
--- -- ]]
---
--- -- local window_hint = [[
--- --  ^^^^^^^^^^^^     Move      ^^    Size   ^^   ^^     Split       ^^   Tabs
--- --  ^^^^^^^^^^^^-------------  ^^-----------^^   ^^---------------  ^^----------
--- --  ^ ^ _k_ ^ ^  ^ ^ _K_ ^ ^   ^   _<C-k>_   ^   _s_: hor, _v_: vert  _t_: new tab
--- --  _h_ ^ ^ _l_  _H_ ^ ^ _L_   _<C-h>_ _<C-l>_   _q_, _c_: close
--- --  ^ ^ _j_ ^ ^  ^ ^ _J_ ^ ^   ^   _<C-j>_   ^   _z_: maximize
--- --  focus^^^^^^  window^^^^^^  ^_=_: equalize^   _o_: remain only   _b_: buffers
--- -- ]]
---
+local buffer_hydra = Hydra({ -- {{{
+   -- name = 'Buffer',
+   name = 'Barbar',
+   config = {
+      -- debug = true,
+      on_key = function()
+         -- Execute async functions synchronously to preserve animation.
+         vim.wait(200, function() vim.cmd 'redraw' end, 30, false)
+      end,
+      -- color = 'amaranth',
+      -- hint = false,
+      hint = {
+         -- type = 'cmdline',
+         show_name = false
+      },
+      -- timeout = 2000,
+   },
+   heads = {
+      { 'h', function() vim.cmd 'BufferPrevious' end, { on_key = false } },
+      { 'l', function() vim.cmd 'BufferNext' end, { desc = 'choose', on_key = false } },
+
+      { 'H', function() vim.cmd 'BufferMovePrevious' end },
+      { 'L', function() vim.cmd 'BufferMoveNext' end, { desc = 'move' } },
+
+      { 'p', function() vim.cmd 'BufferPin' end, { desc = 'pin' } },
+
+      { 'c', function() vim.cmd 'BufferClose' end, { desc = false } },
+      { 'q', function() vim.cmd 'BufferClose' end, { desc = false } },
+      { 'd', function() vim.cmd 'BufferClose' end, { desc = 'close' } },
+
+      -- { 's', function() vim.cmd 'BufferPick' end, { exit = true, desc = 'pick buffer' } },
+      { 'b',  function() vim.cmd 'BufExplorer' end, { exit = true, desc = 'Explorer' } },
+      { 'od', function() vim.cmd 'BufferOrderByDirectory' end, { desc = 'by directory' } },
+      { 'ol', function() vim.cmd 'BufferOrderByLanguage' end,  { desc = 'by language' } },
+      { '<Esc>', nil, { exit = true } }
+   }
+}) -- }}}
+
+local function choose_buffer()
+   if #vim.fn.getbufinfo({ buflisted = true }) > 1 then
+      buffer_hydra:activate()
+   else
+      vim.cmd('BufExplorer')
+   end
+end
+
+keymap.set('n', 'gb', choose_buffer)
+
+--    local window_hint = [[
+--  ^^^^^       Move       ^^^^^  ^^^ Size  ^^^   ^^     Split
+--  ^^^^^------------------^^^^^  ^^^-------^^^   ^^----------------
+--  ^ ^ _k_ ^ ^  ^   _<C-k>_   ^   ^ ^ _K_ ^ ^    _s_: horizontally
+--  _h_ ^ ^ _l_  _<C-h>_ _<C-l>_   _H_ ^ ^ _L_    _v_: vertically
+--  ^ ^ _j_ ^ ^  ^   _<C-j>_   ^   ^ ^ _J_ ^ ^    _q_, _c_: close
+--  ^^^^^^focus  ^^   window  ^^  ^^_=_ equal^^   _b_: choose buffer
+-- ]]
+
 -- local window_hint = [[
---  ^^^^^^^^^^^^     Move      ^^    Size   ^^   ^^     Split
---  ^^^^^^^^^^^^-------------  ^^-----------^^   ^^---------------
---  ^ ^ _k_ ^ ^  ^ ^ _K_ ^ ^   ^   _<C-k>_   ^   _s_: hor, _v_: vert
+--  ^^^^^^^^^^^^     Move      ^^    Size   ^^   ^^     Split       ^^   Tabs
+--  ^^^^^^^^^^^^-------------  ^^-----------^^   ^^---------------  ^^----------
+--  ^ ^ _k_ ^ ^  ^ ^ _K_ ^ ^   ^   _<C-k>_   ^   _s_: horizontally  _t_: new tab 
+--  _h_ ^ ^ _l_  _H_ ^ ^ _L_   _<C-h>_ _<C-l>_   _v_: vertically
+--  ^ ^ _j_ ^ ^  ^ ^ _J_ ^ ^   ^   _<C-j>_   ^   _q_, _c_: close
+--  focus^^^^^^  window^^^^^^  ^_=_: equalize^   _z_: maximize
+--  ^ ^ ^ ^ ^ ^  ^ ^ ^ ^ ^ ^   ^^ ^          ^   _o_: remain only   _b_: buffers
+-- ]]
+
+-- local window_hint = [[
+--  ^^^^^^^^^^^^     Move      ^^    Size   ^^   ^^     Split       ^^   Tabs
+--  ^^^^^^^^^^^^-------------  ^^-----------^^   ^^---------------  ^^----------
+--  ^ ^ _k_ ^ ^  ^ ^ _K_ ^ ^   ^   _<C-k>_   ^   _s_: hor, _v_: vert  _t_: new tab 
 --  _h_ ^ ^ _l_  _H_ ^ ^ _L_   _<C-h>_ _<C-l>_   _q_, _c_: close
 --  ^ ^ _j_ ^ ^  ^ ^ _J_ ^ ^   ^   _<C-j>_   ^   _z_: maximize
---  focus^^^^^^  window^^^^^^  ^_=_: equalize^   _o_: remain only
---  ^^^^^ _t_:  new tab^^^^^^  ^^ ^              _b_: buffers
+--  focus^^^^^^  window^^^^^^  ^_=_: equalize^   _o_: remain only   _b_: buffers
 -- ]]
---
--- local splits = prequire('smart-splits')
---
--- -- local function resize_cur_win(offset)
--- --    vim.fn.win_move_separator(0, offset)
--- -- end
---
--- Hydra({ -- {{{
---    name = 'Windows',
---    hint = window_hint,
---    config = {
---       debug = true,
---       invoke_on_body = true,
---       -- timeout = 4000,
---       hint = {
---          -- type = 'window',
---          border = 'rounded',
---          -- offset = -1
---       }
---    },
---    mode = 'n',
---    body = '<C-w>',
---    heads = {
---       { 'h', '<C-w>h' },
---       { 'j', '<C-w>j' },
---       { 'k', pcmd('wincmd k', 'E11', 'close') },
---       { 'l', '<C-w>l' },
---
---       { 'H', cmd 'WinShift left' },
---       { 'J', cmd 'WinShift down' },
---       { 'K', cmd 'WinShift up' },
---       { 'L', cmd 'WinShift right' },
---
---       { '<C-h>', function() splits.resize_left(2)  end },
---       { '<C-j>', function() splits.resize_down(2)  end },
---       { '<C-k>', function() splits.resize_up(2)    end },
---       { '<C-l>', function() splits.resize_right(2) end },
---
---       { '=', '<C-w>=', { desc = 'equalize'} },
---
---       { 's',     pcmd('split',  'E36') },
---       { '<C-s>', pcmd('split',  'E36'), { desc = false } },
---       { 'v',     pcmd('vsplit', 'E36') },
---       { '<C-v>', pcmd('vsplit', 'E36'), { desc = false } },
---
---       { 'w',     '<C-w>w', { exit = true, desc = false } },
---       { '<C-w>', '<C-w>w', { exit = true, desc = false } },
---
---       { 'z',     cmd 'MaximizerToggle!', { desc = 'maximize' } },
---       { '<C-z>', cmd 'MaximizerToggle!', { exit = true, desc = false } },
---
---       { 'o',     '<C-w>o', { exit = true, desc = 'remain only' } },
---       { '<C-o>', '<C-w>o', { exit = true, desc = false } },
---
---       -- { 'p', require('nvim-window').pick, { desc = 'pick window' }},
---
---       { 'b', choose_buffer, { exit = true, desc = 'choose buffer' } },
---
---       { 'c',     pcmd('close', 'E444') },
---       { 'q',     pcmd('close', 'E444'), { desc = 'close window' } },
---       { '<C-c>', pcmd('close', 'E444'), { desc = false } },
---       { '<C-q>', pcmd('close', 'E444'), { desc = false } },
---
---       { 't', cmd 'tab split', { desc = 'new tab'} },
---
---       { '<Esc>', nil,  { exit = true, desc = false }}
---    }
--- }) -- }}}
+
+local window_hint = [[
+ ^^^^^^^^^^^^     Move      ^^    Size   ^^   ^^     Split
+ ^^^^^^^^^^^^-------------  ^^-----------^^   ^^---------------
+ ^ ^ _k_ ^ ^  ^ ^ _K_ ^ ^   ^   _<C-k>_   ^   _s_: hor, _v_: vert 
+ _h_ ^ ^ _l_  _H_ ^ ^ _L_   _<C-h>_ _<C-l>_   _q_, _c_: close
+ ^ ^ _j_ ^ ^  ^ ^ _J_ ^ ^   ^   _<C-j>_   ^   _z_: maximize
+ focus^^^^^^  window^^^^^^  ^_=_: equalize^   _o_: remain only
+ ^^^^^ _t_:  new tab^^^^^^  ^^ ^              _b_: buffers
+]]
+
+local splits = prequire('smart-splits')
+
+Hydra({ -- {{{
+   name = 'Windows',
+   hint = window_hint,
+   config = {
+      debug = true,
+      invoke_on_body = true,
+      -- timeout = 4000,
+      -- on_key = function() vim.wait(30) end,
+      -- on_key = function()
+      --    vim.wait(300, function() vim.cmd('redraw') end, 10, false)
+      --    -- vim.wait(11, function()
+      --    --    vim.wait(300, function() vim.cmd('redraw') end, 10, false)
+      --    --    return true
+      --    -- end, 10, false)
+      -- end,
+      hint = {
+         -- type = 'window',
+         border = 'rounded',
+         -- offset = -1
+      }
+   },
+   mode = 'n',
+   body = '<C-w>',
+   heads = {
+      { 'h', '<C-w>h' },
+      { 'j', '<C-w>j' },
+      { 'k', pcmd('wincmd k', 'E11', 'close') },
+      { 'l', '<C-w>l' },
+
+      { 'H', cmd 'WinShift left' },
+      { 'J', cmd 'WinShift down' },
+      { 'K', cmd 'WinShift up' },
+      { 'L', cmd 'WinShift right' },
+
+      { '<C-h>', function() splits.resize_left(2)  end },
+      { '<C-j>', function() splits.resize_down(2)  end },
+      { '<C-k>', function() splits.resize_up(2)    end },
+      { '<C-l>', function() splits.resize_right(2) end },
+
+      { '=', '<C-w>=', { desc = 'equalize'} },
+
+      { 's',     pcmd('split',  'E36') },
+      { '<C-s>', pcmd('split',  'E36'), { desc = false } },
+      { 'v',     pcmd('vsplit', 'E36') },
+      { '<C-v>', pcmd('vsplit', 'E36'), { desc = false } },
+
+      { 'w',     '<C-w>w', { exit = true, desc = false } },
+      { '<C-w>', '<C-w>w', { exit = true, desc = false } },
+
+      -- { 'z',     cmd 'MaximizerToggle!', { desc = 'maximize' } },
+      -- { '<C-z>', cmd 'MaximizerToggle!', { exit = true, desc = false } },
+
+      { 'z',     cmd 'WindowsMaximaze', { exit = true, desc = 'maximize' } },
+      { '<C-z>', cmd 'WindowsMaximaze', { exit = true, desc = false } },
+
+      { 'o',     '<C-w>o', { exit = true, desc = 'remain only' } },
+      { '<C-o>', '<C-w>o', { exit = true, desc = false } },
+
+      -- { 'p', require('nvim-window').pick, { desc = 'pick window' }},
+
+      { 'b', choose_buffer, { exit = true, desc = 'choose buffer' } },
+
+      { 'c',     pcmd('close', 'E444') },
+      { 'q',     pcmd('close', 'E444'), { desc = 'close window' } },
+      { '<C-c>', pcmd('close', 'E444'), { desc = false } },
+      { '<C-q>', pcmd('close', 'E444'), { desc = false } },
+
+      { 't', cmd 'tab split', { desc = 'new tab'} },
+
+      { '<Esc>', nil,  { exit = true, desc = false }}
+   }
+}) -- }}}
 
 -- }}}
 
@@ -308,7 +316,7 @@ local options_hint = [[
   ^ ^        Options
   ^
   _v_ %{ve} virtual edit
-  _i_ %{list} invisible characters
+  _i_ %{list} invisible characters  
   _s_ %{spell} spell
   _w_ %{wrap} wrap
   _c_ %{cul} cursor line
@@ -474,9 +482,9 @@ M.lsp = function(bufnr) -- {{{
 
 --    local hint = [[
 --  ^^                    ^^       Telescope
---  ^^-----------------   ^^-----------------------
+--  ^^-----------------   ^^----------------------- 
 --  _r_ rename            _te_ buffer diagnostic
---  _a_ code action       _tE_ workspace diagnostic
+--  _a_ code action       _tE_ workspace diagnostic 
 --  _s_ signature help    _td_ definitions
 --  _t_ type definition   _tr_ buffer references
 --  _f_ format            _tR_ references
@@ -485,16 +493,26 @@ M.lsp = function(bufnr) -- {{{
 --                        _tS_ workspace symbols
 -- ]]
 
+--    local hint = [[
+--  ^^                    ^^      Telescope
+--  ^^-----------------   ^^-------------------- 
+--  _r_ rename            _td_ definitions
+--  _a_ code action       _tr_ buffer references
+--  _s_ signature help    _tR_ references
+--  _t_ type definition   _ti_ implementation
+--  _f_ format            _ts_ document symbols
+--  _v_ Vista             _tS_ workspace symbols
+-- ]]
+
    local hint = [[
- ^^                    ^^       Telescope
- ^^-----------------   ^^--------------------
+ ^^                    ^^      Telescope
+ ^^-----------------   ^^-------------------- 
  _r_ rename            _td_ definitions
  _a_ code action       _tr_ buffer references
  _s_ signature help    _tR_ references
  _t_ type definition   _ti_ implementation
  _f_ format            _ts_ document symbols
  _v_ Vista             _tS_ workspace symbols
- ^^
 ]]
 
    Hydra { -- {{{
@@ -609,8 +627,8 @@ M.telescope = function() -- {{{
    --  ^
    --  ^ ^              ^ ^        _<Enter>_: Telescope       ^ ^            _<Esc>_
    -- ]]
-
    --    local hint = [[
+
    --    🭇🬭🬭🬭🬭🬭🬭🬭🬭🬼
    --   🭉🭁🭠🭘    🭣🭕🭌🬾  _f_: files       _m_: marks            _h_: vim help   _c_: execute command
    --   🭅█ ▁     █🭐  _o_: old files   _g_: live grep        _k_: keymap     _;_: commands history
@@ -626,7 +644,7 @@ M.telescope = function() -- {{{
   🭅█ ▁     █🭐
   ██🬿      🭊██   _r_: resume      _u_: undotree
  🭋█🬝🮄🮄🮄🮄🮄🮄🮄🮄🬆█🭀  _h_: vim help    _c_: execute command
- 🭤🭒🬺🬹🬱🬭🬭🬭🬭🬵🬹🬹🭝🭙  _k_: keymaps     _;_: commands history
+ 🭤🭒🬺🬹🬱🬭🬭🬭🬭🬵🬹🬹🭝🭙  _k_: keymaps     _;_: commands history 
                  _O_: options     _?_: search history
  ^
                  _<Enter>_: Telescope           _<Esc>_
@@ -690,8 +708,8 @@ M.gitsigns = function(bufnr) -- {{{
 
    local hint = [[
  _J_: next hunk   _s_: stage hunk        _d_: show deleted   _b_: blame line
- _K_: prev hunk   _u_: undo last stage   _p_: preview hunk   _B_: blame show full
- ^ ^              _S_: stage buffer      ^ ^                 _/_: show base file
+ _K_: prev hunk   _u_: undo last stage   _p_: preview hunk   _B_: blame show full 
+ ^ ^              _S_: stage buffer      ^ ^                 _/_: show base file 
  ^
  ^ ^              _<Enter>_: Neogit              _q_: exit
 ]]
@@ -961,7 +979,7 @@ M.draw_diagrams = function() -- {{{
 
    local hint = [[
  Arrow^^^^^^   Select region with <C-v>
- ^ ^ _K_ ^ ^   _f_: surround it with box
+ ^ ^ _K_ ^ ^   _f_: surround it with box 
  _H_ ^ ^ _L_
  ^ ^ _J_ ^ ^                      _<Esc>_
 ]]

@@ -24,49 +24,49 @@ local layout_config = {
 
 local config = {
    defaults = {
-      prompt_prefix = "  ",
-      selection_caret = " ", --  卑 喝   
+      prompt_prefix = '  ',
+      selection_caret = ' ', --  卑 喝   
       dynamic_preview_title = true,
       sorting_strategy = 'ascending', -- or 'descending',
       scroll_strategy = 'limit',  -- or 'cycle'
       layout_strategy = 'flex', -- 'flex', 'horizontal', 'vertical',
       layout_config = layout_config,
-      set_env = { ["COLORTERM"] = "truecolor" },
+      set_env = { ['COLORTERM'] = 'truecolor' },
       -- border = {},
       -- borderchars = { " ", " ", " ", " ", " ", " ", " ", " " },
       vimgrep_arguments = {
-         "rg",
-         "--color=never",
-         "--no-heading",
-         "--with-filename",
-         "--line-number",
-         "--column",
-         "--smart-case",
-         "--hidden",
-         "--glob=!.git/",
+         'rg',
+         '--color=never',
+         '--no-heading',
+         '--with-filename',
+         '--line-number',
+         '--column',
+         '--smart-case',
+         '--hidden',
+         '--glob=!.git/',
       },
       mappings = {
-         -- ["<C-n>"] = false, -- disable keymap
+         -- ['<C-n>'] = false, -- disable keymap
          i = {  -- insert mode
-            ["<C-j>"] = actions.move_selection_next,
-            ["<C-k>"] = actions.move_selection_previous,
-            -- ["<C-k>"] = actions.move_selection_better,
+            ['<C-j>'] = actions.move_selection_next,
+            ['<C-k>'] = actions.move_selection_previous,
+            -- ['<C-k>'] = actions.move_selection_better,
 
-            ["<C-p>"] = actions.cycle_history_prev,
-            ["<C-n>"] = actions.cycle_history_next,
+            ['<C-p>'] = actions.cycle_history_prev,
+            ['<C-n>'] = actions.cycle_history_next,
 
-            ["<Tab>"] = actions.toggle_selection + actions.move_selection_next,
-            ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_previous,
+            ['<Tab>'] = actions.toggle_selection + actions.move_selection_next,
+            ['<S-Tab>'] = actions.toggle_selection + actions.move_selection_previous,
 
-            ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist,
+            ['<C-q>'] = actions.smart_send_to_qflist + actions.open_qflist,
 
-            -- ["<cr>"] = custom_actions.multi_selection_open,
-            -- ["<c-v>"] = custom_actions.multi_selection_open_vsplit,
-            -- ["<c-s>"] = custom_actions.multi_selection_open_split,
-            -- ["<c-t>"] = custom_actions.multi_selection_open_tab,
+            -- ['<CR>'] = custom_actions.multi_selection_open,
+            -- ['<C-v>'] = custom_actions.multi_selection_open_vsplit,
+            -- ['<C-s>'] = custom_actions.multi_selection_open_split,
+            -- ['<C-t>'] = custom_actions.multi_selection_open_tab,
          },
          n = {  -- normal mode
-            ["<Space>"] = actions.toggle_selection,
+            ['<Space>'] = actions.toggle_selection,
             ['q'] = actions.smart_send_to_qflist + actions.open_qflist,
          },
       },
@@ -88,6 +88,17 @@ config.pickers.find_files = {
    --    i = { ['<CR>'] = custom_actions.multi_selection_open, },
    --    n = { ['<CR>'] = custom_actions.multi_selection_open, }
    -- }
+}
+
+config.pickers.help_tags = {
+   mappings = {
+      i = {
+         ['<CR>'] = actions.select_vertical
+      },
+      n = {
+         ['<CR>'] = actions.select_vertical
+      }
+   }
 }
 
 config.pickers.buffers = {

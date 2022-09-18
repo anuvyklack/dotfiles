@@ -3,7 +3,7 @@ if not ok then return end
 
 local lsp_util = require('lspconfig.util')
 local cmd_lsp_available, cmp_lsp = pcall(require, 'cmp_nvim_lsp')
-local null_ls = prequire('null-ls')
+-- local null_ls = prequire('null-ls')
 
 require('mason').setup {
    max_concurrent_installers = 10,
@@ -96,7 +96,7 @@ local function common_on_attach(client, bufnr)
    -- end
 
    if client.supports_method 'textDocument/inlayHint' then
-      prequire('lsp-inlayhints').on_attach(bufnr, client)
+      prequire('lsp-inlayhints').on_attach(client, bufnr)
    end
 
    if client.supports_method 'textDocument/codeLens' then
@@ -110,13 +110,15 @@ local function common_on_attach(client, bufnr)
 end
 
 lsp_util.on_setup = lsp_util.add_hook_after(lsp_util.on_setup, function(config)
-   config.on_attach = lsp_util.add_hook_after(config.on_attach, common_on_attach)
+   config.on_attach = lsp_util.add_hook_before(config.on_attach, common_on_attach)
    config.capabilities = create_capabilities()
 end)
 
 for server, config in pairs(require('anuvyklack/lsp_servers')) do
    lspconfig[server].setup(config)
 end
+
+require('anuvyklack/lsp_servers/clangd')
 
 -- null_ls.setup {
 --    sources = {

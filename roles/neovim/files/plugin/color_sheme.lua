@@ -28,7 +28,7 @@ local theme = { 'gruvbox-material', 'dark' }
 -- local theme = 'moonshine_lowcontrast'
 -- local theme = 'moonshine_minimal'
 -- local theme = 'srcery'
--- local theme = { 'everforest', 'light }
+-- local theme = { 'everforest', 'light' }
 -- local theme = 'manuscript'
 
 local color_themes = {

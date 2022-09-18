@@ -13,5 +13,5 @@ setlocal nospell
 
 " foldmarker=<<<,>>>
 
-" wincmd L  " Open help in vertical split on topleft
+wincmd L  " Open help in vertical split on far right.
 " vertical resize 78

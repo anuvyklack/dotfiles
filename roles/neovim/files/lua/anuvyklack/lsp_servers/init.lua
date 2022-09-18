@@ -28,7 +28,12 @@ M.sumneko_lua = require('lua-dev').setup {
             },
             hint = {
                enable = true, -- inline hints
-               setType = true
+               arrayIndex = 'Disable', -- 'Enable', 'Auto', 'Disable'
+               await = true,
+               paramName = 'Disable', -- 'All', 'Literal', 'Disable'
+               paramType = false,
+               semicolon = 'Disable', -- 'All', 'SameLine', 'Disable'
+               setType = true,
             },
             runtime = {
                version = 'LuaJIT',
@@ -59,24 +64,24 @@ M.sumneko_lua = require('lua-dev').setup {
 --    }
 -- }
 
-M.clangd = {
-   cmd = {
-      'clangd',
-      -- '--compile-commands-dir=debug',
-      '--background-index',
-      '--suggest-missing-includes',
-      '--pch-storage=memory',
-      '--cross-file-rename',
-
-      -- -- One completion item for each semantically distinct completion,
-      -- -- with full type information.
-      -- '--completion-style=detailed',
-
-      -- Similar completion items (e.g. function overloads) are combined.
-      -- Type information shown where possible.
-      '--completion-style=bundled',
-   },
-}
+-- M.clangd = {
+--    cmd = {
+--       'clangd',
+--       -- '--compile-commands-dir=debug',
+--       '--background-index',
+--       '--suggest-missing-includes',
+--       '--pch-storage=memory',
+--       '--cross-file-rename',
+--
+--       -- -- One completion item for each semantically distinct completion,
+--       -- -- with full type information.
+--       -- '--completion-style=detailed',
+--
+--       -- Similar completion items (e.g. function overloads) are combined.
+--       -- Type information shown where possible.
+--       '--completion-style=bundled',
+--    },
+-- }
 
 M.cmake = {
    init_options = {
@@ -93,4 +98,3 @@ M.gopls = {}
 M.pyright = {}
 
 return M
-

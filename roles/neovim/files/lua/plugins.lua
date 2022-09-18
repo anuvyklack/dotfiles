@@ -38,6 +38,9 @@ use { 'wbthomason/packer.nvim', opt = true }
 
 use 'lewis6991/impatient.nvim' -- improve startup time
 
+use 'anuvyklack/middleclass'
+-- use '~/code/neovim-plugins/middleclass'
+
 -- Key Mapppings ----------------------------------------------------------- {{{
 
 -- use { 'folke/which-key.nvim', -- original
@@ -86,7 +89,8 @@ use { 'folke/lsp-colors.nvim', --{{{
 
 -- Statusline, Tabline ----------------------------------------------------- {{{
 
-use { 'romgrk/barbar.nvim', as = 'barbar-tabline', --{{{
+-- use { '~/code/neovim-plugins/!git-repos/barbar.nvim',
+use { 'romgrk/barbar.nvim', as = 'barbar-tabline',
    commit = 'release/1.0.0',
    requires = 'kyazdani42/nvim-web-devicons',
    config = function()
@@ -94,7 +98,7 @@ use { 'romgrk/barbar.nvim', as = 'barbar-tabline', --{{{
          icon_pinned = ''
       }
    end
-} --}}}
+}
 
 use { 'rebelot/heirline.nvim',
    config = function()
@@ -161,7 +165,7 @@ use { 'windwp/nvim-autopairs', as = 'autopairs', -- {{{
    end
 } -- }}}
 
-use { 'hrsh7th/nvim-cmp', -- {{{
+use { 'hrsh7th/nvim-cmp', as = 'cmp', -- {{{
    requires = {
       { 'L3MON4D3/LuaSnip',
          requires = 'rafamadriz/friendly-snippets',
@@ -223,6 +227,8 @@ use { 'j-hui/fidget.nvim',
 
 use { 'lvimuser/lsp-inlayhints.nvim',
    config = function() require('lsp-inlayhints').setup() end }
+
+use 'https://git.sr.ht/~p00f/clangd_extensions.nvim'
 
 use 'SmiteshP/nvim-navic'
 
@@ -317,7 +323,7 @@ use { 'liuchengxu/vista.vim',
 use { 'https://gitlab.com/yorickpeterse/nvim-dd.git', as = 'deferring-diagnostics',
    config = function()
       require('dd').setup {
-        timeout = 1000 -- The time to wait before displaying newly produced diagnostics.
+         timeout = 1000 -- The time to wait before displaying newly produced diagnostics.
       }
    end
 }
@@ -352,6 +358,39 @@ use { 'https://gitlab.com/yorickpeterse/nvim-dd.git', as = 'deferring-diagnostic
 
 -- Windows and buffers managment ------------------------------------------- {{{
 
+-- use 'anuvyklack/animation.nvim'
+use { '~/code/neovim-plugins/windows.nvim',
+   requires = 'anuvyklack/animation.nvim',
+   config = function()
+      vim.o.winwidth = 10
+      vim.o.winminwidth = 10
+      require('windows').setup {
+         autowidth = {
+            -- enable = false,
+            winwidth = 5,
+         },
+         animation = {
+            -- enable = false
+         }
+      }
+   end
+}
+
+use { 'folke/twilight.nvim',
+   config = function()
+      require('twilight').setup {
+         context = 20
+      }
+   end
+}
+
+use { 'Pocco81/true-zen.nvim',
+   config = function()
+      require('true-zen').setup {
+      }
+   end
+}
+
 use { 'jlanzarotta/bufexplorer', --{{{
    -- requires = 'ryanoasis/vim-devicons', -- Install to enable devicons.
    config = function()
@@ -378,14 +417,6 @@ use { 'jlanzarotta/bufexplorer', --{{{
 use 'sindrets/winshift.nvim'
 use 'mrjones2014/smart-splits.nvim'
 use { 'https://gitlab.com/yorickpeterse/nvim-window.git' }
-
-use { 'szw/vim-maximizer', -- {{{
-   config = function()
-      vim.g.maximizer_set_default_mapping = 0
-      vim.g.maximizer_restore_on_winleave = 1
-      vim.o.winminwidth = 20
-   end
-} -- }}}
 
 use { 'luukvbaal/stabilize.nvim',
    config = function() require('stabilize').setup() end
@@ -567,13 +598,14 @@ use { 'kevinhwang91/nvim-ufo', as = 'ufo', requires = 'kevinhwang91/promise-asyn
 use { '~/code/neovim-plugins/fold-preview.nvim', requires = 'keymap-amend' }
 
 use { 'https://gitlab.com/yorickpeterse/nvim-pqf', as = 'pretty-quickfix', --{{{
-   config = function() require('pqf').setup {
-         -- signs = {
-         --    error = 'E',
-         --    warning = 'W',
-         --    info = 'I',
-         --    hint = 'H'
-         -- }
+   config = function()
+      require('pqf').setup {
+         signs = {
+            error = 'E',
+            warning = 'W',
+            info = 'I',
+            hint = 'H'
+         }
       }
    end
 } --}}}
@@ -1051,11 +1083,11 @@ use { 'mzlogin/vim-markdown-toc', ft = 'markdown' }
 --    end
 -- }
 
-use { 'nvim-neorg/neorg',
-   requires = "nvim-lua/plenary.nvim",
-   after = "treesitter",
-   config = function() require('anuvyklack/neorg') end
-}
+-- use { 'nvim-neorg/neorg',
+--    requires = "nvim-lua/plenary.nvim",
+--    after = "treesitter",
+--    config = function() require('anuvyklack/neorg') end
+-- }
 
 --}}}
 

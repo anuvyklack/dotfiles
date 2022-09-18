@@ -62,7 +62,7 @@ local ReadOnly = {
 local NormalModeIndicator = {
    Space,
    {
-      init = heirline.pick_child_on_condition,
+      fallthrough = false,
       ReadOnly,
       {
          provider = icons.circle,
@@ -89,7 +89,7 @@ local HydraActive = {
       end,
       {
          {
-            init = heirline.pick_child_on_condition,
+            fallthrough = false,
             ReadOnly,
             { provider = icons.circle }
          },
@@ -161,7 +161,7 @@ local VimModeNormal = {
              not conditions.is_active()
    end,
    {
-      init = heirline.pick_child_on_condition,
+      fallthrough = false,
       HydraActive,
       NormalModeIndicator
    }
@@ -179,7 +179,7 @@ local VimModeActive = {
       end,
       {
          {
-            init = heirline.pick_child_on_condition,
+            fallthrough = false,
             ReadOnly,
             { provider = icons.circle }
          },
@@ -309,7 +309,7 @@ local FileProperties = {
 
 local FileNameBlock = {
    {
-      init = heirline.pick_child_on_condition,
+      fallthrough = false,
       HydraHint,
       {
          condition = conditions.is_active,
@@ -636,6 +636,7 @@ local HelpBufferStatusline = {
 -- }
 
 local StatusLines = {
+   fallthrough = false,
    init = function(self)
       local pwd = vim.fn.getcwd(0) -- Present working directory.
       local current_path = vim.api.nvim_buf_get_name(0)
@@ -663,8 +664,6 @@ local StatusLines = {
       self.pwd = pwd
       self.current_path = current_path -- The opened file path relevant to pwd.
       self.filename = filename
-
-      heirline.pick_child_on_condition(self)
    end,
    hl = function()
       if conditions.is_active() then
@@ -673,7 +672,8 @@ local StatusLines = {
          return hl.StatusLine.non_active
       end
    end,
-   HelpBufferStatusline, InactiveStatusline, ActiveStatusline
+   -- HelpBufferStatusline, InactiveStatusline, ActiveStatusline
+   InactiveStatusline, ActiveStatusline
 }
 
 require('heirline').setup(StatusLines)
