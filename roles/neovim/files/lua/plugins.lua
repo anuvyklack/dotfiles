@@ -260,7 +260,6 @@ use 'SmiteshP/nvim-navic'
 -- } -- }}}
 
 -- use { 'kosayoda/nvim-lightbulb', as = 'lightbulb', --{{{
---    requires = { 'antoinemadec/FixCursorHold.nvim' },
 --    config = function() require 'anuvyklack/lightbulb' end
 -- } --}}}
 
