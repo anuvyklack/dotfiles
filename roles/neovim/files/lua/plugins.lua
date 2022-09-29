@@ -357,19 +357,23 @@ use { 'https://gitlab.com/yorickpeterse/nvim-dd.git', as = 'deferring-diagnostic
 
 -- Windows and buffers managment ------------------------------------------- {{{
 
--- use 'anuvyklack/animation.nvim'
-use { '~/code/neovim-plugins/windows.nvim',
+-- use { '~/code/neovim-plugins/windows.nvim',
+--    requires = '~/code/neovim-plugins/animation.nvim',
+use { 'anuvyklack/windows.nvim',
    requires = 'anuvyklack/animation.nvim',
    config = function()
       vim.o.winwidth = 10
       vim.o.winminwidth = 10
+      vim.o.equalalways = false
       require('windows').setup {
          autowidth = {
             -- enable = false,
             winwidth = 5,
+            filetype = { help = 3 }
          },
          animation = {
-            -- enable = false
+            -- enable = false,
+            -- duration = 250,
          }
       }
    end
@@ -973,27 +977,6 @@ use { 'rafcamlet/nvim-luapad', as = 'luapad',
 -- -- }
 --
 -- -- }}}
-
--- -- TODO Need to rewrite in lua.
--- use { 'camspiers/lens.vim', --{{{
---    requires = 'camspiers/animate.vim',
---    config = function()
---       local g = vim.g
---       -- g.['lens#disabled_filetypes'] = { 'nerdtree', 'fzf' }
---
---       -- When resizing don't go beyond the following width
---       g['lens#width_resize_max'] = 100
---
---       -- When resizing don't go below the following width
---       g['lens#width_resize_min'] = 20
---
---       -- When resizing don't go beyond the following height
---       g['lens#height_resize_max'] = 200
---
---       -- When resizing don't go below the following height
---       g['lens#height_resize_min'] = 5
---    end
--- } --}}}
 
 -- use { 'vim-pandoc/vim-pandoc', --{{{
 --    requires = {'vim-pandoc/vim-pandoc-syntax', opt = true},
