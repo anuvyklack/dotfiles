@@ -7,8 +7,8 @@
 -- ░██ ░░██░░█████  ░░░░░██ ███ ░██ ░██░░███████░██░░░   ██████
 -- ░░   ░░  ░░░░░    █████ ░░░  ░░  ░░  ░░░░░░░ ░██     ░░░░░░
 --                  ░░░░░                       ░░
-local M = {}
 local Hydra = prequire('hydra')
+-- local Hydra = require('hydra')
 local util = require('util')
 local keymap = util.keymap
 keymap.amend = prequire('keymap-amend')
@@ -17,10 +17,11 @@ local ts_utils = prequire('nvim-treesitter.ts_utils')
 local telescope_pickers = require('anuvyklack/telescope/pickers')
 local cmd = require('hydra.keymap-util').cmd
 local pcmd = require('hydra.keymap-util').pcmd
+local M = {}
 
 -- Move to the beginning / end of a line with "Shift + h/l"
-keymap.set({ 'n', 'x', 'o' }, 'H', '^', { remap = true })
-keymap.set({ 'n', 'x', 'o' }, 'L', '$', { remap = true })
+keymap.set({ 'n','x','o' }, 'H', '^', { remap = true })
+keymap.set({ 'n','x','o' }, 'L', '$', { remap = true })
 
 keymap.set('x', '$', function() -- {{{
    -- xnoremap <expr> $ mode() == 'v' ? '$h' : '$'
@@ -42,6 +43,7 @@ keymap.amend('n', '<Esc>', function(original) -- {{{
 
    if vim.v.hlsearch and vim.v.hlsearch == 1 then
       vim.cmd 'nohlsearch'
+      -- vim.cmd.nohlsearch
    end
 
    vim.lsp.buf.clear_references()
@@ -140,6 +142,9 @@ local buffer_hydra = Hydra({ -- {{{
 
       -- { 's', function() vim.cmd 'BufferPick' end, { exit = true, desc = 'pick buffer' } },
       { 'b',  function() vim.cmd 'BufExplorer' end, { exit = true, desc = 'Explorer' } },
+
+      -- { 'o', '<cmd>%bd|e#|bd#<CR>', { exit = true } },
+
       { 'od', function() vim.cmd 'BufferOrderByDirectory' end, { desc = 'by directory' } },
       { 'ol', function() vim.cmd 'BufferOrderByLanguage' end,  { desc = 'by language' } },
       { '<Esc>', nil, { exit = true } }
@@ -199,8 +204,8 @@ local splits = prequire('smart-splits')
 Hydra({ -- {{{
    name = 'Windows',
    hint = window_hint,
-   config = {
-      debug = true,
+   config = { -- {{{
+      -- debug = true,
       invoke_on_body = true,
       -- timeout = 4000,
       -- on_key = function() vim.wait(30) end,
@@ -216,10 +221,10 @@ Hydra({ -- {{{
          border = 'rounded',
          -- offset = -1
       }
-   },
+   }, -- }}}
    mode = 'n',
    body = '<C-w>',
-   heads = {
+   heads = { -- {{{
       { 'h', '<C-w>h' },
       { 'j', '<C-w>j' },
       { 'k', pcmd('wincmd k', 'E11', 'close') },
@@ -245,11 +250,12 @@ Hydra({ -- {{{
       { 'w',     '<C-w>w', { exit = true, desc = false } },
       { '<C-w>', '<C-w>w', { exit = true, desc = false } },
 
-      -- { 'z',     cmd 'MaximizerToggle!', { desc = 'maximize' } },
-      -- { '<C-z>', cmd 'MaximizerToggle!', { exit = true, desc = false } },
+      { 'z',     cmd 'WindowsMaximize', { exit = true, desc = 'maximize' } },
+      { '<C-z>', cmd 'WindowsMaximize', { exit = true, desc = false } },
 
-      { 'z',     cmd 'WindowsMaximaze', { exit = true, desc = 'maximize' } },
-      { '<C-z>', cmd 'WindowsMaximaze', { exit = true, desc = false } },
+      -- { '+', cmd 'WindowsMaximizeVertically', { exit = true } },
+      -- { '|', cmd 'WindowsMaximizeHorizontally', { exit = true } },
+      -- { '=', cmd 'WindowsEqualize', { exit = true } },
 
       { 'o',     '<C-w>o', { exit = true, desc = 'remain only' } },
       { '<C-o>', '<C-w>o', { exit = true, desc = false } },
@@ -266,28 +272,10 @@ Hydra({ -- {{{
       { 't', cmd 'tab split', { desc = 'new tab'} },
 
       { '<Esc>', nil,  { exit = true, desc = false }}
-   }
+   } -- }}}
 }) -- }}}
 
 -- }}}
-
-Hydra({ -- Side-scroll {{{
-   name = 'Side scroll',
-   config = {
-      -- debug = true,
-      -- timeout = 2000,
-      hint = false
-      -- hint = 'statusline'
-   },
-   mode = 'n',
-   body = 'z',
-   heads = {
-      { 'h', '5zh' },
-      { 'l', '5zl', { desc = '←/→' } },
-      { 'H', 'zH' },
-      { 'L', 'zL', { desc = 'half screen ←/→' } },
-   }
-}) -- }}}
 
 Hydra({ -- Quick words {{{
    name = 'Quick words',
@@ -410,6 +398,44 @@ Hydra({ -- {{{
    }
 }) -- }}}
 -- }}}
+
+Hydra({ -- Folds {{{
+   name = 'Folds',
+   config = {
+      hint = {
+         show_name = false,
+      },
+   },
+   body = 'z',
+   heads = {
+      { 'j', 'zj' },
+      { 'k', 'zk', { desc = '↓ ↑'} },
+      { '<Esc>', nil, { exit = true, desc = false } },
+   }
+}) -- }}}
+
+keymap.set('n', '<C-g>', cmd 'TSHighlightCapturesUnderCursor')
+-- nnoremap <C-g> <cmd>call SyntaxAttr()<CR>
+
+Hydra({ -- Side-scroll {{{
+   name = 'Side scroll',
+   config = {
+      -- debug = true,
+      -- timeout = 2000,
+      hint = false
+      -- hint = 'statusline'
+   },
+   mode = 'n',
+   body = 'z',
+   heads = {
+      { 'h', '5zh' },
+      { 'l', '5zl', { desc = '←/→' } },
+      { 'H', 'zH' },
+      { 'L', 'zL', { desc = 'half screen ←/→' } },
+   }
+}) -- }}}
+
+--------------------------------------------------------------------------------
 
 M.yanky = function() -- {{{
    local yanky = require('yanky')
@@ -1011,9 +1037,6 @@ M.draw_diagrams = function() -- {{{
       }
    })
 end -- }}}
-
-keymap.set('n', '<C-g>', cmd 'TSHighlightCapturesUnderCursor')
--- nnoremap <C-g> <cmd>call SyntaxAttr()<CR>
 
 return M
 
