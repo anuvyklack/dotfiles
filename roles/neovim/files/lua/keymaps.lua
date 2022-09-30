@@ -410,6 +410,7 @@ Hydra({ -- Folds {{{
    heads = {
       { 'j', 'zj' },
       { 'k', 'zk', { desc = '↓ ↑'} },
+      { 'h', 'h', { remap = true, desc = 'preview' } },
       { '<Esc>', nil, { exit = true, desc = false } },
    }
 }) -- }}}
