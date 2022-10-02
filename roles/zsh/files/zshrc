@@ -42,20 +42,15 @@ ZNAP[SELF]="$ZNAP[PLUGINS]/zsh-snap"
 ZNAP[BIN]="$ZNAP[SELF]/znap.zsh"
 
 if [[ ! -s $ZNAP[BIN] ]]; then
-  # git clone --depth=1 'https://github.com/marlonrichert/zsh-snap.git' $ZNAP[self]
   git clone 'https://github.com/marlonrichert/zsh-snap.git' $ZNAP[SELF]
-
-  # WARNING: temporary switch to a particular commit.
-  # https://github.com/marlonrichert/zsh-snap/issues/166
-  git -C $ZNAP[SELF] checkout 26b0889a
 fi
 source $ZNAP[BIN]
 
 # zstyle ':znap:*' auto-compile no
 
-# # Do not auto compile functions in my folder, because
-# # I compile them later into one library file.
-# zstyle ':znap:*' auto-compile-ignore "${my_zsh_functions}/*"
+# Do not auto compile functions in my folder, because
+# I compile them later into one library file.
+zstyle ':znap:*' auto-compile-ignore "${my_zsh_functions}/*"
 
 # }}}
 
