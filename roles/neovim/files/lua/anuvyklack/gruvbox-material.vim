@@ -25,13 +25,17 @@
 " }}}
 " Built-in			{{{
 
-highlight! StatusLine	guifg=#e2cca9 guibg=#3c3836
+highlight! StatusLine	guifg=#e2cca9	guibg=#3c3836	gui=bold
+
+highlight! WinBar		guifg=#d6c19f	guibg=#383432	gui=bold
+" highlight! WinBar		guifg=#bfac8e	guibg=#383432	gui=bold
+
 " highlight! WinSeparator guifg=#a89984
 highlight! WinSeparator	guifg=#928374
 
-highlight! SignColumn	guibg=#32302f
-highlight! FoldColumn	guifg=#e97a6a guibg=#32302f
-highlight! LineNr		guifg=#7c6f64 guibg=#32302f
+highlight! SignColumn					guibg=#32302f
+highlight! FoldColumn	guifg=#e97a6a	guibg=#32302f
+highlight! LineNr		guifg=#7c6f64	guibg=#32302f
 
 " }}}
 " Cursor			{{{

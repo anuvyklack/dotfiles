@@ -106,6 +106,10 @@ use { 'rebelot/heirline.nvim',
    end
 }
 
+use { 'SmiteshP/nvim-navic',
+   config = function() require('anuvyklack/navic') end
+}
+
 -- use { 'SmiteshP/nvim-gps',
 --    config = function()
 --       require("nvim-gps").setup{
@@ -229,8 +233,6 @@ use { 'lvimuser/lsp-inlayhints.nvim',
    config = function() require('lsp-inlayhints').setup() end }
 
 use 'https://git.sr.ht/~p00f/clangd_extensions.nvim'
-
-use 'SmiteshP/nvim-navic'
 
 -- use 'RRethy/vim-illuminate' -- Highlight all other words the same as under the cursor
 
