@@ -85,6 +85,8 @@ o.secure = true		-- Disallows the use of :autocmd, shell and write commands
 
 -- cmd 'syntax enable'
 
+o.jumpoptions = 'view' -- NVIM 0.8
+
 -- Turn Off Swap Files ---------------------------------------------------------
 
 o.swapfile = false
