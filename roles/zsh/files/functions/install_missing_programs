@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-install_missing_programs()
+install_missing_programs() #{{{
 {
 
   print_title()
@@ -12,8 +12,7 @@ install_missing_programs()
     # wc -m  :  print the character counts
     string_length=$(echo -n $string | sed 's/\x1b\[[0-9;]*m//g' | wc -m)
     print $string $(color white bold ${filler:0:-$string_length})
-
-  }
+  } #}}}
 
   # bin {{{
   if ! (( $+commands[bin] ))

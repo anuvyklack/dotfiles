@@ -10,8 +10,6 @@ zmodload zsh/mathfunc
 # from a float (like in awk).
 INDENT=$(( int(rint(($COLUMNS - $MANWIDTH) * 0.45)) ))
 
-# INDENT=$(( ($COLUMNS - $MANWIDTH) / 2 ))
-
 # Make line of that amount of spaces.
 INDENT_LINE=$( printf %${INDENT}s )
 

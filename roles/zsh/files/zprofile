@@ -86,8 +86,7 @@ export PAGER='less -R'
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Browser
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-if [[ -f /opt/vivaldi/vivaldi ]]
-then
+if [[ -f /opt/vivaldi/vivaldi ]]; then
   export BROWSER='/opt/vivaldi/vivaldi'
 fi
 
@@ -150,8 +149,7 @@ export LESS='-i -M -R -S -z-3'
 
 # Set the Less input preprocessor.
 # Try both `lesspipe` and `lesspipe.sh` as either might exist on a system.
-if (( $#commands[(i)lesspipe(|.sh)] ))
-then
+if (( $#commands[(i)lesspipe(|.sh)] )); then
   export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
 fi
 
@@ -213,8 +211,7 @@ export ls_colors=(
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Bat
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-if (( $+commands[bat] ))
-then
+if (( $+commands[bat] )); then
   export BAT_PAGER="less ${LESS}"
   # export BAT_PAGER="less -RF"
 fi
@@ -223,8 +220,7 @@ fi
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Ripgrep
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-if (( $+commands[rg] ))
-then
+if (( $+commands[rg] )); then
   export RIPGREP_CONFIG_PATH=$HOME/.config/rg/config
 fi
 
@@ -261,8 +257,7 @@ export PARINIT='rTbgqR B=.,?_A_a Q=_s>|'
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  CMake options
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
-if (( $+commands[cmake] ))
-then
+if (( $+commands[cmake] )); then
   export CMAKE_BUILD_PARALLEL_LEVEL=7
 fi
 
@@ -295,13 +290,16 @@ if [[ $XDG_SESSION_TYPE == 'wayland' ]]; then
 fi
 export QT_AUTO_SCREEN_SCALE_FACTOR=1
 
-#  Intel-MKL {{{
-if [[ -s /opt/intel/mkl/bin/mklvars.sh ]]
-then
+# Intel-MKL {{{
+if [[ -s /opt/intel/mkl/bin/mklvars.sh ]]; then
     source /opt/intel/mkl/bin/mklvars.sh intel64
     export MKL_THREADING_LAYER=GNU
 fi
 #  }}}
 
+
+if [[ -s /etc/profile.d/modules.sh ]]; then
+  source /etc/profile.d/modules.sh
+fi
 
 # vim: ft=zsh tw=80 ts=2 sw=2
