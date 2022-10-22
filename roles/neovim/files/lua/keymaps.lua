@@ -7,8 +7,8 @@
 -- ░██ ░░██░░█████  ░░░░░██ ███ ░██ ░██░░███████░██░░░   ██████
 -- ░░   ░░  ░░░░░    █████ ░░░  ░░  ░░  ░░░░░░░ ░██     ░░░░░░
 --                  ░░░░░                       ░░
+
 local Hydra = prequire('hydra')
--- local Hydra = require('hydra')
 local util = require('util')
 local keymap = util.keymap
 keymap.amend = prequire('keymap-amend')
@@ -17,6 +17,7 @@ local ts_utils = prequire('nvim-treesitter.ts_utils')
 local telescope_pickers = require('anuvyklack/telescope/pickers')
 local cmd = require('hydra.keymap-util').cmd
 local pcmd = require('hydra.keymap-util').pcmd
+local api = vim.api
 local M = {}
 
 -- Move to the beginning / end of a line with "Shift + h/l"
@@ -25,7 +26,7 @@ keymap.set({ 'n','x','o' }, 'L', '$', { remap = true })
 
 keymap.set('x', '$', function() -- {{{
    -- xnoremap <expr> $ mode() == 'v' ? '$h' : '$'
-   local mode = vim.api.nvim_get_mode().mode
+   local mode = api.nvim_get_mode().mode
    if mode == 'v' then return '$h' else return '$' end
 end, { expr = true }) -- }}}
 
@@ -37,9 +38,9 @@ keymap.set('n', 'gJ', function() require('trevj').format_at_cursor() end)
 --                      { expr = true, desc = 'j or gj' })
 
 keymap.amend('n', '<Esc>', function(original) -- {{{
-   local key = vim.api.nvim_replace_termcodes('<Plug>(clever-f-reset)',
+   local key = api.nvim_replace_termcodes('<Plug>(clever-f-reset)',
       true, true, true) --[[@as string]]
-   vim.api.nvim_feedkeys(key, 'x', false)
+   api.nvim_feedkeys(key, 'x', false)
 
    if vim.v.hlsearch and vim.v.hlsearch == 1 then
       vim.cmd 'nohlsearch'
@@ -60,7 +61,7 @@ keymap.set('n', 'Q', function() -- {{{
    end
 
    -- Close preview window
-   for _, winnr in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+   for _, winnr in ipairs(api.nvim_tabpage_list_wins(0)) do
       if vim.wo[winnr].previewwindow then
          vim.cmd 'pclose'
          return
@@ -68,35 +69,35 @@ keymap.set('n', 'Q', function() -- {{{
    end
 
    -- Close quickfix window
-   for _, winnr in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+   for _, winnr in ipairs(api.nvim_tabpage_list_wins(0)) do
       -- for _, ft in ipairs({'qf', 'quickfix'}) do
       for _, ft in ipairs({ 'qf', 'quickfix', 'help' }) do
-         local bufnr = vim.api.nvim_win_get_buf(winnr)
+         local bufnr = api.nvim_win_get_buf(winnr)
          if vim.bo[bufnr].buftype == ft then
-            vim.api.nvim_win_close(winnr, false)
+            api.nvim_win_close(winnr, false)
             return
          end
       end
    end
 
-   -- for _, winnr in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-   --    local bufnr = vim.api.nvim_win_get_buf(winnr)
+   -- for _, winnr in ipairs(api.nvim_tabpage_list_wins(0)) do
+   --    local bufnr = api.nvim_win_get_buf(winnr)
    --    if vim.bo[bufnr].filetype == 'help' then
    --       vim.cmd 'helpclose'
    --       return
    --    end
    -- end
 
-   if #vim.api.nvim_tabpage_list_wins(0) == 2 then
-      local wins = vim.api.nvim_tabpage_list_wins(0) ---@type integer[]
-      local cur_win = vim.api.nvim_get_current_win()
+   if #api.nvim_tabpage_list_wins(0) == 2 then
+      local wins = api.nvim_tabpage_list_wins(0) ---@type integer[]
+      local cur_win = api.nvim_get_current_win()
       wins = vim.tbl_filter(function(w)
          if w ~= cur_win then
             return true
          end
       end, wins) --[[@as integer[] ]]
       local win = wins[1]
-      vim.api.nvim_win_close(win, false)
+      api.nvim_win_close(win, false)
    end
 end, { desc = 'close service window' }) -- }}}
 
@@ -410,7 +411,7 @@ Hydra({ -- Folds {{{
    heads = {
       { 'j', 'zj' },
       { 'k', 'zk', { desc = '↓ ↑'} },
-      { 'h', 'h', { remap = true, desc = 'preview' } },
+      -- { 'h', 'h', { remap = true, desc = 'preview' } },
       { '<Esc>', nil, { exit = true, desc = false } },
    }
 }) -- }}}
@@ -783,10 +784,10 @@ M.gitsigns = function(bufnr) -- {{{
    --          { expr = true, desc = 'prev hunk' } },
    --       { 's',
    --          function()
-   --             local mode = vim.api.nvim_get_mode().mode:sub(1,1)
+   --             local mode = api.nvim_get_mode().mode:sub(1,1)
    --             if mode == 'V' then -- visual-line mode
-   --                local esc = vim.api.nvim_replace_termcodes('<Esc>', true, true, true)
-   --                vim.api.nvim_feedkeys(esc, 'x', false) -- exit visual mode
+   --                local esc = api.nvim_replace_termcodes('<Esc>', true, true, true)
+   --                api.nvim_feedkeys(esc, 'x', false) -- exit visual mode
    --                vim.cmd("'<,'>Gitsigns stage_hunk")
    --             else
    --                vim.cmd("Gitsigns stage_hunk")
@@ -841,10 +842,10 @@ M.gitsigns = function(bufnr) -- {{{
             vim.wait(50, function() vim.cmd 'redraw' end, 10, false)
          end,
          on_exit = function()
-            local cursor_pos = vim.api.nvim_win_get_cursor(0)
+            local cursor_pos = api.nvim_win_get_cursor(0)
             vim.cmd 'loadview'
-            vim.api.nvim_win_set_cursor(0, cursor_pos)
-            -- vim.api.nvim_feedkeys('zv', '', false)
+            api.nvim_win_set_cursor(0, cursor_pos)
+            -- api.nvim_feedkeys('zv', '', false)
             vim.cmd 'normal zv'
             gitsigns.toggle_signs(false)
             gitsigns.toggle_linehl(false)
