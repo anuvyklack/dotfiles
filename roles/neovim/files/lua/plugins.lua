@@ -106,24 +106,8 @@ use { 'rebelot/heirline.nvim',
    end
 }
 
-use { 'SmiteshP/nvim-navic',
-   config = function() require('anuvyklack/navic') end
-}
-
--- use { 'SmiteshP/nvim-gps',
---    config = function()
---       require("nvim-gps").setup{
---          icons = {
---             -- ["class-name"] = ' ',     --  Classes and class-like objects
---             ["class-name"] = ' ',     --  Classes and class-like objects
---             ["function-name"] = ' ',  -- Functions
---             ["method-name"] = '  ',   -- Methods (functions inside class-like objects)
---             ["container-name"] = ' ', -- Containers (example: lua tables)
---             ["tag-name"] = '炙'        -- Tags (example: html tags)
---          },
---       }
---    end
--- }
+use { 'SmiteshP/nvim-navic', as = 'navic',
+   config = function() require('anuvyklack/navic') end }
 
 ----------------------------------------------------------------------------}}}
 
@@ -223,15 +207,9 @@ use 'williamboman/mason.nvim'
 use { 'neovim/nvim-lspconfig', as = 'lspconfig' }
 use 'williamboman/mason-lspconfig.nvim'
 use 'jose-elias-alvarez/null-ls.nvim'
-use { 'ray-x/lsp_signature.nvim',
-   config = function() require 'anuvyklack/lsp_signature' end }
-use 'folke/lua-dev.nvim'
-use { 'j-hui/fidget.nvim',
-   config = function() require 'anuvyklack/fidget' end }
-
-use { 'lvimuser/lsp-inlayhints.nvim',
-   config = function() require('lsp-inlayhints').setup() end }
-
+use { 'ray-x/lsp_signature.nvim', config = function() require 'anuvyklack/lsp_signature' end }
+use { 'j-hui/fidget.nvim', config = function() require 'anuvyklack/fidget' end }
+use { 'lvimuser/lsp-inlayhints.nvim', config = function() require('lsp-inlayhints').setup() end }
 use 'https://git.sr.ht/~p00f/clangd_extensions.nvim'
 
 -- use 'RRethy/vim-illuminate' -- Highlight all other words the same as under the cursor
@@ -359,10 +337,10 @@ use { 'https://gitlab.com/yorickpeterse/nvim-dd.git', as = 'deferring-diagnostic
 
 -- Windows and buffers managment ------------------------------------------- {{{
 
--- use { '~/code/neovim-plugins/windows.nvim',
---    requires = '~/code/neovim-plugins/animation.nvim',
-use { 'anuvyklack/windows.nvim',
-   requires = 'anuvyklack/animation.nvim',
+use { '~/code/neovim-plugins/windows.nvim',
+   requires = '~/code/neovim-plugins/animation.nvim',
+-- use { 'anuvyklack/windows.nvim',
+--    requires = 'anuvyklack/animation.nvim',
    config = function()
       vim.o.winwidth = 10
       vim.o.winminwidth = 10
@@ -1067,11 +1045,14 @@ use { 'mzlogin/vim-markdown-toc', ft = 'markdown' }
 --    end
 -- }
 
--- use { 'nvim-neorg/neorg',
---    requires = "nvim-lua/plenary.nvim",
---    after = "treesitter",
---    config = function() require('anuvyklack/neorg') end
--- }
+use { 'nvim-neorg/neorg',
+   requires = 'nvim-lua/plenary.nvim',
+   after = 'treesitter',
+   ft = 'norg',
+   cmd = 'Neorg',
+   run = ':Neorg sync-parsers',
+   config = function() require('anuvyklack/neorg') end
+}
 
 --}}}
 

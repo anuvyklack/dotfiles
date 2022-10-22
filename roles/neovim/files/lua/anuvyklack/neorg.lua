@@ -1,20 +1,18 @@
 require('neorg').setup({
    load = { -- what modules to load
-      ["core.defaults"] = { -- Load all the default modules.
-
-      },
+      ["core.defaults"] = {}, -- Load all default modules.
       ["core.norg.esupports.indent"] = { config = {
-         tweaks = {
-            heading2 = 1,
-            heading3 = 2,
-            heading4 = 3,
-            heading5 = 4,
-            heading6 = 5,
-         }
+         -- tweaks = {
+         --    heading2 = 1,
+         --    heading3 = 2,
+         --    heading4 = 3,
+         --    heading5 = 4,
+         --    heading6 = 5,
+         -- }
       }},
       ["core.keybinds"] = { config = {
          default_keybinds = true, -- Generate the default keybinds
-         neorg_leader = "<Leader>o" -- This is the default if unspecified
+         -- neorg_leader = '<LocalLeader>' -- This is the default if unspecified
       }},
       ["core.norg.concealer"] = { config = {
          markup_preset = 'dimmed',

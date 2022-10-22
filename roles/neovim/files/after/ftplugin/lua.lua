@@ -32,7 +32,7 @@ vim.keymap.set({'n','x'}, 'gK', 'K', { buffer = true, desc = 'Show :help' })
 
 ---@class ufo.TextChunk
 ---@field [1] string Text
----@field [2] string | integer Highlight name of ID
+---@field [2] string | integer Highlight name or ID
 
 ---@class ufo.FoldContext
 ---@field text string
