@@ -159,25 +159,7 @@ highlight! link LspSagaLightBulbSign Yellow
 highlight! link LspSignatureActiveParameter WarningMsg
 
 " }}}
-" Color brackets	{{{
-
-" {'guifgs': ['#c475c1', '#8ab7d8', '#98c369', '#ffff70', '#ea9d70', '#971717'] }
-" {'guifgs': ['#f28534', '#f2594b', '#80aa9e', '#e9b143', '#b0b846', '#d3869b'] }
-
-lua << EOF
-prequire('nvim-treesitter.configs').setup {
-   rainbow = {
-	  colors = {
-		 '#f28534', '#80aa9e', '#e9b143', '#b0b846', '#d3869b', '#f2594b'
-	  },
-   },
-}
-EOF
-
-"}}}
 " Neorg				{{{
-
-highlight! link NeorgMarkupVerbatim Blue
 
 highlight! link NeorgTodoItem1Pending Yellow
 highlight! link NeorgTodoItem2Pending Yellow
@@ -188,19 +170,6 @@ highlight! link NeorgTodoItem6Pending Yellow
 
 " code blocks {{{
 
-" highlight! NeorgTagBegin	  guifg=#645a50
-" highlight! NeorgTagEnd	  guifg=#645a50
-" highlight! NeorgTagNameWord guifg=#645a50
-
-highlight! NeorgTagBegin	guifg=#5a5a5a
-highlight! NeorgTagEnd		guifg=#5a5a5a
-highlight! NeorgTagNameWord guifg=#5a5a5a
-
-" highlight! NeorgTagBegin	  guifg=#505050
-" highlight! NeorgTagEnd	  guifg=#505050
-" highlight! NeorgTagNameWord guifg=#505050
-
-" highlight! NeorgTagParameter guifg=#787e80
 highlight! NeorgTagParameter guifg=#808080
 
 " highlight! link NeorgTagParameter Grey

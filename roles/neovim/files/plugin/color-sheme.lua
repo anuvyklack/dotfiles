@@ -64,6 +64,7 @@ local color_themes = {
       g.gruvbox_material_better_performance = 1
 
       colorscheme 'gruvbox-material'
+      require('anuvyklack/gruvbox-material')
       cmd 'source ~/.config/nvim/lua/anuvyklack/gruvbox-material.vim'
    end,
    mellow = function()
