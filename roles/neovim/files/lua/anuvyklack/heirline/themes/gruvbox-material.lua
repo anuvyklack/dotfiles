@@ -1,5 +1,5 @@
 local heirline = require('heirline.utils')
-local get_highlight = heirline.get_highlight
+local get_hl = heirline.get_highlight
 local M = {} -- theme
 
 local colors
@@ -50,22 +50,22 @@ end
 M.colors = colors
 
 local hl = {
-   StatusLine = get_highlight('Statusline'),
+   StatusLine = get_hl('Statusline'),
 
    ReadOnly = { fg = colors.red },
 
    -- WorkDir = { fg = get_highlight('Comment').fg, bold = true },
    WorkDir = { fg = colors.grey3, bold = true },
 
-   CurrentPath = { fg = get_highlight('Directory').fg, bold = true },
+   CurrentPath = { fg = get_hl('Directory').fg, bold = true },
 
-   FileName = { fg = get_highlight('Statusline').fg, bold = true },
+   FileName = { fg = get_hl('Statusline').fg, bold = true },
 
    -- GPS = { fg = colors.grey2 },
 
    FileProperties = nil,
 
-   DapMessages = { fg = get_highlight('Debug').fg },
+   DapMessages = { fg = get_hl('Debug').fg },
 
    Git = {
       branch  = { fg = colors.purple, bold = true },
@@ -78,17 +78,17 @@ local hl = {
    LspServer = { fg = colors.onedark.blue, bold = true },
 
    Diagnostic = {
-      error = { fg = get_highlight('DiagnosticSignError').fg },
-      warn  = { fg = get_highlight('DiagnosticSignWarn').fg },
-      info  = { fg = get_highlight('DiagnosticSignInfo').fg },
-      hint  = { fg = get_highlight('DiagnosticSignHint').fg }
+      error = { fg = get_hl('DiagnosticSignError').fg },
+      warn  = { fg = get_hl('DiagnosticSignWarn').fg },
+      info  = { fg = get_hl('DiagnosticSignInfo').fg },
+      hint  = { fg = get_hl('DiagnosticSignHint').fg }
    },
 
    ScrollBar = { bg = colors.grey0, fg = colors.fg1 },
 
    SearchResults = { fg = colors.black, bg = colors.aqua },
 
-   WinBar = get_highlight('WinBar'),
+   WinBar = get_hl('WinBar'),
 
    -- WinBar = {
    --    -- fg = get_highlight('Statusline').fg,

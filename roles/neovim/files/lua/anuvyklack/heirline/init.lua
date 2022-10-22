@@ -9,7 +9,6 @@ local conditions = require('heirline.conditions')
 local heirline = require("heirline.utils")
 local devicons = prequire('nvim-web-devicons')
 -- local dap_available, dap = pcall(require, 'dap')
--- local navic = prequire('nvim-navic')
 local dap = prequire('dap')
 local util = require('anuvyklack.heirline.util')
 local icons = util.icons
@@ -623,7 +622,7 @@ local Navic = {
          Namespace = 'TSNamespace',
          Package = 'Include',
          Class = 'Struct',
-         Method = 'Method',
+         Method = '@method',
          Property = 'TSProperty',
          Field = 'TSField',
          Constructor = 'TSConstructor ',
@@ -672,6 +671,7 @@ local Navic = {
          }
          -- add a separator only if needed
          if 1 < #data and i < #data then
+
             table.insert(child, {
                provider = ' > ',
                hl = hl.Navic.Separator
@@ -710,7 +710,11 @@ vim.api.nvim_create_autocmd('User', { pattern = 'HeirlineInitWinbar',
          bo[buf].buftype
       )
       local filetype = vim.tbl_contains(
-         { 'gitcommit', 'fugitive' },
+         {
+            'gitcommit', 'fugitive',
+            'markdown',
+            'NeogitStatus', 'NeogitPopup', 'NeogitCommitMessage',
+         },
          bo[buf].filetype
       )
       if buftype or filetype then
