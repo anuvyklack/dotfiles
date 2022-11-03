@@ -2,36 +2,31 @@
 
 man()
 {
-    WIDTH=80
+    MANWIDTH=80
     if (( WIDTH > COLUMNS )); then
-        WIDTH=$COLUMNS
+        MANWIDTH=$COLUMNS
     fi
 
     LESSOPEN_ORIGINAL=$LESSOPEN
     export LESSOPEN="|- lesscenter %s"
 
-    MANWIDTH=$WIDTH command man $*
+    # export LESS_TERMCAP_mb=$'\E[1;31m'     # begin bold
+    # export LESS_TERMCAP_md=$'\E[1;36m'     # begin blink
+    # export LESS_TERMCAP_me=$'\E[0m'        # reset bold/blink
+    # export LESS_TERMCAP_so=$'\E[01;44;33m' # begin reverse video
+    # export LESS_TERMCAP_se=$'\E[0m'        # reset reverse video
+    # export LESS_TERMCAP_us=$'\E[1;32m'     # begin underline
+    # export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
+
+    # Use the old drawing scheme for bold and underline (using the backspace
+    # character).  Colors are disabled.  See: man grotty
+    export GROFF_NO_SGR=1
+
+    command man $*
 
     export LESSOPEN=$LESSOPEN_ORIGINAL
 
     unset MANWIDTH
     unset LESSOPEN_ORIGINAL
-
-    # LESS_TERMCAP_mb = Begins blinking.
-    # LESS_TERMCAP_md = Begins bold.
-    # LESS_TERMCAP_me = Ends mode.
-    # LESS_TERMCAP_se = Ends standout-mode.
-    # LESS_TERMCAP_so = Begins standout-mode.
-    # LESS_TERMCAP_ue = Ends underline.
-    # LESS_TERMCAP_us = Begins underline.
-
-    # env \
-    # LESS_TERMCAP_mb=$(printf "\e[1;31m") \
-    # LESS_TERMCAP_md=$(printf "\e[1;31m") \
-    # LESS_TERMCAP_me=$(printf "\e[0m") \
-    # LESS_TERMCAP_se=$(printf "\e[0m") \
-    # LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
-    # LESS_TERMCAP_ue=$(printf "\e[0m") \
-    # LESS_TERMCAP_us=$(printf "\e[1;32m") \
-    # man "$@"
+    unset GROFF_NO_SGR
 }
