@@ -20,7 +20,6 @@ local theme, theme_available = prequire('anuvyklack/heirline/themes/'..(vim.g.co
 if not theme_available then return end
 local hl = theme.highlight
 local colors = theme.colors
-local mode_colors = hl.Mode
 local lsp_colors = theme.lsp_colors
 
 vim.o.showmode = false
@@ -191,11 +190,10 @@ do
          end
       end,
       hl = hl.WorkDir,
-      heirline.make_flexible_component(priority.WorkDir, {
-         provider = function(self) return self.pwd end,
-      },{
-         provider = function(self) return fn.pathshorten(self.pwd) end,
-      }, Null)
+      flexible = priority.WorkDir,
+      { provider = function(self) return self.pwd end },
+      { provider = function(self) return fn.pathshorten(self.pwd) end },
+      Null
    }
 
    CurrentPath = {
@@ -204,15 +202,11 @@ do
             return self.current_path
          end
       end,
-      heirline.make_flexible_component(priority.CurrentPath, {
-         provider = function(self) return self.current_path end,
-      },{
-         ---@diagnostic disable-next-line
-         provider = function(self) return fn.pathshorten(self.current_path, 2) end,
-      },{
-         provider = ''
-      }),
       hl = hl.CurrentPath,
+      flexible = priority.CurrentPath,
+      { provider = function(self) return self.current_path end, },
+      { provider = function(self) return fn.pathshorten(self.current_path, 2) end, },
+      { provider = '' },
    }
 
    FileName = {
@@ -388,10 +382,11 @@ do
       Space
    }
 
-   Git = heirline.make_flexible_component(priority.Git,
+   Git = {
+      flexible = priority.Git,
       { GitBranch, GitChanges },
       { GitBranch }
-   )
+   }
 end
 
 local Lsp
@@ -427,7 +422,6 @@ do
          end
          self.lsp_names = names
       end,
-      heirline.make_flexible_component(priority.Lsp, LspServer, LspIndicator),
       hl = function(self)
          local color
          for _, name in ipairs(self.lsp_names) do
@@ -441,7 +435,11 @@ do
          else
             return hl.LspServer
          end
-      end
+      end,
+      flexible = priority.Lsp,
+
+      LspServer,
+      LspIndicator
    }
 end
 
@@ -779,6 +777,7 @@ local WinBars = {
 
 --------------------------------------------------------------------------------
 
-require('heirline').setup(StatusLines, WinBars)
+-- require('heirline').setup(StatusLines, WinBars)
+require('heirline').setup(StatusLines)
 
 -- vim: fml=2
