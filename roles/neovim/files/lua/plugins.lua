@@ -204,6 +204,7 @@ use { 'hrsh7th/nvim-cmp', as = 'cmp', -- {{{
 
 -- LSP --------------------------------------------------------------------- {{{
 use 'williamboman/mason.nvim'
+use { 'folke/neodev.nvim', config = function() require 'anuvyklack/neodev' end }
 use { 'neovim/nvim-lspconfig', as = 'lspconfig' }
 use 'williamboman/mason-lspconfig.nvim'
 use 'jose-elias-alvarez/null-ls.nvim'
