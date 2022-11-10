@@ -603,6 +603,7 @@ filextype {*.djvu},<image/vnd.djvu>
         \ zathura %f,
         \ {View in apvlv}
         \ apvlv %f,
+        \ evince -- %c &,
 
 " Audio
 filetype {*.wav,*.mp3,*.flac,*.m4a,*.wma,*.ape,*.ac3,*.og[agx],*.spx,*.opus},
@@ -650,10 +651,10 @@ filextype {*.bmp,*.jpg,*.jpeg,*.png,*.gif,*.xpm},<image/*>
         \ sxiv %f,
         \ {View in gpicview}
         \ gpicview %c,
-        \ {View in shotwell}
-        \ shotwell,
         \ {View in qimgv}
-        \ qimgv %c &
+        \ qimgv %c &,
+        \ {View in shotwell}
+        \ shotwell
 
 " OpenRaster
 filextype *.ora
