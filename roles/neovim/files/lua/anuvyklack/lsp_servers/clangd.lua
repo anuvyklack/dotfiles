@@ -37,7 +37,8 @@ local function on_attach(client, bufnr)
 
          { 'S', vim.lsp.buf.signature_help, { desc = 'sinature help' } },
          { 't', vim.lsp.buf.type_definition, { desc = 'type definition' } },
-         { 'f', vim.lsp.buf.formatting, { desc = 'format' } },
+         { 'f', vim.lsp.buf.format, { desc = 'format' } },
+         -- { 'f', function() vim.lsp.buf.format({ async = true }) end, { desc = 'format' } },
 
          { 'v', cmd 'Vista nvim_lsp', { desc = 'Vista' } },
 

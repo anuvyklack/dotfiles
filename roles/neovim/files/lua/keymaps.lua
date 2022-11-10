@@ -567,7 +567,9 @@ M.lsp = function(bufnr) -- {{{
 
          { 's', vim.lsp.buf.signature_help, { desc = 'sinature help' } },
          { 't', vim.lsp.buf.type_definition, { desc = 'type definition' } },
-         { 'f', vim.lsp.buf.formatting, { desc = 'format' } },
+
+         { 'f', vim.lsp.buf.format, { desc = 'format' } },
+         -- { 'f', function() vim.lsp.buf.format({ async = true }) end, { desc = 'format' } },
 
          { 'td', telescope_pickers.definitions, { desc = 'definitions' } },
          { 'tr', telescope_pickers.buffer_references, { desc = 'buffer references' } },
