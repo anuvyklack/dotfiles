@@ -1,4 +1,6 @@
---WARNING Should be loaded after color scheme, so that ufo can pick it up.
+--
+-- WARNING Should be loaded after color scheme, so that ufo can pick it up.
+--
 local ufo, ok = prequire('ufo')
 if not ok then return end
 

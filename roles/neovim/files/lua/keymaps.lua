@@ -20,6 +20,8 @@ local pcmd = require('hydra.keymap-util').pcmd
 local api = vim.api
 local M = {}
 
+--------------------------------------------------------------------------------
+
 -- Move to the beginning / end of a line with "Shift + h/l"
 keymap.set({ 'n','x','o' }, 'H', '^', { remap = true })
 keymap.set({ 'n','x','o' }, 'L', '$', { remap = true })
@@ -442,8 +444,8 @@ Hydra({ -- Side-scroll {{{
 M.yanky = function() -- {{{
    local yanky = require('yanky')
 
-   keymap.set({ 'n', 'x' }, 'p', '<Plug>(YankyPutAfter)')
-   keymap.set({ 'n', 'x' }, 'P', '<Plug>(YankyPutBefore)')
+   keymap.set({'n','x'}, 'p', '<Plug>(YankyPutAfter)')
+   keymap.set({'n','x'}, 'P', '<Plug>(YankyPutBefore)')
 
    -- keymap.set('n', '<C-n>', '<Plug>(YankyCycleForward)')
    -- keymap.set('n', '<C-p>', '<Plug>(YankyCycleBackward)')
@@ -639,32 +641,6 @@ Hydra({
 
 M.telescope = function() -- {{{
 
-   -- hint {{{
-
-   --    local hint = [[
-   --  ^ ^             ^ ^             🭇🬭🬭🬭🬭🬭🬭🬭🬭🬼
-   --  ^ ^             ^ ^            🭉🭁🭠🭘    🭣🭕🭌🬾
-   --  ^ ^             ^ ^            🭅█ ▁     █🭐
-   --  ^ ^             ^ ^            ██🬿      🭊██
-   --  ^ ^             ^ ^           🭋█🬝🮄🮄🮄🮄🮄🮄🮄🮄🬆█🭀
-   --  ^ ^             ^ ^           🭤🭒🬺🬹🬱🬭🬭🬭🬭🬵🬹🬹🭝🭙
-   --  ^
-   --  _f_: files       _m_: marks            _h_: vim help   _c_: execute command
-   --  _o_: old files   _g_: live grep        _k_: keymap     _;_: commands history
-   --  _p_: projects    _/_: search in file   _r_: registers  _?_: search history
-   --  ^
-   --  ^ ^              ^ ^        _<Enter>_: Telescope       ^ ^            _<Esc>_
-   -- ]]
-   --    local hint = [[
-
-   --    🭇🬭🬭🬭🬭🬭🬭🬭🬭🬼
-   --   🭉🭁🭠🭘    🭣🭕🭌🬾  _f_: files       _m_: marks            _h_: vim help   _c_: execute command
-   --   🭅█ ▁     █🭐  _o_: old files   _g_: live grep        _k_: keymap     _;_: commands history
-   --   ██🬿      🭊██  _p_: projects    _/_: search in file   _r_: registers  _?_: search history
-   --  🭋█🬝🮄🮄🮄🮄🮄🮄🮄🮄🬆█🭀 ^
-   --  🭤🭒🬺🬹🬱🬭🬭🬭🬭🬵🬹🬹🭝🭙 ^ ^              ^ ^        _<Enter>_: Telescope       ^ ^            _<Esc>_
-   -- ]]
-
    local hint = [[
                  _f_: files       _m_: marks
    🭇🬭🬭🬭🬭🬭🬭🬭🬭🬼    _o_: old files   _g_: live grep
@@ -677,8 +653,6 @@ M.telescope = function() -- {{{
  ^
                  _<Enter>_: Telescope           _<Esc>_
 ]]
-
-   -- }}}
 
    Hydra({ -- {{{
       name = 'Telescope',
@@ -895,13 +869,13 @@ M.gitsigns = function(bufnr) -- {{{
 end -- }}}
 
 M.hop = function() -- {{{
-   keymap.set({ 'n', 'x' }, ';w', cmd 'HopWordAC', { desc = 'Easymotion forward word' })
-   keymap.set({ 'n', 'x' }, ';b', cmd 'HopWordBC', { desc = 'Easymotion bacward word' })
+   keymap.set({'n','x'}, ';w', cmd 'HopWordAC', { desc = 'Easymotion forward word' })
+   keymap.set({'n','x'}, ';b', cmd 'HopWordBC', { desc = 'Easymotion bacward word' })
 
-   keymap.set({ 'n', 'x' }, ';j', cmd 'HopLineAC', { desc = 'Easymotion line up' })
-   keymap.set({ 'n', 'x' }, ';k', cmd 'HopLineBC', { desc = 'Easymotion line down' })
+   keymap.set({'n','x'}, ';j', cmd 'HopLineAC', { desc = 'Easymotion line up' })
+   keymap.set({'n','x'}, ';k', cmd 'HopLineBC', { desc = 'Easymotion line down' })
 
-   keymap.set({ 'n', 'x' }, 's', cmd 'HopChar1', { desc = 'Easymotion char' })
+   keymap.set({'n','x'}, 's', cmd 'HopChar1', { desc = 'Easymotion char' })
 
    keymap.set('n', 't', cmd 'HopChar2', { desc = 'Easymotion 2 chars' })
 end -- }}}
@@ -909,11 +883,11 @@ end -- }}}
 M.easy_align = function() -- {{{
    -- n : interactive EasyAlign for a motion/text object (e.g. gaip)
    -- x : interactive EasyAlign in visual mode (e.g. vipga)
-   keymap.set({ 'n', 'x' }, '<leader>a', '<Plug>(EasyAlign)')
+   keymap.set({'n','x'}, '<leader>a', '<Plug>(EasyAlign)')
 end -- }}}
 
 M.iswap = function() -- {{{
-   keymap.set({ 'n', 'x' }, 'gs', cmd 'ISwap')
+   keymap.set({'n','x'}, 'gs', cmd 'ISwap')
 end -- }}}
 
 M.luasnip = function() -- {{{

@@ -1,5 +1,7 @@
+--
 -- Manually load treesitter queries to overload the default ones.
 -- https://github.com/nvim-treesitter/nvim-treesitter/issues/839#issuecomment-850027287
+--
 
 if not pcall(require, 'plenary') then return end
 

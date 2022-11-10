@@ -3,7 +3,7 @@ if not ok then return end
 
 local lsp_util = require('lspconfig.util')
 local cmd_lsp_available, cmp_lsp = pcall(require, 'cmp_nvim_lsp')
--- local null_ls = prequire('null-ls')
+local null_ls = prequire('null-ls')
 
 require('mason').setup {
    max_concurrent_installers = 10,
@@ -21,7 +21,7 @@ require("mason-lspconfig").setup {}
 local function create_capabilities()
    local capabilities = vim.lsp.protocol.make_client_capabilities()
    capabilities.textDocument.completion.completionItem.snippetSupport = true
-   vim.list_extend( ---@diagnostic disable-line
+   vim.list_extend(
       capabilities.textDocument.completion.completionItem.resolveSupport.properties,
       { "documentation", "detail", "additionalTextEdits", }
    )
@@ -120,9 +120,13 @@ require('anuvyklack/lsp_servers/clangd')
 
 -- null_ls.setup {
 --    sources = {
---       null_ls.builtins.formatting.prettierd,
---       null_ls.builtins.formatting.stylua,
---       null_ls.builtins.diagnostics.shellcheck,
+--       null_ls.builtins.formatting.clang_format
+--       -- null_ls.builtins.formatting.prettierd,
+--       -- null_ls.builtins.formatting.stylua,
+--       -- null_ls.builtins.diagnostics.shellcheck,
 --    },
+--    on_init = function(new_client, _)
+--       new_client.offset_encoding = 'utf-8'
+--    end,
 --    on_attach = common_on_attach,
 -- }

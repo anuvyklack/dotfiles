@@ -21,7 +21,7 @@ packer.init { --{{{
          return require("packer.util").float({
             border = "rounded",
             -- width  = math.ceil(vim.o.columns * 0.7),
-            height = math.ceil(vim.o.lines * 0.8)
+            -- height = math.ceil(vim.o.lines * 0.8)
          })
       end,
       working_sym = '',
@@ -117,7 +117,7 @@ use { 'nvim-treesitter/nvim-treesitter', as = 'treesitter',
       { 'nvim-treesitter/nvim-treesitter-textobjects', as = 'treesitter-textobjects' },
       { 'RRethy/nvim-treesitter-textsubjects', as = 'treesitter-textsubjects' },
       -- {'nvim-treesitter/nvim-treesitter-refactor',    as = 'treesitter-refactor'},
-      -- {'romgrk/nvim-treesitter-context',              as = 'treesitter-context'},
+      -- { 'romgrk/nvim-treesitter-context',              as = 'treesitter-context'},
       { 'JoosepAlviste/nvim-ts-context-commentstring', as = 'treesitter-context-commentstring' },
       { 'p00f/nvim-ts-rainbow', as = 'treesitter-rainbow' },
    },
@@ -764,8 +764,8 @@ use { 'echasnovski/mini.nvim', --{{{
 
 -- use 'airblade/vim-rooter'
 use { 'ahmedkhalf/project.nvim', -- {{{
-   config = function() require('project_nvim').setup {
-         detection_methods = { 'lsp', 'pattern' },
+   config = function()
+      require('project_nvim').setup {
          patterns = {
             '.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json',
             '>.config', '>roles'

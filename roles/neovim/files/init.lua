@@ -137,10 +137,9 @@ o.foldexpr = 'nvim_treesitter#foldexpr()'
 -- opt.fillchars = { foldclose = '', foldopen = '' }
 opt.fillchars = { foldclose = '', foldopen = '' }
 
--- Indent ----------------------------------------------------------------------
+-- Indentation -----------------------------------------------------------------
 
 o.smartindent = true	-- does the right thing (mostly) in programs
--- o.cindent = true		-- stricter rules for C programs
 
 o.smarttab = true		-- “Умная” расстановка отступов.
 o.expandtab = true	-- Заменять табуляцию пробелами.
