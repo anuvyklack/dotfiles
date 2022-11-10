@@ -2,10 +2,9 @@
 
 man()
 {
-    MANWIDTH=80
-    if (( WIDTH > COLUMNS )); then
-        MANWIDTH=$COLUMNS
-    fi
+    # if (( WIDTH > COLUMNS )); then
+    #     MANWIDTH=$COLUMNS
+    # fi
 
     LESSOPEN_ORIGINAL=$LESSOPEN
     export LESSOPEN="|- lesscenter %s"
@@ -19,14 +18,13 @@ man()
     # export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
 
     # Use the old drawing scheme for bold and underline (using the backspace
-    # character).  Colors are disabled.  See: man grotty
+    # character).  Colors are disabled.  See: `man grotty`
     export GROFF_NO_SGR=1
 
     command man $*
 
     export LESSOPEN=$LESSOPEN_ORIGINAL
 
-    unset MANWIDTH
     unset LESSOPEN_ORIGINAL
     unset GROFF_NO_SGR
 }

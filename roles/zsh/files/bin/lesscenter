@@ -8,7 +8,7 @@ zmodload zsh/mathfunc
 # always the period)), you have the rint() math function to give you the
 # nearest integer as a float (like in C) and int() to give you an integer
 # from a float (like in awk).
-INDENT=$(( int(rint(($COLUMNS - $MANWIDTH) * 0.45)) ))
+INDENT=$(( int(rint(($COLUMNS - $MANWIDTH) * 0.49)) ))
 
 # Make line of that amount of spaces.
 INDENT_LINE=$( printf %${INDENT}s )
