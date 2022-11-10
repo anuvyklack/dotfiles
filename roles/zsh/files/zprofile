@@ -23,7 +23,7 @@ export WORDCHARS='*?[]~=&;!#$%^(){}<>'
 # $IS_WSL environment variable existed in the WSL 1 version.
 # $WSL_DISTRO_NAME variable exists in the current WSL 2 version.
 # -n : true if length of string is non-zero.
-if [[ -n "$IS_WSL" || -n "$WSL_DISTRO_NAME" ]]
+if [[ -n "$IS_WSL" || -n "$WSL_DISTRO_NAME" ]];
 then  # We are in wsl.
   export WINDOWS_HOST_IP=$(awk '/nameserver/ {print $2}' /etc/resolv.conf)
   export WINDOWS_USER="$(cmd.exe /C "echo %USERNAME%" 2>/dev/null | tr -d '\r')"
@@ -50,12 +50,10 @@ path+=(
 # )
 
 # Homebrew {{{
-if whence /home/linuxbrew/.linuxbrew/bin/brew > /dev/null 2>&1
-then
+if whence /home/linuxbrew/.linuxbrew/bin/brew > /dev/null 2>&1; then
   local BREWCACHE="$HOME/.cache/Homebrew/brewenv.zsh"
 
-  if [[ ! -s $BREWCACHE(#q.md-7N) ]]
-  then
+  if [[ ! -s $BREWCACHE(#q.md-7N) ]]; then
       /home/linuxbrew/.linuxbrew/bin/brew shellenv > $BREWCACHE 2> /dev/null
   fi
   source $BREWCACHE
@@ -71,8 +69,7 @@ fi
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 
 # export EDITOR VISUAL
-if (( $+commands[nvim] ))
-then
+if (( $+commands[nvim] )); then
   export EDITOR='nvim'
   export VISUAL="$EDITOR"
   export DIFFPROG='nvim -d'
@@ -90,7 +87,6 @@ if [[ -f /opt/vivaldi/vivaldi ]]; then
   export BROWSER='/opt/vivaldi/vivaldi'
 fi
 
-
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Language
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
@@ -100,7 +96,6 @@ fi
 #     export LANG='en_US.UTF-8'
 #     export LANGUAGE=en_US.UTF-8
 # fi
-
 
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Man
@@ -116,7 +111,6 @@ typeset -gU manpath
 
 # # Use `bat` as a colorizing pager for `man`
 # export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-
 
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Less
@@ -155,7 +149,6 @@ fi
 
 export LESSHISTFILE="$HOME/.cache/lesshst"
 
-
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Colored man pages
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
@@ -167,7 +160,6 @@ export LESS_TERMCAP_us=$'\e[04;97m'     # Begins underline.
 export LESS_TERMCAP_me=$'\e[0m'         # Ends mode.
 export LESS_TERMCAP_se=$'\e[0m'         # Ends standout-mode.
 export LESS_TERMCAP_ue=$'\e[0m'         # Ends underline.
-
 
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  LS_COLORS
@@ -207,7 +199,6 @@ export ls_colors=(
   'ex=31'     # File which is executable (ie. has ‘x’ set in permissions).
 )
 
-
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Bat
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
@@ -215,7 +206,6 @@ if (( $+commands[bat] )); then
   export BAT_PAGER="less ${LESS}"
   # export BAT_PAGER="less -RF"
 fi
-
 
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Ripgrep
@@ -229,7 +219,6 @@ fi
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 # The following string is recommended in par man.
 export PARINIT='rTbgqR B=.,?_A_a Q=_s>|'
-
 
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  XDG
@@ -261,7 +250,6 @@ if (( $+commands[cmake] )); then
   export CMAKE_BUILD_PARALLEL_LEVEL=7
 fi
 
-
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Golang
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
@@ -272,7 +260,6 @@ export GOPATH=$HOME/code/go
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 # Set breakpoint() in Python to call pudb
 export PYTHONBREAKPOINT="pudb.set_trace"
-
 
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Libraries
