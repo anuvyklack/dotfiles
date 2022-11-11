@@ -394,8 +394,6 @@ autocmd('TextYankPost', { -- {{{
 
 -- Plugins ----------------------------------------------------------------- {{{
 
-PackerCompiled = '_packer_compiled'
-
 -- Install Packer
 local packer_path = fn.stdpath('data')..'/site/pack/packer/opt/packer.nvim'
 if fn.empty(fn.glob(packer_path)) > 0 then ---@diagnostic disable-line
@@ -410,8 +408,6 @@ command('PackerUpdate',  function() cmd 'packadd packer.nvim'; require('plugins'
 command('PackerSync',    function() cmd 'packadd packer.nvim'; require('plugins').sync()    end, {})
 command('PackerClean',   function() cmd 'packadd packer.nvim'; require('plugins').clean()   end, {})
 command('PackerCompile', function() cmd 'packadd packer.nvim'; require('plugins').compile() end, {})
-
-prequire(PackerCompiled)
 
 -- }}}
 

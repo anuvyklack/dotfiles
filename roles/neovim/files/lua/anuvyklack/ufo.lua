@@ -1,10 +1,5 @@
---
--- WARNING Should be loaded after color scheme, so that ufo can pick it up.
---
-local ufo, ok = prequire('ufo')
-if not ok then return end
+local ufo = require('ufo')
 
---------------------------------------------------------------------------------
 vim.o.foldcolumn = '1'
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = -1
@@ -22,16 +17,13 @@ local ft_map = {
 }
 
 --  
-
 ufo.setup {
    enable_get_fold_virt_text = true,
    -- fold_virt_text_handler = handler,
    provider_selector = function(bufnr, filetype)
-      return ft_map[filetype]  or { 'treesitter', 'indent' }
+      return ft_map[filetype] or { 'treesitter', 'indent' }
    end
 }
-
-prequire('fold-preview').setup()
 
 -- https://github.com/nvim-telescope/telescope.nvim/issues/559
 --------------------------------------------------------------------------------
@@ -53,3 +45,4 @@ vim.api.nvim_create_autocmd('BufRead', {
       })
    end
 })
+

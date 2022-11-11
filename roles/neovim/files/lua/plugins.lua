@@ -14,16 +14,14 @@ local use = packer.use
 local join_paths = require('packer.util').join_paths
 
 packer.init { --{{{
-   compile_path = join_paths(vim.fn.stdpath('config'), 'lua', PackerCompiled..'.lua'),
+   compile_path = join_paths(vim.fn.stdpath('config'), 'plugin', '1_packer_compiled.lua'),
    display = {
-      -- open_cmd = '90vnew [packer]',  -- set the width of the packer split
-      open_fn = function()
-         return require("packer.util").float({
-            border = "rounded",
-            -- width  = math.ceil(vim.o.columns * 0.7),
-            -- height = math.ceil(vim.o.lines * 0.8)
-         })
-      end,
+      open_cmd = '90vnew [packer]',  -- set the width of the packer split
+      -- open_fn = function()
+      --    return require("packer.util").float({
+      --       border = "rounded",
+      --    })
+      -- end,
       working_sym = '',
       error_sym = '',
       done_sym = '',
@@ -103,20 +101,21 @@ use { 'romgrk/barbar.nvim', as = 'barbar-tabline',
 use { 'rebelot/heirline.nvim',
    config = function()
       vim.o.showmode = false
+      require('anuvyklack/heirline')
    end
 }
 
 use { 'SmiteshP/nvim-navic', as = 'navic',
    config = function() require('anuvyklack/navic') end }
 
-----------------------------------------------------------------------------}}}
+-----------------------------------------------------------------------------}}}
 
 -- Treesitter -------------------------------------------------------------- {{{
 use { 'nvim-treesitter/nvim-treesitter', as = 'treesitter',
    requires = {
       { 'nvim-treesitter/nvim-treesitter-textobjects', as = 'treesitter-textobjects' },
       { 'RRethy/nvim-treesitter-textsubjects', as = 'treesitter-textsubjects' },
-      -- {'nvim-treesitter/nvim-treesitter-refactor',    as = 'treesitter-refactor'},
+      -- { 'nvim-treesitter/nvim-treesitter-refactor',    as = 'treesitter-refactor'},
       -- { 'romgrk/nvim-treesitter-context',              as = 'treesitter-context'},
       { 'JoosepAlviste/nvim-ts-context-commentstring', as = 'treesitter-context-commentstring' },
       { 'p00f/nvim-ts-rainbow', as = 'treesitter-rainbow' },
@@ -577,9 +576,15 @@ use { 'nvim-telescope/telescope.nvim', as = 'telescope',
 --    end
 -- } --}}}
 
-use { 'kevinhwang91/nvim-ufo', as = 'ufo', requires = 'kevinhwang91/promise-async' }
+use { 'kevinhwang91/nvim-ufo', as = 'ufo',
+   requires = 'kevinhwang91/promise-async',
+   config = function() require('anuvyklack/ufo') end
+}
 
-use { '~/code/neovim-plugins/fold-preview.nvim', requires = 'keymap-amend' }
+use { '~/code/neovim-plugins/fold-preview.nvim',
+   requires = 'keymap-amend',
+   config = function() require('fold-preview').setup() end
+}
 
 use { 'https://gitlab.com/yorickpeterse/nvim-pqf', as = 'pretty-quickfix', --{{{
    config = function()
