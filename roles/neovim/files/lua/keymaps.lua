@@ -72,8 +72,7 @@ keymap.set('n', 'Q', function() -- {{{
 
    -- Close quickfix window
    for _, winnr in ipairs(api.nvim_tabpage_list_wins(0)) do
-      -- for _, ft in ipairs({'qf', 'quickfix'}) do
-      for _, ft in ipairs({ 'qf', 'quickfix', 'help' }) do
+      for _, ft in ipairs({ 'quickfix', 'qf' }) do
          local bufnr = api.nvim_win_get_buf(winnr)
          if vim.bo[bufnr].buftype == ft then
             api.nvim_win_close(winnr, false)
@@ -82,13 +81,13 @@ keymap.set('n', 'Q', function() -- {{{
       end
    end
 
-   -- for _, winnr in ipairs(api.nvim_tabpage_list_wins(0)) do
-   --    local bufnr = api.nvim_win_get_buf(winnr)
-   --    if vim.bo[bufnr].filetype == 'help' then
-   --       vim.cmd 'helpclose'
-   --       return
-   --    end
-   -- end
+   for _, winnr in ipairs(api.nvim_tabpage_list_wins(0)) do
+      local bufnr = api.nvim_win_get_buf(winnr)
+      if vim.bo[bufnr].filetype == 'help' then
+         vim.cmd 'helpclose'
+         return
+      end
+   end
 
    if #api.nvim_tabpage_list_wins(0) == 2 then
       local wins = api.nvim_tabpage_list_wins(0) ---@type integer[]
