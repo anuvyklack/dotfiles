@@ -341,7 +341,7 @@ do
       end,
       hl = hl.Git.branch,
       provider = function(self)
-         return table.concat{ " ", self.git_status.head, ' ' }
+         return table.concat{ ' ', self.git_status.head }
       end,
    }
 
@@ -355,38 +355,15 @@ do
             return has_changes
          end
       end,
-      {
-         provider = function(self)
-            local count = self.git_status.added or 0
-            return count > 0 and table.concat{'+', count, ' '}
-            -- return count > 0 and table.concat{'● ', count, ' '}
-         end,
-         hl = hl.Git.added
-      },
-      {
-         provider = function(self)
-            local count = self.git_status.changed or 0
-            return count > 0 and table.concat{'~', count, ' '}
-            -- return count > 0 and table.concat{'● ', count, ' '}
-         end,
-         hl = hl.Git.changed
-      },
-      {
-         provider = function(self)
-            local count = self.git_status.removed or 0
-            return count > 0 and table.concat{'-', count, ' '}
-            -- return count > 0 and table.concat{'● ', count, ' '}
-         end,
-         hl = hl.Git.removed
-      },
-      Space
+      provider = '  ',
+      -- hl = hl.Git.branch
+      -- hl = hl.Git.changed
+      -- hl = hl.Git.added
+      -- hl = hl.Git.removed
+      hl = hl.Git.dirty
    }
 
-   Git = {
-      flexible = priority.Git,
-      { GitBranch, GitChanges },
-      { GitBranch }
-   }
+   Git = { GitBranch, GitChanges, Space }
 end
 
 local Lsp
@@ -404,7 +381,8 @@ do
             if #names == 1 then
                names = names[1]
             else
-               names = table.concat(vim.tbl_flatten({ '[', names, ']' }), ' ')
+               -- names = table.concat(vim.tbl_flatten({ '[', names, ']' }), ' ')
+               names = table.concat(names, ', ')
             end
             return names
          end,

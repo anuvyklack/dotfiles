@@ -72,6 +72,7 @@ local hl = {
       added   = { fg = colors.green,  bold = true },
       changed = { fg = colors.yellow, bold = true },
       removed = { fg = colors.red,    bold = true },
+      dirty   = { fg = colors.grey2,  bold = true },
    },
 
    LspIndicator = { fg = colors.blue },
