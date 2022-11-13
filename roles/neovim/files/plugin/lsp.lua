@@ -1,8 +1,6 @@
 local lspconfig, ok = prequire('lspconfig')
 if not ok then return end
-
 local lsp_util = require('lspconfig.util')
-local cmd_lsp_available, cmp_lsp = pcall(require, 'cmp_nvim_lsp')
 local null_ls = prequire('null-ls')
 
 require('mason').setup {
@@ -20,11 +18,10 @@ require("mason-lspconfig").setup {}
 
 local function create_capabilities()
    local capabilities = vim.lsp.protocol.make_client_capabilities()
-   capabilities.textDocument.completion.completionItem.snippetSupport = true
-   vim.list_extend(
-      capabilities.textDocument.completion.completionItem.resolveSupport.properties,
-      { "documentation", "detail", "additionalTextEdits", }
-   )
+
+   --- completion
+   local cmp_capabilities = prequire('cmp_nvim_lsp').default_capabilities()
+   capabilities = vim.tbl_deep_extend('force', capabilities, cmp_capabilities)
 
    -- For "kevinhwang91/nvim-ufo".
    -- Nvim hasn't added foldingRange to default capabilities, so tell the server
@@ -33,10 +30,6 @@ local function create_capabilities()
       dynamicRegistration = false,
       lineFoldingOnly = true
    }
-
-   if cmd_lsp_available then
-      capabilities = cmp_lsp.update_capabilities(capabilities) --[[@as table]]
-   end
 
    return capabilities
 end
