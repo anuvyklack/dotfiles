@@ -1,16 +1,19 @@
-local ufo = require('ufo')
+local ok, ufo = pcall(require, 'ufo')
+if not ok then return end
 
+--------------------------------------------------------------------------------
 vim.o.foldcolumn = '1'
 vim.o.foldlevel = 99
-vim.o.foldlevelstart = -1
+vim.o.foldlevelstart = 99
 vim.o.foldminlines = 2
 
 vim.keymap.set('n', 'zR', ufo.openAllFolds)
 vim.keymap.set('n', 'zM', ufo.closeAllFolds)
---------------------------------------------------------------------------------
 
-local ft_map = {
-   lua = { 'treesitter', 'indent' }
+--------------------------------------------------------------------------------
+local providers = {
+   lua = { 'treesitter', 'indent' },
+   -- cpp = { 'lsp' },
     -- vim = 'indent',
     -- python = {'indent'},
     -- git = ''
@@ -21,7 +24,7 @@ ufo.setup {
    enable_get_fold_virt_text = true,
    -- fold_virt_text_handler = handler,
    provider_selector = function(bufnr, filetype)
-      return ft_map[filetype] or { 'treesitter', 'indent' }
+      return providers[filetype] or { 'treesitter', 'indent' }
    end
 }
 
@@ -45,4 +48,3 @@ vim.api.nvim_create_autocmd('BufRead', {
       })
    end
 })
-
