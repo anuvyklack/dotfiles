@@ -432,24 +432,18 @@ ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
 if [[ ! -d $ZNAP[PLUGINS]/zsh-vi-mode ]]; then
   git clone "https://github.com/jeffreytse/zsh-vi-mode.git" $ZNAP[PLUGINS]/zsh-vi-mode
 
-  # WARNING: temporary switch to a particular commit
-  # https://github.com/jeffreytse/zsh-vi-mode/issues/122
-  git -C $ZNAP[PLUGINS]/zsh-vi-mode checkout c1480b4
+  # # WARNING: temporary switch to a particular commit
+  # # https://github.com/jeffreytse/zsh-vi-mode/issues/122
+  # git -C $ZNAP[PLUGINS]/zsh-vi-mode checkout c1480b4
 fi
 znap source jeffreytse/zsh-vi-mode
 
 ZVM_VI_SURROUND_BINDKEY=classic
 ZVM_READKEY_ENGINE=$ZVM_READKEY_ENGINE_DEFAULT
 
-# cursor {{{
-
-# ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_UNDERLINE
+# cursor shape
 ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLOCK
-
 ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_UNDERLINE
-# ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLOCK
-
-# }}}
 
 # zvm_after_init_commands+=(
 #   # <C-R> - fussy search in history with mcfly.
