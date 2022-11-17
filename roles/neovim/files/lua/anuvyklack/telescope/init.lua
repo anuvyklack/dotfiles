@@ -241,27 +241,11 @@ config.extensions["zf-native"] = {
    }
 }
 
-require('telescope._extensions.zoxide.config').setup({
-   prompt_title = "[ Zoxide ]",
-   mappings = {
-      keepinsert = true,
-      default = { -- <CR>
-         action = function(selection)
-            require('telescope.builtin').find_files({ cwd = selection.path })
-         end
-      }
-   }
-})
-
 telescope.setup(config)
 
 telescope.load_extension('fzf')  -- use fzf module in C
 telescope.load_extension("zf-native")
-telescope.load_extension('zoxide')
--- telescope.load_extension('packer')
-if pcall(require, 'project_nvim') then
-   telescope.load_extension('projects')
-end
+telescope.load_extension('repo')
 if pcall(require, 'neoclip') then
    telescope.load_extension('neoclip')
 end

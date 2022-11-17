@@ -537,17 +537,15 @@ use { 'gbprod/yanky.nvim',
 
 -- }}}
 
--- Fuzzy finder ------------------------------------------------------------ {{{
+-- Telescope --------------------------------------------------------------- {{{
 use { 'nvim-telescope/telescope.nvim', as = 'telescope',
    after = 'yanky.nvim',
    requires = {
       'nvim-lua/plenary.nvim',
-      { 'nvim-telescope/telescope-fzf-native.nvim', as = 'telescope-fzf-native', run = 'make' },
-      { 'natecraddock/telescope-zf-native.nvim', as = 'telescope-zf-native' },
-      -- { 'nvim-telescope/telescope-packer.nvim', as = 'telescope-packer' },
-      -- { 'nvim-telescope/telescope-frecency.nvim', as = 'telescope-frecency',
-      --    requires = 'tami5/sqlite.lua' },
-      { 'jvgrootveld/telescope-zoxide', requires = 'nvim-lua/popup.nvim' }
+      { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
+      'natecraddock/telescope-zf-native.nvim',
+      'cljoly/telescope-repo.nvim',
+      -- { 'nvim-telescope/telescope-frecency.nvim', requires = 'tami5/sqlite.lua' },
       -- 'famiu/bufdelete.nvim',
    },
    config = function()

@@ -683,8 +683,7 @@ M.telescope = function() -- {{{
          -- { 'r', cmd 'Telescope registers' },
          { 'r', cmd 'Telescope resume' },
 
-         -- { 'p', telescope.extensions.projects.projects },
-         { 'p', cmd 'Telescope projects', { desc = 'projects' } },
+         { 'p', cmd 'Telescope repo cached_list', { desc = 'projects' } },
 
          { '/', cmd 'Telescope current_buffer_fuzzy_find', { desc = 'search in file' } },
          { '?', cmd 'Telescope search_history', { desc = 'search history' } },
