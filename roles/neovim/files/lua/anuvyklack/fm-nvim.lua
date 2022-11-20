@@ -1,7 +1,4 @@
-local available, fm_nvim = pcall(require, 'fm-nvim')
-if not available then return end
-
-fm_nvim.setup{
+require('fm_nvim').setup{
    -- Border around floating window.
    -- opts: 'rounded'; 'double'; 'single'; 'solid'; 'shawdow'
    border = 'rounded',

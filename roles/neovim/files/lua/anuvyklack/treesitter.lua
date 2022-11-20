@@ -6,10 +6,10 @@ treesitter_config.setup {
    ignore_install = { 'markdown', 'vim', 'help', 'yaml' },
 
    highlight = { enable = true },
-   indent = {
-      enable = true,
-      disable = { 'python', 'yaml' }
-   },
+   -- indent = {
+   --    enable = true,
+   --    disable = { 'python', 'yaml' }
+   -- },
    incremental_selection = {
       enable = true,
       keymaps = {

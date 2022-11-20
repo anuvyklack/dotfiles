@@ -1,7 +1,6 @@
 local lspconfig, ok = prequire('lspconfig')
 if not ok then return end
 local lsp_util = require('lspconfig.util')
-local null_ls = prequire('null-ls')
 
 require('mason').setup {
    max_concurrent_installers = 10,
@@ -111,9 +110,10 @@ end
 
 require('anuvyklack/lsp_servers/clangd')
 
+-- local null_ls = prequire('null-ls')
 -- null_ls.setup {
 --    sources = {
---       null_ls.builtins.formatting.clang_format
+--       -- null_ls.builtins.formatting.clang_format
 --       -- null_ls.builtins.formatting.prettierd,
 --       -- null_ls.builtins.formatting.stylua,
 --       -- null_ls.builtins.diagnostics.shellcheck,

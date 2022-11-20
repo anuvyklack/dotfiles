@@ -10,6 +10,6 @@ vim.o.packpath = '~/.local/share/nvim/site'
 --     sync_with_ring = false,
 --   },
 -- })
-
-vim.cmd 'packadd telescope'
-require('telescope')
+--
+-- vim.cmd 'packadd telescope'
+-- require('telescope')

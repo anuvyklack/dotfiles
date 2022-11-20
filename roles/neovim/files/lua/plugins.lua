@@ -16,7 +16,7 @@ local join_paths = require('packer.util').join_paths
 packer.init { --{{{
    compile_path = join_paths(vim.fn.stdpath('config'), 'plugin', '1_packer_compiled.lua'),
    display = {
-      open_cmd = '90vnew [packer]',  -- set the width of the packer split
+      open_cmd = '90vnew [packer]', -- set the width of the packer split
       -- open_fn = function()
       --    return require("packer.util").float({
       --       border = "rounded",
@@ -92,7 +92,6 @@ use { 'folke/lsp-colors.nvim', --{{{
 
 -- use { '~/code/neovim-plugins/!git-repos/barbar.nvim',
 use { 'romgrk/barbar.nvim', as = 'barbar-tabline',
-   commit = 'release/1.0.0',
    requires = 'kyazdani42/nvim-web-devicons',
    config = function()
       require('bufferline').setup {
@@ -340,14 +339,15 @@ use { 'https://gitlab.com/yorickpeterse/nvim-dd.git', as = 'deferring-diagnostic
 
 -- Windows and buffers managment ------------------------------------------- {{{
 
-use { '~/code/neovim-plugins/windows.nvim',
-   requires = '~/code/neovim-plugins/animation.nvim',
 -- use { 'anuvyklack/windows.nvim',
 --    requires = 'anuvyklack/animation.nvim',
+use { '~/code/neovim-plugins/windows.nvim',
+   requires = '~/code/neovim-plugins/animation.nvim',
    config = function()
       vim.o.winwidth = 10
       vim.o.winminwidth = 10
       vim.o.equalalways = false
+
       require('windows').setup {
          autowidth = {
             -- enable = false,
@@ -499,7 +499,7 @@ use { 'rhysd/clever-f.vim', --{{{
 
 --}}}
 
--- -- Multiple cursors
+-- Multiple cursors
 use { 'mg979/vim-visual-multi', as = 'multiple-cursors' }
 
 -- Yank ring --------------------------------------------------------------- {{{
@@ -1060,7 +1060,7 @@ use { 'lyokha/vim-xkbswitch', as = 'xkbswitch',
       vim.g.XkbSwitchLib = '/usr/local/lib/libg3kbswitch.so'
       vim.g.XkbSwitchAssistNKeymap = 1 -- for commands r and f
       -- vim.g.XkbSwitchIMappings = {'ru'}
-      --
+
       -- require('which-key').register {
       --    gh = 'which_key_ignore',
       --    gH = 'test description',

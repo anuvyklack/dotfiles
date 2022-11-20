@@ -21,7 +21,7 @@ KEYBINDINGS SPECIAL SYMBOLS
 <C-g>u		Break undo sequence and start a new change.
 							|i_CTRL-G_u|
 
-------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 COMMAND MODE
 
 |:verbose|	Allows to check, who set option: >
@@ -30,7 +30,7 @@ COMMAND MODE
 |:options|	Open a window for viewing and setting all options.
 
 
-------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 LUA FUNCTIONS
 
 |vim.inspect()|		Return a human-readable representation of the given
@@ -44,12 +44,12 @@ LUA FUNCTIONS
 
 |vim.tbl_values()|	Return a list of all values used in a table.
 
-------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 QUICKFIX
 How to write your own custom function to format quickfix window content:
 https://github.com/kevinhwang91/nvim-bqf#format-new-quickfix
 
-------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 OPTIONS
 
 Indentation settings							<<<

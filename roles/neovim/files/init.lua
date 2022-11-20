@@ -11,7 +11,7 @@ local cmd = vim.cmd
 local o, opt, opt_local = vim.o, vim.opt, vim.opt_local
 local g = vim.g
 local fn = vim.fn
-local has =	function(item) return fn.has(item) == 1 end
+local has = function(item) return fn.has(item) == 1 end
 local command = vim.api.nvim_create_user_command
 local autocmd = vim.api.nvim_create_autocmd
 P = vim.pretty_print
@@ -49,12 +49,12 @@ end
 -- }}}
 
 -- Nvui GUI
-if g.nvui then cmd 'source ~/.config/nvim/ginit.vim' end
+if g.nvui then cmd.source(fn.stdpath('config')..'/ginit.vim') end
 
 -- Options ----------------------------------------------------------------- {{{
 
 vim.opt.fileencodings = { 'utf-8', 'cp1251' }
-o.termguicolors = true			-- 24 bit color support
+o.termguicolors = true	-- 24 bit color support
 
 -- g.mapleader = vim.api.nvim_replace_termcodes('<Space>', true, true, true)
 g.mapleader = ' ' -- <Space>
@@ -232,8 +232,8 @@ opt.spelllang = { 'ru_ru', 'en_us' }
 -- Русский язык ----------------------------------------------------------------
 
 o.keymap = 'russian-jcukenwin'
-o.iminsert = 0			-- Чтобы при старте ввод был на английском, а не на русском.
-o.imsearch = -1		-- Чтобы при старте поиск был на английском, а не на русском.
+o.iminsert = 0		-- Чтобы при старте ввод был на английском, а не на русском.
+o.imsearch = -1	-- Чтобы при старте поиск был на английском, а не на русском.
 
 -- -- Менять цвет курсора при включенном русском языке
 -- highlight Cursor guifg=Cyan guibg=Green
@@ -266,7 +266,7 @@ if has('wsl') then
 		copy = {
 			['+'] = '/mnt/c/tools/win32yank.exe -i --crlf',
 			['*'] = '/mnt/c/tools/win32yank.exe -i --crlf',
-		 },
+		},
 		paste = {
 			['+'] = '/mnt/c/tools/win32yank.exe -o --lf',
 			['*'] = '/mnt/c/tools/win32yank.exe -o --lf',
@@ -378,7 +378,7 @@ fn.sign_define('DiagnosticSignHint',  { text = '', texthl = 'DiagnosticSignHi
 
 command('I', 'edit $MYVIMRC', { desc = 'open "init.lua" file' })
 command('P', function() -- {{{
-	cmd('edit '..fn.stdpath('config')..'/lua/plugins.lua')
+	cmd.edit(fn.stdpath('config') .. '/lua/plugins.lua')
 end, { desc = 'open "plugins.lua" file' }) -- }}}
 
 -- Highlight on yank, see ':help lua-highlight'

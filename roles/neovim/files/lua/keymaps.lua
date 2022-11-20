@@ -54,7 +54,7 @@ keymap.amend('n', '<Esc>', function(original) -- {{{
    original()
 end, { desc = 'disable search highlight' }) -- }}}
 
-keymap.set('n', 'Q', function() -- {{{
+keymap.set('n', 'Q', function() --{{{
    -- Close command line window
    -- if vim.fn.bufexists('[Command Line]') ~= 0 then
    if vim.fn.getcmdwintype() ~= '' then
@@ -90,17 +90,14 @@ keymap.set('n', 'Q', function() -- {{{
    end
 
    if #api.nvim_tabpage_list_wins(0) == 2 then
-      local wins = api.nvim_tabpage_list_wins(0) ---@type integer[]
-      local cur_win = api.nvim_get_current_win()
-      wins = vim.tbl_filter(function(w)
-         if w ~= cur_win then
-            return true
-         end
-      end, wins) --[[@as integer[] ]]
+      ---@type integer[]
+      local wins = api.nvim_tabpage_list_wins(0)
+      local curwin = api.nvim_get_current_win()
+      wins = vim.tbl_filter(function(w) return w ~= curwin end, wins)
       local win = wins[1]
       api.nvim_win_close(win, false)
    end
-end, { desc = 'close service window' }) -- }}}
+end, { desc = 'close service window' }) --}}}
 
 -- Buffers and windows managment {{{
 
@@ -279,7 +276,8 @@ Hydra({ -- {{{
 
 -- }}}
 
-Hydra({ -- Quick words {{{
+-- Quick words
+Hydra({ --{{{
    name = 'Quick words',
    config = {
       -- debug = true,
@@ -290,13 +288,14 @@ Hydra({ -- Quick words {{{
       },
       timeout = 6000,
    },
-   mode = { 'n', 'x', 'o' },
+   mode = {'n','x','o'},
    body = ',',
    heads = {
       { 'w', '<Plug>(smartword-w)' },
       { 'b', '<Plug>(smartword-b)' },
       { 'e', '<Plug>(smartword-e)' },
       { 'ge', '<Plug>(smartword-ge)' },
+      -- { 'q',     nil, { exit = true, mode = 'n' } },
       { '<Esc>', nil, { exit = true, mode = 'n' } }
    }
 }) -- }}}
@@ -401,7 +400,8 @@ Hydra({ -- {{{
 }) -- }}}
 -- }}}
 
-Hydra({ -- Folds {{{
+-- Folds
+Hydra({ --{{{
    name = 'Folds',
    config = {
       hint = {
@@ -484,7 +484,6 @@ M.lsp = function(bufnr) -- {{{
    -- keymap.set('n', 'gd', require('goto-preview').goto_preview_definition)
    -- keymap.set('n', 'gi', require('goto-preview').goto_preview_implementation)
    keymap.set('n', 'gr', vim.lsp.buf.references, opts { desc = 'LSP references' })
-   -- keymap.set('n', 'gR', cmd 'TroubleToggle lsp_references', opts { desc = 'LSP references', requires = 'trouble' })
 
    keymap.set('n', 'K', vim.lsp.buf.hover, opts { desc = 'hover doc', ft_ignore = { 'vim' } })
 
@@ -683,7 +682,8 @@ M.telescope = function() -- {{{
          -- { 'r', cmd 'Telescope registers' },
          { 'r', cmd 'Telescope resume' },
 
-         { 'p', cmd 'Telescope repo cached_list', { desc = 'projects' } },
+         { 'p', cmd 'Telescope repo list', { desc = 'projects' } },
+         -- { 'p', cmd 'Telescope repo cached_list', { desc = 'projects' } },
 
          { '/', cmd 'Telescope current_buffer_fuzzy_find', { desc = 'search in file' } },
          { '?', cmd 'Telescope search_history', { desc = 'search history' } },
@@ -705,6 +705,7 @@ M.telescope = function() -- {{{
    keymap.set('n', 'z=', cmd 'Telescope spell_suggest', { desc = 'spell Suggest' })
 end -- }}}
 
+-- git
 M.gitsigns = function(bufnr) -- {{{
    local gitsigns = prequire('gitsigns')
 
@@ -719,7 +720,7 @@ M.gitsigns = function(bufnr) -- {{{
    -- Hydra({ -- {{{
    --    name = 'Git',
    --    hint = hint,
-   --    config = {
+   --    config = { --{{{
    --       -- debug = true,
    --       buffer = bufnr,
    --       color = 'amaranth',
@@ -738,25 +739,25 @@ M.gitsigns = function(bufnr) -- {{{
    --          gitsigns.toggle_linehl(false)
    --          gitsigns.toggle_deleted(false)
    --       end,
-   --    },
+   --    }, --}}}
    --    mode = {'n','x'},
    --    body = '<leader>g',
    --    heads = {
-   --       { 'J',
+   --       { 'J', --{{{
    --          function()
    --             if vim.wo.diff then return ']c' end
    --             vim.schedule(function() gitsigns.next_hunk() end)
    --             return '<Ignore>'
    --          end,
-   --          { expr = true, desc = 'next hunk' } },
-   --       { 'K',
+   --          { expr = true, desc = 'next hunk' } }, --}}}
+   --       { 'K', --{{{
    --          function()
    --             if vim.wo.diff then return '[c' end
    --             vim.schedule(function() gitsigns.prev_hunk() end)
    --             return '<Ignore>'
    --          end,
-   --          { expr = true, desc = 'prev hunk' } },
-   --       { 's',
+   --          { expr = true, desc = 'prev hunk' } }, --}}}
+   --       { 's', --{{{
    --          function()
    --             local mode = api.nvim_get_mode().mode:sub(1,1)
    --             if mode == 'V' then -- visual-line mode
@@ -767,7 +768,7 @@ M.gitsigns = function(bufnr) -- {{{
    --                vim.cmd("Gitsigns stage_hunk")
    --             end
    --          end,
-   --          { desc = 'stage hunk' } },
+   --          { desc = 'stage hunk' } }, --}}}
    --       -- { 'r', ':Gitsigns reset_hunk<CR>', { desc = 'reset hunk' } }, -- need modifiable
    --       { 'u', gitsigns.undo_stage_hunk, { desc = 'undo last stage' } },
    --       { 'S', gitsigns.stage_buffer, { desc = 'stage buffer' } },
@@ -799,7 +800,7 @@ M.gitsigns = function(bufnr) -- {{{
    Hydra({ -- {{{
       name = 'Git',
       hint = hint,
-      config = {
+      config = { --{{{
          -- debug = true,
          buffer = bufnr,
          color = 'pink',
@@ -807,15 +808,15 @@ M.gitsigns = function(bufnr) -- {{{
          hint = {
             border = 'rounded'
          },
-         on_enter = function()
+         on_enter = function() --{{{
             vim.cmd 'mkview'
             vim.cmd 'silent! %foldopen!'
             vim.bo.modifiable = false
             gitsigns.toggle_signs(true)
             gitsigns.toggle_linehl(true)
             vim.wait(50, function() vim.cmd 'redraw' end, 10, false)
-         end,
-         on_exit = function()
+         end, --}}}
+         on_exit = function() --{{{
             local cursor_pos = api.nvim_win_get_cursor(0)
             vim.cmd 'loadview'
             api.nvim_win_set_cursor(0, cursor_pos)
@@ -824,25 +825,25 @@ M.gitsigns = function(bufnr) -- {{{
             gitsigns.toggle_signs(false)
             gitsigns.toggle_linehl(false)
             gitsigns.toggle_deleted(false)
-         end,
-      },
-      mode = { 'n', 'x' },
+         end, --}}}
+      }, --}}}
+      mode = {'n','x'},
       body = '<leader>g',
-      heads = {
-         { 'J',
+      heads = { --{{{
+         { 'J', --{{{
             function()
                if vim.wo.diff then return ']c' end
                vim.schedule(function() gitsigns.next_hunk() end)
                return '<Ignore>'
             end,
-            { expr = true, desc = 'next hunk' } },
-         { 'K',
+            { expr = true, desc = 'next hunk' } }, --}}}
+         { 'K', --{{{
             function()
                if vim.wo.diff then return '[c' end
                vim.schedule(function() gitsigns.prev_hunk() end)
                return '<Ignore>'
             end,
-            { expr = true, desc = 'prev hunk' } },
+            { expr = true, desc = 'prev hunk' } }, --}}}
          { 's', ':Gitsigns stage_hunk<CR>', { silent = true, desc = 'stage hunk' } },
          -- { 'r', ':Gitsigns reset_hunk<CR>', { desc = 'reset hunk' } }, -- need modifiable
          { 'u', gitsigns.undo_stage_hunk, { desc = 'undo last stage' } },
@@ -863,8 +864,8 @@ M.gitsigns = function(bufnr) -- {{{
 
          { 'q', nil, { exit = true, nowait = true, desc = 'exit' } },
          -- { '<Esc>', nil, { exit = true, desc = 'exit' } }
-      }
-   }) -- }}}
+      } --}}}
+   }) --}}}
 
 end -- }}}
 

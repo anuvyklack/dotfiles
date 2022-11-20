@@ -12,7 +12,7 @@ local layout_config = {
       width = 0.80,
       mirror = false,
       prompt_position = 'top',
-      preview_width = { 0.5, min = 20},
+      preview_width = { 0.5, min = 20 },
    },
    vertical = {
       -- width = 0.8,
@@ -28,7 +28,7 @@ local config = {
       selection_caret = ' ', --  卑 喝   
       dynamic_preview_title = true,
       sorting_strategy = 'ascending', -- or 'descending',
-      scroll_strategy = 'limit',  -- or 'cycle'
+      scroll_strategy = 'limit', -- or 'cycle'
       layout_strategy = 'flex', -- 'flex', 'horizontal', 'vertical',
       layout_config = layout_config,
       set_env = { ['COLORTERM'] = 'truecolor' },
@@ -47,7 +47,7 @@ local config = {
       },
       mappings = {
          -- ['<C-n>'] = false, -- disable keymap
-         i = {  -- insert mode
+         i = { -- insert mode
             ['<C-j>'] = actions.move_selection_next,
             ['<C-k>'] = actions.move_selection_previous,
             -- ['<C-k>'] = actions.move_selection_better,
@@ -65,7 +65,7 @@ local config = {
             -- ['<C-s>'] = custom_actions.multi_selection_open_split,
             -- ['<C-t>'] = custom_actions.multi_selection_open_tab,
          },
-         n = {  -- normal mode
+         n = { -- normal mode
             ['<Space>'] = actions.toggle_selection,
             ['q'] = actions.smart_send_to_qflist + actions.open_qflist,
          },
@@ -243,7 +243,7 @@ config.extensions["zf-native"] = {
 
 telescope.setup(config)
 
-telescope.load_extension('fzf')  -- use fzf module in C
+telescope.load_extension('fzf') -- use fzf module in C
 telescope.load_extension("zf-native")
 telescope.load_extension('repo')
 if pcall(require, 'neoclip') then
@@ -255,5 +255,3 @@ end
 
 -- https://github.com/nvim-telescope/telescope.nvim/issues/559
 -- vim.cmd 'autocmd BufRead * autocmd BufWinEnter * ++once normal zxzM'
-
-

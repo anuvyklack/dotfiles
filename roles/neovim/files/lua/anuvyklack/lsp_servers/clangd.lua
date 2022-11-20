@@ -70,12 +70,10 @@ prequire('clangd_extensions').setup {
          '--pch-storage=memory',
          '--cross-file-rename',
 
-         -- -- One completion item for each semantically distinct completion,
-         -- -- with full type information.
-         -- '--completion-style=detailed',
-
-         -- Similar completion items (e.g. function overloads) are combined.
-         -- Type information shown where possible.
+         -- bounded  : Similar completion items (e.g. function overloads) are
+         --            combined.  Type information shown where possible.
+         -- detailed : One completion item for each semantically distinct
+         --            completion, with full type information.
          '--completion-style=bundled',
       },
    },
