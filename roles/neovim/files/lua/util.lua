@@ -6,13 +6,6 @@ function util.warn(msg)
    end)
 end
 
----@type Void
-util.void = setmetatable({}, {
-   __index = function(self) return self end,
-   __newindex = function() end,
-   __call = function() end
-})
-
 ---@class util.Keymap
 ---@field cmd function
 ---@field set function

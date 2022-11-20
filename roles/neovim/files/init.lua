@@ -22,6 +22,13 @@ end
 
 -- prequire {{{
 
+---@class Void Void has eveything and nothing
+Void = setmetatable({}, { ---@type Void
+	__index = function(self) return self end,
+	__newindex = function() end,
+	__call = function() end
+})
+
 ---Protected `require` function
 ---@param module_name string
 ---@return table | function | Void module
@@ -36,15 +43,8 @@ function prequire(module_name)
       local msg = string.format('"%s" requested in "%s" not available', module_name, source)
 		vim.schedule(function() vim.notify_once(msg, vim.log.levels.WARN) end)
 
-		---@class Void Void has eveything and nothing
-		local void = setmetatable({}, { ---@type Void
-			__index = function(self) return self end,
-			__newindex = function() end,
-			__call = function() end
-		})
-
-      return void, false
-   end
+		return Void, false
+	end
 end
 -- }}}
 
