@@ -249,11 +249,5 @@ highlight HydraPink		  guifg=#ff57af gui=bold
 highlight CleverFDefaultLabel guibg=#6f7be5 guifg=#32302f gui=bold
 
 " }}}
-" Mini				{{{
-
-" highlight MiniTrailspace guifg=#f2594b guibg=None
-highlight MiniTrailspace guifg=#f28534 guibg=None
-
-" }}}
 
 " vim: fdm=marker
