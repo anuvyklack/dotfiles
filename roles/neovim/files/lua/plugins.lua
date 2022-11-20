@@ -587,19 +587,6 @@ use { '~/code/neovim-plugins/fold-preview.nvim',
    config = function() require('fold-preview').setup() end
 }
 
-use { 'https://gitlab.com/yorickpeterse/nvim-pqf', as = 'pretty-quickfix', --{{{
-   config = function()
-      require('pqf').setup {
-         signs = {
-            error = 'E',
-            warning = 'W',
-            info = 'I',
-            hint = 'H'
-         }
-      }
-   end
-} --}}}
-
 -- use { 'rcarriga/nvim-notify',
 --    config = function() vim.notify = require("notify") end }
 
@@ -858,6 +845,9 @@ use { 'kevinhwang91/nvim-bqf', as = 'better-quickfix', --{{{
       require('bqf').setup {
          auto_enable = true,
          auto_resize_height = true, -- highly recommended enable
+         preview = {
+            buf_label = false,
+         }
       }
    end
 } --}}}

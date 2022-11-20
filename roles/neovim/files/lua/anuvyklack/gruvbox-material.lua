@@ -34,6 +34,15 @@ local get_hl = H.get_highlight
 
 hl('ErrorMsg', { fg = '#f26458', bold = true })
 
+-- QuickFix {{{
+hl('QuickFixLine', { bg ='#40383c', bold = true })
+
+hl('qfError', { link = 'DiagnosticSignError' })
+hl('qfWarn',  { link = 'DiagnosticSignWarn' })
+hl('qfHint',  { link = 'DiagnosticSignHint' })
+hl('qfInfo',  { link = 'DiagnosticSignInfo' })
+--}}}
+
 -- Diff {{{
 hl('DiffText', { bg='#174f59' })
 -- hl('DiffText', { fg='#e2cca9', bg='#1a545f' })
