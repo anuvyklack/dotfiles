@@ -241,11 +241,21 @@ config.extensions["zf-native"] = {
    }
 }
 
+-- config.extensions['project'] = {
+--    base_dirs = {
+--       vim.fn.stdpath('data') .. '/site/pack',
+--       '~/code/neovim-plugins',
+--    },
+--    -- theme = "dropdown",
+--    -- order_by = "asc",
+-- }
+
 telescope.setup(config)
 
 telescope.load_extension('fzf') -- use fzf module in C
 telescope.load_extension("zf-native")
 telescope.load_extension('repo')
+-- telescope.load_extension('project')
 if pcall(require, 'neoclip') then
    telescope.load_extension('neoclip')
 end

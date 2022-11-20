@@ -548,6 +548,7 @@ use { 'nvim-telescope/telescope.nvim', as = 'telescope',
       { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
       'natecraddock/telescope-zf-native.nvim',
       'cljoly/telescope-repo.nvim',
+      -- 'nvim-telescope/telescope-project.nvim',
       -- { 'nvim-telescope/telescope-frecency.nvim', requires = 'tami5/sqlite.lua' },
       -- 'famiu/bufdelete.nvim',
    },
@@ -755,20 +756,27 @@ use { 'echasnovski/mini.nvim', --{{{
    end
 } --}}}
 
--- use 'airblade/vim-rooter'
-use { 'ahmedkhalf/project.nvim', -- {{{
+use { 'airblade/vim-rooter',
    config = function()
-      require('project_nvim').setup {
-         patterns = {
-            '.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json',
-            '>.config', '>roles'
-         },
-         -- When set to false, you will get a message
-         -- when project.nvim changes your directory.
-         silent_chdir = true,
-      }
+      vim.g.rooter_patterns = { '.root', '.git', 'package.json', '>.config' }
+      vim.g.rooter_silent_chdir = true
+      vim.g.rooter_cd_cmd = 'lcd'
    end
-} -- }}}
+}
+
+-- use { 'ahmedkhalf/project.nvim', --{{{
+--    config = function()
+--       require('project_nvim').setup {
+--          patterns = {
+--             '.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json',
+--             '>.config', '>roles'
+--          },
+--          -- When set to false, you will get a message
+--          -- when project.nvim changes your directory.
+--          silent_chdir = true,
+--       }
+--    end
+-- } --}}}
 
 -- use { 'klen/nvim-config-local', as = 'per-project-config', -- {{{
 --    config = function()
