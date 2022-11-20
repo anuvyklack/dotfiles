@@ -37,7 +37,10 @@ use { 'wbthomason/packer.nvim', opt = true }
 use 'lewis6991/impatient.nvim' -- improve startup time
 
 use 'anuvyklack/middleclass'
--- use '~/code/neovim-plugins/middleclass'
+
+-- use 'anuvyklack/nvim-api-wrappers'
+use '~/code/neovim-plugins/nvim-api-wrappers'
+
 
 -- Key Mapppings ----------------------------------------------------------- {{{
 
