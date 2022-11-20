@@ -706,15 +706,15 @@ M.telescope = function() -- {{{
 end -- }}}
 
 -- git
-M.gitsigns = function(bufnr) -- {{{
+M.gitsigns = function(--[[bufnr]]) -- {{{
    local gitsigns = prequire('gitsigns')
 
    local hint = [[
- _J_: next hunk   _s_: stage hunk        _d_: show deleted   _b_: blame line
- _K_: prev hunk   _u_: undo last stage   _p_: preview hunk   _B_: blame show full 
- ^ ^              _S_: stage buffer      ^ ^                 _/_: show base file 
+ _J_: next  _s_: stage hunk       _S_: stage file        _d_: show deleted
+ _K_: prev  _u_: undo last stage  _U_: reset file index  _D_: diff with base 
+ ^ ^        _X_: discard hunk     ^ ^                    _/_: show base
  ^
- ^ ^              _<Enter>_: Neogit              _q_: exit
+ ^ ^           _<Enter>_: Neogit              _q_: exit
 ]]
 
    -- Hydra({ -- {{{
@@ -802,26 +802,28 @@ M.gitsigns = function(bufnr) -- {{{
       hint = hint,
       config = { --{{{
          -- debug = true,
-         buffer = bufnr,
          color = 'pink',
          invoke_on_body = true,
          hint = {
             border = 'rounded'
          },
          on_enter = function() --{{{
-            vim.cmd 'mkview'
-            vim.cmd 'silent! %foldopen!'
+            if not vim.wo.diff then
+               vim.cmd 'mkview 9'
+               vim.cmd 'silent! %foldopen!'
+            end
             vim.bo.modifiable = false
             gitsigns.toggle_signs(true)
             gitsigns.toggle_linehl(true)
-            vim.wait(50, function() vim.cmd 'redraw' end, 10, false)
+            -- vim.wait(50) -- vim.wait(50, function() vim.cmd 'redraw' end, 10)
          end, --}}}
          on_exit = function() --{{{
-            local cursor_pos = api.nvim_win_get_cursor(0)
-            vim.cmd 'loadview'
-            api.nvim_win_set_cursor(0, cursor_pos)
-            -- api.nvim_feedkeys('zv', '', false)
-            vim.cmd 'normal zv'
+            if not vim.wo.diff then
+               local cursor_pos = api.nvim_win_get_cursor(0)
+               pcall(vim.cmd, 'loadview 9') ---@diagnostic disable-line
+               api.nvim_win_set_cursor(0, cursor_pos)
+               vim.cmd 'normal zv'
+            end
             gitsigns.toggle_signs(false)
             gitsigns.toggle_linehl(false)
             gitsigns.toggle_deleted(false)
@@ -832,8 +834,12 @@ M.gitsigns = function(bufnr) -- {{{
       heads = { --{{{
          { 'J', --{{{
             function()
-               if vim.wo.diff then return ']c' end
-               vim.schedule(function() gitsigns.next_hunk() end)
+               if vim.wo.diff then
+                  -- print(']c')
+                  return ']c'
+               end
+               -- vim.schedule(function() gitsigns.next_hunk() end)
+               gitsigns.next_hunk()
                return '<Ignore>'
             end,
             { expr = true, desc = 'next hunk' } }, --}}}
@@ -845,22 +851,39 @@ M.gitsigns = function(bufnr) -- {{{
             end,
             { expr = true, desc = 'prev hunk' } }, --}}}
          { 's', ':Gitsigns stage_hunk<CR>', { silent = true, desc = 'stage hunk' } },
-         -- { 'r', ':Gitsigns reset_hunk<CR>', { desc = 'reset hunk' } }, -- need modifiable
          { 'u', gitsigns.undo_stage_hunk, { desc = 'undo last stage' } },
+         { 'U', gitsigns.reset_buffer_index, { desc = 'reset file index' } },
          { 'S', gitsigns.stage_buffer, { desc = 'stage buffer' } },
-         -- { 'v', gitsigns.select_hunk, { nowait = true, desc = 'select hunk' } },
-         { 'p', gitsigns.preview_hunk, { desc = 'preview hunk' } },
+         -- { 'p', gitsigns.preview_hunk, { desc = 'preview hunk' } },
          { 'd', gitsigns.toggle_deleted, { nowait = true, desc = 'toggle deleted' } },
+
+         { 'X', --{{{
+            function()
+               vim.bo.modifiable = true
+               local mode = api.nvim_get_mode().mode:sub(1,1)
+               if mode == 'V' or mode == 'v' then -- visual-line or visual-character mode
+                  local Esc = api.nvim_replace_termcodes('<Esc>', true, true, true)
+                  api.nvim_feedkeys(Esc, 'x', false) -- exit visual mode
+                  vim.cmd("'<,'>Gitsigns reset_hunk")
+               else
+                  vim.cmd("Gitsigns reset_hunk")
+               end
+               vim.wait(10)
+               vim.bo.modifiable = false
+            end,
+            { desc = 'discard hunk' } }, --}}}
+
+         { 'D', gitsigns.diffthis, { exit = true, nowait = true, desc = 'diff file with base' } },
 
          -- { 's', telescope_pickers.git_status, { desc = 'status' } },
          -- { 'S', telescope_pickers.git_stash, { desc = 'stash' } },
 
-         { 'b', gitsigns.blame_line, { desc = 'blame' } },
-         { 'B', function() gitsigns.blame_line { full = true } end, { desc = 'blame show full' } },
+         -- { 'b', gitsigns.blame_line, { desc = 'blame' } },
+         -- { 'B', function() gitsigns.blame_line { full = true } end, { desc = 'blame show full' } },
 
          { '/', gitsigns.show, { exit = true, desc = 'show base file' } }, -- show the base of the file
 
-         { '<Enter>', cmd 'Neogit', { exit = true, desc = 'Neogit' } },
+         { '<Enter>', cmd 'Neogit', { exit_before = true, desc = 'Neogit' } },
 
          { 'q', nil, { exit = true, nowait = true, desc = 'exit' } },
          -- { '<Esc>', nil, { exit = true, desc = 'exit' } }
