@@ -72,12 +72,11 @@ keymap.set('n', 'Q', function() --{{{
 
    -- Close quickfix window
    for _, winnr in ipairs(api.nvim_tabpage_list_wins(0)) do
-      for _, ft in ipairs({ 'quickfix', 'qf' }) do
-         local bufnr = api.nvim_win_get_buf(winnr)
-         if vim.bo[bufnr].buftype == ft then
-            api.nvim_win_close(winnr, false)
-            return
-         end
+      local bufnr = api.nvim_win_get_buf(winnr)
+      local bt = 'quickfix'
+      if vim.bo[bufnr].buftype == bt then
+         api.nvim_win_close(winnr, false)
+         return
       end
    end
 
@@ -89,14 +88,20 @@ keymap.set('n', 'Q', function() --{{{
       end
    end
 
-   if #api.nvim_tabpage_list_wins(0) == 2 then
-      ---@type integer[]
-      local wins = api.nvim_tabpage_list_wins(0)
-      local curwin = api.nvim_get_current_win()
-      wins = vim.tbl_filter(function(w) return w ~= curwin end, wins)
-      local win = wins[1]
-      api.nvim_win_close(win, false)
+   -- Close partial filetype windows
+   for _, winnr in ipairs(api.nvim_tabpage_list_wins(0)) do
+      local bufnr = api.nvim_win_get_buf(winnr)
+      local filetypes = { 'tsplayground' }
+      for _, ft in ipairs(filetypes) do
+         if vim.bo[bufnr].filetype == ft then
+            api.nvim_win_close(winnr, false)
+            return
+         end
+      end
    end
+
+   vim.cmd 'only'
+
 end, { desc = 'close service window' }) --}}}
 
 -- Buffers and windows managment {{{
