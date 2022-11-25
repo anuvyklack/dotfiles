@@ -8,6 +8,7 @@
   (parameter_list)
   (enum_specifier)
   (compound_statement)
+  (initializer_list)
 ] @fold
 
 

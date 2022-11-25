@@ -1,4 +1,4 @@
-vim.bo.textwidth   = 100
+vim.bo.textwidth   = 90
 vim.bo.tabstop     = 4
 vim.bo.softtabstop = 4
 vim.bo.shiftwidth  = 4
