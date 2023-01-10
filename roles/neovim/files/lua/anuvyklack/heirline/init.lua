@@ -245,7 +245,7 @@ local FileProperties = {
          fileformat = 'CRLF'
       elseif fileformat == 'mac' then
          fileformat = 'CR'
-      else  -- 'unix'
+      else -- 'unix'
          -- fileformat = 'LF'
          fileformat = nil
       end
@@ -396,7 +396,7 @@ do
       init = function(self)
          local names = {}
          for _, server in pairs(vim.lsp.buf_get_clients(0)) do
-             table.insert(names, server.name)
+            table.insert(names, server.name)
          end
          self.lsp_names = names
       end,
@@ -755,7 +755,11 @@ local WinBars = {
 
 --------------------------------------------------------------------------------
 
--- require('heirline').setup(StatusLines, WinBars)
-require('heirline').setup(StatusLines)
+require('heirline').setup({
+   statusline = StatusLines,
+   -- winbar = WinBars,
+   -- tabline = ...,
+   -- statuscolumn = ...
+})
 
 -- vim: fml=2
