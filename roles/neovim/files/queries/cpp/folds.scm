@@ -1,4 +1,8 @@
 [
+  (preproc_if)
+  (preproc_elif)
+  (preproc_else)
+  (preproc_ifdef)
   (comment)
   (preproc_if)
   (preproc_elif)
@@ -7,6 +11,8 @@
   (namespace_definition)
   (parameter_list)
   (enum_specifier)
+  (switch_statement)
+  (case_statement)
   (compound_statement)
   (initializer_list)
 ] @fold

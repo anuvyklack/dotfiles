@@ -34,14 +34,14 @@ Void = setmetatable({}, { ---@type Void
 ---@return table | function | Void module
 ---@return boolean loaded if module was loaded or not
 function prequire(module_name)
-   local available, module = pcall(require, module_name)
-   if available then
-      return module, true
-   else
-      local source = debug.getinfo(2, "S").source:sub(2)
-      source = source:gsub(os.getenv('HOME')--[[@as string]], '~')
-      local msg = string.format('"%s" requested in "%s" not available', module_name, source)
-		vim.schedule(function() vim.notify_once(msg, vim.log.levels.WARN) end)
+	local available, module = pcall(require, module_name)
+	if available then
+		return module, true
+	else
+		-- local home = os.getenv('HOME') --[[@as string]]
+		-- local source = debug.getinfo(2, "S").source:sub(2) :gsub(home, '~')
+		-- local msg = string.format('"%s" requested in "%s" not available', module_name, source)
+		-- vim.schedule(function() vim.notify_once(msg, vim.log.levels.WARN) end)
 
 		return Void, false
 	end
@@ -49,7 +49,7 @@ end
 -- }}}
 
 -- Nvui GUI
-if g.nvui then cmd.source(fn.stdpath('config')..'/ginit.vim') end
+if g.nvui then cmd.source(fn.stdpath('config') .. '/ginit.vim') end
 
 -- Options ----------------------------------------------------------------- {{{
 
@@ -85,7 +85,13 @@ o.secure = true		-- Disallows the use of :autocmd, shell and write commands
 
 -- cmd 'syntax enable'
 
-o.jumpoptions = 'view' -- NVIM 0.8
+if fn.has("nvim-0.8") == 1 then
+	o.jumpoptions = 'view'
+end
+
+if fn.has("nvim-0.9") == 1 then
+	opt.diffopt:append('linematch:60')
+end
 
 -- Turn Off Swap Files ---------------------------------------------------------
 
@@ -94,7 +100,7 @@ o.swapfile = false
 -- Needed for coc.nvim: some LSP servers have issues with backup files,
 -- see: https://github.com/neoclide/coc.nvim/issues/649
 o.backup = false
-o.writebackup = false
+o.writebackup = true
 
 -- Formating text --------------------------------------------------------------
 
@@ -165,12 +171,6 @@ o.mousehide = true	-- Hide the mouse when typing text.
 -- o.cursorline = true	-- Выделять строку, на которой находится курсор.
 opt.cursorlineopt = { 'number', 'screenline' }
 
--- -- Change cursor shape between modes
--- hi Cursor guifg=green guibg=green
--- hi Cursor2 guifg=red guibg=red
--- set guicursor=n-v-c:block-Cursor/lCursor,i-ci-ve:ver25-Cursor2/lCursor2,r-cr:hor20,o:hor50
--- " set guicursor=i-ci-ve:ver25-Cursor2/lCursor2,r-cr:hor20,o:hor50
-
 -- Search ----------------------------------------------------------------------
 
 o.ignorecase = true		-- Ignore case when searching...
@@ -231,9 +231,9 @@ opt.spelllang = { 'ru_ru', 'en_us' }
 
 -- Русский язык ----------------------------------------------------------------
 
-o.keymap = 'russian-jcukenwin'
-o.iminsert = 0		-- Чтобы при старте ввод был на английском, а не на русском.
-o.imsearch = -1	-- Чтобы при старте поиск был на английском, а не на русском.
+-- o.keymap = 'russian-jcukenwin'
+-- o.iminsert = 0		-- Чтобы при старте ввод был на английском, а не на русском.
+-- o.imsearch = -1	-- Чтобы при старте поиск был на английском, а не на русском.
 
 -- -- Менять цвет курсора при включенном русском языке
 -- highlight Cursor guifg=Cyan guibg=Green

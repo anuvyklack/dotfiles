@@ -19,8 +19,8 @@ MAKEOPTS=""
 # #
 # filter="2>&1 | grep -vF '***'"
 
-# if there is a makefile in the current dir, try to use it
-# this also mimics the default makeprg behaviour of vim
+# If there is a makefile in the current dir, try to use it
+# this also mimics the default makeprg behaviour of vim.
 if [ -f makefile ] || [ -f Makefile ]; then
     eval make $MAKEOPTS $filter
     exit $?

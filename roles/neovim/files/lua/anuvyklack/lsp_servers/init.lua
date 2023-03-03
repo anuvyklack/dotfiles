@@ -2,7 +2,7 @@ local lsp_util = require('lspconfig').util
 local root_pattern = lsp_util.root_pattern
 local M = {}
 
-M.sumneko_lua = {
+M.lua_ls = {
    root_dir = root_pattern('.root', '.luarc.json', '.luacheckrc',
       '.stylua.toml', 'selene.toml', '.git'),
    settings = {
@@ -87,5 +87,6 @@ M.bashls = { filetypes = { 'sh', 'zsh' } }
 M.ansiblels = {}
 M.gopls = {}
 M.pyright = {}
+M.tsserver = {}
 
 return M

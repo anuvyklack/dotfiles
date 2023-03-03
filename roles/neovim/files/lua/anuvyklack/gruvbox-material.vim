@@ -25,6 +25,8 @@
 " }}}
 " Built-in			{{{
 
+" highlight! @punctuation.delimiter	guifg=#e2cca9
+
 highlight! StatusLine	guifg=#e2cca9	guibg=#3c3836	gui=bold
 
 highlight! WinBar		guifg=#d6c19f	guibg=#383432	gui=bold

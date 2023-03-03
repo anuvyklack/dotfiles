@@ -43,6 +43,8 @@ end --}}}
 -- hl('StatusLine',   { fg = '#e2cca9', bg = '#3c3836' })
 -- hl('WinSeparator', { fg = '#928374' })
 
+-- set_hl("@punctuation.delimiter", { link = "Normal" })
+
 set_hl('ErrorMsg', { fg = '#f26458', bold = true })
 
 -- QuickFix {{{
@@ -81,6 +83,19 @@ set_hl('@neorg.tags.ranged_verbatim.begin',     { fg = '#808080' })
 set_hl('@neorg.tags.ranged_verbatim.name.word', { fg = '#808080' })
 set_hl('@neorg.tags.ranged_verbatim.end',       { fg = '#808080' })
 --}}}
+
+-- Skald {{{
+
+set_hl('@bf.heading1', { link = 'RedBold' })
+set_hl('@bf.heading2', { link = 'OrangeBold' })
+set_hl('@bf.heading3', { link = 'YellowBold' })
+set_hl('@bf.heading4', { link = 'GreenBold' })
+set_hl('@bf.heading5', { link = 'BlueBold' })
+set_hl('@bf.heading6', { link = 'PurpleBold' })
+
+-- set_hl('markdownUrl', s:palette.blue, s:palette.none, 'underline')
+
+-- }}}
 
 -- Barbar {{{
 set_hl('BufferCurrent',        { fg = colors.fg1,    bg = colors.bg5 })

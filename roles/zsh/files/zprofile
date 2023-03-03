@@ -274,6 +274,7 @@ export DEAL_II_DIR=~/software/dealii-9.3.0/build
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 if [[ $XDG_SESSION_TYPE == 'wayland' ]]; then
     export QT_QPA_PLATFORM=wayland
+    # export QT_QPA_PLATFORM=xcb
 fi
 export QT_AUTO_SCREEN_SCALE_FACTOR=1
 
@@ -284,9 +285,13 @@ if [[ -s /opt/intel/mkl/bin/mklvars.sh ]]; then
 fi
 #  }}}
 
-
 if [[ -s /etc/profile.d/modules.sh ]]; then
   source /etc/profile.d/modules.sh
 fi
+
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+#  Manualy compiled Neovim
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+export PATH="$HOME/neovim/bin:$PATH"
 
 # vim: ft=zsh tw=80 ts=2 sw=2

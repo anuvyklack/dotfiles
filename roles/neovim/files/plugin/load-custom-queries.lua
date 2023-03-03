@@ -14,7 +14,7 @@ for _, parser in ipairs(require("vim.treesitter.health").list_parsers()) do
    parsers[vim.fn.fnamemodify(parser, ':t:r')] = true
 end
 
-local nvim_config = Path.new(vim.fn.stdpath('config'))
+local nvim_config = Path:new(vim.fn.stdpath('config')) ---@type Path
 local queries_path = nvim_config / 'queries'
 local filetypes = scan_dir(tostring(queries_path), { depth = 1, only_dirs = true })
 
@@ -23,7 +23,7 @@ for _, ft in ipairs(filetypes) do
    if parsers[filetype] then
       for _, query in ipairs(scan_dir(ft)) do
          local type = vim.fn.fnamemodify(query, ':t:r')
-         query = Path.new(query)
+         query = Path:new(query) ---@type Path
          query = table.concat(query:readlines(), '\n')
          set_query(filetype, type, query)
       end

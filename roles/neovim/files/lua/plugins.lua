@@ -35,12 +35,59 @@ packer.init { --{{{
 use { 'wbthomason/packer.nvim', opt = true }
 
 use 'lewis6991/impatient.nvim' -- improve startup time
+use 'lewis6991/async.nvim'
 
 use 'anuvyklack/middleclass'
 
 -- use 'anuvyklack/nvim-api-wrappers'
 use '~/code/neovim-plugins/nvim-api-wrappers'
 
+use { '~/code/neovim-plugins/note/blueflower',
+-- use { '~/code/neovim-plugins/note/skald',
+   -- requires = 'anuvyklack/nvim-api-wrappers',
+   -- requires = '~/code/neovim-plugins/nvim-api-wrappers',
+   run = ':TSUpdate blueflower',
+   config = function()
+      require("blueflower").setup_ts_parser()
+      require("blueflower").setup {
+         link_abbreviations = {
+            book = "file:~/Documents/books:find:"
+         }
+      }
+   end
+}
+
+-- use { '~/code/neovim-plugins/breadcrumbs.nvim',
+--    config = function()
+--       require('breadcrumbs').setup({
+--          hl = {
+--             types = {
+--                Variable = '@constant',
+--             }
+--          }
+--       })
+--    end
+-- }
+
+-- Fennel ------------------------------------------------------------------ {{{
+
+use { "guns/vim-sexp",
+   requires = 'tpope/vim-repeat',
+   config = function()
+      vim.g.sexp_filetypes = table.concat(
+         { "clojure", "scheme", "lisp", "timl", "fennel", "query" },
+         ",")
+   end
+}
+
+use { "Olical/aniseed" }
+use { "Olical/conjure",
+   config = function()
+      require('keymaps').conjure()
+   end
+}
+
+--}}}
 
 -- Key Mapppings ----------------------------------------------------------- {{{
 
@@ -55,29 +102,34 @@ use { '~/code/neovim-plugins/keymap-amend.nvim', as = 'keymap-amend' }
 -- use 'anuvyklack/hydra.nvim'
 -- use 'anuvyklack/keymap-layer.nvim'
 use '~/code/neovim-plugins/hydra.nvim'
+-- use '~/code/neovim-plugins/hydra.nvim-master'
 -- use '~/code/neovim-plugins/keymap-layer.nvim'
-
-use 'tpope/vim-repeat'
 
 -- }}}
 
 -- Color Schemes ----------------------------------------------------------- {{{
-use 'rktjmp/lush.nvim'
-use 'sainnhe/gruvbox-material'
-use 'savq/melange'
-use 'karoliskoncevicius/moonshine-vim'
-use { 'srcery-colors/srcery-vim', as = 'srcery' }
-use { 'adigitoleo/vim-mellow', as = 'mellow' }
-use 'folke/tokyonight.nvim'
-use { 'sainnhe/everforest' }
+use "rktjmp/lush.nvim"
+use "sainnhe/gruvbox-material"
+use "savq/melange"
+use "karoliskoncevicius/moonshine-vim"
+use { "srcery-colors/srcery-vim", as = "srcery" }
+use { "adigitoleo/vim-mellow", as = "mellow" }
+use "folke/tokyonight.nvim"
+use { "sainnhe/everforest" }
+use { "mcchrish/zenbones.nvim",
+      requires = "rktjmp/lush.nvim" }
+use { 'rose-pine/neovim', as = 'rose-pine' }
+use "navarasu/onedark.nvim"
+-- use "olimorris/onedarkpro.nvim"
 
 -- My fork of vim-paper scheme.
 -- https://gitlab.com/yorickpeterse/vim-paper.git
-use '~/code/neovim-plugins/colorsheme/manuscript'
+use "~/code/neovim-plugins/colorsheme/manuscript"
+use "~/code/neovim-plugins/colorsheme/blasphemous"
 
-use { 'folke/lsp-colors.nvim', --{{{
+use { "folke/lsp-colors.nvim", --{{{
    config = function()
-      require('lsp-colors').setup {
+      require("lsp-colors").setup {
          Error       = "#db4b4b",
          Warning     = "#e0af68",
          Information = "#0db9d7",
@@ -102,7 +154,6 @@ use { 'romgrk/barbar.nvim', as = 'barbar-tabline',
 
 use { 'rebelot/heirline.nvim',
    config = function()
-      vim.o.showmode = false
       require('anuvyklack/heirline')
    end
 }
@@ -120,21 +171,25 @@ use { 'nvim-treesitter/nvim-treesitter', as = 'treesitter',
       -- { 'nvim-treesitter/nvim-treesitter-refactor',    as = 'treesitter-refactor'},
       -- { 'romgrk/nvim-treesitter-context',              as = 'treesitter-context'},
       { 'JoosepAlviste/nvim-ts-context-commentstring', as = 'treesitter-context-commentstring' },
-      { 'p00f/nvim-ts-rainbow', as = 'treesitter-rainbow' },
+      -- { 'p00f/nvim-ts-rainbow', as = 'treesitter-rainbow' },
    },
-   run = ':TSUpdate',
+   -- run = ':TSUpdate',
+   run = function()
+      local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
+      ts_update()
+   end,
    config = function() require('anuvyklack/treesitter') end
 }
 
-use { 'mizlan/iswap.nvim',
-   requires = 'treesitter',
-   config = function()
-      require('iswap').setup {
-         autoswap = true
-      }
-      require('keymaps').iswap()
-   end
-}
+-- use { 'mizlan/iswap.nvim',
+--    requires = 'treesitter',
+--    config = function()
+--       require('iswap').setup {
+--          autoswap = true
+--       }
+--       require('keymaps').iswap()
+--    end
+-- }
 
 use { 'nvim-treesitter/playground', as = 'treesitter-playground',
    requires = 'treesitter',
@@ -142,17 +197,19 @@ use { 'nvim-treesitter/playground', as = 'treesitter-playground',
 }
 --}}}
 
--- Completion -------------------------------------------------------------- {{{
+-- -- Autopairs {{{
+-- use { 'windwp/nvim-autopairs', as = 'autopairs',
+--    config = function()
+--       require('nvim-autopairs').setup {
+--          check_ts = true, -- check treesitter
+--          disable_in_macro = true, -- disable when recording or executing a macro
+--          enable_check_bracket_line = false
+--       }
+--    end
+-- }
+-- -- }}}
 
--- Autopairs
-use { 'windwp/nvim-autopairs', as = 'autopairs', -- {{{
-   config = function()
-      require('nvim-autopairs').setup {
-         check_ts = true, -- check treesitter
-         disable_in_macro = true, -- disable when recording or executing a macro
-      }
-   end
-} -- }}}
+-- Completion -------------------------------------------------------------- {{{
 
 use { 'hrsh7th/nvim-cmp', as = 'cmp', -- {{{
    requires = {
@@ -214,6 +271,25 @@ use { 'j-hui/fidget.nvim', config = function() require 'anuvyklack/fidget' end }
 use { 'lvimuser/lsp-inlayhints.nvim', config = function() require('lsp-inlayhints').setup() end }
 use 'https://git.sr.ht/~p00f/clangd_extensions.nvim'
 
+-- use { 'glepnir/lspsaga.nvim',
+--    config = function()
+--       require("lspsaga").init_lsp_saga {
+--          symbol_in_winbar = {
+--             in_custom = false,
+--             enable = true,
+--             separator = ' > ',
+--             show_file = true,
+--             -- define how to customize filename, eg: %:., %
+--             -- if not set, use default value `%:t`
+--             -- more information see `vim.fn.expand` or `expand`
+--             -- ## only valid after set `show_file = true`
+--             file_formatter = "",
+--             click_support = false,
+--          },
+--       }
+--    end
+-- }
+
 -- use 'RRethy/vim-illuminate' -- Highlight all other words the same as under the cursor
 
 -- use { 'filipdutescu/renamer.nvim', as = 'renamer', branch = 'master', --{{{
@@ -262,9 +338,10 @@ use 'https://git.sr.ht/~p00f/clangd_extensions.nvim'
 --    end
 -- } --}}}
 
-use { 'https://git.sr.ht/~whynothugo/lsp_lines.nvim', -- {{{
+-- use { 'ErichDonGubler/lsp_lines.nvim ',  -- {{{
+use { 'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
    config = function()
-      require('lsp_lines').setup()
+      prequire('lsp_lines').setup()
       vim.diagnostic.config({
          underline = false,
          virtual_text = true,
@@ -310,6 +387,25 @@ use { 'https://gitlab.com/yorickpeterse/nvim-dd.git', as = 'deferring-diagnostic
 }
 
 --}}}
+
+-- Code running ------------------------------------------------------------ {{{
+
+-- Asynchronous build and test dispatcher
+use { 'tpope/vim-dispatch', --{{{
+   requires = 'radenling/vim-dispatch-neovim',
+   -- cmd = { 'Dispatch', 'Make', 'Focus', 'Start' }
+} --}}}
+
+use { 'skywind3000/asyncrun.vim' }
+
+-- use { 'vhdirk/vim-cmake',
+use { 'otreblan/vim-cmake', -- fork
+   config = function()
+      vim.g.cmake_build_type = 'DEBUG'
+   end
+}
+
+-- }}}
 
 -- Debugging --------------------------------------------------------------- {{{
 
@@ -387,6 +483,17 @@ use { 'jlanzarotta/bufexplorer', --{{{
       vim.g.bufExplorerSortBy = 'fullpath'
    end
 } --}}}
+
+-- use { 'j-morano/buffer_manager.nvim',
+--    requires = 'nvim-lua/plenary.nvim',
+--    config = function()
+--       require("buffer_manager").setup{}
+--
+--       local command = vim.api.nvim_create_user_command
+--       local ui = require("buffer_manager.ui")
+--       command('BufExplorer', ui.toggle_quick_menu, { bang = true })
+--    end
+-- }
 
 -- use { 'ghillb/cybu.nvim',
 --   branch = 'main',
@@ -487,15 +594,15 @@ use { 'phaazon/hop.nvim', -- {{{
 
 -- use 'ggandor/lightspeed.nvim'
 
-use { 'rhysd/clever-f.vim', --{{{
-   config = function()
-      local g = vim.g
-      g.clever_f_ignore_case = 1
-      g.clever_f_smart_case = 1
-      g.clever_f_show_prompt = 1
-      g.clever_f_chars_match_any_signs = ';'
-   end
-} --}}}
+-- use { 'rhysd/clever-f.vim', --{{{
+--    config = function()
+--       local g = vim.g
+--       g.clever_f_ignore_case = 1
+--       g.clever_f_smart_case = 1
+--       g.clever_f_show_prompt = 1
+--       g.clever_f_chars_match_any_signs = ';'
+--    end
+-- } --}}}
 
 --}}}
 
@@ -578,28 +685,30 @@ use { 'nvim-telescope/telescope.nvim', as = 'telescope',
 --    end
 -- } --}}}
 
-use { 'kevinhwang91/nvim-ufo', as = 'ufo',
-   requires = 'kevinhwang91/promise-async',
-   config = function() require('anuvyklack/ufo') end
+-- use { "kevinhwang91/nvim-ufo", as = "ufo",
+use { "~/code/neovim-plugins/nvim-ufo", as = "ufo",
+   requires = "kevinhwang91/promise-async",
+   config = function() require("anuvyklack/ufo") end
 }
 
-use { '~/code/neovim-plugins/fold-preview.nvim',
-   requires = 'keymap-amend',
-   config = function() require('fold-preview').setup() end
+use { "~/code/neovim-plugins/fold-preview.nvim",
+   requires = "keymap-amend",
+   config = function() require("fold-preview").setup() end
 }
 
--- use { 'rcarriga/nvim-notify',
+-- use { "rcarriga/nvim-notify",
 --    config = function() vim.notify = require("notify") end }
 
--- Indentation guides {{{
-use { 'lukas-reineke/indent-blankline.nvim',
-   ft = {
-      'python',
-      -- 'lua'
-   },
-   config = function() require("anuvyklack/indent-blankline") end
-}
---}}}
+-- -- Indentation guides {{{
+-- use { "lukas-reineke/indent-blankline.nvim",
+--    -- ft = {
+--    --    "python",
+--    --    "fennel"
+--    --    -- "lua"
+--    -- },
+--    config = function() require("anuvyklack/indent-blankline") end
+-- }
+-- --}}}
 
 -- use { 'lewis6991/satellite.nvim',
 --   config = function() require('satellite').setup() end }
@@ -791,15 +900,10 @@ use { 'airblade/vim-rooter',
 --    end
 -- } --}}}
 
--- -- Make 'gf' keybinding work in different filetypes.  For instructions of what
--- -- it can do more see: https://github.com/tpope/vim-apathy and ":help include-search"
+-- -- Make 'gf' keybinding work in different filetypes.
+-- -- For instructions of what it can do more see:
+-- -- https://github.com/tpope/vim-apathy and ":help include-search"
 -- use 'tpope/vim-apathy'
-
--- Asynchronous build and test dispatcher
-use { 'tpope/vim-dispatch', -- {{{
-   requires = 'radenling/vim-dispatch-neovim',
-   cmd = { 'Dispatch', 'Make', 'Focus', 'Start' }
-} -- }}}
 
 use { 'stevearc/dressing.nvim', --{{{
    requires = 'MunifTanjim/nui.nvim',
@@ -1044,8 +1148,11 @@ use { 'mzlogin/vim-markdown-toc', ft = 'markdown' }
 
 -- use { 'kristijanhusak/orgmode.nvim',
 --    config = function()
---       require('orgmode').setup{
+--       require('orgmode').setup_ts_grammar()
+--       require('orgmode').setup {
 --          org_hide_emphasis_markers = true,
+--          org_agenda_files = { '~/orgmode/*' },
+--          org_default_notes_file = '~/orgmode/input.org',
 --       }
 --    end
 -- }
@@ -1093,6 +1200,29 @@ use { 'anuvyklack/vim-tmux-navigator', -- my fork
    end
 }
 ---------------------------------------------------------------------------- }}}
+
+-- use {'nyngwang/murmur.lua',
+--    config = function()
+--       require('murmur').setup {
+--         -- cursor_rgb = {
+--         --  guibg = '#393939',
+--         -- },
+--         -- cursor_rgb_always_use_config = false, -- if set to `true`, then always use `cursor_rgb`.
+--         max_len = 80,
+--         min_len = 3, -- this is recommended since I prefer no cursorword highlighting on `if`.
+--         exclude_filetypes = {},
+--         callbacks = {
+--           -- to trigger the close_events of vim.diagnostic.open_float.
+--           function ()
+--             -- Close floating diag. and make it triggerable again.
+--             vim.cmd('doautocmd InsertEnter')
+--             vim.w.diag_shown = false
+--           end,
+--         }
+--       }
+--       vim.api.nvim_set_hl(0, "murmur_cursor_rgb", { fg = "#0a100d", bg = "#ffee32" })
+--    end
+-- }
 
 return setmetatable({}, { __index = function(_, key) return packer[key] end })
 

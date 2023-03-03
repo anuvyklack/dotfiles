@@ -17,12 +17,12 @@ vim.bo.shiftwidth  = 3
 
 -- Taken from :help includeexpr
 -- Substitute '.' with '/' to resolve 'modules.foo' as 'modules/foo'.
-vim.bo.includeexpr = "substitute(v:fname, '\\.', '/', 'g')"
+vim.bo.includeexpr = "'lua/' .. substitute(v:fname, '\\.', '/', 'g')"
 
 vim.bo.keywordprg = ":help"
 
-local path = vim.opt_local.path
-path:append( vim.fn.stdpath("config") .. "/lua" )
+-- local path = vim.opt_local.path
+-- path:append( vim.fn.stdpath("config") .. "/lua" )
 
 -- Keymaps ---------------------------------------------------------------------
 

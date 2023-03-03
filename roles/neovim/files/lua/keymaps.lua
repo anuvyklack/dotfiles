@@ -23,8 +23,10 @@ local M = {}
 --------------------------------------------------------------------------------
 
 -- Move to the beginning / end of a line with "Shift + h/l"
-keymap.set({ 'n','x','o' }, 'H', '^', { remap = true })
-keymap.set({ 'n','x','o' }, 'L', '$', { remap = true })
+-- keymap.set({ 'n','x','o' }, 'H', '^', { remap = true })
+-- keymap.set({ 'n','x','o' }, 'L', '$', { remap = true })
+keymap.set({ 'n','x','o' }, 'gh', '^', { remap = true })
+keymap.set({ 'n','x','o' }, 'gl', '$', { remap = true })
 
 keymap.set('x', '$', function() -- {{{
    -- xnoremap <expr> $ mode() == 'v' ? '$h' : '$'
@@ -40,10 +42,6 @@ keymap.set('n', 'gJ', function() require('trevj').format_at_cursor() end)
 --                      { expr = true, desc = 'j or gj' })
 
 keymap.amend('n', '<Esc>', function(original) -- {{{
-   local key = api.nvim_replace_termcodes('<Plug>(clever-f-reset)',
-      true, true, true) --[[@as string]]
-   api.nvim_feedkeys(key, 'x', false)
-
    if vim.v.hlsearch and vim.v.hlsearch == 1 then
       vim.cmd 'nohlsearch'
       -- vim.cmd.nohlsearch
@@ -88,7 +86,7 @@ keymap.set('n', 'Q', function() --{{{
       end
    end
 
-   -- Close partial filetype windows
+   -- Close partiqular filetype windows
    for _, winnr in ipairs(api.nvim_tabpage_list_wins(0)) do
       local bufnr = api.nvim_win_get_buf(winnr)
       local filetypes = { 'tsplayground' }
@@ -121,12 +119,9 @@ local buffer_hydra = Hydra({ -- {{{
       -- debug = true,
       on_key = function()
          -- Execute async functions synchronously to preserve animation.
-         vim.wait(200, function() vim.cmd 'redraw' end, 30, false)
+         vim.wait(200)
       end,
-      -- color = 'amaranth',
-      -- hint = false,
       hint = {
-         -- type = 'cmdline',
          show_name = false
       },
       -- timeout = 2000,
@@ -165,34 +160,6 @@ end
 
 keymap.set('n', 'gb', choose_buffer)
 
---    local window_hint = [[
---  ^^^^^       Move       ^^^^^  ^^^ Size  ^^^   ^^     Split
---  ^^^^^------------------^^^^^  ^^^-------^^^   ^^----------------
---  ^ ^ _k_ ^ ^  ^   _<C-k>_   ^   ^ ^ _K_ ^ ^    _s_: horizontally
---  _h_ ^ ^ _l_  _<C-h>_ _<C-l>_   _H_ ^ ^ _L_    _v_: vertically
---  ^ ^ _j_ ^ ^  ^   _<C-j>_   ^   ^ ^ _J_ ^ ^    _q_, _c_: close
---  ^^^^^^focus  ^^   window  ^^  ^^_=_ equal^^   _b_: choose buffer
--- ]]
-
--- local window_hint = [[
---  ^^^^^^^^^^^^     Move      ^^    Size   ^^   ^^     Split       ^^   Tabs
---  ^^^^^^^^^^^^-------------  ^^-----------^^   ^^---------------  ^^----------
---  ^ ^ _k_ ^ ^  ^ ^ _K_ ^ ^   ^   _<C-k>_   ^   _s_: horizontally  _t_: new tab 
---  _h_ ^ ^ _l_  _H_ ^ ^ _L_   _<C-h>_ _<C-l>_   _v_: vertically
---  ^ ^ _j_ ^ ^  ^ ^ _J_ ^ ^   ^   _<C-j>_   ^   _q_, _c_: close
---  focus^^^^^^  window^^^^^^  ^_=_: equalize^   _z_: maximize
---  ^ ^ ^ ^ ^ ^  ^ ^ ^ ^ ^ ^   ^^ ^          ^   _o_: remain only   _b_: buffers
--- ]]
-
--- local window_hint = [[
---  ^^^^^^^^^^^^     Move      ^^    Size   ^^   ^^     Split       ^^   Tabs
---  ^^^^^^^^^^^^-------------  ^^-----------^^   ^^---------------  ^^----------
---  ^ ^ _k_ ^ ^  ^ ^ _K_ ^ ^   ^   _<C-k>_   ^   _s_: hor, _v_: vert  _t_: new tab 
---  _h_ ^ ^ _l_  _H_ ^ ^ _L_   _<C-h>_ _<C-l>_   _q_, _c_: close
---  ^ ^ _j_ ^ ^  ^ ^ _J_ ^ ^   ^   _<C-j>_   ^   _z_: maximize
---  focus^^^^^^  window^^^^^^  ^_=_: equalize^   _o_: remain only   _b_: buffers
--- ]]
-
 local window_hint = [[
  ^^^^^^^^^^^^     Move      ^^    Size   ^^   ^^     Split
  ^^^^^^^^^^^^-------------  ^^-----------^^   ^^---------------
@@ -221,7 +188,7 @@ Hydra({ -- {{{
       --    -- end, 10, false)
       -- end,
       hint = {
-         -- type = 'window',
+         type = 'window',
          border = 'rounded',
          -- offset = -1
       }
@@ -285,9 +252,7 @@ Hydra({ -- {{{
 Hydra({ --{{{
    name = 'Quick words',
    config = {
-      -- debug = true,
       color = 'pink',
-      -- hint = false,
       hint = {
          show_name = false
       },
@@ -300,7 +265,6 @@ Hydra({ --{{{
       { 'b', '<Plug>(smartword-b)' },
       { 'e', '<Plug>(smartword-e)' },
       { 'ge', '<Plug>(smartword-ge)' },
-      -- { 'q',     nil, { exit = true, mode = 'n' } },
       { '<Esc>', nil, { exit = true, mode = 'n' } }
    }
 }) -- }}}
@@ -338,44 +302,26 @@ Hydra({ -- {{{
    body = '<leader>o',
    heads = {
       -- { 'n', cmd 'set number!', { desc = 'number' } },
-      { 'n', function() -- {{{
-         if vim.o.number == true then
-            vim.o.number = false
-         else
-            vim.o.number = true
-         end
-      end, { desc = 'number' } }, -- }}}
+      { 'n', function()
+         vim.o.number = not vim.o.number
+      end, { desc = 'number' } },
       { 'r', function() -- {{{
-         if vim.o.relativenumber == true then
-            vim.o.relativenumber = false
-         else
+         if not vim.o.relativenumber then
             vim.o.number = true
-            vim.o.relativenumber = true
          end
+         vim.o.relativenumber = not vim.o.relativenumber
       end, { desc = 'relativenumber' } }, -- }}}
       { 'v', function() -- {{{
-         if vim.o.virtualedit == 'all' then
-            vim.o.virtualedit = 'block'
-         else
-            vim.o.virtualedit = 'all'
-         end
+         vim.o.virtualedit = vim.o.virtualedit == 'all' and 'block' or 'all'
       end, { desc = 'virtualedit' } }, -- }}}
       { 'i', function() -- {{{
-         if vim.o.list == true then
-            vim.o.list = false
-         else
-            vim.o.list = true
-         end
+         vim.o.list = not vim.o.list
       end, { desc = 'show invisible' } }, -- }}}
       { 's', function() -- {{{
-         if vim.o.spell == true then
-            vim.o.spell = false
-         else
-            vim.o.spell = true
-         end
+         vim.o.spell = not vim.o.spell
       end, { exit = true, desc = 'spell' } }, -- }}}
       { 'w', function() -- {{{
-         if vim.o.wrap ~= true then
+         if not vim.o.wrap then
             vim.o.wrap = true
             -- Dealing with word wrap:
             -- If cursor is inside very long line in the file than wraps
@@ -394,21 +340,18 @@ Hydra({ -- {{{
          end
       end, { desc = 'wrap' } }, -- }}}
       { 'c', function() -- {{{
-         if vim.o.cursorline == true then
-            vim.o.cursorline = false
-         else
-            vim.o.cursorline = true
-         end
+         vim.o.cursorline = not vim.o.cursorline
       end, { desc = 'cursor line' } },
       { '<Esc>', nil, { exit = true } } -- }}}
    }
 }) -- }}}
--- }}}
+ --}}}
 
 -- Folds
 Hydra({ --{{{
    name = 'Folds',
    config = {
+      debug = true,
       hint = {
          show_name = false,
       },
@@ -423,7 +366,6 @@ Hydra({ --{{{
 }) -- }}}
 
 keymap.set('n', '<C-g>', cmd 'TSHighlightCapturesUnderCursor')
--- nnoremap <C-g> <cmd>call SyntaxAttr()<CR>
 
 Hydra({ -- Side-scroll {{{
    name = 'Side scroll',
@@ -613,10 +555,10 @@ Hydra({
    config = {
       color = 'teal',
       invoke_on_body = true,
-      hint = {
-         -- position = 'middle-right',
-         border = 'rounded'
-      }
+      -- hint = {
+      --    position = 'middle-right',
+      --    border = 'rounded'
+      -- }
    },
    mode = 'n',
    body = '<leader>d',
@@ -711,7 +653,7 @@ M.telescope = function() -- {{{
 end -- }}}
 
 -- git
-M.gitsigns = function(--[[bufnr]]) -- {{{
+M.gitsigns = function(bufnr) -- {{{
    local gitsigns = prequire('gitsigns')
 
    local hint = [[
@@ -783,7 +725,7 @@ M.gitsigns = function(--[[bufnr]]) -- {{{
    --       { 'd',
    --          function()
    --             gitsigns.toggle_deleted()
-   --             -- vim.wait(50, function() vim.cmd 'redraw' end, 10, false)
+   --             -- vim.wait(50)
    --          end,
    --          { nowait = true, desc = 'toggle deleted' } },
    --
@@ -820,7 +762,6 @@ M.gitsigns = function(--[[bufnr]]) -- {{{
             vim.bo.modifiable = false
             gitsigns.toggle_signs(true)
             gitsigns.toggle_linehl(true)
-            -- vim.wait(50) -- vim.wait(50, function() vim.cmd 'redraw' end, 10)
          end, --}}}
          on_exit = function() --{{{
             if not vim.wo.diff then
@@ -843,7 +784,6 @@ M.gitsigns = function(--[[bufnr]]) -- {{{
                   -- print(']c')
                   return ']c'
                end
-               -- vim.schedule(function() gitsigns.next_hunk() end)
                gitsigns.next_hunk()
                return '<Ignore>'
             end,
@@ -896,6 +836,35 @@ M.gitsigns = function(--[[bufnr]]) -- {{{
    }) --}}}
 
 end -- }}}
+
+M.conjure = function() -- {{{
+   vim.g["conjure#mapping#prefix"]             = "<localleader>|"
+   vim.g["conjure#mapping#doc_word"]           = "K"
+   vim.g["conjure#mapping#log_split"]          = "s"
+   vim.g["conjure#mapping#log_vsplit"]         = "v"
+   vim.g["conjure#mapping#log_tab"]            = "t"
+   vim.g["conjure#mapping#log_buf"]            = "B"
+   vim.g["conjure#mapping#log_toggle"]         = "g"
+   vim.g["conjure#mapping#log_reset_soft"]     = "r"
+   vim.g["conjure#mapping#log_reset_hard"]     = "R"
+   vim.g["conjure#mapping#log_jump_to_latest"] = "l"
+   vim.g["conjure#mapping#log_close_visible"]  = "q"
+   vim.g["conjure#mapping#eval_current_form"]  = "f"
+   vim.g["conjure#mapping#eval_comment_current_form"] = "cf"
+   vim.g["conjure#mapping#eval_root_form"]     = "r"
+   vim.g["conjure#mapping#eval_comment_root_form"] = "cr"
+   vim.g["conjure#mapping#eval_word"]          = "w"
+   vim.g["conjure#mapping#eval_comment_word"]  = "cw"
+   vim.g["conjure#mapping#eval_replace_form"]  = "e!"
+   vim.g["conjure#mapping#eval_marked_form"]   = "em"
+   vim.g["conjure#mapping#eval_comment_form"]  = "cf"
+   vim.g["conjure#mapping#eval_file"]          = "X"
+   vim.g["conjure#mapping#eval_buf"]           = "x"
+   vim.g["conjure#mapping#eval_visual"]        = "E"
+   vim.g["conjure#mapping#eval_motion"]        = "E"
+   vim.g["conjure#mapping#def_word"]           = "gd"
+   vim.g["conjure#mapping#doc_word"]           = "K"
+end --}}}
 
 M.hop = function() -- {{{
    keymap.set({'n','x'}, ';w', cmd 'HopWordAC', { desc = 'Easymotion forward word' })

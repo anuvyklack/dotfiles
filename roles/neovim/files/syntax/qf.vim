@@ -14,10 +14,15 @@ syn match qfPath		'^{[^:]\+' nextgroup=qfPosition contains=qfValidToken containe
 syn match qfPosition	':[0-9]\+\(:[0-9]\+\)\?\s\+' nextgroup=qfError,qfWarn,qfInfo,qfHint contained
 
 syn match qfError		'E .*$' contained
-syn match qfError		'error' contained
+syn match qfError		'error:' contained
+
 syn match qfWarn		'W .*$' contained
+syn match qfWarn		'warning:' contained
+
 syn match qfInfo		'I .*$' contained
+
 syn match qfHint		'[NH] .*$' contained
+syn match qfHint		'note:' contained
 
 hi def link qfPath		Directory
 hi def link qfPosition	Number

@@ -8,7 +8,7 @@ vim.bo.commentstring = '// %s'
 vim.bo.cindent = true -- stricter rules for C programs
 vim.opt.cinoptions:append('g0')
 
--- MAke ------------------------------------------------------------------------
+-- Make ------------------------------------------------------------------------
 vim.bo.makeprg = vim.fn.stdpath('config')..'/assets/bin/vim-cmake-makeprg'
 
 vim.g.compiler_gcc_ignore_unmatched_lines = 1

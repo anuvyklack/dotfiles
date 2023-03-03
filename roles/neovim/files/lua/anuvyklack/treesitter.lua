@@ -3,9 +3,12 @@ local treesitter_config = require('nvim-treesitter.configs')
 treesitter_config.setup {
    -- ensure_installed = { 'c', 'lua' },
    ensure_installed = 'all',
-   ignore_install = { 'markdown', 'vim', 'help', 'yaml' },
+   ignore_install = { 'markdown', 'vim', 'help', 'yaml', 'comment' },
 
-   highlight = { enable = true },
+   highlight = {
+      enable = true,
+      additional_vim_regex_highlighting = { 'org' },
+   },
    -- indent = {
    --    enable = true,
    --    disable = { 'python', 'yaml' }
