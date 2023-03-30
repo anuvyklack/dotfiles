@@ -67,20 +67,21 @@
 (use-package dash :elpaca t) ;; list manipulation library
 (use-package diminish :elpaca t)
 (use-package hydra :elpaca t)
+
+(use-package use-package
+  :no-require
+  :custom
+  (use-package-enable-imenu-support t))
+
 (use-package general :elpaca t
-  :config
-  (general-auto-unbind-keys))
+  :config (general-auto-unbind-keys))
 ;; }}}
 
 ;;; Core packages {{{
 
 ;; (defvar leader-map (make-sparse-keymap))
 (define-prefix-command 'leader-map)
-
-(use-package use-package
-  :no-require
-  :custom
-  (use-package-enable-imenu-support t))
+(define-prefix-command 'semicolon-leader-map)
 
 (setq-default custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file) (load custom-file))
@@ -109,9 +110,9 @@
   (scroll-bar-mode -1)
   (horizontal-scroll-bar-mode -1)
   (blink-cursor-mode 0)
-  (set-fringe-mode 3) ;; Give some breathing room
+  (set-fringe-mode 3)   ;; Give some breathing room
   (column-number-mode 1) ;; show column number in modeline
-  )
+  (defalias 'yes-or-no-p 'y-or-n-p))
 
 (use-package display-line-numbers
   :custom
@@ -147,12 +148,6 @@
     (set-frame-size (selected-frame) 134 63)
     (set-frame-position (selected-frame) 1190 35)))
 
-(use-package pixel-scroll
-  :when (fboundp #'pixel-scroll-precision-mode)
-  :hook (after-init . pixel-scroll-precision-mode)
-  :custom
-  (scroll-margin 0))
-
 (require 'my-ibuffer)
 
 (use-package isearch
@@ -169,6 +164,7 @@
 ;;; Color schemes {{{
 
 (use-package ef-themes
+  ;; :disabled
   :elpaca t
   :custom
   (ef-themes-mixed-fonts t)
@@ -178,25 +174,46 @@
   ;; (load-theme 'ef-day :no-confirm)
   (set-cursor-color "black"))
 
+(use-package doom-themes
+  :disabled
+  :elpaca t
+  :custom
+  (doom-themes-enable-bold t)  ;; if nil, bold is universally disabled
+  (doom-themes-enable-italic t) ;; if nil, italics is universally disabled
+  :config
+  (load-theme 'doom-spacegrey t))
+
 ;;}}}
 
 ;;; Evil {{{
 (use-package evil
   :elpaca t
+  :after general
   :custom
-  (evil-want-integration t)  ;; need for evil-collection
+  (evil-want-integration t) ;; need for evil-collection
   (evil-want-keybinding nil) ;; need for evil-collection
   (evil-want-C-u-scroll t)
   (evil-want-C-i-jump t)
   ;; (evil-want-minibuffer t)
   ;; (evil-search-module 'evil-search)
-  (evil-move-beyond-eol t) ;; need for lispyville
+  ;; (evil-move-beyond-eol t) ;; need for lispyville
+  (evil-vsplit-window-right t)
+  (evil-split-window-below t)
   :config
   ;; (evil-select-search-module 'evil-search-module 'evil-search)
   (evil-select-search-module 'evil-search-module 'isearch)
   (customize-set-variable 'evil-want-Y-yank-to-eol t) ;; Y -> y$
-  (evil-ex-define-cmd "ls" 'ibuffer) ;; bind ':ls' command to 'ibuffer instead of 'list-buffers
-  (evil-mode 1))
+  (evil-ex-define-cmd "ls" 'ibuffer-jump) ;; bind ':ls' command to 'ibuffer instead of 'list-buffers
+  ;; (advice-add :after 'evil-window-vsplit)
+  (evil-mode 1)
+  (evil-define-command my/evil-save-modified-buffer-and-kill-it (file &optional bang)
+    "Save the current buffer and kill it."
+    :repeat nil
+    (interactive "<f><!>")
+    (when (buffer-modified-p)
+      (evil-write nil nil nil file bang))
+    (kill-this-buffer)
+    (ibuffer)))
 
 (use-package evil-collection
   :elpaca t
@@ -206,15 +223,23 @@
   (general-def
     :states '(normal visual)
     "SPC" '(:keymap leader-map) ; use 'Space' as leader key
-    "<backspace>" 'evil-ex
+    ;; "<backspace>" 'evil-ex ;; evil command (:) state
+    "<backspace>" 'execute-extended-command ;; emacs M-x
     "g h" 'evil-first-non-blank
     "g l" 'evil-end-of-line
-    "g b" 'ibuffer
+    "g b" 'ibuffer-jump
+    "C-s" 'evil-write
     "C-p" 'consult-yank-from-kill-ring
-    "/" 	'consult-line
-    "?" 	'evil-search-forward
+    "-" 	'dired-jump
+    "/"   'consult-line
+    "?"   'evil-search-forward
     "z n" 'narrow-to-region
-    "z w" 'widen)
+    "z w" 'widen
+    "Z Z" 'my/evil-save-modified-buffer-and-kill-it
+    )
+  (general-def
+    :states 'motion
+    ";" '(:keymap semicolon-leader-map))
   (general-def
     :keymaps 'leader-map
     "h" '(:keymap help-map :which-key "help"))
@@ -273,7 +298,7 @@
   (general-def
     :states '(normal visual)
     "C-a" 'evil-numbers/inc-at-pt
-    "C-x" 'evil-numbers/dec-at-pt)
+    "C-S-x" 'evil-numbers/dec-at-pt)
   (general-def
     :states 'visual
     "g C-a" 'evil-numbers/inc-at-pt-incremental
@@ -361,6 +386,100 @@
          ("fi" . consult-imenu))
   :init
   (setq completion-in-region-function #'consult-completion-in-region))
+
+;; (setup (:package vertico marginalia consult orderless embark)
+;;   ;; Vertico
+;;   (:option vertico-mouse-mode t
+;;            vertico-reverse-mode t
+;;            vertico-count 8
+;;            vertico-resize t
+;;            vertico-cycle t
+;;            vertico-mode t)
+;;   ;; Marginalia
+;;   (:option marginalia-mode t)
+;;   (:bind-into minibuffer-local-map
+;;     "M-A" marginalia-cycle)
+;;   ;; Consult
+;;   (:global [remap switch-to-buffer] #'consult-buffer
+;;            [remap goto-line] #'consult-goto-line
+;;            [remap imenu] #'consult-imenu
+;;            [remap project-switch-to-buffer] #'consult-project-buffer
+;;            "M-s g" (if (executable-find "rg")
+;;                        #'consult-ripgrep
+;;                      #'consult-grep)
+;;            "M-s d" consult-find
+;;            "M-s l" consult-line
+;;            "M-s m" consult-mark
+;;            "M-s o" consult-outline
+;;            "M-s f" consult-flymake)
+;;   (:option xref-show-xrefs-function #'consult-xref
+;;            xref-show-definitions-function #'consult-xref)
+;;   ;; Orderless
+;;   (:option completion-styles '(orderless))
+;;   ;; Embark
+;;   (:global "C-'" #'embark-act
+;;            "C-=" #'embark-dwim))
+
+;;}}}
+
+;;; Smooth scroll {{{
+
+(use-package pixel-scroll
+  :when (fboundp #'pixel-scroll-precision-mode)
+  :hook (after-init . pixel-scroll-precision-mode)
+  :custom
+  (scroll-margin 0)
+  ;; pixel-scroll-precision-interpolate-page
+  )
+
+(use-package good-scroll
+  :elpaca t
+  :after evil
+  :custom (good-scroll-duration 0.3)
+  :config
+  (good-scroll-mode)
+
+  (defun good-scroll--convert-line-to-step (line)
+    (cl-typecase line
+      (integer (* line (line-pixel-height)))
+      ((or null (member -))
+       (- (good-scroll--window-usable-height)
+          (* next-screen-context-lines (line-pixel-height))))
+      (t (line-pixel-height))))
+
+  (defun good-scroll--scroll-up (&optional arg)
+    (good-scroll-move (good-scroll--convert-line-to-step arg)))
+
+  (defun good-scroll--scroll-down (&optional arg)
+    (good-scroll-move (- (good-scroll--convert-line-to-step arg))))
+
+  (advice-add 'scroll-up :override 'good-scroll--scroll-up)
+  (advice-add 'scroll-down :override 'good-scroll--scroll-down)
+
+  (let ((n 6))
+    (define-advice evil-scroll-line-down
+        (:around (orig-fun count) triple)
+      (funcall orig-fun (* count n)))
+    (define-advice evil-scroll-line-up
+        (:around (orig-fun count) triple)
+      (funcall orig-fun (* count n))))
+
+  ;; (defun good-scroll-up-half-screen ()
+  ;;   (interactive)
+  ;;   (good-scroll-move (/ (good-scroll--window-usable-height) 2)))
+  ;; (defun good-scroll-down-half-screen ()
+  ;;   (interactive)
+  ;;   (good-scroll-move (- (/ (good-scroll--window-usable-height) 2))))
+  ;; (general-def
+  ;;   :states 'motion
+  ;;   "C-d" 'good-scroll-up-half-screen
+  ;;   "C-u" 'good-scroll-down-half-screen
+  ;;   "C-f" 'good-scroll-up-full-screen
+  ;;   "C-b" 'good-scroll-down-full-screen)
+  ;; (general-def
+  ;;  "<next>"  'good-scroll-up-full-screen
+  ;;  "<prior>" 'good-scroll-down-full-screen)
+  )
 
 ;;}}}
 
@@ -464,11 +583,19 @@
                   (general-def
                     :keymaps 'local
                     :states 'normal
-                    "(" 	 	'lispyville-backward-up-list
-                    "g c"   'lispyville-comment-or-uncomment
+                    "(" 		'lispyville-backward-up-list
+                    "g c" 	'lispyville-comment-or-uncomment
                     "[ SPC" 'evil-collection-unimpaired-insert-newline-above
                     "] SPC" 'evil-collection-unimpaired-insert-newline-below)
-                  (general-def :keymaps 'local :states 'visual
+                  (general-def
+                    :keymaps 'local
+                    :states '(motion normal visual)
+                    ";" '(:keymap semicolon-leader-map)
+                    ;; ";" '(:keymap evilem-map)
+                    )
+                  (general-def
+                    :keymaps 'local
+                    :states 'visual
                     "g c" 'lispyville-comment-or-uncomment)))
   :config
   (lispyville-set-key-theme
@@ -477,6 +604,63 @@
 ;; }}}
 
 ;;; Tools {{{
+
+(use-package avy
+  :elpaca t
+  :custom
+  (avy-background t)
+  (avy-keys (number-sequence ?a ?z)) ;; Any lower-case letter a-z.
+  (avy-style 'at-full)
+  (avy-all-windows nil)
+  (avy-words)
+  :config
+  (set-face-attribute 'avy-lead-face nil :foreground "red" :background nil :weight 'bold)
+  (set-face-attribute 'avy-lead-face-0 nil :foreground "brown" :background nil) ;:weight 'bold
+  ;; (set-face-attribute 'avy-lead-face-1 nil :background "green" :foreground "yellow")
+  ;; (set-face-attribute 'avy-lead-face-2 nil :background "green" :foreground "yellow")
+  )
+
+(use-package evil-easymotion
+  :elpaca t
+  :after (avy evil general)
+  :config
+  (evil-define-avy-motion avy-goto-word-0-above exclusive)
+  (evil-define-avy-motion avy-goto-word-0-below exclusive)
+  (evilem-make-motion evilem-motion-forward-WORD-begin  #'evil-forward-WORD-begin)
+  (evilem-make-motion evilem-motion-backward-WORD-begin #'evil-backward-WORD-begin)
+  (evilem-make-motion evilem-motion-forward-word-end    #'evil-forward-word-end)
+  (evilem-make-motion evilem-motion-forward-WORD-end    #'evil-forward-WORD-end)
+  (general-def
+    :keymaps 'semicolon-leader-map
+    "w" 'evil-avy-goto-word-0-below
+    "W" 'evilem-motion-forward-WORD-begin
+    "b" 'evil-avy-goto-word-0-above
+    "B" 'evilem-motion-backward-WORD-begin
+    "e" 'evilem-motion-forward-word-end
+    "E" 'evilem-motion-forward-WORD-end
+    "ge" 'evilem-motion-backward-word-end
+    "gE" 'evilem-motion-backward-WORD-end
+    "j" 'evilem-motion-next-visual-line
+    "k" 'evilem-motion-previous-visual-line
+    "f" 'evilem-motion-find-char
+    "F" 'evilem-motion-find-char-backward))
+
+(use-package evil-snipe
+  :elpaca t
+  :custom
+  (evil-snipe-scope 'whole-visible)
+  (evil-snipe-repeat-scope 'whole-visible)
+  :config
+  (evil-snipe-mode)
+  (evil-snipe-override-mode)
+  (push 'helpful-mode evil-snipe-disabled-modes)
+  (push 'Custom-mode evil-snipe-disabled-modes)
+  ;; (define-key evil-snipe-parent-transient-map (kbd ";")
+  ;;   (evilem-create 'evil-snipe-repeat
+  ;;                  :bind ((evil-snipe-scope 'buffer)
+  ;;                         (evil-snipe-enable-highlight)
+  ;;                         (evil-snipe-enable-incremental-highlight))))
+  )
 
 (use-package zoxide
   :elpaca t
@@ -608,6 +792,8 @@
 
 ;;; My functions {{{
 
+;; avy-goto-word-1-above
+
 (defun my/paste-and-indent-after ()
   (interactive)
   (with-undo-amagamate ;; emacs 29
@@ -650,12 +836,33 @@
       (all-the-icons-install-fonts t)
       (with-temp-buffer (write-file cache)))))
 
+;;; Modeline {{{
 (use-package doom-modeline
   :elpaca t
   :custom
   (doom-modeline-height 30)
+  (doom-modeline-buffer-file-name-style 'relative-from-project)
+  (doom-modeline-icon t)
+  (doom-modeline-major-mode-icon t)
+  (doom-modeline-time-icon t)
+  (doom-modeline-highlight-modified-buffer-name nil)
+  :init
+  (setq doom-modeline-support-imenu t)
   :config
   (doom-modeline-mode 1))
+
+(use-package anzu
+  :elpaca t
+  :config
+  (global-anzu-mode))
+
+(use-package evil-anzu
+  :elpaca t
+  :after evil
+  :bind (([remap query-replace] . anzu-query-replace)
+         ([remap query-replace-regexp] . anzu-query-replace-regexp)))
+
+;;}}}
 
 (use-package page-break-lines
   :elpaca t
