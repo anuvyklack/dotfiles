@@ -1,4 +1,4 @@
-;;init.el -*- lexical-binding: t; -*-
+;; init.el -*- lexical-binding: t; -*-
 
 ;;; Setup elpaca {{{
 (defvar elpaca-installer-version 0.3)
@@ -74,7 +74,10 @@
   (use-package-enable-imenu-support t))
 
 (use-package general :elpaca t
-  :config (general-auto-unbind-keys))
+  :config
+  (general-auto-unbind-keys)
+  (message "load general")
+  )
 ;; }}}
 
 ;;; Core packages {{{
@@ -102,8 +105,17 @@
   (truncate-lines t) ;; do not wrap long lines
   (fill-column 80)
   (comment-empty-lines t)
+  (help-window-select t) ;; Always move point into help buffer, when its appeares.
+  (help-at-pt-display-when-idle t)
+  ;; 'M-=' (evil: 'ga') key-chord will show human readable output.
+  (what-cursor-show-names t)
+  ;; По умолчанию Emacs считает ,что предложение дожно заканчиваться 2 пробелами.
+  (sentence-end-double-space nil)
   (scroll-conservatively 101) ;; Do not jump half the page when point goes out of the screen.
-  ;; (scroll-preserve-screen-position t)
+  (scroll-margin 0)
+  (scroll-preserve-screen-position 'always)
+  ;; (auto-window-vscroll nil)
+  (scroll-error-top-bottom nil)
   :config
   ;; (menu-bar-mode -1)
   (tool-bar-mode -1)
@@ -123,6 +135,11 @@
 
 (use-package display-fill-column-indicator
   :hook (prog-mode . display-fill-column-indicator-mode))
+
+
+(use-package elec-pair
+  :config
+  (electric-pair-mode))
 
 (use-package mwheel
   :custom
@@ -148,7 +165,8 @@
     (set-frame-size (selected-frame) 134 63)
     (set-frame-position (selected-frame) 1190 35)))
 
-(require 'my-ibuffer)
+;; (with-eval-after-load 'hydra
+;;   (require 'my-dired))
 
 (use-package isearch
   :custom
@@ -190,6 +208,7 @@
   :elpaca t
   :after general
   :custom
+  (evil-overriding-maps nil)
   (evil-want-integration t) ;; need for evil-collection
   (evil-want-keybinding nil) ;; need for evil-collection
   (evil-want-C-u-scroll t)
@@ -199,11 +218,14 @@
   ;; (evil-move-beyond-eol t) ;; need for lispyville
   (evil-vsplit-window-right t)
   (evil-split-window-below t)
+  ;; (evil-ex-complete-emacs-commands 'always)
+  (evil-shift-round t)
   :config
   ;; (evil-select-search-module 'evil-search-module 'evil-search)
   (evil-select-search-module 'evil-search-module 'isearch)
   (customize-set-variable 'evil-want-Y-yank-to-eol t) ;; Y -> y$
-  (evil-ex-define-cmd "ls" 'ibuffer-jump) ;; bind ':ls' command to 'ibuffer instead of 'list-buffers
+  ;; (evil-ex-define-cmd "ls" 'ibuffer-jump) ;; bind ':ls' command to 'ibuffer instead of 'list-buffers
+  (evil-ex-define-cmd "ls" 'bufler)
   ;; (advice-add :after 'evil-window-vsplit)
   (evil-mode 1)
   (evil-define-command my/evil-save-modified-buffer-and-kill-it (file &optional bang)
@@ -213,39 +235,18 @@
     (when (buffer-modified-p)
       (evil-write nil nil nil file bang))
     (kill-this-buffer)
-    (ibuffer)))
+    ;; (ibuffer)
+    (bufler)))
 
 (use-package evil-collection
   :elpaca t
   :after evil
+  :custom
+  (evil-collection-outline-bind-tab-p t)
   :config
   (evil-collection-init)
-  (general-def
-    :states '(normal visual)
-    "SPC" '(:keymap leader-map) ; use 'Space' as leader key
-    ;; "<backspace>" 'evil-ex ;; evil command (:) state
-    "<backspace>" 'execute-extended-command ;; emacs M-x
-    "g h" 'evil-first-non-blank
-    "g l" 'evil-end-of-line
-    "g b" 'ibuffer-jump
-    "C-s" 'evil-write
-    "C-p" 'consult-yank-from-kill-ring
-    "-" 	'dired-jump
-    "/"   'consult-line
-    "?"   'evil-search-forward
-    "z n" 'narrow-to-region
-    "z w" 'widen
-    "Z Z" 'my/evil-save-modified-buffer-and-kill-it
-    )
-  (general-def
-    :states 'motion
-    ";" '(:keymap semicolon-leader-map))
-  (general-def
-    :keymaps 'leader-map
-    "h" '(:keymap help-map :which-key "help"))
-  (general-def
-    :states 'insert
-    "C-l" 'right-char))
+  (require 'my-keybindings)
+  (message "load evil-collection"))
 
 (use-package evil-nerd-commenter
   ;; Use `gc{motion}' to comment target, `gcc' to comment line.
@@ -303,6 +304,15 @@
     :states 'visual
     "g C-a" 'evil-numbers/inc-at-pt-incremental
     "g C-x" 'evil-numbers/dec-at-pt-incremental))
+
+(use-package evil-org
+  :elpaca t
+  :after (org evil evil-collection)
+  :hook (org-mode . evil-org-mode)
+  :config
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys)
+  (evil-org-set-key-theme))
 
 ;;}}}
 
@@ -460,6 +470,7 @@
     (define-advice evil-scroll-line-down
         (:around (orig-fun count) triple)
       (funcall orig-fun (* count n)))
+
     (define-advice evil-scroll-line-up
         (:around (orig-fun count) triple)
       (funcall orig-fun (* count n))))
@@ -483,88 +494,19 @@
 
 ;;}}}
 
-;;; Dired {{{
-(use-package dired
-  :after general
-  :custom
-  (dired-listing-switches "-lAhF -v --group-directories-first")
-  (dired-kill-when-opening-new-dired-buffer t)
-  (dired-no-confirm t)
-  (dired-recursive-deletes 'always)
-  (dired-recursive-copies  'always)
-  (delete-by-moving-to-trash t)
-  (dired-dwim-target t)
-  (dired-omit-files "\\`[.]?#\\|\\`[.][.]?\\'\\|\\`[.].+")
-  :hook
-  (dired-mode . dired-omit-mode)
-  (dired-mode . dired-hide-details-mode)
-  (dired-mode . hl-line-mode)
-  :config
-  (general-def
-    :keymaps 'dired-mode-map
-    :states 'normal
-    "<backspace>" 'dired-up-directory
-    ;; "<tab>" 'dired-subtree-cycle
-    "l" 'dired-find-file
-    "h" 'dired-up-directory
-    "w" 'dired-display-file
-    ")" 'dired-omit-mode
-    "<" 'dired-prev-marked-file
-    ">" 'dired-next-marked-file)
-  (general-def
-    :keymaps 'dired-mode-map
-    :states 'visual
-    "d" 'dired-flag-file-deletion
-    "u" 'dired-unmark))
-
-(use-package wdired
-  :custom
-  (wdired-allow-to-change-permissions t))
-
-(use-package dired-ranger
-  :elpaca t)
-
-(use-package dired-subtree :elpaca t)
-(use-package dired-narrow  :elpaca t)
-(use-package dired-open    :elpaca t)
-(use-package dired-toggle-sudo :elpaca t)
-
-(use-package dired-collapse
-  :elpaca t
-  :hook (dired-mode . dired-collapse-mode))
-
-(use-package dired-rainbow
-  :elpaca t
-  :config
-  (dired-rainbow-define html "#4e9a06" ("htm" "html" "xhtml"))
-  (defconst my-video-files-extensions
-    '("mp3" "mp4" "MP3" "MP4" "avi" "mpg" "flv" "ogg" "mkv")
-    "Media files.")
-  (dired-rainbow-define media "#ce5c00" my-video-files-extensions)
-  ;; Highlight executable files, but not directories:
-  (dired-rainbow-define-chmod executable-unix "#4e9a06" "-.*x.*"))
-
-(use-package diredfl ;; Addtional syntax highlighting for dired
-  :elpaca t
-  :hook ((dired-mode . diredfl-mode)
-         (dirvish-directory-view-mode . diredfl-mode))
-  ;; :config
-  ;; (set-face-attribute 'diredfl-dir-name nil :bold t)
-  )
-
-;; C-x C-d to open 'dired-recent-open'.
-(use-package dired-recent
-  :elpaca t
-  :config
-  (dired-recent-mode t))
-
-;; (use-package diredc
-;;   :disabled
-;;   :elpaca t)
-
-;;}}}
-
 ;;; Text editting {{{
+
+(use-package puni
+  :disabled
+  :elpaca t
+  :defer t
+  :hook
+  (term-mode . puni-disable-puni-mode)
+  :init
+  ;; The autoloads of Puni are set up so you can enable `puni-mode` or
+  ;; `puni-global-mode` before `puni` is actually loaded. Only after you press
+  ;; any key that calls Puni commands, it's loaded.
+  (puni-global-mode))
 
 (use-package lispy
   :elpaca t
@@ -650,11 +592,13 @@
   :custom
   (evil-snipe-scope 'whole-visible)
   (evil-snipe-repeat-scope 'whole-visible)
+  (evil-snipe-override-evil-repeat-keys nil)
+  (evil-snipe-smart-case t)
   :config
   (evil-snipe-mode)
   (evil-snipe-override-mode)
-  (push 'helpful-mode evil-snipe-disabled-modes)
-  (push 'Custom-mode evil-snipe-disabled-modes)
+  ;; (push 'helpful-mode evil-snipe-disabled-modes)
+  ;; (push 'Custom-mode evil-snipe-disabled-modes)
   ;; (define-key evil-snipe-parent-transient-map (kbd ";")
   ;;   (evilem-create 'evil-snipe-repeat
   ;;                  :bind ((evil-snipe-scope 'buffer)
@@ -721,13 +665,6 @@
   (keymap-set projectile-command-map "B" #'projectile-ibuffer)
   (keymap-unset projectile-command-map "I" t))
 
-(use-package ibuffer-projectile
-  :elpaca t
-  :hook (ibuffer . (lambda ()
-                     (ibuffer-projectile-set-filter-groups)
-                     (unless (eq ibuffer-sorting-mode 'alphabetic)
-                       (ibuffer-do-sort-by-alphabetic)))))
-
 ;; (use-package moom
 ;;   :elpaca t
 ;;   :after transient
@@ -788,6 +725,25 @@
 (use-package far
   :elpaca (:host github :repo "eshrh/far.el"))
 
+(use-package evil-xkbswitch
+  :elpaca (:host github :repo "linktohack/evil-xkbswitch")
+  :after evil
+  :diminish evil-xkbswitch-mode
+  :config
+  ;; If you use GNOME 41+:
+  (setq evil-xkbswitch-set-layout "g3kb-switch -s"
+        evil-xkbswitch-get-layout "g3kb-switch")
+  (evil-xkbswitch-mode))
+
+;; Spell check
+(use-package flyspell-correct
+  :elpaca t
+  :hook ((markdown-mode . flyspell-mode)
+         (text-mode . flyspell-mode)))
+
+(use-package flyspell-correct-popup
+  :elpaca t
+  :after flyspell-correct)
 ;;}}}
 
 ;;; My functions {{{
@@ -805,6 +761,173 @@
   (with-undo-amagamate ;; emacs 29
    (evil-paste-before 1)
    (evil-indent (evil-get-marker ?\[) (evil-get-marker ?\]))))
+
+;;}}}
+
+;;; Dired {{{
+(use-package dired
+  ;; :after (general hydra)
+  :custom
+  (dired-listing-switches "-lAhF -v --group-directories-first")
+  (dired-kill-when-opening-new-dired-buffer t)
+  (dired-no-confirm t)
+  (dired-recursive-deletes 'always)
+  (dired-recursive-copies 'always)
+  (delete-by-moving-to-trash t)
+  (dired-dwim-target t)
+  (dired-omit-files "\\`[.]?#\\|\\`[.][.]?\\'\\|\\`[.].+")
+  :hook
+  (dired-mode . dired-omit-mode)
+  (dired-mode . dired-hide-details-mode)
+  (dired-mode . hl-line-mode))
+
+(use-package wdired
+  :custom (wdired-allow-to-change-permissions t))
+
+(use-package dired-ranger
+  :elpaca t)
+
+(use-package dired-subtree :elpaca t)
+(use-package dired-narrow  :elpaca t)
+(use-package dired-open    :elpaca t)
+(use-package dired-toggle-sudo :elpaca t)
+
+(use-package dired-collapse
+  :elpaca t
+  :hook (dired-mode . dired-collapse-mode))
+
+(use-package dired-rainbow
+  :elpaca t
+  :config
+  (dired-rainbow-define html "#4e9a06" ("htm" "html" "xhtml"))
+  (defconst my-video-files-extensions
+    '("mp3" "mp4" "MP3" "MP4" "avi" "mpg" "flv" "ogg" "mkv")
+    "Media files.")
+  (dired-rainbow-define media "#ce5c00" my-video-files-extensions)
+  ;; Highlight executable files, but not directories:
+  (dired-rainbow-define-chmod executable-unix "#4e9a06" "-.*x.*"))
+
+(use-package diredfl ;; Addtional syntax highlighting for dired
+  :elpaca t
+  :hook ((dired-mode . diredfl-mode)
+         (dirvish-directory-view-mode . diredfl-mode))
+  ;; :config
+  ;; (set-face-attribute 'diredfl-dir-name nil :bold t)
+  )
+
+;; C-x C-d to open 'dired-recent-open'.
+(use-package dired-recent
+  :elpaca t
+  :config
+  (dired-recent-mode t))
+
+;;}}}
+
+;;; Buffers {{{
+
+(use-package bufler
+  :elpaca t
+  :after general
+  :custom
+  (bufler-columns '("Name" "Size" "Path"))
+  :config
+  (setq bufler-filter-buffer-modes (delete 'fundamental-mode bufler-filter-buffer-modes))
+  (general-def
+    :keymaps 'bufler-list-mode-map
+    :states 'normal
+    "<return>" 'bufler-list-buffer-switch
+    "C-s" 'bufler-list-buffer-save
+    "g r" '(bufler :which-key "refresh")
+    "d" 'bufler-list-buffer-kill
+    "x" 'bufler-list-buffer-kill
+    "w" 'bufler-list-buffer-peek
+    "?" 'hydra:bufler/body))
+
+(require 'my-ibuffer)
+(use-package ibuffer-projectile
+  :elpaca t
+  :hook (ibuffer . (lambda ()
+                     (ibuffer-projectile-set-filter-groups)
+                     (unless (eq ibuffer-sorting-mode 'alphabetic)
+                       (ibuffer-do-sort-by-alphabetic)))))
+
+;; }}}
+
+;;; Org mode {{{
+(use-package org
+  :after evil
+  :custom
+  ;; Sometimes you may inadvertently edit an invisible part of the buffer and be
+  ;; confused on what has been edited and how to undo the mistake. This setting
+  ;; allow to preventing this.
+  (org-catch-invisible-edits 'show-and-error)
+  ;; Turn on ‘org-indent-mode’ on startup, which softly indent text according to
+  ;; outline structure.
+  (org-startup-indented t)
+  ;; Make 'org-beginning-of-line' and 'org-end-of-line' ignore leading stars or
+  ;; tags on headings. Repeat to toggle.
+  ;; 'evil-org-insert-line' and 'evil-org-append-line' also respect this setting.
+  (org-special-ctrl-a/e t)
+  (org-hide-emphasis-markers t)
+  ;; Прижимать тэги к 77 колонке справа.
+  (org-tags-column -77)
+  ;; The maximum level for Imenu access to Org headlines.
+  (org-imenu-depth 20)
+  ;; Show inline images by default in org-mode
+  (org-startup-with-inline-images t)
+  (org-image-actual-width '(400))
+  (org-ellipsis " ...") ;; ↴, ▼, ▶, ⤵
+  ;; Open src block buffer to the right of the current window ,keeping all other
+  ;; windows.
+  ;; (org-src-window-setup 'split-window-right)
+  (org-src-window-setup 'current-window) ;; edit in current window
+  ;; Put two spaces additional to indentation at the beginning of the line in
+  ;; source blocks.
+  (org-edit-src-content-indentation 0)
+  (org-src-preserve-indentation nil)
+  ;; If non-nil, the effect of TAB in a code block is as if it were issued in
+  ;; the language major mode buffer.
+  (org-src-tab-acts-natively t)
+  ;; ;; Follow org links by press Enter with point on it.
+  ;; (org-return-follows-link t)
+  ;; Follow org links by press Tab with point on it.
+  ;; (org-tab-follows-link t)
+  (org-use-speed-commands nil)
+  ;; Changes to task states might get logged, especially for recurring
+  ;; routines. If so, log them in a drawer, not the content of the note.
+  ;; (org-log-state-notes-into-drawer t)
+  (org-link-descriptive t) ;; Show only description of the link.
+  :config
+  ;; Переоределяем понятие "paragraph" для ряда функций на стандартное:
+  ;; параграф -- это любой сплошной текст разделённый пустыми линиями.
+  ;; [[https://emacs.stackexchange.com/a/38605][Код взят из этого ответа.]]
+  (with-eval-after-load 'evil
+    (define-advice forward-evil-paragraph
+        (:around (orig-fun &rest args) use-default-paragraph-definiton-in-org)
+      (if (derived-mode-p 'org-mode)
+          (let ((paragraph-start (default-value 'paragraph-start))
+                (paragraph-separate (default-value 'paragraph-separate)))
+            (apply orig-fun args))
+        (apply orig-fun args))))
+  :hook
+  (org-mode . (lambda ()
+                (setq fill-column 80) ;; set textwidth to 80
+                (turn-on-auto-fill)
+                ;; Не показывать номера строк в орг-моде.
+                (display-line-numbers-mode -1))))
+
+  (use-package org-superstar
+    :elpaca t
+    :after org
+    :hook (org-mode . org-superstar-mode)
+    ;; :custom
+    ;; (org-bullets-bullet-list '("⁖"))
+    )
+
+(use-package org-appear
+  :elpaca t
+  :after org
+  :hook (org-mode . org-appear-mode))
 
 ;;}}}
 
@@ -874,14 +997,24 @@
 
 ;;}}}
 
+;;; Snippets {{{
+(use-package yasnippet
+  :elpaca t
+  :config
+  (yas-global-mode))
+
+(use-package yasnippet-snippets
+  :elpaca t
+  :after yasnippet)
+
+;; }}}
+
 ;;; Hooks / Major modes {{{
 
 (add-hook 'prog-mode-hook
           (lambda ()
             ;; (hs-minor-mode) ;; activate folding for all programming modes
-            (setq show-trailing-whitespace t)
-            ;; (electric-pair-mode)
-            ))
+            (setq show-trailing-whitespace t)))
 
 (add-hook 'org-mode-hook
           (lambda ()
@@ -896,12 +1029,20 @@
             (setq evil-shift-width  lisp-body-indent)
             (setq tab-width lisp-body-indent)
 
-            ;; (evil-global-set-key 'normal (kbd "K") 'describe-symbol)
-            (evil-global-set-key 'normal (kbd "K") #'helpful-at-point)
+            (require 'evil)
+            ;; (evil-local-set-key 'normal (kbd "K") 'describe-symbol)
+            (evil-local-set-key 'normal (kbd "K") #'helpful-at-point)
 
             ;; (evil-local-set-key 'normal "p" 'my/paste-and-indent-after)
             ;; (evil-local-set-key 'normal "P" 'my/paste-and-indent-before)
             ))
+
+(use-package markdown-mode
+  :elpaca t
+  :mode ("README\\.md\\'" . gfm-mode)
+  ;; :custom
+  ;; (markdown-command "multimarkdown")
+  )
 
 ;; Set options for 'init.el' file.
 (add-hook 'find-file-hook
