@@ -75,9 +75,7 @@
 
 (use-package general :elpaca t
   :config
-  (general-auto-unbind-keys)
-  (message "load general")
-  )
+  (general-auto-unbind-keys))
 ;; }}}
 
 ;;; Core packages {{{
@@ -116,15 +114,16 @@
   (scroll-preserve-screen-position 'always)
   ;; (auto-window-vscroll nil)
   (scroll-error-top-bottom nil)
+  (use-short-answers t)
   :config
+  ;; (defalias 'yes-or-no-p 'y-or-n-p)
   ;; (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
   (horizontal-scroll-bar-mode -1)
   (blink-cursor-mode 0)
   (set-fringe-mode 3)   ;; Give some breathing room
-  (column-number-mode 1) ;; show column number in modeline
-  (defalias 'yes-or-no-p 'y-or-n-p))
+  (column-number-mode 1)) ;; show column number in modeline
 
 (use-package display-line-numbers
   :custom
@@ -136,10 +135,13 @@
 (use-package display-fill-column-indicator
   :hook (prog-mode . display-fill-column-indicator-mode))
 
-
 (use-package elec-pair
   :config
   (electric-pair-mode))
+
+(use-package delsel
+  :config
+  (delete-selection-mode))
 
 (use-package mwheel
   :custom
@@ -179,30 +181,6 @@
 
 ;;}}}
 
-;;; Color schemes {{{
-
-(use-package ef-themes
-  ;; :disabled
-  :elpaca t
-  :custom
-  (ef-themes-mixed-fonts t)
-  (ef-themes-variable-pitch-ui t)
-  :config
-  (load-theme 'ef-light :no-confirm)
-  ;; (load-theme 'ef-day :no-confirm)
-  (set-cursor-color "black"))
-
-(use-package doom-themes
-  :disabled
-  :elpaca t
-  :custom
-  (doom-themes-enable-bold t)  ;; if nil, bold is universally disabled
-  (doom-themes-enable-italic t) ;; if nil, italics is universally disabled
-  :config
-  (load-theme 'doom-spacegrey t))
-
-;;}}}
-
 ;;; Evil {{{
 (use-package evil
   :elpaca t
@@ -215,7 +193,7 @@
   (evil-want-C-i-jump t)
   ;; (evil-want-minibuffer t)
   ;; (evil-search-module 'evil-search)
-  ;; (evil-move-beyond-eol t) ;; need for lispyville
+  (evil-move-beyond-eol t)
   (evil-vsplit-window-right t)
   (evil-split-window-below t)
   ;; (evil-ex-complete-emacs-commands 'always)
@@ -245,8 +223,7 @@
   (evil-collection-outline-bind-tab-p t)
   :config
   (evil-collection-init)
-  (require 'my-keybindings)
-  (message "load evil-collection"))
+  (require 'my-keybindings))
 
 (use-package evil-nerd-commenter
   ;; Use `gc{motion}' to comment target, `gcc' to comment line.
@@ -306,13 +283,25 @@
     "g C-x" 'evil-numbers/dec-at-pt-incremental))
 
 (use-package evil-org
-  :elpaca t
+  ;; :elpaca t
+  :elpaca (:repo "~/code/emacs/evil-org-mode"
+           :branch "dev")
   :after (org evil evil-collection)
   :hook (org-mode . evil-org-mode)
   :config
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys)
-  (evil-org-set-key-theme))
+  (evil-org-set-key-theme)
+  :hook (evil-org-mode . my/org-mode-keybindings)
+  ;; (evil-org-mode . (lambda ()
+  ;;                    (general-def
+  ;;                      :keymaps 'local
+  ;;                      :states '(normal visual)
+  ;;                      "g h" 'evil-org-beginning-of-line
+  ;;                      "g l" 'evil-org-end-of-line
+  ;;                      "H" 'org-up-element
+  ;;                      "L" 'org-down-element)))
+  )
 
 ;;}}}
 
@@ -389,9 +378,9 @@
   :preface
   (define-prefix-command 'consult-prefix-map)
   :bind (:map leader-map
-         ;; ("fo" . consult-recent-file)
+         ;; ("fr" . consult-recent-file)
          ("fo" . consult-outline)
-         ("fb" . consult-buffer)
+         ("b" . consult-buffer)
          ("fg" . consult-grep)
          ("fi" . consult-imenu))
   :init
@@ -525,8 +514,8 @@
                   (general-def
                     :keymaps 'local
                     :states 'normal
-                    "(" 		'lispyville-backward-up-list
-                    "g c" 	'lispyville-comment-or-uncomment
+                    "(" 'lispyville-backward-up-list
+                    "g c" 'lispyville-comment-or-uncomment
                     "[ SPC" 'evil-collection-unimpaired-insert-newline-above
                     "] SPC" 'evil-collection-unimpaired-insert-newline-below)
                   (general-def
@@ -606,6 +595,16 @@
   ;;                         (evil-snipe-enable-incremental-highlight))))
   )
 
+(use-package expand-region
+  :elpaca t
+  :after evil-collection
+  :custom
+  (expand-region-contract-fast-key "C-v")
+  :config
+  (general-def
+    :states 'visual
+    "v" 'er/expand-region))
+
 (use-package zoxide
   :elpaca t
   :bind (:map leader-map
@@ -651,14 +650,14 @@
 (use-package savehist ;; Save minibuffer history.
   :after no-littering
   ;; :hook (after-init . savehist-mode)
-  :config
-  (savehist-mode 1))
+  :config (savehist-mode))
 
 (use-package projectile
   :elpaca t
-  ;; :custom
+  :custom
   ;; (projectile-auto-discover t)
   ;; (projectile-project-search-path)
+  (savehist-additional-variables '(register-alist))
   :config
   (projectile-mode)
   (keymap-set leader-map "p" 'projectile-command-map)
@@ -739,7 +738,8 @@
 (use-package flyspell-correct
   :elpaca t
   :hook ((markdown-mode . flyspell-mode)
-         (text-mode . flyspell-mode)))
+         ;; (text-mode . flyspell-mode)
+         ))
 
 (use-package flyspell-correct-popup
   :elpaca t
@@ -840,7 +840,8 @@
     "g r" '(bufler :which-key "refresh")
     "d" 'bufler-list-buffer-kill
     "x" 'bufler-list-buffer-kill
-    "w" 'bufler-list-buffer-peek
+    ;; "w" 'bufler-list-buffer-peek
+    "SPC" 'bufler-list-buffer-peek
     "?" 'hydra:bufler/body))
 
 (require 'my-ibuffer)
@@ -872,7 +873,7 @@
   ;; Прижимать тэги к 77 колонке справа.
   (org-tags-column -77)
   ;; The maximum level for Imenu access to Org headlines.
-  (org-imenu-depth 20)
+  (org-imenu-depth 8)
   ;; Show inline images by default in org-mode
   (org-startup-with-inline-images t)
   (org-image-actual-width '(400))
@@ -897,7 +898,40 @@
   ;; routines. If so, log them in a drawer, not the content of the note.
   ;; (org-log-state-notes-into-drawer t)
   (org-link-descriptive t) ;; Show only description of the link.
+  (org-ctrl-k-protect-subtree t)
+  (org-id-link-to-org-use-id t)
+  (org-id-locations-file-relative t)
+  ;; (org-indirect-buffer-display 'current-window)
+  (org-list-allow-alphabetical t)
+  (org-log-into-drawer t)
+  (org-startup-folded 'content)
+  (org-use-property-inheritance t) ;; Properties apply also for sublevels.
+  (org-edit-src-content-indentation 0) ;; Indentation for the content of a source code block.
+  (org-src-tab-acts-natively t)
+  ;; (org-src-preserve-indentation t)
+  ;; Allow babel code execution without confirming it every time.
+  (org-confirm-babel-evaluate nil)
+  (org-fontify-whole-heading-line t)
+  (org-fontify-done-headline t)
+  (org-fontify-quote-and-verse-blocks t)
+  (org-list-description-max-indent)
+  :hook ((org-mode . (lambda ()
+                       (setq fill-column 80) ;; set textwidth to 80
+                       (turn-on-auto-fill)
+                       ;; Не показывать номера строк в орг-моде.
+                       (display-line-numbers-mode -1)
+                       ;; (org-indent-mode)
+                       (auto-revert-mode)
+                       (visual-line-mode))) ;; Wrap long lines on words.
+         (org-agenda-mode . my/org-setup-agenda-buffer-face))
   :config
+  (require 'org-inlinetask)
+  ;; Available embedded languages for babel.
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               '((sql . t)
+                                 (shell . t)
+                                 (emacs-lisp . t)))
+
   ;; Переоределяем понятие "paragraph" для ряда функций на стандартное:
   ;; параграф -- это любой сплошной текст разделённый пустыми линиями.
   ;; [[https://emacs.stackexchange.com/a/38605][Код взят из этого ответа.]]
@@ -909,16 +943,51 @@
                 (paragraph-separate (default-value 'paragraph-separate)))
             (apply orig-fun args))
         (apply orig-fun args))))
-  :hook
-  (org-mode . (lambda ()
-                (setq fill-column 80) ;; set textwidth to 80
-                (turn-on-auto-fill)
-                ;; Не показывать номера строк в орг-моде.
-                (display-line-numbers-mode -1))))
+
+  (defun my/org-setup-agenda-buffer-face ()
+    (setq buffer-face-mode-face '(:family "iA Writer Mono S"))
+    (buffer-face-mode))
+
+  (defun org-adjust-region (b e)
+    "Readjust stuff in region according to the preceeding stuff."
+    (interactive "r") ;; current region
+    (save-excursion
+      (let ((e (set-marker (make-marker) e))
+            (_indent (lambda ()
+                       (insert ?\n)
+                       (backward-char)
+                       (org-indent-line)
+                       (delete-char 1)))
+            last-item-pos)
+        (goto-char b)
+        (beginning-of-line)
+        (while (< (point) e)
+          (indent-line-to 0)
+          (cond
+           ((looking-at "[[:space:]]*$")) ;; ignore empty lines
+           ((org-at-heading-p)
+            (error "Headings cannot be balanced (yet)."))
+           ((org-at-item-p)
+            (funcall _indent)
+            (let ((struct (org-list-struct))
+                  (mark-active nil))
+              (ignore-errors (org-list-indent-item-generic -1 t struct)))
+            (setq last-item-pos (point)))
+           ((org-at-block-p)
+            (funcall _indent)
+            (goto-char (plist-get (cadr (org-element-special-block-parser e nil)) :contents-end))
+            (org-indent-line))
+           (t (funcall _indent)))
+          (forward-line))
+        (when last-item-pos
+          (goto-char last-item-pos)
+          (org-list-repair))))))
 
   (use-package org-superstar
     :elpaca t
     :after org
+    :custom
+    (org-superstar-remove-leading-stars nil)
     :hook (org-mode . org-superstar-mode)
     ;; :custom
     ;; (org-bullets-bullet-list '("⁖"))
@@ -1008,6 +1077,38 @@
   :after yasnippet)
 
 ;; }}}
+
+;;; Color schemes {{{
+
+(use-package ef-themes
+  ;; :disabled
+  :elpaca t
+  :after org
+  :custom
+  (ef-themes-mixed-fonts t)
+  (ef-themes-variable-pitch-ui t)
+  :config
+  (load-theme 'ef-light :no-confirm)
+  ;; (load-theme 'ef-day :no-confirm)
+  (set-cursor-color "black")
+  (set-face-attribute 'org-verbatim nil :foreground "#4250ef" :background "#f1f1f1")
+  (set-face-attribute 'org-code 	  nil :foreground "#cf25aa" :background "#f1f1f1")
+  (set-face-attribute 'org-level-1  nil :foreground "#375cd8" :height 1.27)
+  (set-face-attribute 'org-level-2  nil :foreground "#cf25aa" :height 1.20)
+  (set-face-attribute 'org-level-3  nil :foreground "#1f77bb" :height 1.15)
+  (set-face-attribute 'org-level-4  nil :foreground "#b65050" :height 1.1)
+  (set-face-attribute 'org-level-5  nil :foreground "#6052cf" :height 1.05))
+
+(use-package doom-themes
+  :disabled
+  :elpaca t
+  :custom
+  (doom-themes-enable-bold t) ;; if nil, bold is universally disabled
+  (doom-themes-enable-italic t) ;; if nil, italics is universally disabled
+  :config
+  (load-theme 'doom-spacegrey t))
+
+;;}}}
 
 ;;; Hooks / Major modes {{{
 

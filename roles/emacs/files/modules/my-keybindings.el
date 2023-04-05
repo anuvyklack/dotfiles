@@ -1,15 +1,15 @@
-;; -*- lexical-binding: t; outline-minor-mode: t -*-
+;; -*- lexical-binding: t -*-
 
 (require 'general)
 (require 'hydra)
 
-;;; General
+;;; General keybindings
 
 (general-def
   :states '(normal visual)
-  "SPC" '(:keymap leader-map)           ; use 'Space' as leader key
-  ;; "<backspace>" 'evil-ex                 ; evil command (:) state
-  "<backspace>" 'execute-extended-command ; emacs M-x
+  "SPC" '(:keymap leader-map) ;; use 'Space' as leader key
+  ;; "<backspace>" 'evil-ex ;; evil command (:) state
+  "<backspace>" 'execute-extended-command ;; emacs M-x
   "g h" 'evil-first-non-blank
   "g l" 'evil-end-of-line
   ;; "g b" 'ibuffer-jump
@@ -90,4 +90,30 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
   "d" 'dired-flag-file-deletion
   "u" 'dired-unmark)
 
+;;; Outline
+
+(general-def
+  :keymaps 'outline-mode-map
+  :states 'normal
+  "z j" 'outline-next-visible-heading
+  "z k" 'outline-previous-visible-heading)
+
+;;; Orgmode
+
+(defun my/org-mode-keybindings ()
+  (general-def
+    :keymaps 'local
+    :states '(normal visual)
+    "g h" 'evil-org-beginning-of-line
+    "g l" 'evil-org-end-of-line
+    "H" 'org-up-element
+    "L" 'org-down-element))
+
+;;; Provide
+
 (provide 'my-keybindings)
+
+;; Local Variables:
+;; eval:(outline-minor-mode 1)
+;; eval:(outline-hide-sublevels 5)
+;; End:

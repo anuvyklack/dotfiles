@@ -6,7 +6,8 @@
  '(auth-source-save-behavior nil)
  '(inhibit-startup-screen t nil nil "Customized with use-package emacs")
  '(safe-local-variable-values
-   '((outline-minor-mode . t)
+   '((eval outline-hide-sublevels 5)
+     (outline-minor-mode . t)
      (origami-fold-style . triple-braces))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
