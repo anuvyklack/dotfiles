@@ -7,6 +7,7 @@
 
 (general-def
   :states '(normal visual)
+  "M-u" 'universal-argument
   "SPC" '(:keymap leader-map) ;; use 'Space' as leader key
   ;; "<backspace>" 'evil-ex ;; evil command (:) state
   "<backspace>" 'execute-extended-command ;; emacs M-x
@@ -25,16 +26,68 @@
   "z =" 'flyspell-correct-wrapper)
 
 (general-def
+  :keymaps 'universal-argument-map
+  "M-u" 'universal-argument-more)
+
+(general-def
   :states 'motion
   ";" '(:keymap semicolon-leader-map))
 
 (general-def
-  :keymaps 'leader-map
-  "h" '(:keymap help-map :which-key "help"))
-
-(general-def
   :states 'insert
   "C-l" 'right-char)
+
+;;; Leader map
+
+(general-def
+  :keymaps 'leader-map
+  "h"  '(:keymap help-map :which-key "help")
+  "n"  '(:keymap my/notes-map :which-key "notes")
+  "b"  'consult-buffer
+  "ff" 'find-file
+  "fo" 'consult-outline
+  "fg" 'consult-grep
+  "fi" 'consult-imenu
+  "fr" 'consult-recent-file
+  "fb" 'consult-bookmark)
+
+;;; Minibuffer
+
+(add-hook 'vertico-mode-hook
+          (lambda ()
+            (general-def
+              :keymaps 'vertico-map
+              :states '(normal visual)
+              "C-j" 'vertico-next
+              "C-k" 'vertico-previous
+              "C-n" 'vertico-next-group
+              "C-p" 'vertico-previous-group
+              "C-f" 'vertico-scroll-up
+              "C-b" 'vertico-scroll-down
+              "q" 'abort-recursive-edit)
+
+            (general-def
+              :keymaps 'vertico-map
+              :states 'insert
+              "C-y" 'yank
+              "C-j" 'vertico-next
+              "C-k" 'vertico-previous
+              "C-n" 'vertico-next-group
+              "C-p" 'vertico-previous-group
+              "C-f" 'vertico-scroll-up
+              "C-b" 'vertico-scroll-down)))
+
+;; :bind (:map vertico-map
+;;        ("C-j" . vertico-next)
+;;        ("C-k" . vertico-previous)
+;;        ("C-n" . vertico-next-group)
+;;        ("C-p" . vertico-previous-group)
+;;        ("C-l" . vertico-insert)
+;;        ("C-f" . vertico-scroll-up)
+;;        ("C-b" . vertico-scroll-down)
+;;        ;; ("C-g" . vertico-exit)
+;;        :map minibuffer-local-map
+;;        ("C-h" . backward-kill-word))
 
 ;;; Dired
 
@@ -95,19 +148,53 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
 (general-def
   :keymaps 'outline-mode-map
   :states 'normal
+  "<tab>" 'outline-cycle
   "z j" 'outline-next-visible-heading
   "z k" 'outline-previous-visible-heading)
 
 ;;; Orgmode
 
+(general-def
+  :keymaps 'my/orgmode-leader-map
+  "SPC" 'org-ctrl-c-ctrl-c
+  "/" 'org-sparse-tree
+  ";" 'org-toggle-comment
+  "l" 'org-insert-link
+  "d" 'org-deadline
+  "s" 'org-schedule
+  "t" 'org-time-stamp
+  "T" 'org-time-stamp-inactive)
+
 (defun my/org-mode-keybindings ()
   (general-def
     :keymaps 'local
+    ;; :keymaps 'org-mode-map
     :states '(normal visual)
     "g h" 'evil-org-beginning-of-line
     "g l" 'evil-org-end-of-line
-    "H" 'org-up-element
-    "L" 'org-down-element))
+    ;; "H" 'org-up-element
+    ;; "L" 'org-down-element
+    "g x" 'org-open-at-point
+    "z n" 'org-narrow-to-subtree
+    "SPC" '(:keymap my/orgmode-leader-map))
+
+  (general-def
+    :keymaps 'local
+    ;; :keymaps 'org-mode-map
+    :states 'insert
+    "C-t" 'evil-shift-right-line))
+
+(general-def
+  :keymaps 'my/notes-map
+  "a" 'org-agenda
+  "s" 'org-store-link
+  "n" 'org-roam-node-find
+  "c" 'org-roam-capture
+  "w" 'org-roam-buffer-toggle
+  "b" 'org-switchb
+  "i" 'org-roam-node-insert
+  "l" 'org-roam-node-insert
+  "u" 'org-roam-ui-mode)
 
 ;;; Provide
 

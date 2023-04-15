@@ -1,6 +1,7 @@
 ;; init.el -*- lexical-binding: t; -*-
 
-;;; Setup elpaca {{{
+;;* Setup elpaca
+
 (defvar elpaca-installer-version 0.3)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
@@ -60,9 +61,8 @@
 ; ;; Don't install anything. Defer execution of BODY
 ; (elpaca nil (message "deferred"))
 
-;;}}}
+;;* Libraries
 
-;;; Libraries {{{
 (use-package s    :elpaca t) ;; string manipulation library
 (use-package dash :elpaca t) ;; list manipulation library
 (use-package diminish :elpaca t)
@@ -76,13 +76,14 @@
 (use-package general :elpaca t
   :config
   (general-auto-unbind-keys))
-;; }}}
 
-;;; Core packages {{{
+;;* Core packages
 
 ;; (defvar leader-map (make-sparse-keymap))
 (define-prefix-command 'leader-map)
 (define-prefix-command 'semicolon-leader-map)
+(define-prefix-command 'my/orgmode-leader-map)
+(define-prefix-command 'my/notes-map)
 
 (setq-default custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file) (load custom-file))
@@ -137,7 +138,16 @@
 
 (use-package elec-pair
   :config
-  (electric-pair-mode))
+  (electric-pair-mode)
+  :hook
+  (org-mode . (lambda ()
+                ;; Make 'electric-pair' mode not to complete '<>' pair when '<'
+                ;; char enterd.
+                (setq-local electric-pair-inhibit-predicate
+                            (lambda (c)
+                              (if (char-equal c ?<)
+                                  t
+                                (electric-pair-default-inhibit c)))))))
 
 (use-package delsel
   :config
@@ -179,17 +189,17 @@
   :custom
   (outline-minor-mode-cycle t))
 
-;;}}}
-
-;;; Evil {{{
+;;* Evil
 (use-package evil
   :elpaca t
   :after general
   :custom
+  (evil-want-fine-undo t)
   (evil-overriding-maps nil)
   (evil-want-integration t) ;; need for evil-collection
   (evil-want-keybinding nil) ;; need for evil-collection
   (evil-want-C-u-scroll t)
+  (evil-want-C-d-scroll t)
   (evil-want-C-i-jump t)
   ;; (evil-want-minibuffer t)
   ;; (evil-search-module 'evil-search)
@@ -198,14 +208,17 @@
   (evil-split-window-below t)
   ;; (evil-ex-complete-emacs-commands 'always)
   (evil-shift-round t)
+  (evil-undo-system 'undo-redo)
+  (org-return-follows-link t)
   :config
+  (customize-set-variable 'evil-want-Y-yank-to-eol t) ;; Y -> y$
   ;; (evil-select-search-module 'evil-search-module 'evil-search)
   (evil-select-search-module 'evil-search-module 'isearch)
-  (customize-set-variable 'evil-want-Y-yank-to-eol t) ;; Y -> y$
   ;; (evil-ex-define-cmd "ls" 'ibuffer-jump) ;; bind ':ls' command to 'ibuffer instead of 'list-buffers
   (evil-ex-define-cmd "ls" 'bufler)
   ;; (advice-add :after 'evil-window-vsplit)
   (evil-mode 1)
+
   (evil-define-command my/evil-save-modified-buffer-and-kill-it (file &optional bang)
     "Save the current buffer and kill it."
     :repeat nil
@@ -221,6 +234,7 @@
   :after evil
   :custom
   (evil-collection-outline-bind-tab-p t)
+  (evil-collection-setup-minibuffer t)
   :config
   (evil-collection-init)
   (require 'my-keybindings))
@@ -287,43 +301,29 @@
   :elpaca (:repo "~/code/emacs/evil-org-mode"
            :branch "dev")
   :after (org evil evil-collection)
-  :hook (org-mode . evil-org-mode)
+  :hook ((org-mode . evil-org-mode)
+         (evil-org-mode . my/org-mode-keybindings))
   :config
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys)
-  (evil-org-set-key-theme)
-  :hook (evil-org-mode . my/org-mode-keybindings)
-  ;; (evil-org-mode . (lambda ()
-  ;;                    (general-def
-  ;;                      :keymaps 'local
-  ;;                      :states '(normal visual)
-  ;;                      "g h" 'evil-org-beginning-of-line
-  ;;                      "g l" 'evil-org-end-of-line
-  ;;                      "H" 'org-up-element
-  ;;                      "L" 'org-down-element)))
-  )
+  (evil-org-set-key-theme '(operators
+                            textobjects
+                            insert
+                            ;; navigation
+                            additional
+                            ;; shift
+                            todo
+                            ;; heading
+                            )))
 
-;;}}}
-
-;;; Completion framework {{{
+;;* Completion framework
 
 ;; (use-package icomplete
 ;;   :config
 ;;   (fido-vertical-mode 1))
 
-(use-package vertico ;;{{{
+(use-package vertico
   :elpaca t
-  :bind (:map vertico-map
-         ("C-j" . vertico-next)
-         ("C-k" . vertico-previous)
-         ("C-n" . vertico-next-group)
-         ("C-p" . vertico-previous-group)
-         ("C-l" . vertico-insert)
-         ("C-f" . vertico-scroll-up)
-         ("C-b" . vertico-scroll-down)
-         ;; ("C-g" . vertico-exit)
-         :map minibuffer-local-map
-         ("C-h" . backward-kill-word))
   :custom
   (vertico-count 14) ;; How many candidates to show.
   (vertico-scroll-margin 2)
@@ -335,26 +335,36 @@
   (read-file-name-completion-ignore-case t)
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
+  :bind (;; :map vertico-map
+         ;; ("C-j" . vertico-next)
+         ;; ("C-k" . vertico-previous)
+         ;; ("C-n" . vertico-next-group)
+         ;; ("C-p" . vertico-previous-group)
+         ;; ("C-l" . vertico-insert)
+         ;; ("C-f" . vertico-scroll-up)
+         ;; ("C-b" . vertico-scroll-down)
+         ;; ("C-g" . vertico-exit)
+         :map minibuffer-local-map
+         ("C-h" . backward-kill-word))
   :init
   (ido-mode -1)
   (vertico-mode)
   :config
-  ;; Add prompt indicator to `completing-read-multiple'.
-  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
-  (defun crm-indicator (args)
+  (defun my/crm-indicator (args)
+    "Add prompt indicator to `completing-read-multiple'.
+We display [CRM<separator>], e.g., [CRM,] if the separator is a comma."
     (cons (format "[CRM%s] %s"
                   (replace-regexp-in-string
                    "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
                    crm-separator)
                   (car args))
           (cdr args)))
-  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+  (advice-add #'completing-read-multiple :filter-args #'my/crm-indicator)
 
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties
         '(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-) ;;}}}
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
 
 (use-package orderless
   :elpaca t
@@ -367,7 +377,6 @@
 
 (use-package marginalia
   :elpaca t
-  ;; :after vertico
   :custom
   (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
   :init
@@ -375,14 +384,11 @@
 
 (use-package consult
   :elpaca t
-  :preface
-  (define-prefix-command 'consult-prefix-map)
-  :bind (:map leader-map
-         ;; ("fr" . consult-recent-file)
-         ("fo" . consult-outline)
-         ("b" . consult-buffer)
-         ("fg" . consult-grep)
-         ("fi" . consult-imenu))
+  ;; :bind (:map leader-map
+  ;;        ("fo" . consult-outline)
+  ;;        ("b" . consult-buffer)
+  ;;        ("fg" . consult-grep)
+  ;;        ("fi" . consult-imenu))
   :init
   (setq completion-in-region-function #'consult-completion-in-region))
 
@@ -419,9 +425,7 @@
 ;;   (:global "C-'" #'embark-act
 ;;            "C-=" #'embark-dwim))
 
-;;}}}
-
-;;; Smooth scroll {{{
+;;* Smooth scroll
 
 (use-package pixel-scroll
   :when (fboundp #'pixel-scroll-precision-mode)
@@ -481,9 +485,7 @@
   ;;  "<prior>" 'good-scroll-down-full-screen)
   )
 
-;;}}}
-
-;;; Text editting {{{
+;;* Text editting
 
 (use-package puni
   :disabled
@@ -532,9 +534,7 @@
   (lispyville-set-key-theme
    '(operators  c-w  c-u  prettify  additional-motions  additional  wrap)))
 
-;; }}}
-
-;;; Tools {{{
+;;* Tools
 
 (use-package avy
   :elpaca t
@@ -625,7 +625,7 @@
       (convert-standard-filename
         (expand-file-name  "var/eln-cache/" user-emacs-directory)))))
 
-(use-package recentf ;; Save recent files. {{{
+(use-package recentf ;; Save recent files.
   :after no-littering
   :custom
   (recentf-max-menu-items 100)
@@ -645,19 +645,19 @@
 ;;                      (expand-file-name "workspace/.cache/" user-emacs-directory)))
 ;;     (add-to-list 'recentf-exclude (concat (regexp-quote dir) ".*"))))
 
-;;}}}
-
 (use-package savehist ;; Save minibuffer history.
   :after no-littering
-  ;; :hook (after-init . savehist-mode)
-  :config (savehist-mode))
+  ;; :custom
+  ;; (savehist-additional-variables '(register-alist))
+  :config
+  (savehist-mode)
+  (setq savehist-additional-variables '(register-alist)))
 
 (use-package projectile
   :elpaca t
-  :custom
+  ;; :custom
   ;; (projectile-auto-discover t)
   ;; (projectile-project-search-path)
-  (savehist-additional-variables '(register-alist))
   :config
   (projectile-mode)
   (keymap-set leader-map "p" 'projectile-command-map)
@@ -744,11 +744,20 @@
 (use-package flyspell-correct-popup
   :elpaca t
   :after flyspell-correct)
-;;}}}
 
-;;; My functions {{{
+(use-package vundo
+  :elpaca (:host github :repo "casouri/vundo")
+  :custom
+  (vundo-glyph-alist vundo-unicode-symbols)
+  ;; (vundo-roll-back-on-quit nil)
+  (vundo-compact-display nil)
+  :config
+  (general-def
+    ;; :keymaps 'leader-map
+    :states 'normal
+    "U" 'vundo))
 
-;; avy-goto-word-1-above
+;;* My functions
 
 (defun my/paste-and-indent-after ()
   (interactive)
@@ -762,9 +771,8 @@
    (evil-paste-before 1)
    (evil-indent (evil-get-marker ?\[) (evil-get-marker ?\]))))
 
-;;}}}
+;;* Dired
 
-;;; Dired {{{
 (use-package dired
   ;; :after (general hydra)
   :custom
@@ -821,9 +829,7 @@
   :config
   (dired-recent-mode t))
 
-;;}}}
-
-;;; Buffers {{{
+;;* Buffers
 
 (use-package bufler
   :elpaca t
@@ -832,6 +838,7 @@
   (bufler-columns '("Name" "Size" "Path"))
   :config
   (setq bufler-filter-buffer-modes (delete 'fundamental-mode bufler-filter-buffer-modes))
+  (add-to-list 'bufler-filter-buffer-modes 'org-roam-mode)
   (general-def
     :keymaps 'bufler-list-mode-map
     :states 'normal
@@ -845,6 +852,7 @@
     "?" 'hydra:bufler/body))
 
 (require 'my-ibuffer)
+
 (use-package ibuffer-projectile
   :elpaca t
   :hook (ibuffer . (lambda ()
@@ -852,51 +860,66 @@
                      (unless (eq ibuffer-sorting-mode 'alphabetic)
                        (ibuffer-do-sort-by-alphabetic)))))
 
-;; }}}
-
-;;; Org mode {{{
+;;*  Org mode
 (use-package org
   :after evil
+;;** Custom
   :custom
   ;; Sometimes you may inadvertently edit an invisible part of the buffer and be
   ;; confused on what has been edited and how to undo the mistake. This setting
   ;; allow to preventing this.
   (org-catch-invisible-edits 'show-and-error)
+
   ;; Turn on ‘org-indent-mode’ on startup, which softly indent text according to
   ;; outline structure.
   (org-startup-indented t)
+
   ;; Make 'org-beginning-of-line' and 'org-end-of-line' ignore leading stars or
   ;; tags on headings. Repeat to toggle.
   ;; 'evil-org-insert-line' and 'evil-org-append-line' also respect this setting.
   (org-special-ctrl-a/e t)
+
   (org-hide-emphasis-markers t)
+
   ;; Прижимать тэги к 77 колонке справа.
   (org-tags-column -77)
+
   ;; The maximum level for Imenu access to Org headlines.
   (org-imenu-depth 8)
+
   ;; Show inline images by default in org-mode
   (org-startup-with-inline-images t)
+
   (org-image-actual-width '(400))
+
   (org-ellipsis " ...") ;; ↴, ▼, ▶, ⤵
+
   ;; Open src block buffer to the right of the current window ,keeping all other
   ;; windows.
   ;; (org-src-window-setup 'split-window-right)
   (org-src-window-setup 'current-window) ;; edit in current window
-  ;; Put two spaces additional to indentation at the beginning of the line in
-  ;; source blocks.
-  (org-edit-src-content-indentation 0)
+
+  ;; Indentation for the content of a source code block.
+  (org-edit-src-content-indentation 2)
+
   (org-src-preserve-indentation nil)
+
   ;; If non-nil, the effect of TAB in a code block is as if it were issued in
   ;; the language major mode buffer.
   (org-src-tab-acts-natively t)
+
   ;; ;; Follow org links by press Enter with point on it.
   ;; (org-return-follows-link t)
+
   ;; Follow org links by press Tab with point on it.
   ;; (org-tab-follows-link t)
+
   (org-use-speed-commands nil)
+
   ;; Changes to task states might get logged, especially for recurring
   ;; routines. If so, log them in a drawer, not the content of the note.
   ;; (org-log-state-notes-into-drawer t)
+
   (org-link-descriptive t) ;; Show only description of the link.
   (org-ctrl-k-protect-subtree t)
   (org-id-link-to-org-use-id t)
@@ -906,15 +929,45 @@
   (org-log-into-drawer t)
   (org-startup-folded 'content)
   (org-use-property-inheritance t) ;; Properties apply also for sublevels.
-  (org-edit-src-content-indentation 0) ;; Indentation for the content of a source code block.
   (org-src-tab-acts-natively t)
   ;; (org-src-preserve-indentation t)
+
   ;; Allow babel code execution without confirming it every time.
   (org-confirm-babel-evaluate nil)
+
   (org-fontify-whole-heading-line t)
   (org-fontify-done-headline t)
   (org-fontify-quote-and-verse-blocks t)
-  (org-list-description-max-indent)
+  ;; (org-list-description-max-indent 20) ;; Has been removed.
+  ;; (org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
+
+  ;; Additional indentation for sub-items in a list.
+  (org-list-indent-offset 1)
+
+  ;; Consider plain lists items as a lower level subheadings, during cycling
+  ;; with 'Tab' key.
+	(org-cycle-include-plain-lists 'integrate)
+
+  (org-todo-keywords '((sequence "TODO" "WAIT" "STARTING" "|" "CANCELED" "DONE")))
+
+  ;; Track time when tasks become DONE.
+  (org-log-done 'time)
+
+  ;; Make priority signs be integers from 1 to 5, with 3 as default.
+  (org-priority-highest 1)
+  (org-priority-lowest  5)
+  (org-priority-default 3)
+
+  (org-deadline-warning-days 14)
+  (org-log-redeadline 'note)
+  (org-log-reschedule nil)
+
+  (org-agenda-window-setup 'reorganize-frame)
+  (org-agenda-restore-windows-after-quit t)
+
+  ;; Include entries from the Emacs diary into Org mode’s agenda.
+  (org-agenda-include-diary nil)
+;;** Hook
   :hook ((org-mode . (lambda ()
                        (setq fill-column 80) ;; set textwidth to 80
                        (turn-on-auto-fill)
@@ -924,8 +977,11 @@
                        (auto-revert-mode)
                        (visual-line-mode))) ;; Wrap long lines on words.
          (org-agenda-mode . my/org-setup-agenda-buffer-face))
+;;** Config
   :config
   (require 'org-inlinetask)
+  (setq org-cycle-max-level 14)
+  (setq org-inlinetask-min-level 15)
   ;; Available embedded languages for babel.
   (org-babel-do-load-languages 'org-babel-load-languages
                                '((sql . t)
@@ -946,61 +1002,107 @@
 
   (defun my/org-setup-agenda-buffer-face ()
     (setq buffer-face-mode-face '(:family "iA Writer Mono S"))
-    (buffer-face-mode))
+    (buffer-face-mode)))
 
-  (defun org-adjust-region (b e)
-    "Readjust stuff in region according to the preceeding stuff."
-    (interactive "r") ;; current region
-    (save-excursion
-      (let ((e (set-marker (make-marker) e))
-            (_indent (lambda ()
-                       (insert ?\n)
-                       (backward-char)
-                       (org-indent-line)
-                       (delete-char 1)))
-            last-item-pos)
-        (goto-char b)
-        (beginning-of-line)
-        (while (< (point) e)
-          (indent-line-to 0)
-          (cond
-           ((looking-at "[[:space:]]*$")) ;; ignore empty lines
-           ((org-at-heading-p)
-            (error "Headings cannot be balanced (yet)."))
-           ((org-at-item-p)
-            (funcall _indent)
-            (let ((struct (org-list-struct))
-                  (mark-active nil))
-              (ignore-errors (org-list-indent-item-generic -1 t struct)))
-            (setq last-item-pos (point)))
-           ((org-at-block-p)
-            (funcall _indent)
-            (goto-char (plist-get (cadr (org-element-special-block-parser e nil)) :contents-end))
-            (org-indent-line))
-           (t (funcall _indent)))
-          (forward-line))
-        (when last-item-pos
-          (goto-char last-item-pos)
-          (org-list-repair))))))
 
-  (use-package org-superstar
-    :elpaca t
-    :after org
-    :custom
-    (org-superstar-remove-leading-stars nil)
-    :hook (org-mode . org-superstar-mode)
-    ;; :custom
-    ;; (org-bullets-bullet-list '("⁖"))
-    )
+;;** Other Org packages
+
+;; ◍ ● ○ ◉ ▣ □ ◁
+;; Ⅰ Ⅱ Ⅲ Ⅳ Ⅴ Ⅵ Ⅶ Ⅷ Ⅸ Ⅹ Ⅺ Ⅻ
+;; ⬤ ⬢ ⬡ ⭘ ⯁ 🞄
+;; ✴ ⋄ ◦ •
+
+(use-package org-superstar
+  :elpaca t
+  :after org
+  :custom
+  (org-superstar-remove-leading-stars nil)
+  (org-superstar-item-bullet-alist nil)
+  (org-superstar-item-bullet-alist '(;; (?+ . ?●)
+                                     ;; (?- . ?•)
+                                     (?* . ?➤)))
+  :hook (org-mode . org-superstar-mode))
 
 (use-package org-appear
   :elpaca t
   :after org
   :hook (org-mode . org-appear-mode))
 
-;;}}}
+(use-package org-roam
+  :elpaca t
+  :after org
+  :init
+  (when (version<= "29" emacs-version)
+    (setq org-roam-database-connector 'sqlite-builtin))
+  :custom
+  (org-roam-directory (file-truename "~/notes"))
+  ;; Set a more informative completion interface, for vertico.
+  (org-roam-node-display-template (concat "${title:*} "
+                                          (propertize "${tags:10}" 'face 'org-tag)))
+  ;; Provide link completion matching outside of Org links.
+  (org-roam-completion-everywhere t)
+  (org-roam-db-gc-threshold most-positive-fixnum)
+  (org-id-link-to-org-use-id 'create-if-interactive)
+  :config
+  (org-roam-db-autosync-mode)
+  ;; (add-to-list 'display-buffer-alist
+  ;;              '("\\*org-roam\\*"
+  ;;                (display-buffer-in-direction)
+  ;;                (direction . right)
+  ;;                (window-width . 0.33)
+  ;;                (window-height . fit-window-to-buffer)))
+  )
 
-;;; Keybindings {{{
+(use-package org-roam-ui
+  :elpaca t
+  :after org-roam
+  :custom
+  (org-roam-ui-sync-theme t)
+  (org-roam-ui-follow t)
+  (org-roam-ui-update-on-save t)
+  (org-roam-ui-follow-mode t)
+  (org-roam-ui-open-on-start nil))
+
+(use-package org-super-agenda
+  :elpaca t
+  :config
+  (org-super-agenda-mode))
+
+(use-package org-modern
+  :disabled
+  :elpaca t
+  :after org
+  :hook ((org-mode . org-modern-mode)
+         (org-agenda-finalize . org-modern-agenda)))
+
+(use-package svg-tag-mode
+  :disabled
+  :elpaca t
+  ;; :custom
+  ;; (svg-tag-tags '((":lol:" ((lambda (tag)
+  ;;                              (svg-tag-make "TODO"))))))
+  :config
+  (setq svg-tag-tags
+        '((":TODO:" . ((svg-tag-make "TODO" :face 'org-tag
+                                     :radius 0 :inverse t :margin 0)))
+          (":NOTE:" . ((svg-tag-make "NOTE" :face 'font-lock-comment-face
+                                     :inverse nil :margin 0 :radius 0)))
+          ("\([0-9a-zA-Z]\)" . ((lambda (tag)
+                                  (svg-tag-make tag :beg 1 :end -1 :radius 12))))
+          ("\([0-9a-zA-Z][0-9a-zA-Z]\)" . ((lambda (tag)
+                                             (svg-tag-make tag :beg 1 :end -1 :radius 8))))
+          ("|[0-9a-zA-Z- ]+?|" . ((lambda (tag)
+                                    (svg-tag-make tag :face 'font-lock-comment-face
+                                                  :margin 0 :beg 1 :end -1)))))))
+
+(use-package org-link-beautify
+  :disabled
+  :elpaca t
+  :config
+  (org-link-beautify-mode))
+
+
+;;* Keybindings
 
 ;; Make ESC quit prompts
 ;; (global-set-key (kbd "<escape>") #'keyboard-escape-quit)
@@ -1015,9 +1117,7 @@
   :init
   (which-key-mode))
 
-;;}}}
-
-;;; UI tweaks {{{
+;;* UI tweaks
 
 (use-package all-the-icons
   :elpaca t
@@ -1028,7 +1128,7 @@
       (all-the-icons-install-fonts t)
       (with-temp-buffer (write-file cache)))))
 
-;;; Modeline {{{
+;;* Modeline
 (use-package doom-modeline
   :elpaca t
   :custom
@@ -1054,9 +1154,8 @@
   :bind (([remap query-replace] . anzu-query-replace)
          ([remap query-replace-regexp] . anzu-query-replace-regexp)))
 
-;;}}}
-
 (use-package page-break-lines
+  :disabled ;; breaks org-roam buffer
   :elpaca t
   ;; :config
   ;; (global-page-break-lines-mode 1)
@@ -1064,9 +1163,8 @@
   (help-mode . page-break-lines-mode)
   (outline-mode . page-break-lines-mode))
 
-;;}}}
+;;* Snippets
 
-;;; Snippets {{{
 (use-package yasnippet
   :elpaca t
   :config
@@ -1076,9 +1174,7 @@
   :elpaca t
   :after yasnippet)
 
-;; }}}
-
-;;; Color schemes {{{
+;;* Color schemes
 
 (use-package ef-themes
   ;; :disabled
@@ -1106,11 +1202,13 @@
   (doom-themes-enable-bold t) ;; if nil, bold is universally disabled
   (doom-themes-enable-italic t) ;; if nil, italics is universally disabled
   :config
-  (load-theme 'doom-spacegrey t))
+  ;; (load-theme 'doom-spacegrey t)
+  (load-theme 'doom-flatwhite t)
+  ;; (load-theme 'doom-miramare t)
+  ;; (load-theme 'doom-plain t)
+  )
 
-;;}}}
-
-;;; Hooks / Major modes {{{
+;;* Hooks / Major modes
 
 (add-hook 'prog-mode-hook
           (lambda ()
@@ -1154,8 +1252,10 @@
               (evil-global-set-key 'normal (kbd "zj") 'origami-forward-fold)
               (evil-global-set-key 'normal (kbd "zk") 'origami-previous-fold))))
 
-;;}}}
+;;; init.el ends here
 
 ;; Local Variables:
-;; origami-fold-style: triple-braces
+;; outline-blank-line: t
+;; eval:(outline-minor-mode 1)
+;; eval:(outline-hide-sublevels 5)
 ;; End:
