@@ -73,7 +73,8 @@
   :custom
   (use-package-enable-imenu-support t))
 
-(use-package general :elpaca t
+(use-package general
+  :elpaca t
   :config
   (general-auto-unbind-keys))
 
@@ -91,7 +92,10 @@
 (add-to-list 'load-path (expand-file-name "modules" user-emacs-directory))
 (put 'narrow-to-region 'disabled nil)
 
+(use-package better-defaults :elpaca t)
+
 (use-package emacs
+  :after better-defaults
   :custom
   (user-mail-address "anuvyklack@gmail.com")
   (user-full-name "Yuriy Artemyev")
@@ -123,8 +127,13 @@
   (scroll-bar-mode -1)
   (horizontal-scroll-bar-mode -1)
   (blink-cursor-mode 0)
-  (set-fringe-mode 3)   ;; Give some breathing room
-  (column-number-mode 1)) ;; show column number in modeline
+  (set-fringe-mode 3)    ;; Give some breathing room
+  (column-number-mode 1) ;; show column number in modeline
+  (when window-system
+    (set-face-attribute 'default nil :font "Inconsolata LGC" :height 125)
+    ;; (set-face-attribute 'default nil :font "Monego" :height 125)
+    (set-frame-size (selected-frame) 134 63)
+    (set-frame-position (selected-frame) 1190 35)))
 
 (use-package display-line-numbers
   :custom
@@ -133,6 +142,7 @@
   (display-line-numbers-width-start t)
   :hook (prog-mode . display-line-numbers-mode))
 
+;; Display of fill-column indicator.
 (use-package display-fill-column-indicator
   :hook (prog-mode . display-fill-column-indicator-mode))
 
@@ -167,15 +177,6 @@
 ;;                 helpful-mode-hook))
 ;;   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-
-(use-package better-defaults
-  :elpaca t
-  :config
-  (when window-system
-    (set-face-attribute 'default nil :font "Inconsolata LGC" :height 125)
-    ;; (set-face-attribute 'default nil :font "Monego" :height 125)
-    (set-frame-size (selected-frame) 134 63)
-    (set-frame-position (selected-frame) 1190 35)))
 
 ;; (with-eval-after-load 'hydra
 ;;   (require 'my-dired))
@@ -298,8 +299,7 @@
 
 (use-package evil-org
   ;; :elpaca t
-  :elpaca (:repo "~/code/emacs/evil-org-mode"
-           :branch "dev")
+  :load-path "~/code/emacs/evil-org-mode"
   :after (org evil evil-collection)
   :hook ((org-mode . evil-org-mode)
          (evil-org-mode . my/org-mode-keybindings))
@@ -900,7 +900,7 @@ We display [CRM<separator>], e.g., [CRM,] if the separator is a comma."
   (org-src-window-setup 'current-window) ;; edit in current window
 
   ;; Indentation for the content of a source code block.
-  (org-edit-src-content-indentation 2)
+  (org-edit-src-content-indentation 0)
 
   (org-src-preserve-indentation nil)
 
@@ -930,7 +930,6 @@ We display [CRM<separator>], e.g., [CRM,] if the separator is a comma."
   (org-startup-folded 'content)
   (org-use-property-inheritance t) ;; Properties apply also for sublevels.
   (org-src-tab-acts-natively t)
-  ;; (org-src-preserve-indentation t)
 
   ;; Allow babel code execution without confirming it every time.
   (org-confirm-babel-evaluate nil)
@@ -939,6 +938,7 @@ We display [CRM<separator>], e.g., [CRM,] if the separator is a comma."
   (org-fontify-done-headline t)
   (org-fontify-quote-and-verse-blocks t)
   ;; (org-list-description-max-indent 20) ;; Has been removed.
+
   ;; (org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
 
   ;; Additional indentation for sub-items in a list.
@@ -946,16 +946,16 @@ We display [CRM<separator>], e.g., [CRM,] if the separator is a comma."
 
   ;; Consider plain lists items as a lower level subheadings, during cycling
   ;; with 'Tab' key.
-	(org-cycle-include-plain-lists 'integrate)
+  (org-cycle-include-plain-lists 'integrate)
 
-  (org-todo-keywords '((sequence "TODO" "WAIT" "STARTING" "|" "CANCELED" "DONE")))
+  (org-todo-keywords '((sequence "TODO" "WAIT" "START" "|" "CANCELED" "DONE")))
 
   ;; Track time when tasks become DONE.
   (org-log-done 'time)
 
   ;; Make priority signs be integers from 1 to 5, with 3 as default.
   (org-priority-highest 1)
-  (org-priority-lowest  5)
+  (org-priority-lowest 5)
   (org-priority-default 3)
 
   (org-deadline-warning-days 14)
@@ -967,19 +967,10 @@ We display [CRM<separator>], e.g., [CRM,] if the separator is a comma."
 
   ;; Include entries from the Emacs diary into Org mode’s agenda.
   (org-agenda-include-diary nil)
-;;** Hook
-  :hook ((org-mode . (lambda ()
-                       (setq fill-column 80) ;; set textwidth to 80
-                       (turn-on-auto-fill)
-                       ;; Не показывать номера строк в орг-моде.
-                       (display-line-numbers-mode -1)
-                       ;; (org-indent-mode)
-                       (auto-revert-mode)
-                       (visual-line-mode))) ;; Wrap long lines on words.
-         (org-agenda-mode . my/org-setup-agenda-buffer-face))
+
+  (org-pretty-entities t)
 ;;** Config
   :config
-  (require 'org-inlinetask)
   (setq org-cycle-max-level 14)
   (setq org-inlinetask-min-level 15)
   ;; Available embedded languages for babel.
@@ -1002,15 +993,69 @@ We display [CRM<separator>], e.g., [CRM,] if the separator is a comma."
 
   (defun my/org-setup-agenda-buffer-face ()
     (setq buffer-face-mode-face '(:family "iA Writer Mono S"))
-    (buffer-face-mode)))
+    (buffer-face-mode))
 
+  (defun my/org-icons ()
+    "Beautify org mode keywords."
+    (setq prettify-symbols-alist
+          (mapcan (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
+                  '(
+                    ;; ("#+begin_src" . ?)
+                    ;; ("#+end_src" . ?)
+                    ("#+begin_src" . "")
+                    ("#+end_src" . "―")
+                    ("#+begin_example" . ?)
+                    ("#+end_example" . ?)
+                    ;; ("#+header:" . ?)
+                    ;; ("#+name:" . ?﮸)
+                    ;; ("#+results:" . ?)
+                    ;; ("#+call:" . ?)
+                    ;; (":properties:" . ?)
+                    ;; (":logbook:" . ?)
+                    )))
+    ;; (setq prettify-symbols-alist '(("TODO" . "")
+    ;;                                ;; ("WAIT" . "")
+    ;;                                ;; ("NOPE" . "")
+    ;;                                ;; ("DONE" . "")
+    ;;                                ;; ("[#A]" . "")
+    ;;                                ;; ("[#B]" . "")
+    ;;                                ;; ("[#C]" . "")
+    ;;                                ("[ ]" . "")
+    ;;                                ("[X]" . "")
+    ;;                                ("[-]" . "")
+    ;;                                ("#+BEGIN_SRC" . "")
+    ;;                                ("#+END_SRC" . "―")
+    ;;                                ;; (":PROPERTIES:" . "")
+    ;;                                ;; (":END:" . "―")
+    ;;                                ;; ("#+STARTUP:" . "")
+    ;;                                ;; ("#+TITLE: " . "")
+    ;;                                ;; ("#+RESULTS:" . "")
+    ;;                                ;; ("#+NAME:" . "")
+    ;;                                ;; ("#+ROAM_TAGS:" . "")
+    ;;                                ;; ("#+FILETAGS:" . "")
+    ;;                                ;; ("#+HTML_HEAD:" . "")
+    ;;                                ;; ("#+SUBTITLE:" . "")
+    ;;                                ;; ("#+AUTHOR:" . "")
+    ;;                                ;; (":Effort:" . "")
+    ;;                                ;; ("SCHEDULED:" . "")
+    ;;                                ;; ("DEADLINE:" . "")
+    ;;                                ))
+    (prettify-symbols-mode))
+
+
+  (defun my/magic-icon-fix ()
+    (let ((fontset (face-attribute 'default :fontset)))
+      (set-fontset-font fontset '(?\xf000 . ?\xf2ff) "FontAwesome" nil 'append)))
+  (my/magic-icon-fix)
+;;** Hook
+  :hook ((org-agenda-mode . my/org-setup-agenda-buffer-face)))
 
 ;;** Other Org packages
 
 ;; ◍ ● ○ ◉ ▣ □ ◁
 ;; Ⅰ Ⅱ Ⅲ Ⅳ Ⅴ Ⅵ Ⅶ Ⅷ Ⅸ Ⅹ Ⅺ Ⅻ
 ;; ⬤ ⬢ ⬡ ⭘ ⯁ 🞄
-;; ✴ ⋄ ◦ •
+;; ✴ ⋄ ◦ • •
 
 (use-package org-superstar
   :elpaca t
@@ -1023,10 +1068,34 @@ We display [CRM<separator>], e.g., [CRM,] if the separator is a comma."
                                      (?* . ?➤)))
   :hook (org-mode . org-superstar-mode))
 
+
+;; Org 9.2 introduced a new template expansion mechanism, combining
+;; ~org-insert-structure-template~ bound to =C-c C-,=.  The previous
+;; ~easy-templates~ mechanism (=<s Tab=) should be enabled manualy.
+;; For more information, refer to the commentary section in ‘org-tempo.el’.
+(use-package org-tempo
+  :after org
+  :config
+  ;; Type `<se Tab` to insert emacs-lisp source code block.
+  ;; And type `<sh Tab` to insert bash source block.
+  (add-to-list 'org-structure-template-alist '("se" . "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist '("sh" . "src sh"))
+  (add-to-list 'org-structure-template-alist '("sc" . "src cpp"))
+  (add-to-list 'org-structure-template-alist '("sp" . "src python"))
+  (add-to-list 'org-structure-template-alist '("sl" . "src lua"))
+  (add-to-list 'org-structure-template-alist '("sf" . "src fennel"))
+  (add-to-list 'org-structure-template-alist '("sr" . "src rust")))
+
+(use-package org-inlinetask
+  :after org)
+
 (use-package org-appear
   :elpaca t
   :after org
   :hook (org-mode . org-appear-mode))
+
+(use-package org-cliplink
+  :elpaca t)
 
 (use-package org-roam
   :elpaca t
@@ -1063,10 +1132,25 @@ We display [CRM<separator>], e.g., [CRM,] if the separator is a comma."
   (org-roam-ui-follow-mode t)
   (org-roam-ui-open-on-start nil))
 
+(use-package org-transclusion
+  :elpaca t
+  :after evil-collection
+  :config
+  (set-face-attribute 'org-transclusion-fringe nil :foreground "green" :background "green")
+  ;; (set-face-attribute 'org-transclusion-source-fringe nil :foreground "green" :background "green")
+  )
+
 (use-package org-super-agenda
   :elpaca t
   :config
   (org-super-agenda-mode))
+
+(use-package org-auto-tangle
+  :elpaca t
+  :defer t
+  :custom
+  (org-auto-tangle-babel-safelist '("~/.config/emacs/README.org"))
+  :hook (org-mode . org-auto-tangle-mode))
 
 (use-package org-modern
   :disabled
@@ -1188,7 +1272,7 @@ We display [CRM<separator>], e.g., [CRM,] if the separator is a comma."
   ;; (load-theme 'ef-day :no-confirm)
   (set-cursor-color "black")
   (set-face-attribute 'org-verbatim nil :foreground "#4250ef" :background "#f1f1f1")
-  (set-face-attribute 'org-code 	  nil :foreground "#cf25aa" :background "#f1f1f1")
+  (set-face-attribute 'org-code     nil :foreground "#cf25aa" :background "#f1f1f1")
   (set-face-attribute 'org-level-1  nil :foreground "#375cd8" :height 1.27)
   (set-face-attribute 'org-level-2  nil :foreground "#cf25aa" :height 1.20)
   (set-face-attribute 'org-level-3  nil :foreground "#1f77bb" :height 1.15)
@@ -1209,23 +1293,38 @@ We display [CRM<separator>], e.g., [CRM,] if the separator is a comma."
   )
 
 ;;* Hooks / Major modes
-
+;;** Prog mode
 (add-hook 'prog-mode-hook
           (lambda ()
             ;; (hs-minor-mode) ;; activate folding for all programming modes
             (setq show-trailing-whitespace t)))
-
+;;** Sh mode
+(add-hook 'sh-mode-hook
+          (lambda ()
+            (setq sh-basic-offset 2
+                  sh-indentation 2)))
+;;** Org mode
 (add-hook 'org-mode-hook
           (lambda ()
-            (auto-fill-mode)))
-
+            (setq fill-column 80) ;; set textwidth to 80
+            ;; Не показывать номера строк в орг-моде.
+            (display-line-numbers-mode -1)
+            (auto-revert-mode)
+            (auto-fill-mode 1)
+            ;; Wrap long lines on words.
+            (visual-line-mode)
+            (my/org-icons)
+            (setq tab-width 2)
+            (setq evil-shift-width 2)))
+;;** Python
 (add-hook 'python-mode-hook
           (lambda ()
             (setq evil-shift-width  python-indent)))
-
+;;** Emacs lisp
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
             (setq evil-shift-width  lisp-body-indent)
+            ;; (message "evil-shift-width: %s" evil-shift-width)
             (setq tab-width lisp-body-indent)
 
             (require 'evil)
@@ -1235,15 +1334,14 @@ We display [CRM<separator>], e.g., [CRM,] if the separator is a comma."
             ;; (evil-local-set-key 'normal "p" 'my/paste-and-indent-after)
             ;; (evil-local-set-key 'normal "P" 'my/paste-and-indent-before)
             ))
-
+;;** Markdown
 (use-package markdown-mode
   :elpaca t
   :mode ("README\\.md\\'" . gfm-mode)
   ;; :custom
   ;; (markdown-command "multimarkdown")
   )
-
-;; Set options for 'init.el' file.
+;;** Options for 'init.el' file.
 (add-hook 'find-file-hook
           (lambda ()
             (when (string-equal (buffer-file-name) user-init-file)

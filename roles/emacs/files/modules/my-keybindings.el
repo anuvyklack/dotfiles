@@ -3,7 +3,7 @@
 (require 'general)
 (require 'hydra)
 
-;;; General keybindings
+;;* General keybindings
 
 (general-def
   :states '(normal visual)
@@ -37,7 +37,7 @@
   :states 'insert
   "C-l" 'right-char)
 
-;;; Leader map
+;;* Leader map
 
 (general-def
   :keymaps 'leader-map
@@ -51,7 +51,7 @@
   "fr" 'consult-recent-file
   "fb" 'consult-bookmark)
 
-;;; Minibuffer
+;;* Minibuffer
 
 (add-hook 'vertico-mode-hook
           (lambda ()
@@ -89,7 +89,7 @@
 ;;        :map minibuffer-local-map
 ;;        ("C-h" . backward-kill-word))
 
-;;; Dired
+;;* Dired
 
 (defhydra hydra-dired (:hint nil :color pink)
   "
@@ -125,7 +125,7 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
   ;; "<tab>" 'dired-subtree-cycle
   "l" 'dired-find-file
   "h" 'dired-up-directory
-	"f"	'find-file
+  "f" 'find-file
   "r" 'dired-do-rename
   "y" 'dired-ranger-copy
   "p p" 'dired-ranger-paste
@@ -143,7 +143,7 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
   "d" 'dired-flag-file-deletion
   "u" 'dired-unmark)
 
-;;; Outline
+;;* Outline
 
 (general-def
   :keymaps 'outline-mode-map
@@ -152,7 +152,7 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
   "z j" 'outline-next-visible-heading
   "z k" 'outline-previous-visible-heading)
 
-;;; Orgmode
+;;* Orgmode
 
 (general-def
   :keymaps 'my/orgmode-leader-map
@@ -163,7 +163,8 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
   "d" 'org-deadline
   "s" 'org-schedule
   "t" 'org-time-stamp
-  "T" 'org-time-stamp-inactive)
+  "T" 'org-time-stamp-inactive
+  "L" 'org-cliplink)
 
 (defun my/org-mode-keybindings ()
   (general-def
@@ -176,13 +177,15 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
     ;; "L" 'org-down-element
     "g x" 'org-open-at-point
     "z n" 'org-narrow-to-subtree
-    "SPC" '(:keymap my/orgmode-leader-map))
+    "SPC" '(:keymap my/orgmode-leader-map)
+    "K" 'helpful-at-point)
 
   (general-def
     :keymaps 'local
     ;; :keymaps 'org-mode-map
     :states 'insert
-    "C-t" 'evil-shift-right-line))
+    "C-t" 'evil-shift-right-line
+    "C-d" 'evil-shift-left-line))
 
 (general-def
   :keymaps 'my/notes-map
@@ -196,7 +199,31 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
   "l" 'org-roam-node-insert
   "u" 'org-roam-ui-mode)
 
-;;; Provide
+;;** Org transclusion
+
+(general-def
+  :keymaps 'org-transclusion-map
+  :states 'normal
+  ;; "e" #'org-transclusion-live-sync-start
+  ;; "g" #'org-transclusion-refresh
+  ;; "d" #'org-transclusion-remove
+  ;; "C-d" #'org-transclusion-detach
+  ;; "P" #'org-transclusion-promote-subtree
+  ;; "D" #'org-transclusion-demote-subtree
+  ;; "o" #'org-transclusion-open-source
+  ;; "O" #'org-transclusion-move-to-source
+  "gi" #'org-transclusion-live-sync-start
+  )
+
+(general-def
+  :keymaps 'org-transclusion-live-sync-map
+  :states 'normal
+  ;; "C-c C-c" #'org-transclusion-live-sync-exit
+  ;; "C-y" #'org-transclusion-live-sync-paste
+  "q" #'org-transclusion-live-sync-exit)
+
+
+;;* Provide
 
 (provide 'my-keybindings)
 

@@ -10,7 +10,12 @@
  '(org-agenda-files
    '("~/notes/20230415235539-holidays.org" "/home/anuvyklack/notes/20230413224540-todo.org"))
  '(safe-local-variable-values
-   '((elisp-lint-indent-specs
+   '((org-roam-db-location . "/home/anuvyklack/.config/emacs/var/org/org-roam-personal.db")
+     (org-roam-directory . "/home/anuvyklack/notes-personal")
+     (evil-shift-width . 2)
+     (eval add-hook 'after-save-hook #'org-babel-tangle nil t)
+     (system-time-locale . "C")
+     (elisp-lint-indent-specs
       (describe . 1)
       (it . 1)
       (thread-first . 0)
