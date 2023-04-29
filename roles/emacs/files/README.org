@@ -277,7 +277,6 @@ Do not jump half the page when point goes out of the screen.
 #+begin_src emacs-lisp
 (scroll-conservatively 101)
 (scroll-margin 0)
-(scroll-preserve-screen-position 'always)
 ;; (auto-window-vscroll nil)
 (scroll-error-top-bottom nil)
 (use-short-answers t)
@@ -1295,8 +1294,12 @@ routines. If so, log them in a drawer, not the content of the note.
 Show only description of the link.
 #+begin_src emacs-lisp
 (org-link-descriptive t)
+#+end_src
+
+[[*Applications used to open external files][org-file-apps]]
+
+#+begin_src emacs-lisp
 (org-ctrl-k-protect-subtree t)
-(org-id-link-to-org-use-id t)
 (org-id-locations-file-relative t)
 ;; (org-indirect-buffer-display 'current-window)
 (org-list-allow-alphabetical t)
@@ -1351,10 +1354,10 @@ with =Tab= key.
 #+end_src
 
 #+begin_src emacs-lisp
-(org-todo-keywords '((sequence "TODO" "WAIT" "START" "|" "CANCELED" "DONE")))
+(org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "DOING" "|" "DONE" "CANCELED")))
 #+end_src
 
-Track time when tasks become =DONE=.
+Track time when tasks were finished.
 #+begin_src emacs-lisp
 (org-log-done 'time)
 #+end_src
@@ -1386,11 +1389,27 @@ Include entries from the Emacs diary into Org mode’s agenda.
 (org-pretty-entities t)
 #+end_src
 
+#+begin_src emacs-lisp
+(org-attach-store-link-p t)
+#+end_src
+
 **** config
 :PROPERTIES:
 :header-args: :noweb-ref org-config
 :END:
-***** babel
+***** Applications used to open external files
+I set up it here, but not in custom section, because of bug: the options just
+don't set if I set it in use-package =:custom= section.
+
+#+begin_src emacs-lisp
+(setq org-file-apps '(("\\.pdf\\'" . "evince %s")
+                      (auto-mode . emacs)
+                      (directory . emacs)
+                      ("\\.mm\\'" . default)
+                      ("\\.x?html?\\'" . default)))
+#+end_src
+
+***** babel languages
 Setup available embedded languages for babel.
 
 #+begin_src emacs-lisp
@@ -1403,8 +1422,8 @@ Setup available embedded languages for babel.
 ***** Returning convenient paragrapsh behavior in evil
 [[https://emacs.stackexchange.com/a/38605][Source]]
 
-Переоределяем понятие =paragraph= для ряда функций на стандартное: параграф --
-это любой сплошной текст разделённый пустыми линиями.
+Переоределяем понятие =paragraph= в =org-mode= для ряда функций на стандартное:
+параграф --- это любой сплошной текст разделённый пустыми линиями.
 
 #+begin_src emacs-lisp
 (with-eval-after-load 'evil
@@ -1419,7 +1438,6 @@ Setup available embedded languages for babel.
 
 ***** Fonts and icons
 ****** Font in agenda buffer
-
 #+begin_src emacs-lisp
 (defun my/org-setup-agenda-buffer-face ()
   (setq buffer-face-mode-face '(:family "iA Writer Mono S"))
@@ -1429,7 +1447,6 @@ Setup available embedded languages for babel.
 #+end_src
 
 ****** Prettify symbols mode
-
 #+begin_src emacs-lisp
 (defun my/org-icons ()
   "Beautify org mode keywords."
@@ -1477,10 +1494,57 @@ Setup available embedded languages for babel.
 #+end_src
 
 ****** FontAwesome
-
 #+begin_src emacs-lisp
 (let ((fontset (face-attribute 'default :fontset)))
   (set-fontset-font fontset '(?\xf000 . ?\xf2ff) "FontAwesome" nil 'append))
+#+end_src
+
+***** COMMENT Highlight syntax for inline code blocks
+[[https://stackoverflow.com/a/62319997][Source]]
+
+#+begin_src emacs-lisp
+(defun my/fontify-inline-src-code (limit)
+  "Match inline source blocks from point to LIMIT."
+  ;; stolen from `org-element-inline-src-block-parser'
+  (when (re-search-forward "\\_<src_\\([^ \t\n[{]+\\)[{[]" limit t)
+    ;; This especially clarifies that the square brackets are optional.
+    (let ((beg (match-beginning 0))
+          pt
+          (lang-beg (match-beginning 1))
+          (lang-end (match-end 1))
+          header-args-beg header-args-end
+          code-beg code-end)
+      (setq pt (goto-char lang-end))
+      (when (org-element--parse-paired-brackets ?\[)
+        (setq header-args-beg pt
+              header-args-end (point)
+              pt (point)))
+      (when (org-element--parse-paired-brackets ?\{)
+        (setq code-beg pt
+              code-end (point))
+        (set-match-data (list beg (point)
+                              beg lang-beg
+                              lang-beg
+                              lang-end
+                              header-args-beg
+                              header-args-end
+                              code-beg
+                              code-end
+                              (current-buffer)))
+        code-end))))
+
+(defun my/config-fontify-inline-src-code ()
+  "Fontify inline source code, such as src_html[:exports code]{<em>to be emphased</em>}."
+  (font-lock-add-keywords nil
+    '((my/fontify-inline-src-code
+       (1 '(:foreground "black" :weight normal :height 10) t) ; src_ part
+       (2 '(:foreground "cyan" :weight bold :height 75 :underline "red") t) ; "lang" part.
+       (3 '(:foreground "#555555" :height 70) t) ; [:header arguments] part.
+       (4 'org-code t) ; "code..." part.
+       ))
+    'append))
+
+(add-hook 'org-mode-hook #'my/config-fontify-inline-src-code)
 #+end_src
 
 *** org-contrib
@@ -1580,7 +1644,9 @@ And type =<sh Tab= to insert bash source block.
   ;; Provide link completion matching outside of Org links.
   (org-roam-completion-everywhere t)
   (org-roam-db-gc-threshold most-positive-fixnum)
-  (org-id-link-to-org-use-id 'create-if-interactive)
+  ;; (org-id-link-to-org-use-id 'create-if-interactive)
+  (org-id-link-to-org-use-id 'use-existing)
+
   :config
   (org-roam-db-autosync-mode)
   ;; (add-to-list 'display-buffer-alist
@@ -2072,6 +2138,7 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
     :states '(normal visual)
     "C-j" 'vertico-next
     "C-k" 'vertico-previous
+    "C-l" 'vertico-insert
     "C-n" 'vertico-next-group
     "C-p" 'vertico-previous-group
     "C-f" 'vertico-scroll-up
@@ -2083,6 +2150,7 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
     "C-y" 'yank
     "C-j" 'vertico-next
     "C-k" 'vertico-previous
+    "C-l" 'vertico-insert
     "C-n" 'vertico-next-group
     "C-p" 'vertico-previous-group
     "C-f" 'vertico-scroll-up
@@ -2220,14 +2288,28 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
   "SPC" 'org-ctrl-c-ctrl-c
   "/" 'org-sparse-tree
   ";" 'org-toggle-comment
+  "i" 'org-id-get-create
+  "np" 'org-set-property
+  "nh" 'org-babel-insert-header-arg
   "l" 'org-insert-link
   "d" 'org-deadline
   "s" 'org-schedule
   "t" 'org-time-stamp
   "T" 'org-time-stamp-inactive
-  "L" 'org-cliplink)
+  "L" 'org-cliplink
+  "'" 'org-edit-special
+  "a" 'org-attach
+  "," 'org-insert-structure-template
+  "[" 'org-agenda-file-to-front
+  "]" 'org-remove-file)
 #+end_src
- 
+
+#+begin_src emacs-lisp
+(general-def :keymaps 'org-src-mode-map
+  :states 'normal
+  "SPC '" 'org-edit-src-exit)
+#+end_src
+
 #+begin_src emacs-lisp
 (with-eval-after-load 'org
   (general-def :keymaps 'org-mode-map

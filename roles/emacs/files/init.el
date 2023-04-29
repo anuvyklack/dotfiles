@@ -111,7 +111,6 @@ The return value is the new value of LIST-VAR."
   (sentence-end-double-space nil)
   (scroll-conservatively 101)
   (scroll-margin 0)
-  (scroll-preserve-screen-position 'always)
   ;; (auto-window-vscroll nil)
   (scroll-error-top-bottom nil)
   (use-short-answers t)
@@ -529,7 +528,6 @@ The return value is the new value of LIST-VAR."
   ;; (org-log-state-notes-into-drawer t)
   (org-link-descriptive t)
   (org-ctrl-k-protect-subtree t)
-  (org-id-link-to-org-use-id t)
   (org-id-locations-file-relative t)
   ;; (org-indirect-buffer-display 'current-window)
   (org-list-allow-alphabetical t)
@@ -546,7 +544,7 @@ The return value is the new value of LIST-VAR."
   ;; (org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
   (org-list-indent-offset 1)
   (org-cycle-include-plain-lists 'integrate)
-  (org-todo-keywords '((sequence "TODO" "WAIT" "START" "|" "CANCELED" "DONE")))
+  (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "DOING" "|" "DONE" "CANCELED")))
   (org-log-done 'time)
   (org-priority-highest 1)
   (org-priority-lowest 5)
@@ -558,7 +556,13 @@ The return value is the new value of LIST-VAR."
   (org-agenda-restore-windows-after-quit t)
   (org-agenda-include-diary nil)
   (org-pretty-entities t)
+  (org-attach-store-link-p t)
   :config
+  (setq org-file-apps '(("\\.pdf\\'" . "evince %s")
+                        (auto-mode . emacs)
+                        (directory . emacs)
+                        ("\\.mm\\'" . default)
+                        ("\\.x?html?\\'" . default)))
   (org-babel-do-load-languages 'org-babel-load-languages
                                '((sql . t)
                                  (shell . t)
@@ -679,7 +683,9 @@ The return value is the new value of LIST-VAR."
   ;; Provide link completion matching outside of Org links.
   (org-roam-completion-everywhere t)
   (org-roam-db-gc-threshold most-positive-fixnum)
-  (org-id-link-to-org-use-id 'create-if-interactive)
+  ;; (org-id-link-to-org-use-id 'create-if-interactive)
+  (org-id-link-to-org-use-id 'use-existing)
+
   :config
   (org-roam-db-autosync-mode)
   ;; (add-to-list 'display-buffer-alist
@@ -834,6 +840,7 @@ The return value is the new value of LIST-VAR."
       :states '(normal visual)
       "C-j" 'vertico-next
       "C-k" 'vertico-previous
+      "C-l" 'vertico-insert
       "C-n" 'vertico-next-group
       "C-p" 'vertico-previous-group
       "C-f" 'vertico-scroll-up
@@ -845,6 +852,7 @@ The return value is the new value of LIST-VAR."
       "C-y" 'yank
       "C-j" 'vertico-next
       "C-k" 'vertico-previous
+      "C-l" 'vertico-insert
       "C-n" 'vertico-next-group
       "C-p" 'vertico-previous-group
       "C-f" 'vertico-scroll-up
@@ -935,12 +943,23 @@ The return value is the new value of LIST-VAR."
     "SPC" 'org-ctrl-c-ctrl-c
     "/" 'org-sparse-tree
     ";" 'org-toggle-comment
+    "i" 'org-id-get-create
+    "np" 'org-set-property
+    "nh" 'org-babel-insert-header-arg
     "l" 'org-insert-link
     "d" 'org-deadline
     "s" 'org-schedule
     "t" 'org-time-stamp
     "T" 'org-time-stamp-inactive
-    "L" 'org-cliplink)
+    "L" 'org-cliplink
+    "'" 'org-edit-special
+    "a" 'org-attach
+    "," 'org-insert-structure-template
+    "[" 'org-agenda-file-to-front
+    "]" 'org-remove-file)
+  (general-def :keymaps 'org-src-mode-map
+    :states 'normal
+    "SPC '" 'org-edit-src-exit)
   (with-eval-after-load 'org
     (general-def :keymaps 'org-mode-map
       :states '(normal visual)
