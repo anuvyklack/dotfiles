@@ -67,8 +67,8 @@
 (use-package all-the-icons
   :elpaca t
   :config
-  (let ((cache (expand-file-name
-                ".all-the-icons-font-installed" user-emacs-directory)))
+  (let ((cache (expand-file-name ".all-the-icons-font-installed"
+                                 user-emacs-directory)))
     (unless (file-exists-p cache)
       (all-the-icons-install-fonts t)
       (with-temp-buffer (write-file cache)))))
@@ -180,6 +180,8 @@ The return value is the new value of LIST-VAR."
   (vertico-count 14) ;; How many candidates to show.
   (vertico-scroll-margin 2)
   (vertico-cycle nil)
+  ;; Grow and shrink the Vertico minibuffer
+  ;; (setq vertico-resize t)
   ;; (read-extended-command-predicate #'command-completion-default-include-p)
   (enable-recursive-minibuffers t)
   (minibuffer-depth-indicate-mode t)
@@ -206,28 +208,69 @@ The return value is the new value of LIST-VAR."
   (setq minibuffer-prompt-properties '(read-only t
                                        cursor-intangible t
                                        face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+  (add-to-list 'load-path (expand-file-name "elpaca/repos/vertico/extensions"
+                                            user-emacs-directory))
+  (use-package vertico-repeat))
 
 (use-package orderless
   :elpaca t
   :after vertico
-  :init
-  (setq completion-styles '(orderless))
-  (setq orderless-component-separator #'orderless-escapable-split-on-space)
-  (setq orderless-matching-styles
-        '(orderless-initialism orderless-prefixes orderless-regexp)))
-
-(use-package marginalia
-  :elpaca t
   :custom
-  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-  :init
-  (marginalia-mode))
+  ;; (completion-styles '(orderless basic))
+  ;; (completion-styles '(substring orderless))
+  (completion-styles '(flex))
+  (orderless-component-separator #'orderless-escapable-split-on-space)
+  (orderless-matching-styles '(orderless-initialism
+                               orderless-prefixes
+                               orderless-regexp)))
 
 (use-package consult
   :elpaca t
   :init
   (setq completion-in-region-function #'consult-completion-in-region))
+
+(use-package consult-dir
+  :elpaca t
+  :bind ("C-x C-d" . consult-dir))
+
+(use-package marginalia
+  :elpaca t
+  :custom
+  (marginalia-annotators '(marginalia-annotators-heavy
+                           marginalia-annotators-light
+                           nil))
+  ;; (marginalia-field-width 100)
+  :init (marginalia-mode)
+  :config
+  (general-def :keymaps 'minibuffer-local-map
+    :states '(motion insert)
+    "M-a" 'marginalia-cycle))
+
+(use-package all-the-icons-completion
+  :elpaca t
+  :after (marginalia all-the-icons)
+  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
+  :init
+  (all-the-icons-completion-mode))
+
+(use-package embark
+  :elpaca t
+  :config
+  (general-def
+    :states 'motion
+    "," 'embark-act
+    "M-," 'embark-dwim)
+  ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
+  ;; strategy, if you want to see the documentation from multiple providers.
+  (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+  )
+
+(use-package embark-consult
+  :elpaca t
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 
 (use-package puni
   :disabled
@@ -442,15 +485,15 @@ The return value is the new value of LIST-VAR."
   (dired-mode . dired-hide-details-mode)
   (dired-mode . hl-line-mode))
 
-(use-package wdired
-  ;; :custom (wdired-allow-to-change-permissions t)
-  )
-
 (use-package dired-ranger  :elpaca t)
 (use-package dired-subtree :elpaca t)
 (use-package dired-narrow  :elpaca t)
 (use-package dired-open    :elpaca t)
 (use-package dired-toggle-sudo :elpaca t)
+
+(use-package wdired
+  ;; :custom (wdired-allow-to-change-permissions t)
+  )
 
 (use-package dired-collapse
   :elpaca t
@@ -475,11 +518,6 @@ The return value is the new value of LIST-VAR."
   ;; :config
   ;; (set-face-attribute 'diredfl-dir-name nil :bold t)
   )
-
-(use-package dired-recent
-  :elpaca t
-  :config
-  (dired-recent-mode t))
 
 (defun my/paste-and-indent-after ()
   (interactive)
@@ -545,10 +583,11 @@ The return value is the new value of LIST-VAR."
   (org-list-indent-offset 1)
   (org-cycle-include-plain-lists 'integrate)
   (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "DOING" "|" "DONE" "CANCELED")))
+  ;; (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "STARTED" "|" "DONE" "CANCELED")))
+  (org-priority-highest 65) ;; A
+  (org-priority-lowest 67)  ;; C
+  (org-priority-default 67) ;; C
   (org-log-done 'time)
-  (org-priority-highest 1)
-  (org-priority-lowest 5)
-  (org-priority-default 3)
   (org-deadline-warning-days 14)
   (org-log-redeadline 'note)
   (org-log-reschedule nil)
@@ -588,8 +627,10 @@ The return value is the new value of LIST-VAR."
                     ("#+end_src" . "―")
                     ("#+begin_example" . "")
                     ("#+end_example" . "")
-                    ("#+begin_quote" . "")
-                    ("#+end_quote" . "")
+                    ("#+begin_quote" . "")
+                    ("#+end_quote" . "")
+                    ;; ("#+begin_quote" . "")
+                    ;; ("#+end_quote" . "")
                     ;; ("#+header:" . ?)
                     ;; ("#+name:" . ?﮸)
                     ;; ("#+results:" . ?)
@@ -633,6 +674,85 @@ The return value is the new value of LIST-VAR."
     ;; :config (org-eldoc-load)
     ))
 
+(use-package org-super-agenda
+  :elpaca t
+  :after (evil-org org-agenda)
+  :hook (org-agenda-mode . org-super-agenda-mode)
+  :custom
+  (org-agenda-skip-scheduled-if-done nil)
+  (org-agenda-skip-deadline-if-done nil)
+  (org-agenda-include-deadlines t)
+  (org-agenda-include-diary nil)
+  (org-agenda-block-separator 61)
+  (org-agenda-compact-blocks nil)
+  (org-agenda-start-with-log-mode nil)
+  (org-agenda-prefix-format '((agenda . " %i %-14:c%?-12t% s")
+                              (todo . " %i %-14:c")
+                              (tags . " %i %-14:c")
+                              (search . " %i %-14:c")))
+  (org-agenda-custom-commands
+   '(("n" "Agenda and all TODOs"
+      (;; (agenda "" ((org-agenda-span 7)
+       ;;             (org-super-agenda-groups
+       ;;              '((:name "Today"
+       ;;                       :time-grid t
+       ;;                       :date today
+       ;;                       :todo "TODAY"
+       ;;                       :scheduled today
+       ;;                       :order 1)
+       ;;                (:discard (:anything t))))))
+       (agenda)
+       (alltodo "" ((org-agenda-overriding-header "")
+                    (org-super-agenda-groups
+                     '((:name "Important"
+                              :priority "A"
+                              :tag ("money" "bills")
+                              :property "urgent")
+                       (:name "Overdue"
+                              :deadline past
+                              :order 2)
+                       (:name "Due Today"
+                              :deadline today
+                              :order 3)
+                       (:name "Current Taks"
+                              :todo "NEXT"
+                              :order 4)
+                       (:name "Personal"
+                              :habit t
+                              :tag "personal"
+                              :order 6)
+                       (:name "House"
+                              :category "house"
+                              :tag "house"
+                              :order 6)
+                       (:name "Subaru"
+                              :tag ("vechicle" "subaru")
+                              :category "vechicle"
+                              :order 6)
+                       (:name "Issues"
+                              :tag "issue"
+                              :order 12)))))))))
+  :config
+  ;; (org-super-agenda-mode)
+  (setq org-super-agenda-header-map nil))
+
+(use-package org-fancy-priorities
+  :elpaca t
+  :hook (org-mode . org-fancy-priorities-mode)
+  :custom
+  ;; (org-fancy-priorities-list '("🟥" "🟧" "🟨" "🟩" "🟦" "🟪"))
+  ;; (org-fancy-priorities-list '("" "" ""))
+  (org-fancy-priorities-list '("" "" ""))
+  ;; (org-fancy-priorities-list '("█" "█" "█"))
+  ;; (org-fancy-priorities-list '("⯀" "⯀" "⯀"))
+  ;; (org-fancy-priorities-list '("⬢" "⬢" "⬢"))
+  ;; (org-fancy-priorities-list '("⬣" "⬣" "⬣"))
+  (org-priority-faces
+   '((?A :foreground "red" :weight bold)
+     (?B :foreground "orange" :weight bold)
+     (?C :foreground "Chartreuse3" :weight bold)))
+  )
+
 (use-package org-superstar
   :elpaca t
   :after org
@@ -661,6 +781,9 @@ The return value is the new value of LIST-VAR."
   (org-cycle-max-level 14)
   (org-inlinetask-min-level 15))
 
+(use-package org-ql
+  :elpaca t)
+
 (use-package org-appear
   :elpaca t
   :after org
@@ -677,15 +800,12 @@ The return value is the new value of LIST-VAR."
     (setq org-roam-database-connector 'sqlite-builtin))
   :custom
   (org-roam-directory (file-truename "~/notes"))
-  ;; Set a more informative completion interface, for vertico.
-  (org-roam-node-display-template (concat "${title:*} "
-                                          (propertize "${tags:10}" 'face 'org-tag)))
-  ;; Provide link completion matching outside of Org links.
   (org-roam-completion-everywhere t)
-  (org-roam-db-gc-threshold most-positive-fixnum)
   ;; (org-id-link-to-org-use-id 'create-if-interactive)
   (org-id-link-to-org-use-id 'use-existing)
-
+  (org-roam-db-gc-threshold most-positive-fixnum)
+  (org-roam-node-display-template (concat "${title:*} "
+                                          (propertize "${tags:10}" 'face 'org-tag)))
   :config
   (org-roam-db-autosync-mode)
   ;; (add-to-list 'display-buffer-alist
@@ -714,11 +834,6 @@ The return value is the new value of LIST-VAR."
   ;; (set-face-attribute 'org-transclusion-source-fringe nil :foreground "green" :background "green")
   )
 
-(use-package org-super-agenda
-  :elpaca t
-  :config
-  (org-super-agenda-mode))
-
 (use-package org-auto-tangle
   :elpaca t
   :defer t
@@ -744,7 +859,7 @@ The return value is the new value of LIST-VAR."
   :elpaca t
   :defer t
   :custom
-  (telega-directory "~/.local/share/telega")
+  (telega-directory (file-truename "~/.local/share/telega"))
   (telega-completing-read-function completing-read-function))
 
 (use-package evil
@@ -834,7 +949,8 @@ The return value is the new value of LIST-VAR."
     "fg" 'consult-grep
     "fi" 'consult-imenu
     "fr" 'consult-recent-file
-    "fb" 'consult-bookmark)
+    "fb" 'consult-bookmark
+    "fv" 'vertico-repeat)
   (with-eval-after-load 'vertico
     (general-def :keymaps 'vertico-map
       :states '(normal visual)
@@ -845,6 +961,8 @@ The return value is the new value of LIST-VAR."
       "C-p" 'vertico-previous-group
       "C-f" 'vertico-scroll-up
       "C-b" 'vertico-scroll-down
+      "C-d" 'consult-dir
+      ;; "C-j" 'consult-dir-jump-file
       "q" 'abort-recursive-edit)
   
     (general-def :keymaps 'vertico-map
@@ -853,6 +971,7 @@ The return value is the new value of LIST-VAR."
       "C-j" 'vertico-next
       "C-k" 'vertico-previous
       "C-l" 'vertico-insert
+      "C-d" 'consult-dir
       "C-n" 'vertico-next-group
       "C-p" 'vertico-previous-group
       "C-f" 'vertico-scroll-up
@@ -1169,10 +1288,9 @@ The return value is the new value of LIST-VAR."
             (display-line-numbers-mode -1)
             (auto-revert-mode)
             (auto-fill-mode 1)
-            ;; Wrap long lines on words.
-            (visual-line-mode)
+            ;; (visual-line-mode) ;; Wrap long lines on words.
             (my/org-icons)
-            (setq tab-width 2)
+            (setq-local tab-width 2)
             (setq-local evil-shift-width 2)))
 
 (add-hook 'python-mode-hook

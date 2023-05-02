@@ -172,8 +172,8 @@ Make elpaca native keybindings have precedence over evil keymaps in elpaca buffe
 (use-package all-the-icons
   :elpaca t
   :config
-  (let ((cache (expand-file-name
-                ".all-the-icons-font-installed" user-emacs-directory)))
+  (let ((cache (expand-file-name ".all-the-icons-font-installed"
+                                 user-emacs-directory)))
     (unless (file-exists-p cache)
       (all-the-icons-install-fonts t)
       (with-temp-buffer (write-file cache)))))
@@ -432,7 +432,8 @@ Make =electric-pair= mode not to complete ~<>~ pair when ~<~ char entered in org
   :init
   <<vertico-init>>
   :config
-  <<vertico-config>>)
+  <<vertico-config>>
+  <<vertico-extensions>>)
 #+end_src
 
 **** custom
@@ -444,6 +445,8 @@ Make =electric-pair= mode not to complete ~<>~ pair when ~<~ char entered in org
 (vertico-count 14) ;; How many candidates to show.
 (vertico-scroll-margin 2)
 (vertico-cycle nil)
+;; Grow and shrink the Vertico minibuffer
+;; (setq vertico-resize t)
 #+end_src
 
 Emacs 28: Hide commands in =M-x= which do not work in the current mode.
@@ -468,7 +471,7 @@ Vertico commands are hidden in normal buffers.
 :header-args: :noweb-ref vertico-init
 :END:
 
-Turn off ~ido-mode~ because =better-defaults= package turns it on.
+Turn off ~ido-mode~ because [[*Emacs][better-defaults]] package turns it on.
 #+begin_src emacs-lisp
 (ido-mode -1)
 #+end_src
@@ -504,26 +507,34 @@ Do not allow the cursor in the minibuffer prompt.
 (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 #+end_src
 
+**** vertico-extensions
+:PROPERTIES:
+:header-args: :noweb-ref vertico-extensions
+:END:
+
+Add to ~load-path~ directory with vertico extensions.
+#+begin_src emacs-lisp
+(add-to-list 'load-path (expand-file-name "elpaca/repos/vertico/extensions"
+                                          user-emacs-directory))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package vertico-repeat)
+#+end_src
+
 *** orderless
 #+begin_src emacs-lisp
 (use-package orderless
   :elpaca t
   :after vertico
-  :init
-  (setq completion-styles '(orderless))
-  (setq orderless-component-separator #'orderless-escapable-split-on-space)
-  (setq orderless-matching-styles
-        '(orderless-initialism orderless-prefixes orderless-regexp)))
-#+end_src
-
-*** marginalia
-#+begin_src emacs-lisp
-(use-package marginalia
-  :elpaca t
   :custom
-  (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-  :init
-  (marginalia-mode))
+  ;; (completion-styles '(orderless basic))
+  ;; (completion-styles '(substring orderless))
+  (completion-styles '(flex))
+  (orderless-component-separator #'orderless-escapable-split-on-space)
+  (orderless-matching-styles '(orderless-initialism
+                               orderless-prefixes
+                               orderless-regexp)))
 #+end_src
 
 *** consult
@@ -532,6 +543,63 @@ Do not allow the cursor in the minibuffer prompt.
   :elpaca t
   :init
   (setq completion-in-region-function #'consult-completion-in-region))
+#+end_src
+
+*** consult-dir
+#+begin_src emacs-lisp
+(use-package consult-dir
+  :elpaca t
+  :bind ("C-x C-d" . consult-dir))
+#+end_src
+
+*** marginalia
+#+begin_src emacs-lisp
+(use-package marginalia
+  :elpaca t
+  :custom
+  (marginalia-annotators '(marginalia-annotators-heavy
+                           marginalia-annotators-light
+                           nil))
+  ;; (marginalia-field-width 100)
+  :init (marginalia-mode)
+  :config
+  (general-def :keymaps 'minibuffer-local-map
+    :states '(motion insert)
+    "M-a" 'marginalia-cycle))
+#+end_src
+
+*** all-the-icons-completion
+#+begin_src emacs-lisp
+(use-package all-the-icons-completion
+  :elpaca t
+  :after (marginalia all-the-icons)
+  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
+  :init
+  (all-the-icons-completion-mode))
+#+end_src
+
+*** embark
+#+begin_src emacs-lisp
+(use-package embark
+  :elpaca t
+  :config
+  (general-def
+    :states 'motion
+    "," 'embark-act
+    "M-," 'embark-dwim)
+  ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
+  ;; strategy, if you want to see the documentation from multiple providers.
+  (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+  )
+#+end_src
+
+**** embark-consult
+#+begin_src emacs-lisp
+(use-package embark-consult
+  :elpaca t
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 #+end_src
 
 ** COMMENT Smooth scrolling
@@ -562,7 +630,6 @@ Do not allow the cursor in the minibuffer prompt.
 :header-args: :noweb-ref good-scroll-config
 :END:
 ***** Replaca evil =C-y= / =C-e= keybindings
-
 #+begin_src emacs-lisp
 (let ((n 6))
   (define-advice evil-scroll-line-down
@@ -574,8 +641,8 @@ Do not allow the cursor in the minibuffer prompt.
     (funcall orig-fun (* count n))))
 #+end_src
 
-***** Rebind scrolling keybindings implicitly
-By replacing ~scroll-up~ / ~scroll-down~ functions.
+***** Rebind scrolling keybindings implicitly, ...
+... by replacing ~scroll-up~ / ~scroll-down~ functions.
 
 #+begin_src emacs-lisp
 (defun good-scroll--convert-line-to-step (line)
@@ -597,7 +664,6 @@ By replacing ~scroll-up~ / ~scroll-down~ functions.
 #+end_src
 
 ***** COMMENT Rebind scrolling keybindings explicitly
-
 #+begin_src emacs-lisp
 (defun good-scroll-up-half-screen ()
   (interactive)
@@ -980,18 +1046,22 @@ Spell check
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package wdired
-  ;; :custom (wdired-allow-to-change-permissions t)
-  )
-#+end_src
-
-#+begin_src emacs-lisp
 (use-package dired-ranger  :elpaca t)
 (use-package dired-subtree :elpaca t)
 (use-package dired-narrow  :elpaca t)
 (use-package dired-open    :elpaca t)
 (use-package dired-toggle-sudo :elpaca t)
 #+end_src
+
+*** wdired
+#+begin_src emacs-lisp
+(use-package wdired
+  ;; :custom (wdired-allow-to-change-permissions t)
+  )
+#+end_src
+
+*** dired-collapse
+Toggle collapsing of unique nested paths in Dired.
 
 #+begin_src emacs-lisp
 (use-package dired-collapse
@@ -1000,6 +1070,7 @@ Spell check
   )
 #+end_src
 
+*** dired-rainbow
 #+begin_src emacs-lisp
 (use-package dired-rainbow
   :elpaca t
@@ -1013,6 +1084,8 @@ Spell check
   (dired-rainbow-define-chmod executable-unix "#4e9a06" "-.*x.*"))
 #+end_src
 
+*** diredfl
+Addtional syntax highlighting for dired
 #+begin_src emacs-lisp
 (use-package diredfl ;; Addtional syntax highlighting for dired
   :elpaca t
@@ -1023,13 +1096,18 @@ Spell check
   )
 #+end_src
 
+*** COMMENT dired-recent
+
+*I'm not sure that this package is needed, since I already use [[*consult-dir][consult-dir]].*
 =C-x C-d= to open ~dired-recent-open~.
 
 #+begin_src emacs-lisp
 (use-package dired-recent
   :elpaca t
   :config
-  (dired-recent-mode t))
+  (dired-recent-mode t)
+  (define-key dired-recent-mode-map (kbd "C-x C-d") nil)
+  )
 #+end_src
 
 ** My functions
@@ -1166,7 +1244,7 @@ Paste and indent after / before.
         )))))
 #+end_src
 
-**** all-the-icons-ibuffer
+**** COMMENT all-the-icons-ibuffer
 
 #+begin_src emacs-lisp
 (use-package all-the-icons-ibuffer
@@ -1355,18 +1433,20 @@ with =Tab= key.
 
 #+begin_src emacs-lisp
 (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "DOING" "|" "DONE" "CANCELED")))
+;; (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "STARTED" "|" "DONE" "CANCELED")))
+#+end_src
+
+Make priority signs be integers from 1 to 5, with 3 as default.
+Default priorities are: =#A=, =#B=, =#C=, with =#B= as default.
+#+begin_src emacs-lisp
+(org-priority-highest 65) ;; A
+(org-priority-lowest 67)  ;; C
+(org-priority-default 67) ;; C
 #+end_src
 
 Track time when tasks were finished.
 #+begin_src emacs-lisp
 (org-log-done 'time)
-#+end_src
-
-Make priority signs be integers from 1 to 5, with 3 as default.
-#+begin_src emacs-lisp
-(org-priority-highest 1)
-(org-priority-lowest 5)
-(org-priority-default 3)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1456,8 +1536,10 @@ Setup available embedded languages for babel.
                   ("#+end_src" . "―")
                   ("#+begin_example" . "")
                   ("#+end_example" . "")
-                  ("#+begin_quote" . "")
-                  ("#+end_quote" . "")
+                  ("#+begin_quote" . "")
+                  ("#+end_quote" . "")
+                  ;; ("#+begin_quote" . "")
+                  ;; ("#+end_quote" . "")
                   ;; ("#+header:" . ?)
                   ;; ("#+name:" . ?﮸)
                   ;; ("#+results:" . ?)
@@ -1557,6 +1639,118 @@ Setup available embedded languages for babel.
     ))
 #+end_src
 
+*** org-super-agenda
+#+begin_src emacs-lisp :noweb yes 
+(use-package org-super-agenda
+  :elpaca t
+  :after (evil-org org-agenda)
+  :hook (org-agenda-mode . org-super-agenda-mode)
+  :custom
+  <<org-super-agenda-custom>>
+  :config
+  ;; (org-super-agenda-mode)
+  <<org-super-agenda-config>>)
+#+end_src
+
+**** custom
+:PROPERTIES:
+:header-args: :noweb-ref org-super-agenda-custom
+:END:
+#+begin_src emacs-lisp
+(org-agenda-skip-scheduled-if-done nil)
+(org-agenda-skip-deadline-if-done nil)
+(org-agenda-include-deadlines t)
+(org-agenda-include-diary nil)
+(org-agenda-block-separator 61)
+(org-agenda-compact-blocks nil)
+(org-agenda-start-with-log-mode nil)
+#+end_src
+
+#+begin_src emacs-lisp
+(org-agenda-prefix-format '((agenda . " %i %-14:c%?-12t% s")
+                            (todo . " %i %-14:c")
+                            (tags . " %i %-14:c")
+                            (search . " %i %-14:c")))
+#+end_src
+
+#+begin_src emacs-lisp
+(org-agenda-custom-commands
+ '(("n" "Agenda and all TODOs"
+    (;; (agenda "" ((org-agenda-span 7)
+     ;;             (org-super-agenda-groups
+     ;;              '((:name "Today"
+     ;;                       :time-grid t
+     ;;                       :date today
+     ;;                       :todo "TODAY"
+     ;;                       :scheduled today
+     ;;                       :order 1)
+     ;;                (:discard (:anything t))))))
+     (agenda)
+     (alltodo "" ((org-agenda-overriding-header "")
+                  (org-super-agenda-groups
+                   '((:name "Important"
+                            :priority "A"
+                            :tag ("money" "bills")
+                            :property "urgent")
+                     (:name "Overdue"
+                            :deadline past
+                            :order 2)
+                     (:name "Due Today"
+                            :deadline today
+                            :order 3)
+                     (:name "Current Taks"
+                            :todo "NEXT"
+                            :order 4)
+                     (:name "Personal"
+                            :habit t
+                            :tag "personal"
+                            :order 6)
+                     (:name "House"
+                            :category "house"
+                            :tag "house"
+                            :order 6)
+                     (:name "Subaru"
+                            :tag ("vechicle" "subaru")
+                            :category "vechicle"
+                            :order 6)
+                     (:name "Issues"
+                            :tag "issue"
+                            :order 12)))))))))
+#+end_src
+
+**** config
+:PROPERTIES:
+:header-args: :noweb-ref org-super-agenda-config
+:END:
+
+Fix problem with evil keybindings in org-super-agenda-mode. [[https://github.com/alphapapa/org-super-agenda/issues/50#issuecomment-817432643][Source]]
+
+#+begin_src emacs-lisp
+(setq org-super-agenda-header-map nil)
+#+end_src
+
+*** org-fancy-priorities
+   █
+⬢ ⬣ ⯀ ⯁
+#+begin_src emacs-lisp
+(use-package org-fancy-priorities
+  :elpaca t
+  :hook (org-mode . org-fancy-priorities-mode)
+  :custom
+  ;; (org-fancy-priorities-list '("🟥" "🟧" "🟨" "🟩" "🟦" "🟪"))
+  ;; (org-fancy-priorities-list '("" "" ""))
+  (org-fancy-priorities-list '("" "" ""))
+  ;; (org-fancy-priorities-list '("█" "█" "█"))
+  ;; (org-fancy-priorities-list '("⯀" "⯀" "⯀"))
+  ;; (org-fancy-priorities-list '("⬢" "⬢" "⬢"))
+  ;; (org-fancy-priorities-list '("⬣" "⬣" "⬣"))
+  (org-priority-faces
+   '((?A :foreground "red" :weight bold)
+     (?B :foreground "orange" :weight bold)
+     (?C :foreground "Chartreuse3" :weight bold)))
+  )
+#+end_src
+
 *** org-superstar
 
 Ⅰ Ⅱ Ⅲ Ⅳ Ⅴ Ⅵ Ⅶ Ⅷ Ⅸ Ⅹ Ⅺ Ⅻ
@@ -1611,6 +1805,12 @@ And type =<sh Tab= to insert bash source block.
   (org-inlinetask-min-level 15))
 #+end_src
 
+*** org-ql
+#+begin_src emacs-lisp
+(use-package org-ql
+  :elpaca t)
+#+end_src
+
 *** org-appear
 
 #+begin_src emacs-lisp
@@ -1628,8 +1828,7 @@ And type =<sh Tab= to insert bash source block.
 #+end_src
 
 *** org-roam
-
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noweb yes 
 (use-package org-roam
   :elpaca t
   :after org
@@ -1637,16 +1836,7 @@ And type =<sh Tab= to insert bash source block.
   (when (version<= "29" emacs-version)
     (setq org-roam-database-connector 'sqlite-builtin))
   :custom
-  (org-roam-directory (file-truename "~/notes"))
-  ;; Set a more informative completion interface, for vertico.
-  (org-roam-node-display-template (concat "${title:*} "
-                                          (propertize "${tags:10}" 'face 'org-tag)))
-  ;; Provide link completion matching outside of Org links.
-  (org-roam-completion-everywhere t)
-  (org-roam-db-gc-threshold most-positive-fixnum)
-  ;; (org-id-link-to-org-use-id 'create-if-interactive)
-  (org-id-link-to-org-use-id 'use-existing)
-
+  <<org-roam-custom>>
   :config
   (org-roam-db-autosync-mode)
   ;; (add-to-list 'display-buffer-alist
@@ -1658,8 +1848,39 @@ And type =<sh Tab= to insert bash source block.
   )
 #+end_src
 
-*** org-roam-ui
+**** custom
+:PROPERTIES:
+:header-args: :noweb-ref org-roam-custom
+:END:
+#+begin_src emacs-lisp
+(org-roam-directory (file-truename "~/notes"))
+#+end_src
 
+Provide link completion matching outside of Org links.
+#+begin_src emacs-lisp
+(org-roam-completion-everywhere t)
+#+end_src
+
+How to store link on org-mode outline node:
+  - t            :: Create an ID if needed to make a link to the current entry.
+  - use-exixting :: Use existing ID, do not create one.
+#+begin_src emacs-lisp
+;; (org-id-link-to-org-use-id 'create-if-interactive)
+(org-id-link-to-org-use-id 'use-existing)
+#+end_src
+
+Make =org-roam= snappier during sqlite database synchronization.
+#+begin_src emacs-lisp
+(org-roam-db-gc-threshold most-positive-fixnum)
+#+end_src
+
+Set a more informative completion interface, for vertico.
+#+begin_src emacs-lisp
+(org-roam-node-display-template (concat "${title:*} "
+                                        (propertize "${tags:10}" 'face 'org-tag)))
+#+end_src
+
+*** org-roam-ui
 #+begin_src emacs-lisp
 (use-package org-roam-ui
   :elpaca t
@@ -1682,15 +1903,6 @@ And type =<sh Tab= to insert bash source block.
   (set-face-attribute 'org-transclusion-fringe nil :foreground "green" :background "green")
   ;; (set-face-attribute 'org-transclusion-source-fringe nil :foreground "green" :background "green")
   )
-#+end_src
-
-*** org-super-agenda
-
-#+begin_src emacs-lisp
-(use-package org-super-agenda
-  :elpaca t
-  :config
-  (org-super-agenda-mode))
 #+end_src
 
 *** org-auto-tangle
@@ -1780,7 +1992,7 @@ And type =<sh Tab= to insert bash source block.
 :END:
 
 #+begin_src emacs-lisp
-(telega-directory "~/.local/share/telega")
+(telega-directory (file-truename "~/.local/share/telega"))
 #+end_src
 
 Telega uses Ido completing read function instead of the default one (that the
@@ -2128,7 +2340,8 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
   "fg" 'consult-grep
   "fi" 'consult-imenu
   "fr" 'consult-recent-file
-  "fb" 'consult-bookmark)
+  "fb" 'consult-bookmark
+  "fv" 'vertico-repeat)
 #+end_src
 
 *** Minibuffer keybindings
@@ -2143,6 +2356,8 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
     "C-p" 'vertico-previous-group
     "C-f" 'vertico-scroll-up
     "C-b" 'vertico-scroll-down
+    "C-d" 'consult-dir
+    ;; "C-j" 'consult-dir-jump-file
     "q" 'abort-recursive-edit)
 
   (general-def :keymaps 'vertico-map
@@ -2151,6 +2366,7 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
     "C-j" 'vertico-next
     "C-k" 'vertico-previous
     "C-l" 'vertico-insert
+    "C-d" 'consult-dir
     "C-n" 'vertico-next-group
     "C-p" 'vertico-previous-group
     "C-f" 'vertico-scroll-up
@@ -2463,10 +2679,9 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
             (display-line-numbers-mode -1)
             (auto-revert-mode)
             (auto-fill-mode 1)
-            ;; Wrap long lines on words.
-            (visual-line-mode)
+            ;; (visual-line-mode) ;; Wrap long lines on words.
             (my/org-icons)
-            (setq tab-width 2)
+            (setq-local tab-width 2)
             (setq-local evil-shift-width 2)))
 #+end_src
 
