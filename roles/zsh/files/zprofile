@@ -200,6 +200,18 @@ export ls_colors=(
 )
 
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+#  Info
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
+# Tie together the scalar $INFOPATH and the array $infopath
+# in the same way that $PATH and $path ties.
+typeset -T INFOPATH infopath
+
+# Ensure array do not contain duplicates.
+typeset -gU infopath
+
+infopath+=($HOME/.nix-profile/share/info)
+
+#―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 #  Bat
 #―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
 if (( $+commands[bat] )); then

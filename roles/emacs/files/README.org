@@ -88,9 +88,10 @@ This concludes the =early-init.el= file.
 #+end_src
 
 ** Setup =elpaca= package manager
+[[https://github.com/progfolio/elpaca][GitHub - progfolio/elpaca: An elisp package manager]]
 
 #+begin_src emacs-lisp
-(defvar elpaca-installer-version 0.3)
+(defvar elpaca-installer-version 0.4)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
@@ -105,6 +106,7 @@ This concludes the =early-init.el= file.
   (add-to-list 'load-path (if (file-exists-p build) build repo))
   (unless (file-exists-p repo)
     (make-directory repo t)
+    (when (< emacs-major-version 28) (require 'subr-x))
     (condition-case-unless-debug err
         (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
                  ((zerop (call-process "git" nil buffer t "clone"
@@ -148,7 +150,7 @@ Make elpaca native keybindings have precedence over evil keymaps in elpaca buffe
 #+end_src
 
 ** Libraries
-
+*** s, dash, diminish, hydra
 #+begin_src emacs-lisp
 (use-package s    :elpaca t) ;; string manipulation library
 (use-package dash :elpaca t) ;; list manipulation library
@@ -156,18 +158,21 @@ Make elpaca native keybindings have precedence over evil keymaps in elpaca buffe
 (use-package hydra :elpaca t)
 #+end_src
 
+*** use-package
 #+begin_src emacs-lisp
 (use-package use-package
   :no-require
   :custom (use-package-enable-imenu-support t))
 #+end_src
 
+*** general
 #+begin_src emacs-lisp
 (use-package general
   :elpaca t
   :config (general-auto-unbind-keys))
 #+end_src
 
+*** all-the-icons
 #+begin_src emacs-lisp
 (use-package all-the-icons
   :elpaca t
@@ -177,6 +182,12 @@ Make elpaca native keybindings have precedence over evil keymaps in elpaca buffe
     (unless (file-exists-p cache)
       (all-the-icons-install-fonts t)
       (with-temp-buffer (write-file cache)))))
+#+end_src
+
+*** nerd-icons
+#+begin_src emacs-lisp
+(use-package nerd-icons
+  :elpaca t)
 #+end_src
 
 ** My keymaps
@@ -204,6 +215,33 @@ The return value is the new value of LIST-VAR."
         (setcdr (last list) elements)
       (set list-var elements)))
   (symbol-value list-var))
+#+end_src
+
+*** dired-open-file
+#+begin_src emacs-lisp
+(defun my/dired-xdg-open ()
+  "In a dired buffer, open file or folder on the current line with `xdg-open'
+shell command."
+  (interactive)
+  (let* ((file (dired-get-filename nil t)))
+    (call-process "xdg-open" nil 0 nil file)))
+#+end_src
+
+*** paste & indent
+Paste and indent after / before.
+
+#+begin_src emacs-lisp
+(defun my/paste-and-indent-after ()
+  (interactive)
+  (with-undo-amagamate ;; emacs 29
+   (evil-paste-after 1)
+   (evil-indent (evil-get-marker ?\[) (evil-get-marker ?\]))))
+
+(defun my/paste-and-indent-before ()
+  (interactive)
+  (with-undo-amagamate ;; emacs 29
+   (evil-paste-before 1)
+   (evil-indent (evil-get-marker ?\[) (evil-get-marker ?\]))))
 #+end_src
 
 ** Core settings
@@ -413,6 +451,17 @@ Make =electric-pair= mode not to complete ~<>~ pair when ~<~ char entered in org
   :config (tab-bar-mode 1))
 #+end_src
 
+*** info
+Tell Emacs where to search Info files of the packages installed with Nix package
+manager. (particular =mu4e=)
+
+#+begin_src emacs-lisp
+(use-package info
+  :config
+  (add-to-list 'Info-directory-list
+               (expand-file-name ".nix-profile/share/info" (getenv "HOME"))))
+#+end_src
+
 ** Completion framework
 *** COMMENT fido-vertical-mode
 #+begin_src emacs-lisp
@@ -519,7 +568,10 @@ Add to ~load-path~ directory with vertico extensions.
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package vertico-repeat)
+(use-package vertico-repeat
+  :config
+  (keymap-global-set "M-r" #'vertico-repeat)
+  (add-hook 'minibuffer-setup-hook #'vertico-repeat-save))
 #+end_src
 
 *** orderless
@@ -528,9 +580,9 @@ Add to ~load-path~ directory with vertico extensions.
   :elpaca t
   :after vertico
   :custom
-  ;; (completion-styles '(orderless basic))
+  (completion-styles '(orderless basic))
   ;; (completion-styles '(substring orderless))
-  (completion-styles '(flex))
+  ;; (completion-styles '(flex)) ;; fussy search
   (orderless-component-separator #'orderless-escapable-split-on-space)
   (orderless-matching-styles '(orderless-initialism
                                orderless-prefixes
@@ -685,6 +737,173 @@ Add to ~load-path~ directory with vertico extensions.
  "<prior>" 'good-scroll-down-full-screen)
 #+end_src
 
+** Text completion
+*** corfu
+#+begin_src emacs-lisp :noweb yes
+(use-package corfu
+  :elpaca t
+  :init
+  (global-corfu-mode)
+  :custom
+  <<corfu-custom>>
+  :config
+  <<corfu-config>>)
+#+end_src
+
+**** custom
+:PROPERTIES:
+:header-args: :noweb-ref corfu-custom
+:END:
+***** Corfu custom variables
+#+begin_src emacs-lisp
+;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+(corfu-auto t)                 ;; Enable auto completion
+(corfu-separator ?\s)          ;; Orderless field separator
+;; (corfu-auto-prefix 3)
+;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+;; (corfu-preview-current nil)    ;; Disable current candidate preview
+;; (corfu-preselect 'prompt)      ;; Preselect the prompt
+;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+;; (corfu-scroll-margin 5)        ;; Use scroll margin  :init
+#+end_src
+
+***** Emacs custom variables related to completion
+
+=TAB= cycle if there are only few candidates
+#+begin_src emacs-lisp
+(completion-cycle-threshold 3)
+#+end_src
+
+*Emacs 28:* Hide commands in M-x which do not apply to the current mode.
+Corfu commands are hidden, since they are not supposed to be used via =M-x=.
+#+begin_src emacs-lisp
+;; (read-extended-command-predicate #'command-completion-default-include-p)
+#+end_src
+
+Enable indentation+completion using the =TAB= key.
+~completion-at-point~ is often bound to =M-TAB=.
+#+begin_src emacs-lisp
+(tab-always-indent 'complete)
+#+end_src
+
+**** config
+:PROPERTIES:
+:header-args: :noweb-ref corfu-config
+:END:
+***** Corfu in the minibuffer I
+
+Completing in the minibuffer for commands that doesn't use Vertico like
+=:= (~evli-ex~), =M-:= (~eval-expression~) and =M-!= (~shell-command~).
+
+Activate ~corfu-mode~ only if ~completion-at-point~ is bound in the ~minibuffer-local~
+keymap.
+
+#+begin_src emacs-lisp
+(defun corfu-enable-in-minibuffer ()
+  "Enable Corfu in the minibuffer if `completion-at-point' is bound."
+  (when (where-is-internal #'completion-at-point
+                           (list (current-local-map)))
+    (setq-local corfu-auto t ;; Enable/disable auto completion
+                corfu-echo-delay t ;; Disable automatic echo and popup
+                corfu-auto-prefix 2
+                corfu-popupinfo-delay nil)
+    (corfu-mode 1)))
+
+(add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
+#+end_src
+
+***** Corfu in the minibuffer II
+
+Enable Corfu for every minibuffer, as long as no completion UI is active.
+
+First we check for Vertico. Then we ensure that Corfu is not enabled if a
+password is read from the minibuffer.
+
+#+begin_src emacs-lisp
+(defun corfu-enable-always-in-minibuffer ()
+  "Enable Corfu in the minibuffer if Vertico are not active."
+  (unless (or (bound-and-true-p vertico--input)
+              (eq (current-local-map) read-passwd-map))
+    (setq-local corfu-auto t ;; Enable/disable auto completion
+                corfu-echo-delay t ;; Disable automatic echo and popup
+                corfu-auto-prefix 2
+                corfu-popupinfo-delay nil)
+    (corfu-mode 1)))
+
+(add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1)
+#+end_src
+
+*** cape
+#+begin_src emacs-lisp
+(use-package cape
+  :elpaca t
+  ;; Bind dedicated completion commands
+  ;; Alternative prefix keys: C-c p, M-p, M-+, ...
+  :bind (("C-c p p" . completion-at-point) ;; capf
+         ("C-c p t" . complete-tag)        ;; etags
+         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+         ("C-c p h" . cape-history)
+         ("C-c p f" . cape-file)
+         ("C-c p k" . cape-keyword)
+         ("C-c p s" . cape-symbol)
+         ("C-c p a" . cape-abbrev)
+         ("C-c p l" . cape-line)
+         ("C-c p w" . cape-dict)
+         ("C-c p \\" . cape-tex)
+         ("C-c p _" . cape-tex)
+         ("C-c p ^" . cape-tex)
+         ("C-c p &" . cape-sgml)
+         ("C-c p r" . cape-rfc1345))
+  :init
+  ;; Add `completion-at-point-functions', used by `completion-at-point'.
+  ;; NOTE: The order matters!
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+  ;;(add-to-list 'completion-at-point-functions #'cape-history)
+  ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
+  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
+  ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
+  ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
+  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
+  ;;(add-to-list 'completion-at-point-functions #'cape-dict)
+  ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
+  ;;(add-to-list 'completion-at-point-functions #'cape-line)
+)
+#+end_src
+
+** COMMENT LSP
+*** lsp-mode
+#+begin_src emacs-lisp
+(use-package lsp-mode
+  :elpaca t
+  :init
+  ;; ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  ;; (setq lsp-keymap-prefix "C-c l")
+  :hook (;; (python-mode . lsp)
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
+
+(use-package lsp-ui :elpaca t :commands lsp-ui-mode)
+;; (use-package lsp-treemacs :elpaca t :commands lsp-treemacs-errors-list)
+
+#+end_src
+**** lsp-pyright
+#+begin_src emacs-lisp
+(use-package lsp-pyright
+  :elpaca t
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-pyright)
+                          (lsp))))  ; or lsp-deferred
+#+end_src
+
+*** COMMENT dap-mode
+#+begin_src emacs-lisp
+(use-package dap-mode :elpaca t)
+(use-package dap-python :elpaca t)
+#+end_src
+
 ** Text editing
 *** Brackets
 **** puni
@@ -758,7 +977,6 @@ Add to ~load-path~ directory with vertico extensions.
 
 ** Tools
 *** which-key
-
 #+begin_src emacs-lisp
 (use-package which-key
   :elpaca t
@@ -771,7 +989,6 @@ Add to ~load-path~ directory with vertico extensions.
 #+end_src
 
 *** avy
-
 #+begin_src emacs-lisp
 (use-package avy
   :elpaca t
@@ -812,7 +1029,6 @@ Add to ~load-path~ directory with vertico extensions.
 #+end_src
 
 *** zoxide
-
 #+begin_src emacs-lisp
 (use-package zoxide
   :elpaca t
@@ -831,7 +1047,6 @@ https://gitlab.com/koral/gcmh
 #+end_src
 
 *** no-littering
-
 #+begin_src emacs-lisp
 (use-package no-littering
   :elpaca t
@@ -873,7 +1088,6 @@ Save minibuffer history.
 #+end_src
 
 *** projectile
-
 #+begin_src emacs-lisp
 (use-package projectile
   :elpaca t
@@ -887,8 +1101,7 @@ Save minibuffer history.
   (keymap-unset projectile-command-map "I" t))
 #+end_src
 
-*** origami
-
+*** COMMENT origami
 #+begin_src emacs-lisp
 (use-package origami
   :elpaca t
@@ -900,20 +1113,20 @@ Save minibuffer history.
 #+end_src
 
 *** helpful
-
 #+begin_src emacs-lisp
 (use-package helpful
   :elpaca t
+  ;; :preface
+  ;; (add-to-list 'load-path "~/code/emacs/helpful")
   :bind (([remap describe-function] . helpful-callable)
          ([remap describe-variable] . helpful-variable)
-         ([remap describe-command]  . helpful-command)
+         ([remap describe-command] . helpful-command)
          ([remap describe-key] . helpful-key)
          :map help-map
          ("F" . helpful-function)))
 #+end_src
 
 *** rainbow-delimiters
-
 #+begin_src emacs-lisp
 (use-package rainbow-delimiters
   :elpaca t
@@ -921,14 +1134,12 @@ Save minibuffer history.
 #+end_src
 
 *** rg
-
 #+begin_src emacs-lisp
 (use-package rg
   :elpaca t)
 #+end_src
 
 *** easy-escape
-
 #+begin_src emacs-lisp
 (use-package easy-escape
   :elpaca t
@@ -959,7 +1170,6 @@ Spell check
 #+end_src
 
 **** flyspell-correct-popup
-
 #+begin_src emacs-lisp
 (use-package flyspell-correct-popup
   :elpaca t
@@ -967,7 +1177,6 @@ Spell check
 #+end_src
 
 *** vundo
-
 #+begin_src emacs-lisp
 (use-package vundo
   :elpaca (:host github :repo "casouri/vundo")
@@ -990,8 +1199,8 @@ Spell check
   (global-anzu-mode))
 #+end_src
 
-*** COMMENT moom
 
+*** COMMENT moom
 #+begin_src emacs-lisp
 (use-package moom
   :elpaca t
@@ -1005,7 +1214,6 @@ Spell check
 #+end_src
 
 *** COMMENT elisp-demos
-
 #+begin_src emacs-lisp
 (use-package elisp-demos
   :elpaca t
@@ -1015,7 +1223,6 @@ Spell check
 #+end_src
 
 *** COMMENT zoom
-
 #+begin_src emacs-lisp
 (use-package zoom
   :elpaca t
@@ -1110,22 +1317,184 @@ Addtional syntax highlighting for dired
   )
 #+end_src
 
-** My functions
-
-Paste and indent after / before.
+** Email
+*** mu4e
+#+begin_src emacs-lisp :noweb yes
+(use-package mu4e
+  :preface
+  (add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp/mu4e")
+  ;; :defer 20 ; Wait until 20 seconds after startup
+  :custom
+  <<mu4e-custom>>
+  :config
+  <<mu4e-config>>
+  )
+#+end_src
+**** custom
+:PROPERTIES:
+:header-args: :noweb-ref mu4e-custom
+:END:
+Use mu4e for e-mail in emacs.
+#+begin_src emacs-lisp
+(mail-user-agent 'mu4e-user-agent)
+#+end_src
 
 #+begin_src emacs-lisp
-(defun my/paste-and-indent-after ()
-  (interactive)
-  (with-undo-amagamate ;; emacs 29
-   (evil-paste-after 1)
-   (evil-indent (evil-get-marker ?\[) (evil-get-marker ?\]))))
+;; (mu4e-headers-date-format "%Y/%m/%d")
+(mu4e-change-filenames-when-moving t)
+#+end_src
 
-(defun my/paste-and-indent-before ()
-  (interactive)
-  (with-undo-amagamate ;; emacs 29
-   (evil-paste-before 1)
-   (evil-indent (evil-get-marker ?\[) (evil-get-marker ?\]))))
+Note that these folders below must start with =/=.
+#+begin_src emacs-lisp
+(mu4e-refile-folder "/anuvyklack@gmail/[Gmail]/Вся почта")
+(mu4e-sent-folder   "/anuvyklack@gmail/[Gmail]/Отправленные")
+(mu4e-drafts-folder "/anuvyklack@gmail/[Gmail]/Черновики")
+(mu4e-trash-folder  "/anuvyklack@gmail/[Gmail]/Корзина")
+#+end_src
+
+Setup some handy shortcuts you can quickly switch to your Inbox -- press =ji=
+then, when you want archive some messages, move them to the =All Mail= folder by
+pressing =ma=.
+#+begin_src emacs-lisp
+(mu4e-maildir-shortcuts
+ '((:maildir "/anuvyklack@gmail/Inbox"                :key ?i)
+   (:maildir "/anuvyklack@gmail/[Gmail]/Отправленные" :key ?s)
+   (:maildir "/anuvyklack@gmail/[Gmail]/Корзина"      :key ?t)
+   (:maildir "/anuvyklack@gmail/[Gmail]/Вся почта"    :key ?a)))
+#+end_src
+
+#+begin_src emacs-lisp
+(mu4e-headers-fields
+ '((:human-date . 12)
+   (:flags . 6)
+   ;; (:mailing-list . 10)
+   (:from . 25)
+   (:subject)
+   ;; (:thread-subject)
+   ))
+#+end_src
+
+Don't save message to =Sent Messages=, Gmail/IMAP takes care of this.
+#+begin_src emacs-lisp
+(mu4e-sent-messages-behavior 'delete)
+#+end_src
+
+This is set to ~t~ to avoid mail syncing issues when using =mbsync=. If you use
+=offlineimap= this should be set to ~nil~.
+#+begin_src emacs-lisp
+(mu4e-change-filenames-when-moving t)
+#+end_src
+
+Refresh mail using =mbsync= every 10 minutes.
+#+begin_src emacs-lisp
+(mu4e-update-interval (* 10 60))
+#+end_src
+
+This setting allows to re-sync and re-index mail by pressing =u= in evil normal state.
+#+begin_src emacs-lisp
+(mu4e-get-mail-command "mbsync -a")
+#+end_src
+
+Use [[*vertico][vertico]] for completing instead of ido.
+#+begin_src emacs-lisp
+(mu4e-completing-read-function 'completing-read)
+#+end_src
+
+Skip duplicate messages: do not includ more than one in search results.
+#+begin_src emacs-lisp
+(mu4e-search-skip-duplicates t)
+#+end_src
+
+Do not only show the messages that directly match a certain query, but also
+include messages that are related to these messages. That is, messages that
+belong to the same discussion threads are included in the results, just like
+e.g. Gmail does it.
+#+begin_src emacs-lisp
+(mu4e-search-include-related t)
+#+end_src
+
+**** config
+:PROPERTIES:
+:header-args: :noweb-ref mu4e-config
+:END:
+
+#+begin_src emacs-lisp
+(add-to-list 'mu4e-bookmarks
+    ;; ':favorite t' i.e, use this one for the modeline
+   '(:query "maildir:/anuvyklack@gmail/Inbox" :name "Inbox" :key ?i :favorite t))
+#+end_src
+
+Not set flag =T= on deletion. Just move to =Trash= folder. [[https://github.com/djcb/mu/issues/1136#issuecomment-1229005006][Source]]
+#+begin_src emacs-lisp
+(setf (plist-get (alist-get 'trash mu4e-marks) :action)
+      (lambda (docid msg target)
+        (mu4e--server-move docid (mu4e--mark-check-target target) "-N"))) ; Instead of "+T-N"
+#+end_src
+
+***** icons
+#+begin_src emacs-lisp
+(setq mu4e-use-fancy-chars nil)
+#+end_src
+
+Marks for headers. Each is a cons-cell: ~(basic . fancy)~.
+#+begin_src emacs-lisp
+(setq mu4e-headers-draft-mark     '("D" . "")
+      mu4e-headers-flagged-mark   '("F" . "")
+      mu4e-headers-new-mark       '("N" . "")
+      mu4e-headers-passed-mark    '("P" . "")
+      mu4e-headers-replied-mark   '("R" . "")
+      mu4e-headers-seen-mark      '("S" . "")
+      mu4e-headers-trashed-mark   '("T" . "")
+      mu4e-headers-attach-mark    '("a" . "📎")
+      mu4e-headers-encrypted-mark '("x" . "")
+      mu4e-headers-signed-mark    '("s" . "")
+      mu4e-headers-unread-mark    '("u" . "")
+      mu4e-headers-list-mark      '("l" . "")
+      mu4e-headers-personal-mark  '("p" . "")
+      mu4e-headers-calendar-mark  '("c" . ""))
+#+end_src
+
+#+begin_src emacs-lisp
+;; (setq mu4e-headers-thread-child-prefix 					'("├>" . "├─➤ ")
+;;       mu4e-headers-thread-last-child-prefix 		'("└>" . "└─➤ ")
+;;       mu4e-headers-thread-orphan-prefix 				'("┬>" . "┬─➤ ")
+;;       mu4e-headers-thread-single-orphan-prefix 	'("─>" . "──➤ ")
+;;       ;; The following two should have the same width.
+;;       mu4e-headers-thread-connection-prefix 		'("│" . "│ ")
+;;       mu4e-headers-thread-blank-prefix 					'(" " . " "))
+#+end_src
+
+#+begin_src emacs-lisp
+(setq mu4e-headers-thread-orphan-prefix        '("◊ " . "◊ ")
+      ;; mu4e-headers-thread-single-orphan-prefix '("◊ " . "◊ ")
+      mu4e-headers-thread-single-orphan-prefix '("> " . "◊ ")
+      mu4e-headers-thread-duplicate-prefix     '("≡ " . "≡ ")
+      mu4e-headers-thread-root-prefix          '("□ " . "□ ")
+      mu4e-headers-thread-first-child-prefix   '("○ " . "○ ")
+      mu4e-headers-thread-child-prefix         '("├╴" . "├╴")
+      mu4e-headers-thread-last-child-prefix    '("└╴" . "└╴")
+      ;; mu4e-headers-thread-first-child-prefix   '("○ " . "○ ")
+      ;; mu4e-headers-thread-child-prefix         '("├>" . "├>")
+      ;; mu4e-headers-thread-last-child-prefix    '("└>" . "└>")
+      ;; The following two should have the same width.
+      mu4e-headers-thread-connection-prefix    '("│ " . "│ ")
+      mu4e-headers-thread-blank-prefix         '("  " . "  "))
+#+end_src
+
+*** Send emails
+#+begin_src emacs-lisp
+(use-package smtpmail
+  :custom
+  (message-send-mail-function 'smtpmail-send-it)
+  (starttls-use-gnutls t)
+  (smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil)))
+  (smtpmail-auth-credentials '(("smtp.gmail.com" 587 "anuvyklack@gmail.com" nil)))
+  (smtpmail-default-smtp-server "smtp.gmail.com")
+  (smtpmail-smtp-server "smtp.gmail.com")
+  (smtpmail-smtp-service 587)
+
+  ;; Don't keep message buffers around.
+  (message-kill-buffer-on-exit t))
 #+end_src
 
 ** Buffers
@@ -1140,8 +1509,8 @@ Paste and indent after / before.
   ;; (add-to-list 'bufler-filter-buffer-modes 'org-roam-mode)
   (my/append-to-list 'bufler-filter-buffer-modes
                      '(org-roam-mode
-                       magit-status-mode  magit-refs-mode  magit-log-mode
-                       )))
+                       magit-status-mode magit-refs-mode magit-log-mode
+                       mu4e-main-mode)))
 #+end_src
 
 [[*Bufler keybindings][Bufler keybindings]]
@@ -1266,7 +1635,7 @@ Paste and indent after / before.
                       (ibuffer-do-sort-by-alphabetic)))))
 #+end_src
 
-** Orgmode
+** Orgmode 
 *** org
 #+begin_src emacs-lisp :noweb yes
 (use-package org
@@ -1276,7 +1645,6 @@ Paste and indent after / before.
   :config
   <<org-config>>)
 #+end_src
-
 **** custom
 :PROPERTIES:
 :header-args: :noweb-ref org-custom
@@ -1302,13 +1670,9 @@ tags on headings. Repeat to toggle.
 (org-special-ctrl-a/e t)
 #+end_src
 
+Прижимать тэги к 80 колонке справа.
 #+begin_src emacs-lisp
-(org-hide-emphasis-markers t)
-#+end_src
-
-Прижимать тэги к 77 колонке справа.
-#+begin_src emacs-lisp
-(org-tags-column -77)
+(org-tags-column -80)
 #+end_src
 
 The maximum level for Imenu access to Org headlines.
@@ -1405,6 +1769,7 @@ Allow babel code execution without confirming it every time.
 #+end_src
 
 #+begin_src emacs-lisp
+(org-src-fontify-natively t)
 (org-fontify-whole-heading-line t)
 (org-fontify-done-headline t)
 (org-fontify-quote-and-verse-blocks t)
@@ -1432,8 +1797,9 @@ with =Tab= key.
 #+end_src
 
 #+begin_src emacs-lisp
-(org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "DOING" "|" "DONE" "CANCELED")))
+;; (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "DOING" "|" "DONE" "CANCELED")))
 ;; (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "STARTED" "|" "DONE" "CANCELED")))
+(org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "INPROGRES" "|" "DONE" "CANCELED")))
 #+end_src
 
 Make priority signs be integers from 1 to 5, with 3 as default.
@@ -1471,6 +1837,7 @@ Include entries from the Emacs diary into Org mode’s agenda.
 
 #+begin_src emacs-lisp
 (org-attach-store-link-p t)
+(org-attach-use-inheritance t)
 #+end_src
 
 **** config
@@ -1483,6 +1850,7 @@ don't set if I set it in use-package =:custom= section.
 
 #+begin_src emacs-lisp
 (setq org-file-apps '(("\\.pdf\\'" . "evince %s")
+                      ("\\.djvu\\'" . "evince %s")
                       (auto-mode . emacs)
                       (directory . emacs)
                       ("\\.mm\\'" . default)
@@ -1496,7 +1864,8 @@ Setup available embedded languages for babel.
 (org-babel-do-load-languages 'org-babel-load-languages
                              '((sql . t)
                                (shell . t)
-                               (emacs-lisp . t)))
+                               (emacs-lisp . t)
+                               (python . t)))
 #+end_src
 
 ***** Returning convenient paragrapsh behavior in evil
@@ -1639,94 +2008,113 @@ Setup available embedded languages for babel.
     ))
 #+end_src
 
-*** org-super-agenda
-#+begin_src emacs-lisp :noweb yes 
+*** org-agenda
+**** Customize variables
+#+begin_src emacs-lisp
+(setq org-agenda-skip-scheduled-if-done nil
+      org-agenda-skip-deadline-if-done nil
+      org-agenda-include-deadlines t
+      org-agenda-include-diary nil
+      org-agenda-block-separator 61
+      org-agenda-compact-blocks nil
+      org-agenda-start-with-log-mode nil)
+#+end_src
+
+#+begin_src emacs-lisp
+(setq org-agenda-prefix-format '((agenda . " %i %-14:c%?-12t% s")
+                                 (todo . " %i %-14:c")
+                                 (tags . " %i %-14:c")
+                                 (search . " %i %-14:c")))
+#+end_src
+
+**** org-super-agenda
+#+begin_src emacs-lisp
 (use-package org-super-agenda
   :elpaca t
-  :after (evil-org org-agenda)
-  :hook (org-agenda-mode . org-super-agenda-mode)
-  :custom
-  <<org-super-agenda-custom>>
+  ;; :after (org evil-org org-agenda)
+  ;; :hook (org-agenda-mode . org-super-agenda-mode)
   :config
-  ;; (org-super-agenda-mode)
-  <<org-super-agenda-config>>)
+  (org-super-agenda-mode)
+  ;; Fix problem with evil keybindings in org-super-agenda-mode.
+  ;; https://github.com/alphapapa/org-super-agenda/issues/50#issuecomment-817432643
+  (setq org-super-agenda-header-map nil))
 #+end_src
 
-**** custom
-:PROPERTIES:
-:header-args: :noweb-ref org-super-agenda-custom
-:END:
-#+begin_src emacs-lisp
-(org-agenda-skip-scheduled-if-done nil)
-(org-agenda-skip-deadline-if-done nil)
-(org-agenda-include-deadlines t)
-(org-agenda-include-diary nil)
-(org-agenda-block-separator 61)
-(org-agenda-compact-blocks nil)
-(org-agenda-start-with-log-mode nil)
-#+end_src
-
-#+begin_src emacs-lisp
-(org-agenda-prefix-format '((agenda . " %i %-14:c%?-12t% s")
-                            (todo . " %i %-14:c")
-                            (tags . " %i %-14:c")
-                            (search . " %i %-14:c")))
-#+end_src
-
-#+begin_src emacs-lisp
-(org-agenda-custom-commands
- '(("n" "Agenda and all TODOs"
-    (;; (agenda "" ((org-agenda-span 7)
-     ;;             (org-super-agenda-groups
-     ;;              '((:name "Today"
-     ;;                       :time-grid t
-     ;;                       :date today
-     ;;                       :todo "TODAY"
-     ;;                       :scheduled today
-     ;;                       :order 1)
-     ;;                (:discard (:anything t))))))
-     (agenda)
-     (alltodo "" ((org-agenda-overriding-header "")
-                  (org-super-agenda-groups
-                   '((:name "Important"
-                            :priority "A"
-                            :tag ("money" "bills")
-                            :property "urgent")
-                     (:name "Overdue"
-                            :deadline past
-                            :order 2)
-                     (:name "Due Today"
-                            :deadline today
-                            :order 3)
-                     (:name "Current Taks"
-                            :todo "NEXT"
-                            :order 4)
-                     (:name "Personal"
-                            :habit t
-                            :tag "personal"
-                            :order 6)
-                     (:name "House"
-                            :category "house"
-                            :tag "house"
-                            :order 6)
-                     (:name "Subaru"
-                            :tag ("vechicle" "subaru")
-                            :category "vechicle"
-                            :order 6)
-                     (:name "Issues"
-                            :tag "issue"
-                            :order 12)))))))))
-#+end_src
-
-**** config
-:PROPERTIES:
-:header-args: :noweb-ref org-super-agenda-config
-:END:
-
-Fix problem with evil keybindings in org-super-agenda-mode. [[https://github.com/alphapapa/org-super-agenda/issues/50#issuecomment-817432643][Source]]
-
-#+begin_src emacs-lisp
-(setq org-super-agenda-header-map nil)
+**** Custom org-agenda commmands
+#+begin_src emacs-lisp :noweb yes
+(setq org-agenda-custom-commands
+      '(("n" "Agenda and all TODOs"
+         (;; (agenda "" ((org-agenda-span 7)
+          ;;             (org-super-agenda-groups
+          ;;              '((:name "Today"
+          ;;                       :time-grid t
+          ;;                       :date today
+          ;;                       :todo "TODAY"
+          ;;                       :scheduled today
+          ;;                       :order 1)
+          ;;                (:discard (:anything t))))))
+          (agenda "" ((org-super-agenda-groups nil)))
+          (alltodo "" ((org-agenda-overriding-header "")
+                       (org-super-agenda-groups
+                        '((:name "Important"
+                                 :priority "A"
+                                 :tag ("money" "bills")
+                                 :property "urgent")
+                          (:name "Overdue"
+                                 :deadline past
+                                 :order 2)
+                          (:name "Due Today"
+                                 :deadline today
+                                 :order 3)
+                          (:name "Current Taks"
+                                 :todo "NEXT"
+                                 :order 4)
+                          (:name "Personal"
+                                 :habit t
+                                 :tag "personal"
+                                 :order 6)
+                          (:name "House"
+                                 :category "house"
+                                 :tag "house"
+                                 :order 6)
+                          (:name "Subaru"
+                                 :tag ("vechicle" "subaru")
+                                 :category "vechicle"
+                                 :order 6)
+                          (:name "Issues"
+                                 :tag "issue"
+                                 :order 12)))))))
+        ("g" "Custom list of all TODO entries"
+         ((alltodo "" ((org-agenda-overriding-header "")
+                       (org-super-agenda-groups
+                        '((:name "Important"
+                                 :priority "A"
+                                 :tag ("money" "bills")
+                                 :property "urgent")
+                          (:name "Overdue"
+                                 :deadline past
+                                 :order 2)
+                          (:name "Due Today"
+                                 :deadline today
+                                 :order 3)
+                          (:name "Current Taks"
+                                 :todo "NEXT"
+                                 :order 4)
+                          (:name "Personal"
+                                 :habit t
+                                 :tag "personal"
+                                 :order 6)
+                          (:name "House"
+                                 :category "house"
+                                 :tag "house"
+                                 :order 6)
+                          (:name "Subaru"
+                                 :tag ("vechicle" "subaru")
+                                 :category "vechicle"
+                                 :order 6)
+                          (:name "Issues"
+                                 :tag "issue"
+                                 :order 12)))))))))
 #+end_src
 
 *** org-fancy-priorities
@@ -1773,11 +2161,10 @@ Fix problem with evil keybindings in org-super-agenda-mode. [[https://github.com
 #+end_src
 
 *** org-tempo
-
 Org 9.2 introduced a new template expansion mechanism, combining
-~org-insert-structure-template~ bound to =C-c C-,=. The previous
-~easy-templates~ mechanism (=<s Tab=) should be enabled manualy. For more
-information, refer to the commentary section in ‘org-tempo.el’.
+~org-insert-structure-template~ bound to =C-c C-,= (my binding is =z,=).
+The previous ~easy-templates~ mechanism (=<s Tab=) should be enabled manualy.
+For more information, refer to the commentary section in ‘org-tempo.el’.
 
 Type =<se Tab= to insert emacs-lisp source code block.
 And type =<sh Tab= to insert bash source block.
@@ -1796,7 +2183,6 @@ And type =<sh Tab= to insert bash source block.
 #+end_src
 
 *** org-inlinetask
-
 #+begin_src emacs-lisp
 (use-package org-inlinetask
   :after org
@@ -1812,23 +2198,23 @@ And type =<sh Tab= to insert bash source block.
 #+end_src
 
 *** org-appear
-
 #+begin_src emacs-lisp
 (use-package org-appear
   :elpaca t
   :after org
+  :custom
+  (org-hide-emphasis-markers t)
   :hook (org-mode . org-appear-mode))
 #+end_src
 
 *** org-cliplink
-
 #+begin_src emacs-lisp
 (use-package org-cliplink
   :elpaca t)
 #+end_src
 
 *** org-roam
-#+begin_src emacs-lisp :noweb yes 
+#+begin_src emacs-lisp :noweb yes
 (use-package org-roam
   :elpaca t
   :after org
@@ -1847,7 +2233,6 @@ And type =<sh Tab= to insert bash source block.
   ;;                (window-height . fit-window-to-buffer)))
   )
 #+end_src
-
 **** custom
 :PROPERTIES:
 :header-args: :noweb-ref org-roam-custom
@@ -1894,7 +2279,6 @@ Set a more informative completion interface, for vertico.
 #+end_src
 
 *** org-transclusion
-
 #+begin_src emacs-lisp
 (use-package org-transclusion
   :elpaca t
@@ -1906,7 +2290,6 @@ Set a more informative completion interface, for vertico.
 #+end_src
 
 *** org-auto-tangle
-
 #+begin_src emacs-lisp
 (use-package org-auto-tangle
   :elpaca t
@@ -1963,6 +2346,9 @@ Set a more informative completion interface, for vertico.
 #+begin_src emacs-lisp
 (use-package doom-modeline
   :elpaca t
+  ;; :elpaca (:host github :repo "seagle0128/doom-modeline"
+  ;;                ;; :ref "aa0e2dd"
+  ;;                :ref "379b45bffe7d67683f17c3e815797a082d8793d3")
   :custom
   (doom-modeline-height 30)
   (doom-modeline-buffer-file-name-style 'relative-from-project)
@@ -1975,10 +2361,10 @@ Set a more informative completion interface, for vertico.
   :config
   (doom-modeline-mode 1))
 #+end_src
- 
+
 ** Messaging
 *** telega
-#+begin_src emacs-lisp :noweb yes 
+#+begin_src emacs-lisp :noweb yes
 (use-package telega
   :elpaca t
   :defer t
@@ -2004,7 +2390,6 @@ user prefers).
 
 ** Evil mode
 *** evil
-
 #+begin_src emacs-lisp :noweb yes
 (use-package evil
   :elpaca t
@@ -2015,7 +2400,6 @@ user prefers).
   :config
   <<evil-config>>)
 #+end_src
-
 **** custom
 :PROPERTIES:
 :header-args: :noweb-ref evil-custom
@@ -2095,8 +2479,8 @@ Bind =:ls= command to +ibuffer+ =bufler= instead of =list-buffers=.
   ;; (ibuffer)
   (bufler))
 #+end_src
-*** evil-collection
 
+*** evil-collection
 #+begin_src emacs-lisp :noweb yes
 (use-package evil-collection
   :elpaca t
@@ -2106,6 +2490,7 @@ Bind =:ls= command to +ibuffer+ =bufler= instead of =list-buffers=.
   (evil-collection-key-blacklist '("SPC"))
   (evil-collection-outline-bind-tab-p t)
   (evil-collection-setup-minibuffer t)
+  (evil-collection-corfu-key-themes '(default tab-n-go))
   :config
   (evil-collection-init)
   <<evil-collection-keybindings>>)
@@ -2113,6 +2498,8 @@ Bind =:ls= command to +ibuffer+ =bufler= instead of =list-buffers=.
 
 *** evil-nerd-commenter
 Use =gc{motion}= to comment target and =gcc= to comment line.
+
+/Alternative keybinding could be =z;{motion}=./
 
 #+begin_src emacs-lisp
 (use-package evil-nerd-commenter
@@ -2122,7 +2509,6 @@ Use =gc{motion}= to comment target and =gcc= to comment line.
   (evilnc-comment-text-object "c")
   :config
   (general-def
-    ;; :states '(normal visual)
     :states 'motion
     "g c" 'evilnc-comment-operator))
 #+end_src
@@ -2149,7 +2535,6 @@ Make =*= work with visual selection.
   :config
   <<evil-goggles-config>>)
 #+end_src
-
 **** config
 :PROPERTIES:
 :header-args: :noweb-ref evil-goggles-config
@@ -2184,7 +2569,6 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
 #+end_src
 
 *** evil-easymotion
-
 #+begin_src emacs-lisp
 (use-package evil-easymotion
   :elpaca t
@@ -2242,7 +2626,7 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
   ;; :elpaca t
   :load-path "~/code/emacs/evil-org-mode"
   :after (org evil evil-collection)
-  :hook (org-mode . evil-org-mode)
+  ;; :hook (org-mode . evil-org-mode)
   :config
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys)
@@ -2257,8 +2641,8 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
                             )))
 #+end_src
 
-*** evil-xkbswitch
 
+*** evil-xkbswitch
 #+begin_src emacs-lisp
 (use-package evil-xkbswitch
   :elpaca (:host github :repo "linktohack/evil-xkbswitch")
@@ -2272,7 +2656,7 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
 #+end_src
 
 *** evil-anzu
-
+[[*anzu][anzu]]
 #+begin_src emacs-lisp
 (use-package evil-anzu
   :elpaca t
@@ -2286,10 +2670,8 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
 :header-args: :noweb-ref evil-collection-keybindings
 :END:
 *** General keybindings
-
 #+begin_src emacs-lisp
-(general-def
-  :states '(normal visual)
+(general-def :states 'motion
   "M-u" 'universal-argument
   "SPC" '(:keymap leader-map) ;; use 'Space' as leader key
   ;; "<backspace>" 'evil-ex ;; evil command (:) state
@@ -2306,7 +2688,14 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
   "z n" 'narrow-to-region
   "z w" 'widen
   "Z Z" 'my/evil-save-modified-buffer-and-kill-it
-  "z =" 'flyspell-correct-wrapper)
+  "z =" 'flyspell-correct-wrapper
+  "g <tab>" 'tab-new)
+
+(general-def :states '(normal visual)
+  "C-p" 'consult-yank-from-kill-ring)
+
+(general-def :states 'visual
+  "z n" (lambda () (narrow-to-region) (evil-exit-visual-state)))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2327,11 +2716,9 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
   "C-l" 'right-char)
 #+end_src
 
-*** Leader map keybindings
-
+*** Leader map                                                   :keybindings:
 #+begin_src emacs-lisp
-(general-def
-  :keymaps 'leader-map
+(general-def :keymaps 'leader-map
   "h"  '(:keymap help-map :which-key "help")
   "n"  '(:keymap my/notes-map :which-key "notes")
   "b"  'consult-buffer
@@ -2341,14 +2728,28 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
   "fi" 'consult-imenu
   "fr" 'consult-recent-file
   "fb" 'consult-bookmark
-  "fv" 'vertico-repeat)
+  "fv" 'vertico-repeat-select) ;; v for vertico
 #+end_src
 
-*** Minibuffer keybindings
+*** COMMENT Lsp-mode                                             :keybindings:
+#+begin_src emacs-lisp
+(with-eval-after-load 'lsp-mode
+ (general-def :keymaps 'leader-map
+   "l" '(:keymap lsp-command-keymap :which-key "LSP")))
+#+end_src
+
+*** Corfu                                                        :keybindings:
+#+begin_src emacs-lisp
+(general-def :keymaps 'corfu-map
+  :states 'insert
+  "<escape>" 'corfu-quit
+  "C-l" 'corfu-insert)
+#+end_src
+
+*** Minibuffer                                                   :keybindings:
 #+begin_src emacs-lisp
 (with-eval-after-load 'vertico
-  (general-def :keymaps 'vertico-map
-    :states '(normal visual)
+  (general-def :keymaps 'vertico-map :states '(normal visual)
     "C-j" 'vertico-next
     "C-k" 'vertico-previous
     "C-l" 'vertico-insert
@@ -2360,8 +2761,7 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
     ;; "C-j" 'consult-dir-jump-file
     "q" 'abort-recursive-edit)
 
-  (general-def :keymaps 'vertico-map
-    :states 'insert
+  (general-def :keymaps 'vertico-map :states 'insert
     "C-y" 'yank
     "C-j" 'vertico-next
     "C-k" 'vertico-previous
@@ -2387,8 +2787,7 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
 ;;        ("C-h" . backward-kill-word))
 #+end_src
 
-*** Dired keybindings
-
+*** Dired                                                        :keybindings:
 #+begin_src emacs-lisp
 (general-def :keymaps 'dired-mode-map
   :states 'normal
@@ -2407,10 +2806,9 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
   ")" 'dired-omit-mode
   "<" 'dired-prev-marked-file
   ">" 'dired-next-marked-file
-  "." 'hydra-dired/body)
-#+end_src
+  "." 'hydra-dired/body
+  "M-RET" 'my/dired-xdg-open)
 
-#+begin_src emacs-lisp
 (general-def :keymaps 'dired-mode-map
   :states 'visual
   "d" 'dired-flag-file-deletion
@@ -2425,7 +2823,7 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
 _Y_ rel symlink    _O_pen marked
 _S_ymlink          _n_ narrow
 _z_ compress-file  _m_ chmod        _s_ort           _E_ ediff
-_Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
+_Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
 "
   ("+" dired-maybe-create-dirs)
   ("=" diredp-ediff) ;; smart diff
@@ -2447,13 +2845,17 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
   ("<escape>" nil :color blue))
 #+end_src
 
-*** Magit
+*** Magit                                                        :keybindings:
 #+begin_src emacs-lisp
 (with-eval-after-load 'magit-section
   (general-def :keymaps 'magit-section-mode-map
     :states 'normal
     "g h" 'evil-first-non-blank
     "g l" 'evil-end-of-line
+    "C-j" 'magit-section-forward-sibling
+    "C-k" 'magit-section-backward-sibling
+    "z j" 'magit-section-forward-sibling
+    "z k" 'magit-section-backward-sibling
     "z u" 'magit-section-up
     "z t" 'evil-scroll-line-to-top
     "z z" 'evil-scroll-line-to-center
@@ -2467,7 +2869,7 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
     "ZQ" 'with-editor-cancel))
 #+end_src
 
-*** Bufler keybindings
+*** Bufler                                                       :keybindings:
 #+begin_src emacs-lisp
 (general-def :keymaps 'bufler-list-mode-map
   :states 'normal
@@ -2480,7 +2882,7 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
   "?" 'hydra:bufler/body)
 #+end_src
 
-*** Outline keybindings
+*** Outline                                                      :keybindings:
 #+begin_src emacs-lisp
 (general-def
   :keymaps 'outline-mode-map
@@ -2498,24 +2900,20 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
   (outline-hide-sublevels (or levels 1)))
 #+end_src
 
-*** Orgmode keybindings
+*** Orgmode                                                      :keybindings:
 #+begin_src emacs-lisp
 (general-def :keymaps 'my/orgmode-leader-map
   "SPC" 'org-ctrl-c-ctrl-c
-  "/" 'org-sparse-tree
-  ";" 'org-toggle-comment
-  "i" 'org-id-get-create
-  "np" 'org-set-property
-  "nh" 'org-babel-insert-header-arg
+  "n i" 'org-id-get-create
+  "n p" 'org-set-property
+  "n h" 'org-babel-insert-header-arg
   "l" 'org-insert-link
   "d" 'org-deadline
   "s" 'org-schedule
   "t" 'org-time-stamp
   "T" 'org-time-stamp-inactive
   "L" 'org-cliplink
-  "'" 'org-edit-special
   "a" 'org-attach
-  "," 'org-insert-structure-template
   "[" 'org-agenda-file-to-front
   "]" 'org-remove-file)
 #+end_src
@@ -2523,7 +2921,7 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
 #+begin_src emacs-lisp
 (general-def :keymaps 'org-src-mode-map
   :states 'normal
-  "SPC '" 'org-edit-src-exit)
+  "z '" 'org-edit-src-exit)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2536,6 +2934,10 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
     ;; "L" 'org-down-element
     "g x" 'org-open-at-point
     "z n" 'org-narrow-to-subtree
+    "z '" 'org-edit-special
+    "z ," 'org-insert-structure-template
+    "z /" 'org-sparse-tree
+    "z ;" 'org-toggle-comment
     "SPC" '(:keymap my/orgmode-leader-map)
     "K" 'helpful-at-point)
 
@@ -2560,7 +2962,6 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
   "c" 'org-roam-capture
   "w" 'org-roam-buffer-toggle
   "b" 'org-switchb
-  "i" 'org-roam-node-insert
   "l" 'org-roam-node-insert
   "u" 'org-roam-ui-mode)
 #+end_src
@@ -2590,12 +2991,18 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
   "q" #'org-transclusion-live-sync-exit)
 #+end_src
 
-*** Info mode
+*** Info mode                                                    :keybindings:
 #+begin_src emacs-lisp
 (general-def
   :keymaps 'Info-mode-map
   :states '(normal visual)
-  "SPC" '(:keymap leader-map))
+  "SPC" '(:keymap leader-map)
+  "g H" 'Info-history
+  "g L" 'Info-toc
+  "C-j" 'Info-next
+  "C-k" 'Info-prev
+  "gj" 'Info-forward-node
+  "gk" 'Info-backward-node)
 #+end_src
 
 ** Color schemes
@@ -2608,9 +3015,9 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
   (ef-themes-mixed-fonts t)
   (ef-themes-variable-pitch-ui t)
   :config
-  <<ef-themes-config>>)
+  <<ef-themes-config>>
+  )
 #+end_src
-
 **** config
 :PROPERTIES:
 :header-args: :noweb-ref ef-themes-config
@@ -2627,8 +3034,8 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
 
 ***** orgmode faces
 #+begin_src emacs-lisp
-(set-face-attribute 'org-verbatim nil :foreground "#4250ef" :background "#f1f1f1")
-(set-face-attribute 'org-code     nil :foreground "#cf25aa" :background "#f1f1f1")
+(set-face-attribute 'org-verbatim nil :foreground "#4250ef" :background "#f5f5f5")
+(set-face-attribute 'org-code     nil :foreground "#cf25aa" :background "#f5f5f5")
 ;; (set-face-attribute 'org-level-1  nil :foreground "#375cd8" :height 1.27)
 ;; (set-face-attribute 'org-level-2  nil :foreground "#cf25aa" :height 1.20)
 ;; (set-face-attribute 'org-level-3  nil :foreground "#1f77bb" :height 1.15)
@@ -2637,8 +3044,20 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
 
 #+end_src
 
-*** COMMENT doom-themes
+*** COMMENT shanty-themes
+#+begin_src emacs-lisp
+(use-package shanty-themes
+  :elpaca t
+  ;; :custom
+  ;; ;; Enable or disable the boxes around function definitions.
+  ;; (shanty-themes-function-box t)
+  :config
+  ;; (load-theme 'shanty-themes-light :no-confirm)
+  (load-theme 'shanty-themes-dark :no-confirm)
+  )
+#+end_src
 
+*** COMMENT doom-themes
 #+begin_src emacs-lisp
 (use-package doom-themes
   :elpaca t
@@ -2685,11 +3104,12 @@ _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
             (setq-local evil-shift-width 2)))
 #+end_src
 
-*** Python
+*** COMMENT Python
 #+begin_src emacs-lisp
 (add-hook 'python-mode-hook
           (lambda ()
-            (setq-local evil-shift-width  python-indent)))
+            ;; (setq-local evil-shift-width  python-indent-offset)
+            ))
 #+end_src
 
 *** Emacs lisp
@@ -2739,4 +3159,3 @@ This concludes the =init.el= file.
   (provide 'init.el)
   ;;; init.el ends here
 #+end_src
-

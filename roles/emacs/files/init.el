@@ -6,7 +6,7 @@
 ;;;
 ;;; Code:
 
-(defvar elpaca-installer-version 0.3)
+(defvar elpaca-installer-version 0.4)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
@@ -21,6 +21,7 @@
   (add-to-list 'load-path (if (file-exists-p build) build repo))
   (unless (file-exists-p repo)
     (make-directory repo t)
+    (when (< emacs-major-version 28) (require 'subr-x))
     (condition-case-unless-debug err
         (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
                  ((zerop (call-process "git" nil buffer t "clone"
@@ -73,6 +74,9 @@
       (all-the-icons-install-fonts t)
       (with-temp-buffer (write-file cache)))))
 
+(use-package nerd-icons
+  :elpaca t)
+
 (define-prefix-command 'leader-map)
 (define-prefix-command 'semicolon-leader-map)
 (define-prefix-command 'my/orgmode-leader-map)
@@ -89,6 +93,25 @@ The return value is the new value of LIST-VAR."
         (setcdr (last list) elements)
       (set list-var elements)))
   (symbol-value list-var))
+
+(defun my/dired-xdg-open ()
+  "In a dired buffer, open file or folder on the current line with `xdg-open'
+shell command."
+  (interactive)
+  (let* ((file (dired-get-filename nil t)))
+    (call-process "xdg-open" nil 0 nil file)))
+
+(defun my/paste-and-indent-after ()
+  (interactive)
+  (with-undo-amagamate ;; emacs 29
+   (evil-paste-after 1)
+   (evil-indent (evil-get-marker ?\[) (evil-get-marker ?\]))))
+
+(defun my/paste-and-indent-before ()
+  (interactive)
+  (with-undo-amagamate ;; emacs 29
+   (evil-paste-before 1)
+   (evil-indent (evil-get-marker ?\[) (evil-get-marker ?\]))))
 
 (use-package better-defaults :elpaca t)
 
@@ -174,6 +197,11 @@ The return value is the new value of LIST-VAR."
 (use-package tab-bar
   :config (tab-bar-mode 1))
 
+(use-package info
+  :config
+  (add-to-list 'Info-directory-list
+               (expand-file-name ".nix-profile/share/info" (getenv "HOME"))))
+
 (use-package vertico
   :elpaca t
   :custom
@@ -211,15 +239,18 @@ The return value is the new value of LIST-VAR."
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
   (add-to-list 'load-path (expand-file-name "elpaca/repos/vertico/extensions"
                                             user-emacs-directory))
-  (use-package vertico-repeat))
+  (use-package vertico-repeat
+    :config
+    (keymap-global-set "M-r" #'vertico-repeat)
+    (add-hook 'minibuffer-setup-hook #'vertico-repeat-save)))
 
 (use-package orderless
   :elpaca t
   :after vertico
   :custom
-  ;; (completion-styles '(orderless basic))
+  (completion-styles '(orderless basic))
   ;; (completion-styles '(substring orderless))
-  (completion-styles '(flex))
+  ;; (completion-styles '(flex)) ;; fussy search
   (orderless-component-separator #'orderless-escapable-split-on-space)
   (orderless-matching-styles '(orderless-initialism
                                orderless-prefixes
@@ -271,6 +302,84 @@ The return value is the new value of LIST-VAR."
   :elpaca t
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
+
+(use-package corfu
+  :elpaca t
+  :init
+  (global-corfu-mode)
+  :custom
+  ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  (corfu-auto t)                 ;; Enable auto completion
+  (corfu-separator ?\s)          ;; Orderless field separator
+  ;; (corfu-auto-prefix 3)
+  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+  ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
+  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+  ;; (corfu-scroll-margin 5)        ;; Use scroll margin  :init
+  (completion-cycle-threshold 3)
+  ;; (read-extended-command-predicate #'command-completion-default-include-p)
+  (tab-always-indent 'complete)
+  :config
+  (defun corfu-enable-in-minibuffer ()
+    "Enable Corfu in the minibuffer if `completion-at-point' is bound."
+    (when (where-is-internal #'completion-at-point
+                             (list (current-local-map)))
+      (setq-local corfu-auto t ;; Enable/disable auto completion
+                  corfu-echo-delay t ;; Disable automatic echo and popup
+                  corfu-auto-prefix 2
+                  corfu-popupinfo-delay nil)
+      (corfu-mode 1)))
+  
+  (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
+  (defun corfu-enable-always-in-minibuffer ()
+    "Enable Corfu in the minibuffer if Vertico are not active."
+    (unless (or (bound-and-true-p vertico--input)
+                (eq (current-local-map) read-passwd-map))
+      (setq-local corfu-auto t ;; Enable/disable auto completion
+                  corfu-echo-delay t ;; Disable automatic echo and popup
+                  corfu-auto-prefix 2
+                  corfu-popupinfo-delay nil)
+      (corfu-mode 1)))
+  
+  (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1))
+
+(use-package cape
+  :elpaca t
+  ;; Bind dedicated completion commands
+  ;; Alternative prefix keys: C-c p, M-p, M-+, ...
+  :bind (("C-c p p" . completion-at-point) ;; capf
+         ("C-c p t" . complete-tag)        ;; etags
+         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+         ("C-c p h" . cape-history)
+         ("C-c p f" . cape-file)
+         ("C-c p k" . cape-keyword)
+         ("C-c p s" . cape-symbol)
+         ("C-c p a" . cape-abbrev)
+         ("C-c p l" . cape-line)
+         ("C-c p w" . cape-dict)
+         ("C-c p \\" . cape-tex)
+         ("C-c p _" . cape-tex)
+         ("C-c p ^" . cape-tex)
+         ("C-c p &" . cape-sgml)
+         ("C-c p r" . cape-rfc1345))
+  :init
+  ;; Add `completion-at-point-functions', used by `completion-at-point'.
+  ;; NOTE: The order matters!
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+  ;;(add-to-list 'completion-at-point-functions #'cape-history)
+  ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
+  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
+  ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
+  ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
+  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
+  ;;(add-to-list 'completion-at-point-functions #'cape-dict)
+  ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
+  ;;(add-to-list 'completion-at-point-functions #'cape-line)
+)
 
 (use-package puni
   :disabled
@@ -408,19 +517,13 @@ The return value is the new value of LIST-VAR."
   (keymap-set projectile-command-map "B" #'projectile-ibuffer)
   (keymap-unset projectile-command-map "I" t))
 
-(use-package origami
-  :elpaca t
-  ;; :custom
-  ;; (origami-show-fold-header t) ;; highlight fold headers
-  ;; :config
-  ;; (global-origami-mode 1)
-  )
-
 (use-package helpful
   :elpaca t
+  ;; :preface
+  ;; (add-to-list 'load-path "~/code/emacs/helpful")
   :bind (([remap describe-function] . helpful-callable)
          ([remap describe-variable] . helpful-variable)
-         ([remap describe-command]  . helpful-command)
+         ([remap describe-command] . helpful-command)
          ([remap describe-key] . helpful-key)
          :map help-map
          ("F" . helpful-function)))
@@ -519,17 +622,95 @@ The return value is the new value of LIST-VAR."
   ;; (set-face-attribute 'diredfl-dir-name nil :bold t)
   )
 
-(defun my/paste-and-indent-after ()
-  (interactive)
-  (with-undo-amagamate ;; emacs 29
-   (evil-paste-after 1)
-   (evil-indent (evil-get-marker ?\[) (evil-get-marker ?\]))))
+(use-package mu4e
+  :preface
+  (add-to-list 'load-path "~/.nix-profile/share/emacs/site-lisp/mu4e")
+  ;; :defer 20 ; Wait until 20 seconds after startup
+  :custom
+  (mail-user-agent 'mu4e-user-agent)
+  ;; (mu4e-headers-date-format "%Y/%m/%d")
+  (mu4e-change-filenames-when-moving t)
+  (mu4e-refile-folder "/anuvyklack@gmail/[Gmail]/Вся почта")
+  (mu4e-sent-folder   "/anuvyklack@gmail/[Gmail]/Отправленные")
+  (mu4e-drafts-folder "/anuvyklack@gmail/[Gmail]/Черновики")
+  (mu4e-trash-folder  "/anuvyklack@gmail/[Gmail]/Корзина")
+  (mu4e-maildir-shortcuts
+   '((:maildir "/anuvyklack@gmail/Inbox"                :key ?i)
+     (:maildir "/anuvyklack@gmail/[Gmail]/Отправленные" :key ?s)
+     (:maildir "/anuvyklack@gmail/[Gmail]/Корзина"      :key ?t)
+     (:maildir "/anuvyklack@gmail/[Gmail]/Вся почта"    :key ?a)))
+  (mu4e-headers-fields
+   '((:human-date . 12)
+     (:flags . 6)
+     ;; (:mailing-list . 10)
+     (:from . 25)
+     (:subject)
+     ;; (:thread-subject)
+     ))
+  (mu4e-sent-messages-behavior 'delete)
+  (mu4e-change-filenames-when-moving t)
+  (mu4e-update-interval (* 10 60))
+  (mu4e-get-mail-command "mbsync -a")
+  (mu4e-completing-read-function 'completing-read)
+  (mu4e-search-skip-duplicates t)
+  (mu4e-search-include-related t)
+  :config
+  (add-to-list 'mu4e-bookmarks
+      ;; ':favorite t' i.e, use this one for the modeline
+     '(:query "maildir:/anuvyklack@gmail/Inbox" :name "Inbox" :key ?i :favorite t))
+  (setf (plist-get (alist-get 'trash mu4e-marks) :action)
+        (lambda (docid msg target)
+          (mu4e--server-move docid (mu4e--mark-check-target target) "-N"))) ; Instead of "+T-N"
+  (setq mu4e-use-fancy-chars nil)
+  (setq mu4e-headers-draft-mark     '("D" . "")
+        mu4e-headers-flagged-mark   '("F" . "")
+        mu4e-headers-new-mark       '("N" . "")
+        mu4e-headers-passed-mark    '("P" . "")
+        mu4e-headers-replied-mark   '("R" . "")
+        mu4e-headers-seen-mark      '("S" . "")
+        mu4e-headers-trashed-mark   '("T" . "")
+        mu4e-headers-attach-mark    '("a" . "📎")
+        mu4e-headers-encrypted-mark '("x" . "")
+        mu4e-headers-signed-mark    '("s" . "")
+        mu4e-headers-unread-mark    '("u" . "")
+        mu4e-headers-list-mark      '("l" . "")
+        mu4e-headers-personal-mark  '("p" . "")
+        mu4e-headers-calendar-mark  '("c" . ""))
+  ;; (setq mu4e-headers-thread-child-prefix 					'("├>" . "├─➤ ")
+  ;;       mu4e-headers-thread-last-child-prefix 		'("└>" . "└─➤ ")
+  ;;       mu4e-headers-thread-orphan-prefix 				'("┬>" . "┬─➤ ")
+  ;;       mu4e-headers-thread-single-orphan-prefix 	'("─>" . "──➤ ")
+  ;;       ;; The following two should have the same width.
+  ;;       mu4e-headers-thread-connection-prefix 		'("│" . "│ ")
+  ;;       mu4e-headers-thread-blank-prefix 					'(" " . " "))
+  (setq mu4e-headers-thread-orphan-prefix        '("◊ " . "◊ ")
+        ;; mu4e-headers-thread-single-orphan-prefix '("◊ " . "◊ ")
+        mu4e-headers-thread-single-orphan-prefix '("> " . "◊ ")
+        mu4e-headers-thread-duplicate-prefix     '("≡ " . "≡ ")
+        mu4e-headers-thread-root-prefix          '("□ " . "□ ")
+        mu4e-headers-thread-first-child-prefix   '("○ " . "○ ")
+        mu4e-headers-thread-child-prefix         '("├╴" . "├╴")
+        mu4e-headers-thread-last-child-prefix    '("└╴" . "└╴")
+        ;; mu4e-headers-thread-first-child-prefix   '("○ " . "○ ")
+        ;; mu4e-headers-thread-child-prefix         '("├>" . "├>")
+        ;; mu4e-headers-thread-last-child-prefix    '("└>" . "└>")
+        ;; The following two should have the same width.
+        mu4e-headers-thread-connection-prefix    '("│ " . "│ ")
+        mu4e-headers-thread-blank-prefix         '("  " . "  "))
+  )
 
-(defun my/paste-and-indent-before ()
-  (interactive)
-  (with-undo-amagamate ;; emacs 29
-   (evil-paste-before 1)
-   (evil-indent (evil-get-marker ?\[) (evil-get-marker ?\]))))
+(use-package smtpmail
+  :custom
+  (message-send-mail-function 'smtpmail-send-it)
+  (starttls-use-gnutls t)
+  (smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil)))
+  (smtpmail-auth-credentials '(("smtp.gmail.com" 587 "anuvyklack@gmail.com" nil)))
+  (smtpmail-default-smtp-server "smtp.gmail.com")
+  (smtpmail-smtp-server "smtp.gmail.com")
+  (smtpmail-smtp-service 587)
+
+  ;; Don't keep message buffers around.
+  (message-kill-buffer-on-exit t))
 
 (use-package bufler
   :elpaca t
@@ -540,8 +721,8 @@ The return value is the new value of LIST-VAR."
   ;; (add-to-list 'bufler-filter-buffer-modes 'org-roam-mode)
   (my/append-to-list 'bufler-filter-buffer-modes
                      '(org-roam-mode
-                       magit-status-mode  magit-refs-mode  magit-log-mode
-                       )))
+                       magit-status-mode magit-refs-mode magit-log-mode
+                       mu4e-main-mode)))
 
 (use-package org
   :after evil
@@ -549,8 +730,7 @@ The return value is the new value of LIST-VAR."
   (org-catch-invisible-edits 'show-and-error)
   (org-startup-indented t)
   (org-special-ctrl-a/e t)
-  (org-hide-emphasis-markers t)
-  (org-tags-column -77)
+  (org-tags-column -80)
   (org-imenu-depth 8)
   (org-startup-with-inline-images t)
   (org-image-actual-width '(400))
@@ -575,6 +755,7 @@ The return value is the new value of LIST-VAR."
   (org-use-property-inheritance t)
   (org-src-tab-acts-natively t)
   (org-confirm-babel-evaluate nil)
+  (org-src-fontify-natively t)
   (org-fontify-whole-heading-line t)
   (org-fontify-done-headline t)
   (org-fontify-quote-and-verse-blocks t)
@@ -582,8 +763,9 @@ The return value is the new value of LIST-VAR."
   ;; (org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
   (org-list-indent-offset 1)
   (org-cycle-include-plain-lists 'integrate)
-  (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "DOING" "|" "DONE" "CANCELED")))
+  ;; (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "DOING" "|" "DONE" "CANCELED")))
   ;; (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "STARTED" "|" "DONE" "CANCELED")))
+  (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "INPROGRES" "|" "DONE" "CANCELED")))
   (org-priority-highest 65) ;; A
   (org-priority-lowest 67)  ;; C
   (org-priority-default 67) ;; C
@@ -596,8 +778,10 @@ The return value is the new value of LIST-VAR."
   (org-agenda-include-diary nil)
   (org-pretty-entities t)
   (org-attach-store-link-p t)
+  (org-attach-use-inheritance t)
   :config
   (setq org-file-apps '(("\\.pdf\\'" . "evince %s")
+                        ("\\.djvu\\'" . "evince %s")
                         (auto-mode . emacs)
                         (directory . emacs)
                         ("\\.mm\\'" . default)
@@ -605,7 +789,8 @@ The return value is the new value of LIST-VAR."
   (org-babel-do-load-languages 'org-babel-load-languages
                                '((sql . t)
                                  (shell . t)
-                                 (emacs-lisp . t)))
+                                 (emacs-lisp . t)
+                                 (python . t)))
   (with-eval-after-load 'evil
     (define-advice forward-evil-paragraph
         (:around (orig-fun &rest args) use-default-paragraph-definiton-in-org)
@@ -674,67 +859,102 @@ The return value is the new value of LIST-VAR."
     ;; :config (org-eldoc-load)
     ))
 
+(setq org-agenda-skip-scheduled-if-done nil
+      org-agenda-skip-deadline-if-done nil
+      org-agenda-include-deadlines t
+      org-agenda-include-diary nil
+      org-agenda-block-separator 61
+      org-agenda-compact-blocks nil
+      org-agenda-start-with-log-mode nil)
+
+(setq org-agenda-prefix-format '((agenda . " %i %-14:c%?-12t% s")
+                                 (todo . " %i %-14:c")
+                                 (tags . " %i %-14:c")
+                                 (search . " %i %-14:c")))
+
 (use-package org-super-agenda
   :elpaca t
-  :after (evil-org org-agenda)
-  :hook (org-agenda-mode . org-super-agenda-mode)
-  :custom
-  (org-agenda-skip-scheduled-if-done nil)
-  (org-agenda-skip-deadline-if-done nil)
-  (org-agenda-include-deadlines t)
-  (org-agenda-include-diary nil)
-  (org-agenda-block-separator 61)
-  (org-agenda-compact-blocks nil)
-  (org-agenda-start-with-log-mode nil)
-  (org-agenda-prefix-format '((agenda . " %i %-14:c%?-12t% s")
-                              (todo . " %i %-14:c")
-                              (tags . " %i %-14:c")
-                              (search . " %i %-14:c")))
-  (org-agenda-custom-commands
-   '(("n" "Agenda and all TODOs"
-      (;; (agenda "" ((org-agenda-span 7)
-       ;;             (org-super-agenda-groups
-       ;;              '((:name "Today"
-       ;;                       :time-grid t
-       ;;                       :date today
-       ;;                       :todo "TODAY"
-       ;;                       :scheduled today
-       ;;                       :order 1)
-       ;;                (:discard (:anything t))))))
-       (agenda)
-       (alltodo "" ((org-agenda-overriding-header "")
-                    (org-super-agenda-groups
-                     '((:name "Important"
-                              :priority "A"
-                              :tag ("money" "bills")
-                              :property "urgent")
-                       (:name "Overdue"
-                              :deadline past
-                              :order 2)
-                       (:name "Due Today"
-                              :deadline today
-                              :order 3)
-                       (:name "Current Taks"
-                              :todo "NEXT"
-                              :order 4)
-                       (:name "Personal"
-                              :habit t
-                              :tag "personal"
-                              :order 6)
-                       (:name "House"
-                              :category "house"
-                              :tag "house"
-                              :order 6)
-                       (:name "Subaru"
-                              :tag ("vechicle" "subaru")
-                              :category "vechicle"
-                              :order 6)
-                       (:name "Issues"
-                              :tag "issue"
-                              :order 12)))))))))
+  ;; :after (org evil-org org-agenda)
+  ;; :hook (org-agenda-mode . org-super-agenda-mode)
   :config
-  ;; (org-super-agenda-mode)
+  (org-super-agenda-mode)
+  ;; Fix problem with evil keybindings in org-super-agenda-mode.
+  ;; https://github.com/alphapapa/org-super-agenda/issues/50#issuecomment-817432643
   (setq org-super-agenda-header-map nil))
+
+(setq org-agenda-custom-commands
+      '(("n" "Agenda and all TODOs"
+         (;; (agenda "" ((org-agenda-span 7)
+          ;;             (org-super-agenda-groups
+          ;;              '((:name "Today"
+          ;;                       :time-grid t
+          ;;                       :date today
+          ;;                       :todo "TODAY"
+          ;;                       :scheduled today
+          ;;                       :order 1)
+          ;;                (:discard (:anything t))))))
+          (agenda "" ((org-super-agenda-groups nil)))
+          (alltodo "" ((org-agenda-overriding-header "")
+                       (org-super-agenda-groups
+                        '((:name "Important"
+                                 :priority "A"
+                                 :tag ("money" "bills")
+                                 :property "urgent")
+                          (:name "Overdue"
+                                 :deadline past
+                                 :order 2)
+                          (:name "Due Today"
+                                 :deadline today
+                                 :order 3)
+                          (:name "Current Taks"
+                                 :todo "NEXT"
+                                 :order 4)
+                          (:name "Personal"
+                                 :habit t
+                                 :tag "personal"
+                                 :order 6)
+                          (:name "House"
+                                 :category "house"
+                                 :tag "house"
+                                 :order 6)
+                          (:name "Subaru"
+                                 :tag ("vechicle" "subaru")
+                                 :category "vechicle"
+                                 :order 6)
+                          (:name "Issues"
+                                 :tag "issue"
+                                 :order 12)))))))
+        ("g" "Custom list of all TODO entries"
+         ((alltodo "" ((org-agenda-overriding-header "")
+                       (org-super-agenda-groups
+                        '((:name "Important"
+                                 :priority "A"
+                                 :tag ("money" "bills")
+                                 :property "urgent")
+                          (:name "Overdue"
+                                 :deadline past
+                                 :order 2)
+                          (:name "Due Today"
+                                 :deadline today
+                                 :order 3)
+                          (:name "Current Taks"
+                                 :todo "NEXT"
+                                 :order 4)
+                          (:name "Personal"
+                                 :habit t
+                                 :tag "personal"
+                                 :order 6)
+                          (:name "House"
+                                 :category "house"
+                                 :tag "house"
+                                 :order 6)
+                          (:name "Subaru"
+                                 :tag ("vechicle" "subaru")
+                                 :category "vechicle"
+                                 :order 6)
+                          (:name "Issues"
+                                 :tag "issue"
+                                 :order 12)))))))))
 
 (use-package org-fancy-priorities
   :elpaca t
@@ -787,6 +1007,8 @@ The return value is the new value of LIST-VAR."
 (use-package org-appear
   :elpaca t
   :after org
+  :custom
+  (org-hide-emphasis-markers t)
   :hook (org-mode . org-appear-mode))
 
 (use-package org-cliplink
@@ -843,6 +1065,9 @@ The return value is the new value of LIST-VAR."
 
 (use-package doom-modeline
   :elpaca t
+  ;; :elpaca (:host github :repo "seagle0128/doom-modeline"
+  ;;                ;; :ref "aa0e2dd"
+  ;;                :ref "379b45bffe7d67683f17c3e815797a082d8793d3")
   :custom
   (doom-modeline-height 30)
   (doom-modeline-buffer-file-name-style 'relative-from-project)
@@ -909,10 +1134,10 @@ The return value is the new value of LIST-VAR."
   (evil-collection-key-blacklist '("SPC"))
   (evil-collection-outline-bind-tab-p t)
   (evil-collection-setup-minibuffer t)
+  (evil-collection-corfu-key-themes '(default tab-n-go))
   :config
   (evil-collection-init)
-  (general-def
-    :states '(normal visual)
+  (general-def :states 'motion
     "M-u" 'universal-argument
     "SPC" '(:keymap leader-map) ;; use 'Space' as leader key
     ;; "<backspace>" 'evil-ex ;; evil command (:) state
@@ -929,7 +1154,14 @@ The return value is the new value of LIST-VAR."
     "z n" 'narrow-to-region
     "z w" 'widen
     "Z Z" 'my/evil-save-modified-buffer-and-kill-it
-    "z =" 'flyspell-correct-wrapper)
+    "z =" 'flyspell-correct-wrapper
+    "g <tab>" 'tab-new)
+  
+  (general-def :states '(normal visual)
+    "C-p" 'consult-yank-from-kill-ring)
+  
+  (general-def :states 'visual
+    "z n" (lambda () (narrow-to-region) (evil-exit-visual-state)))
   (general-def
     :keymaps 'universal-argument-map
     "M-u" 'universal-argument-more)
@@ -939,8 +1171,7 @@ The return value is the new value of LIST-VAR."
   (general-def
     :states 'insert
     "C-l" 'right-char)
-  (general-def
-    :keymaps 'leader-map
+  (general-def :keymaps 'leader-map
     "h"  '(:keymap help-map :which-key "help")
     "n"  '(:keymap my/notes-map :which-key "notes")
     "b"  'consult-buffer
@@ -950,10 +1181,13 @@ The return value is the new value of LIST-VAR."
     "fi" 'consult-imenu
     "fr" 'consult-recent-file
     "fb" 'consult-bookmark
-    "fv" 'vertico-repeat)
+    "fv" 'vertico-repeat-select) ;; v for vertico
+  (general-def :keymaps 'corfu-map
+    :states 'insert
+    "<escape>" 'corfu-quit
+    "C-l" 'corfu-insert)
   (with-eval-after-load 'vertico
-    (general-def :keymaps 'vertico-map
-      :states '(normal visual)
+    (general-def :keymaps 'vertico-map :states '(normal visual)
       "C-j" 'vertico-next
       "C-k" 'vertico-previous
       "C-l" 'vertico-insert
@@ -965,8 +1199,7 @@ The return value is the new value of LIST-VAR."
       ;; "C-j" 'consult-dir-jump-file
       "q" 'abort-recursive-edit)
   
-    (general-def :keymaps 'vertico-map
-      :states 'insert
+    (general-def :keymaps 'vertico-map :states 'insert
       "C-y" 'yank
       "C-j" 'vertico-next
       "C-k" 'vertico-previous
@@ -993,7 +1226,9 @@ The return value is the new value of LIST-VAR."
     ")" 'dired-omit-mode
     "<" 'dired-prev-marked-file
     ">" 'dired-next-marked-file
-    "." 'hydra-dired/body)
+    "." 'hydra-dired/body
+    "M-RET" 'my/dired-xdg-open)
+  
   (general-def :keymaps 'dired-mode-map
     :states 'visual
     "d" 'dired-flag-file-deletion
@@ -1003,7 +1238,7 @@ The return value is the new value of LIST-VAR."
   _Y_ rel symlink    _O_pen marked
   _S_ymlink          _n_ narrow
   _z_ compress-file  _m_ chmod        _s_ort           _E_ ediff
-  _Z_ compress 			 _g_ chgrp    	  _e_xtension mark   _=_ pdiff
+  _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
   "
     ("+" dired-maybe-create-dirs)
     ("=" diredp-ediff) ;; smart diff
@@ -1028,6 +1263,10 @@ The return value is the new value of LIST-VAR."
       :states 'normal
       "g h" 'evil-first-non-blank
       "g l" 'evil-end-of-line
+      "C-j" 'magit-section-forward-sibling
+      "C-k" 'magit-section-backward-sibling
+      "z j" 'magit-section-forward-sibling
+      "z k" 'magit-section-backward-sibling
       "z u" 'magit-section-up
       "z t" 'evil-scroll-line-to-top
       "z z" 'evil-scroll-line-to-center
@@ -1060,25 +1299,21 @@ The return value is the new value of LIST-VAR."
     (outline-hide-sublevels (or levels 1)))
   (general-def :keymaps 'my/orgmode-leader-map
     "SPC" 'org-ctrl-c-ctrl-c
-    "/" 'org-sparse-tree
-    ";" 'org-toggle-comment
-    "i" 'org-id-get-create
-    "np" 'org-set-property
-    "nh" 'org-babel-insert-header-arg
+    "n i" 'org-id-get-create
+    "n p" 'org-set-property
+    "n h" 'org-babel-insert-header-arg
     "l" 'org-insert-link
     "d" 'org-deadline
     "s" 'org-schedule
     "t" 'org-time-stamp
     "T" 'org-time-stamp-inactive
     "L" 'org-cliplink
-    "'" 'org-edit-special
     "a" 'org-attach
-    "," 'org-insert-structure-template
     "[" 'org-agenda-file-to-front
     "]" 'org-remove-file)
   (general-def :keymaps 'org-src-mode-map
     :states 'normal
-    "SPC '" 'org-edit-src-exit)
+    "z '" 'org-edit-src-exit)
   (with-eval-after-load 'org
     (general-def :keymaps 'org-mode-map
       :states '(normal visual)
@@ -1088,6 +1323,10 @@ The return value is the new value of LIST-VAR."
       ;; "L" 'org-down-element
       "g x" 'org-open-at-point
       "z n" 'org-narrow-to-subtree
+      "z '" 'org-edit-special
+      "z ," 'org-insert-structure-template
+      "z /" 'org-sparse-tree
+      "z ;" 'org-toggle-comment
       "SPC" '(:keymap my/orgmode-leader-map)
       "K" 'helpful-at-point)
   
@@ -1109,7 +1348,6 @@ The return value is the new value of LIST-VAR."
     "c" 'org-roam-capture
     "w" 'org-roam-buffer-toggle
     "b" 'org-switchb
-    "i" 'org-roam-node-insert
     "l" 'org-roam-node-insert
     "u" 'org-roam-ui-mode)
   (general-def
@@ -1133,7 +1371,13 @@ The return value is the new value of LIST-VAR."
   (general-def
     :keymaps 'Info-mode-map
     :states '(normal visual)
-    "SPC" '(:keymap leader-map)))
+    "SPC" '(:keymap leader-map)
+    "g H" 'Info-history
+    "g L" 'Info-toc
+    "C-j" 'Info-next
+    "C-k" 'Info-prev
+    "gj" 'Info-forward-node
+    "gk" 'Info-backward-node))
 
 (use-package evil-nerd-commenter
   :elpaca t
@@ -1142,7 +1386,6 @@ The return value is the new value of LIST-VAR."
   (evilnc-comment-text-object "c")
   :config
   (general-def
-    ;; :states '(normal visual)
     :states 'motion
     "g c" 'evilnc-comment-operator))
 
@@ -1222,7 +1465,7 @@ The return value is the new value of LIST-VAR."
   ;; :elpaca t
   :load-path "~/code/emacs/evil-org-mode"
   :after (org evil evil-collection)
-  :hook (org-mode . evil-org-mode)
+  ;; :hook (org-mode . evil-org-mode)
   :config
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys)
@@ -1262,13 +1505,14 @@ The return value is the new value of LIST-VAR."
   (load-theme 'ef-light :no-confirm)
   ;; (load-theme 'ef-day :no-confirm)
   (set-cursor-color "black")
-  (set-face-attribute 'org-verbatim nil :foreground "#4250ef" :background "#f1f1f1")
-  (set-face-attribute 'org-code     nil :foreground "#cf25aa" :background "#f1f1f1")
+  (set-face-attribute 'org-verbatim nil :foreground "#4250ef" :background "#f5f5f5")
+  (set-face-attribute 'org-code     nil :foreground "#cf25aa" :background "#f5f5f5")
   ;; (set-face-attribute 'org-level-1  nil :foreground "#375cd8" :height 1.27)
   ;; (set-face-attribute 'org-level-2  nil :foreground "#cf25aa" :height 1.20)
   ;; (set-face-attribute 'org-level-3  nil :foreground "#1f77bb" :height 1.15)
   ;; (set-face-attribute 'org-level-4  nil :foreground "#b65050" :height 1.1)
   ;; (set-face-attribute 'org-level-5  nil :foreground "#6052cf" :height 1.05)
+  
   )
 
 (add-hook 'prog-mode-hook
@@ -1292,10 +1536,6 @@ The return value is the new value of LIST-VAR."
             (my/org-icons)
             (setq-local tab-width 2)
             (setq-local evil-shift-width 2)))
-
-(add-hook 'python-mode-hook
-          (lambda ()
-            (setq-local evil-shift-width  python-indent)))
 
 (add-hook 'emacs-lisp-mode-hook
         (lambda ()
