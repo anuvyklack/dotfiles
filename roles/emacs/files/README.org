@@ -1363,23 +1363,61 @@ Use mu4e for e-mail in emacs.
 (mu4e-change-filenames-when-moving t)
 #+end_src
 
+The one with =:favorite t= will be used for the modeline.
+#+begin_src emacs-lisp
+(mu4e-bookmarks
+ `((:name "Inbox"
+          ;; :query ,(string-join '("maildir:\"/anuvyklack@gmail/[Gmail]/Вся почта\""
+          ;;                        "AND NOT maildir:/anuvyklack@gmail/Архив") " ")
+          :query ,(concat "maildir:\"/anuvyklack@gmail/[Gmail]/Вся почта\" "
+                          "AND NOT maildir:/anuvyklack@gmail/Архив "
+                          "AND NOT flag:list ")
+          :key ?i
+          :favorite t)
+   (:name "Mail lists"
+          :query ,(concat "flag:list "
+                          "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Корзина "
+                          "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Спам")
+          :key ?l)
+   ;; (:name "Unread messages" :query "flag:unread AND NOT flag:trashed" :key ?u)
+   (:name "Today's messages"
+          :query ,(concat "date:today..now "
+                          "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Корзина "
+                          "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Спам")
+          :key ?t)
+   (:name "Last 7 days"
+          :query ,(concat "date:7d..now "
+                          "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Корзина "
+                          "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Спам ")
+          :hide-unread t :key ?w)
+   (:name "Archive" :query "maildir:/anuvyklack@gmail/Архив" :key ?a)
+   ;; (:name "Messages with images"
+   ;;        :query ,(concat "mime:image/*"
+   ;;                        "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Корзина "
+   ;;                        "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Спам ")
+   ;;        :key ?p)
+   ))
+#+end_src
+
 Note that these folders below must start with =/=.
 #+begin_src emacs-lisp
-(mu4e-refile-folder "/anuvyklack@gmail/[Gmail]/Вся почта")
+(mu4e-refile-folder "/anuvyklack@gmail/Архив")
+;; (mu4e-refile-folder "/anuvyklack@gmail/[Gmail]/Вся почта")
 (mu4e-sent-folder   "/anuvyklack@gmail/[Gmail]/Отправленные")
 (mu4e-drafts-folder "/anuvyklack@gmail/[Gmail]/Черновики")
 (mu4e-trash-folder  "/anuvyklack@gmail/[Gmail]/Корзина")
 #+end_src
 
 Setup some handy shortcuts you can quickly switch to your Inbox -- press =ji=
-then, when you want archive some messages, move them to the =All Mail= folder by
+then, when you want archive some messages, move them to the =Архив= folder by
 pressing =ma=.
 #+begin_src emacs-lisp
 (mu4e-maildir-shortcuts
- '((:maildir "/anuvyklack@gmail/Inbox"                :key ?i)
-   (:maildir "/anuvyklack@gmail/[Gmail]/Отправленные" :key ?s)
-   (:maildir "/anuvyklack@gmail/[Gmail]/Корзина"      :key ?t)
-   (:maildir "/anuvyklack@gmail/[Gmail]/Вся почта"    :key ?a)))
+ '((:maildir "/anuvyklack@gmail/[Gmail]/Отправленные" :key ?s)
+   (:maildir "/anuvyklack@gmail/Архив" 								:key ?a)
+   ;; (:maildir "/anuvyklack@gmail/Inbox"                :key ?i)
+   (:maildir "/anuvyklack@gmail/[Gmail]/Вся почта"    :key ?A)
+   (:maildir "/anuvyklack@gmail/[Gmail]/Корзина"      :key ?t)))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1438,9 +1476,9 @@ e.g. Gmail does it.
 :END:
 
 #+begin_src emacs-lisp
-(add-to-list 'mu4e-bookmarks
-    ;; ':favorite t' i.e, use this one for the modeline
-   '(:query "maildir:/anuvyklack@gmail/Inbox" :name "Inbox" :key ?i :favorite t))
+;; (add-to-list 'mu4e-bookmarks
+;;     ;; ':favorite t' i.e, use this one for the modeline
+;;    '(:query "maildir:/anuvyklack@gmail/Inbox" :name "Inbox" :key ?i :favorite t))
 #+end_src
 
 Not set flag =T= on deletion. Just move to =Trash= folder. [[https://github.com/djcb/mu/issues/1136#issuecomment-1229005006][Source]]

@@ -81,6 +81,7 @@
 (define-prefix-command 'semicolon-leader-map)
 (define-prefix-command 'my/orgmode-leader-map)
 (define-prefix-command 'my/notes-map)
+(define-prefix-command 'my/bookmark-map)
 
 (defun my/append-to-list (list-var elements)
   "Append ELEMENTS to the end of LIST-VAR.
@@ -311,7 +312,7 @@ shell command."
   ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto t)                 ;; Enable auto completion
   (corfu-separator ?\s)          ;; Orderless field separator
-  ;; (corfu-auto-prefix 3)
+  (corfu-auto-prefix 3)
   ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
   ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
@@ -573,9 +574,8 @@ shell command."
   (global-anzu-mode))
 
 (use-package dired
-  ;; :after (general hydra)
   :custom
-  (dired-listing-switches "-lAhF -v --group-directories-first")
+  (dired-listing-switches "-lahF -v --group-directories-first")
   (dired-kill-when-opening-new-dired-buffer t)
   (dired-no-confirm t)
   (dired-recursive-deletes 'always)
@@ -630,15 +630,49 @@ shell command."
   (mail-user-agent 'mu4e-user-agent)
   ;; (mu4e-headers-date-format "%Y/%m/%d")
   (mu4e-change-filenames-when-moving t)
-  (mu4e-refile-folder "/anuvyklack@gmail/[Gmail]/Вся почта")
+  (mu4e-bookmarks
+   `((:name "Inbox"
+            ;; :query ,(string-join '("maildir:\"/anuvyklack@gmail/[Gmail]/Вся почта\""
+            ;;                        "AND NOT maildir:/anuvyklack@gmail/Архив") " ")
+            :query ,(concat "maildir:\"/anuvyklack@gmail/[Gmail]/Вся почта\" "
+                            "AND NOT maildir:/anuvyklack@gmail/Архив "
+                            "AND NOT flag:list ")
+            :key ?i
+            :favorite t)
+     (:name "Mail lists"
+            :query ,(concat "flag:list "
+                            "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Корзина "
+                            "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Спам")
+            :key ?l)
+     ;; (:name "Unread messages" :query "flag:unread AND NOT flag:trashed" :key ?u)
+     (:name "Today's messages"
+            :query ,(concat "date:today..now "
+                            "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Корзина "
+                            "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Спам")
+            :key ?t)
+     (:name "Last 7 days"
+            :query ,(concat "date:7d..now "
+                            "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Корзина "
+                            "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Спам ")
+            :hide-unread t :key ?w)
+     (:name "Archive" :query "maildir:/anuvyklack@gmail/Архив" :key ?a)
+     ;; (:name "Messages with images"
+     ;;        :query ,(concat "mime:image/*"
+     ;;                        "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Корзина "
+     ;;                        "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Спам ")
+     ;;        :key ?p)
+     ))
+  (mu4e-refile-folder "/anuvyklack@gmail/Архив")
+  ;; (mu4e-refile-folder "/anuvyklack@gmail/[Gmail]/Вся почта")
   (mu4e-sent-folder   "/anuvyklack@gmail/[Gmail]/Отправленные")
   (mu4e-drafts-folder "/anuvyklack@gmail/[Gmail]/Черновики")
   (mu4e-trash-folder  "/anuvyklack@gmail/[Gmail]/Корзина")
   (mu4e-maildir-shortcuts
-   '((:maildir "/anuvyklack@gmail/Inbox"                :key ?i)
-     (:maildir "/anuvyklack@gmail/[Gmail]/Отправленные" :key ?s)
-     (:maildir "/anuvyklack@gmail/[Gmail]/Корзина"      :key ?t)
-     (:maildir "/anuvyklack@gmail/[Gmail]/Вся почта"    :key ?a)))
+   '((:maildir "/anuvyklack@gmail/[Gmail]/Отправленные" :key ?s)
+     (:maildir "/anuvyklack@gmail/Архив" 								:key ?a)
+     ;; (:maildir "/anuvyklack@gmail/Inbox"                :key ?i)
+     (:maildir "/anuvyklack@gmail/[Gmail]/Вся почта"    :key ?A)
+     (:maildir "/anuvyklack@gmail/[Gmail]/Корзина"      :key ?t)))
   (mu4e-headers-fields
    '((:human-date . 12)
      (:flags . 6)
@@ -655,9 +689,9 @@ shell command."
   (mu4e-search-skip-duplicates t)
   (mu4e-search-include-related t)
   :config
-  (add-to-list 'mu4e-bookmarks
-      ;; ':favorite t' i.e, use this one for the modeline
-     '(:query "maildir:/anuvyklack@gmail/Inbox" :name "Inbox" :key ?i :favorite t))
+  ;; (add-to-list 'mu4e-bookmarks
+  ;;     ;; ':favorite t' i.e, use this one for the modeline
+  ;;    '(:query "maildir:/anuvyklack@gmail/Inbox" :name "Inbox" :key ?i :favorite t))
   (setf (plist-get (alist-get 'trash mu4e-marks) :action)
         (lambda (docid msg target)
           (mu4e--server-move docid (mu4e--mark-check-target target) "-N"))) ; Instead of "+T-N"
@@ -676,13 +710,13 @@ shell command."
         mu4e-headers-list-mark      '("l" . "")
         mu4e-headers-personal-mark  '("p" . "")
         mu4e-headers-calendar-mark  '("c" . ""))
-  ;; (setq mu4e-headers-thread-child-prefix 					'("├>" . "├─➤ ")
-  ;;       mu4e-headers-thread-last-child-prefix 		'("└>" . "└─➤ ")
-  ;;       mu4e-headers-thread-orphan-prefix 				'("┬>" . "┬─➤ ")
-  ;;       mu4e-headers-thread-single-orphan-prefix 	'("─>" . "──➤ ")
+  ;; (setq mu4e-headers-thread-child-prefix           '("├>" . "├─➤ ")
+  ;;       mu4e-headers-thread-last-child-prefix    '("└>" . "└─➤ ")
+  ;;       mu4e-headers-thread-orphan-prefix        '("┬>" . "┬─➤ ")
+  ;;       mu4e-headers-thread-single-orphan-prefix   '("─>" . "──➤ ")
   ;;       ;; The following two should have the same width.
-  ;;       mu4e-headers-thread-connection-prefix 		'("│" . "│ ")
-  ;;       mu4e-headers-thread-blank-prefix 					'(" " . " "))
+  ;;       mu4e-headers-thread-connection-prefix    '("│" . "│ ")
+  ;;       mu4e-headers-thread-blank-prefix           '(" " . " "))
   (setq mu4e-headers-thread-orphan-prefix        '("◊ " . "◊ ")
         ;; mu4e-headers-thread-single-orphan-prefix '("◊ " . "◊ ")
         mu4e-headers-thread-single-orphan-prefix '("> " . "◊ ")
@@ -852,6 +886,30 @@ shell command."
   (let ((fontset (face-attribute 'default :fontset)))
     (set-fontset-font fontset '(?\xf000 . ?\xf2ff) "FontAwesome" nil 'append)))
 
+(use-package org-roam
+  :elpaca t
+  :after org
+  :init
+  (when (version<= "29" emacs-version)
+    (setq org-roam-database-connector 'sqlite-builtin))
+  :custom
+  (org-roam-directory (file-truename "~/notes"))
+  (org-roam-completion-everywhere t)
+  ;; (org-id-link-to-org-use-id 'create-if-interactive)
+  (org-id-link-to-org-use-id 'use-existing)
+  (org-roam-db-gc-threshold most-positive-fixnum)
+  (org-roam-node-display-template (concat "${title:*} "
+                                          (propertize "${tags:17}" 'face 'org-tag)))
+  :config
+  (org-roam-db-autosync-mode)
+  ;; (add-to-list 'display-buffer-alist
+  ;;              '("\\*org-roam\\*"
+  ;;                (display-buffer-in-direction)
+  ;;                (direction . right)
+  ;;                (window-width . 0.33)
+  ;;                (window-height . fit-window-to-buffer)))
+  )
+
 (use-package org-contrib
   :elpaca t
   :config
@@ -882,6 +940,36 @@ shell command."
   ;; https://github.com/alphapapa/org-super-agenda/issues/50#issuecomment-817432643
   (setq org-super-agenda-header-map nil))
 
+(setq my/org-super-agenda-groups
+      '((:name "Important"
+               :priority "A"
+               :tag ("money" "bills")
+               :property "urgent")
+        (:name "Overdue"
+               :deadline past
+               :order 2)
+        (:name "Due Today"
+               :deadline today
+               :order 3)
+        (:name "Current Taks"
+               :todo "NEXT"
+               :order 4)
+        (:name "Personal"
+               :habit t
+               :tag "personal"
+               :order 6)
+        (:name "House"
+               :category "house"
+               :tag "house"
+               :order 6)
+        (:name "Subaru"
+               :tag ("car" "subaru")
+               :category "car"
+               :order 6)
+        (:name "Github"
+               :tag "issue"
+               :order 12)))
+
 (setq org-agenda-custom-commands
       '(("n" "Agenda and all TODOs"
          (;; (agenda "" ((org-agenda-span 7)
@@ -895,66 +983,10 @@ shell command."
           ;;                (:discard (:anything t))))))
           (agenda "" ((org-super-agenda-groups nil)))
           (alltodo "" ((org-agenda-overriding-header "")
-                       (org-super-agenda-groups
-                        '((:name "Important"
-                                 :priority "A"
-                                 :tag ("money" "bills")
-                                 :property "urgent")
-                          (:name "Overdue"
-                                 :deadline past
-                                 :order 2)
-                          (:name "Due Today"
-                                 :deadline today
-                                 :order 3)
-                          (:name "Current Taks"
-                                 :todo "NEXT"
-                                 :order 4)
-                          (:name "Personal"
-                                 :habit t
-                                 :tag "personal"
-                                 :order 6)
-                          (:name "House"
-                                 :category "house"
-                                 :tag "house"
-                                 :order 6)
-                          (:name "Subaru"
-                                 :tag ("vechicle" "subaru")
-                                 :category "vechicle"
-                                 :order 6)
-                          (:name "Issues"
-                                 :tag "issue"
-                                 :order 12)))))))
+                       (org-super-agenda-groups my/org-super-agenda-groups)))))
         ("g" "Custom list of all TODO entries"
          ((alltodo "" ((org-agenda-overriding-header "")
-                       (org-super-agenda-groups
-                        '((:name "Important"
-                                 :priority "A"
-                                 :tag ("money" "bills")
-                                 :property "urgent")
-                          (:name "Overdue"
-                                 :deadline past
-                                 :order 2)
-                          (:name "Due Today"
-                                 :deadline today
-                                 :order 3)
-                          (:name "Current Taks"
-                                 :todo "NEXT"
-                                 :order 4)
-                          (:name "Personal"
-                                 :habit t
-                                 :tag "personal"
-                                 :order 6)
-                          (:name "House"
-                                 :category "house"
-                                 :tag "house"
-                                 :order 6)
-                          (:name "Subaru"
-                                 :tag ("vechicle" "subaru")
-                                 :category "vechicle"
-                                 :order 6)
-                          (:name "Issues"
-                                 :tag "issue"
-                                 :order 12)))))))))
+                       (org-super-agenda-groups my/org-super-agenda-groups)))))))
 
 (use-package org-fancy-priorities
   :elpaca t
@@ -1014,30 +1046,6 @@ shell command."
 (use-package org-cliplink
   :elpaca t)
 
-(use-package org-roam
-  :elpaca t
-  :after org
-  :init
-  (when (version<= "29" emacs-version)
-    (setq org-roam-database-connector 'sqlite-builtin))
-  :custom
-  (org-roam-directory (file-truename "~/notes"))
-  (org-roam-completion-everywhere t)
-  ;; (org-id-link-to-org-use-id 'create-if-interactive)
-  (org-id-link-to-org-use-id 'use-existing)
-  (org-roam-db-gc-threshold most-positive-fixnum)
-  (org-roam-node-display-template (concat "${title:*} "
-                                          (propertize "${tags:10}" 'face 'org-tag)))
-  :config
-  (org-roam-db-autosync-mode)
-  ;; (add-to-list 'display-buffer-alist
-  ;;              '("\\*org-roam\\*"
-  ;;                (display-buffer-in-direction)
-  ;;                (direction . right)
-  ;;                (window-width . 0.33)
-  ;;                (window-height . fit-window-to-buffer)))
-  )
-
 (use-package org-roam-ui
   :elpaca t
   :after org-roam
@@ -1062,6 +1070,27 @@ shell command."
   :custom
   (org-auto-tangle-babel-safelist '("~/.config/emacs/README.org"))
   :hook (org-mode . org-auto-tangle-mode))
+
+(use-package tex
+  :elpaca auctex
+  :init
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq-default TeX-master nil))
+
+(use-package xenops
+  :elpaca t
+  :init
+  (setq xenops-math-image-scale-factor 1.4)
+  (setq xenops-cache-directory (expand-file-name "var/xenops"
+                                                 user-emacs-directory))
+  :hook
+  (latex-mode . xenops-mode)
+  (LaTeX-mode . xenops-mode)
+  ;; (org-mode . xenops-mode)
+  (xenops-mode . (lambda ()
+                   (advice-remove 'org-fill-paragraph
+                                  #'xenops-math-fill-paragraph-after-advice))))
 
 (use-package doom-modeline
   :elpaca t
@@ -1162,26 +1191,33 @@ shell command."
   
   (general-def :states 'visual
     "z n" (lambda () (narrow-to-region) (evil-exit-visual-state)))
-  (general-def
-    :keymaps 'universal-argument-map
+  (general-def :keymaps 'universal-argument-map
     "M-u" 'universal-argument-more)
-  (general-def
-    :states 'motion
+  (general-def :states 'motion
     ";" '(:keymap semicolon-leader-map))
-  (general-def
-    :states 'insert
+  (general-def :states 'insert
     "C-l" 'right-char)
   (general-def :keymaps 'leader-map
     "h"  '(:keymap help-map :which-key "help")
     "n"  '(:keymap my/notes-map :which-key "notes")
+    "m"  '(:keymap my/bookmark-map :which-key "bookmark")
     "b"  'consult-buffer
     "ff" 'find-file
     "fo" 'consult-outline
     "fg" 'consult-grep
     "fi" 'consult-imenu
     "fr" 'consult-recent-file
+    "fd" 'consult-dir
     "fb" 'consult-bookmark
     "fv" 'vertico-repeat-select) ;; v for vertico
+  (general-def :keymaps 'help-map
+    "M" 'describe-keymap)
+  (general-def :keymaps 'my/bookmark-map
+    "m" 'consult-bookmark
+    "n" 'bookmark-set
+    "b" 'bookmark-set
+    "d" 'bookmark-delete
+    "l" 'bookmark-bmenu-list)
   (general-def :keymaps 'corfu-map
     :states 'insert
     "<escape>" 'corfu-quit
@@ -1209,8 +1245,7 @@ shell command."
       "C-p" 'vertico-previous-group
       "C-f" 'vertico-scroll-up
       "C-b" 'vertico-scroll-down))
-  (general-def :keymaps 'dired-mode-map
-    :states 'normal
+  (general-def :keymaps 'dired-mode-map :states 'normal
     "SPC" '(:keymap leader-map) ;; use 'Space' as leader key
     ;; "<backspace>" 'dired-up-directory
     "<backspace>" 'execute-extended-command ;; emacs M-x
@@ -1229,8 +1264,7 @@ shell command."
     "." 'hydra-dired/body
     "M-RET" 'my/dired-xdg-open)
   
-  (general-def :keymaps 'dired-mode-map
-    :states 'visual
+  (general-def :keymaps 'dired-mode-map :states 'visual
     "d" 'dired-flag-file-deletion
     "u" 'dired-unmark)
   (defhydra hydra-dired (:hint nil :color pink)
@@ -1311,12 +1345,10 @@ shell command."
     "a" 'org-attach
     "[" 'org-agenda-file-to-front
     "]" 'org-remove-file)
-  (general-def :keymaps 'org-src-mode-map
-    :states 'normal
+  (general-def :keymaps 'org-src-mode-map :states 'normal
     "z '" 'org-edit-src-exit)
   (with-eval-after-load 'org
-    (general-def :keymaps 'org-mode-map
-      :states '(normal visual)
+    (general-def :keymaps 'org-mode-map :states '(normal visual)
       "g h" 'evil-org-beginning-of-line
       "g l" 'evil-org-end-of-line
       ;; "H" 'org-up-element
@@ -1337,19 +1369,9 @@ shell command."
   
   (add-hook 'evil-org-mode-hook
             (lambda ()
-              (general-def :keymaps 'local
-                :states 'insert
+              (general-def :keymaps 'local :states 'insert
                 "C-t" 'evil-shift-right-line
                 "C-d" 'evil-shift-left-line)))
-  (general-def :keymaps 'my/notes-map
-    "a" 'org-agenda
-    "s" 'org-store-link
-    "n" 'org-roam-node-find
-    "c" 'org-roam-capture
-    "w" 'org-roam-buffer-toggle
-    "b" 'org-switchb
-    "l" 'org-roam-node-insert
-    "u" 'org-roam-ui-mode)
   (general-def
     :keymaps 'org-transclusion-map
     :states 'normal
@@ -1368,6 +1390,16 @@ shell command."
     ;; "C-c C-c" #'org-transclusion-live-sync-exit
     ;; "C-y" #'org-transclusion-live-sync-paste
     "q" #'org-transclusion-live-sync-exit)
+  (general-def :keymaps 'my/notes-map
+    "a" 'org-agenda
+    "s" 'org-store-link
+    "n" 'org-roam-node-find
+    "c" 'org-roam-capture
+    "w" 'org-roam-buffer-toggle
+    "b" 'org-switchb
+    "l" 'org-roam-node-insert
+    "t" 'org-roam-tag-add
+    "u" 'org-roam-ui-mode)
   (general-def
     :keymaps 'Info-mode-map
     :states '(normal visual)
@@ -1465,10 +1497,11 @@ shell command."
   ;; :elpaca t
   :load-path "~/code/emacs/evil-org-mode"
   :after (org evil evil-collection)
-  ;; :hook (org-mode . evil-org-mode)
+  :hook ((org-mode . evil-org-mode)
+         (org-agenda-mode . (lambda ()
+                              (require 'evil-org-agenda)
+                              (evil-org-agenda-set-keys))))
   :config
-  (require 'evil-org-agenda)
-  (evil-org-agenda-set-keys)
   (evil-org-set-key-theme '(operators
                             textobjects
                             insert
