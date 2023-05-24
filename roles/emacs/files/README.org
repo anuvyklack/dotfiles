@@ -198,6 +198,7 @@ Define custom keymaps, which I will use later, here in one place.
 (define-prefix-command 'semicolon-leader-map)
 (define-prefix-command 'my/orgmode-leader-map)
 (define-prefix-command 'my/notes-map)
+(define-prefix-command 'my/bookmark-map)
 #+end_src
 
 ** My functions
@@ -749,7 +750,6 @@ Add to ~load-path~ directory with vertico extensions.
   :config
   <<corfu-config>>)
 #+end_src
-
 **** custom
 :PROPERTIES:
 :header-args: :noweb-ref corfu-custom
@@ -759,7 +759,7 @@ Add to ~load-path~ directory with vertico extensions.
 ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
 (corfu-auto t)                 ;; Enable auto completion
 (corfu-separator ?\s)          ;; Orderless field separator
-;; (corfu-auto-prefix 3)
+(corfu-auto-prefix 3)
 ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
 ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
 ;; (corfu-preview-current nil)    ;; Disable current candidate preview
@@ -1234,23 +1234,43 @@ Spell check
 #+end_src
 
 ** Dired
-#+begin_src emacs-lisp
+*** dired
+#+begin_src emacs-lisp :noweb yes 
 (use-package dired
-  ;; :after (general hydra)
   :custom
-  (dired-listing-switches "-lAhF -v --group-directories-first")
-  (dired-kill-when-opening-new-dired-buffer t)
-  (dired-no-confirm t)
-  (dired-recursive-deletes 'always)
-  (dired-recursive-copies 'always)
-  (delete-by-moving-to-trash t)
-  (dired-dwim-target t)
-  (dired-omit-files "\\`[.]?#\\|\\`[.][.]?\\'\\|\\`[.].+")
+  <<dired-custom>>
   :hook
   (dired-mode . dired-omit-mode)
   (dired-mode . dired-hide-details-mode)
   (dired-mode . hl-line-mode))
 #+end_src
+**** custom
+:PROPERTIES:
+:header-args: :noweb-ref dired-custom
+:END:
+
+| *-l*               | use a long listing format                     |
+| *-a*, *--all*        | do not ignore entries starting with =.=         |
+| -A, *--almost-all* | do not list implied =.= and =..=                  |
+| *-F*, *--classify*   | append indicator (one of =*/=>@¦=) to entries   |
+| *-v*               | natural sort of (version) numbers within text |
+
+#+begin_src emacs-lisp
+(dired-listing-switches "-lahF -v --group-directories-first")
+#+end_src
+
+#+begin_src emacs-lisp
+(dired-kill-when-opening-new-dired-buffer t)
+(dired-no-confirm t)
+(dired-recursive-deletes 'always)
+(dired-recursive-copies 'always)
+(delete-by-moving-to-trash t)
+(dired-dwim-target t)
+(dired-omit-files "\\`[.]?#\\|\\`[.][.]?\\'\\|\\`[.].+")
+#+end_src
+
+*** dired-hacks
+[[https://github.com/Fuco1/dired-hacks][GitHub - Fuco1/dired-hacks: Collection of useful dired additions]]
 
 #+begin_src emacs-lisp
 (use-package dired-ranger  :elpaca t)
@@ -1304,7 +1324,6 @@ Addtional syntax highlighting for dired
 #+end_src
 
 *** COMMENT dired-recent
-
 *I'm not sure that this package is needed, since I already use [[*consult-dir][consult-dir]].*
 =C-x C-d= to open ~dired-recent-open~.
 
@@ -1455,13 +1474,13 @@ Marks for headers. Each is a cons-cell: ~(basic . fancy)~.
 #+end_src
 
 #+begin_src emacs-lisp
-;; (setq mu4e-headers-thread-child-prefix 					'("├>" . "├─➤ ")
-;;       mu4e-headers-thread-last-child-prefix 		'("└>" . "└─➤ ")
-;;       mu4e-headers-thread-orphan-prefix 				'("┬>" . "┬─➤ ")
-;;       mu4e-headers-thread-single-orphan-prefix 	'("─>" . "──➤ ")
+;; (setq mu4e-headers-thread-child-prefix           '("├>" . "├─➤ ")
+;;       mu4e-headers-thread-last-child-prefix    '("└>" . "└─➤ ")
+;;       mu4e-headers-thread-orphan-prefix        '("┬>" . "┬─➤ ")
+;;       mu4e-headers-thread-single-orphan-prefix   '("─>" . "──➤ ")
 ;;       ;; The following two should have the same width.
-;;       mu4e-headers-thread-connection-prefix 		'("│" . "│ ")
-;;       mu4e-headers-thread-blank-prefix 					'(" " . " "))
+;;       mu4e-headers-thread-connection-prefix    '("│" . "│ ")
+;;       mu4e-headers-thread-blank-prefix           '(" " . " "))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1635,7 +1654,7 @@ Marks for headers. Each is a cons-cell: ~(basic . fancy)~.
                       (ibuffer-do-sort-by-alphabetic)))))
 #+end_src
 
-** Orgmode 
+** Orgmode
 *** org
 #+begin_src emacs-lisp :noweb yes
 (use-package org
@@ -1998,6 +2017,58 @@ Setup available embedded languages for babel.
 (add-hook 'org-mode-hook #'my/config-fontify-inline-src-code)
 #+end_src
 
+*** org-roam
+#+begin_src emacs-lisp :noweb yes
+(use-package org-roam
+  :elpaca t
+  :after org
+  :init
+  (when (version<= "29" emacs-version)
+    (setq org-roam-database-connector 'sqlite-builtin))
+  :custom
+  <<org-roam-custom>>
+  :config
+  (org-roam-db-autosync-mode)
+  ;; (add-to-list 'display-buffer-alist
+  ;;              '("\\*org-roam\\*"
+  ;;                (display-buffer-in-direction)
+  ;;                (direction . right)
+  ;;                (window-width . 0.33)
+  ;;                (window-height . fit-window-to-buffer)))
+  )
+#+end_src
+**** custom
+:PROPERTIES:
+:header-args: :noweb-ref org-roam-custom
+:END:
+#+begin_src emacs-lisp
+(org-roam-directory (file-truename "~/notes"))
+#+end_src
+
+Provide link completion matching outside of Org links.
+#+begin_src emacs-lisp
+(org-roam-completion-everywhere t)
+#+end_src
+
+How to store link on org-mode outline node:
+  - t            :: Create an ID if needed to make a link to the current entry.
+  - use-exixting :: Use existing ID, do not create one.
+#+begin_src emacs-lisp
+;; (org-id-link-to-org-use-id 'create-if-interactive)
+(org-id-link-to-org-use-id 'use-existing)
+#+end_src
+
+Make =org-roam= snappier during sqlite database synchronization.
+#+begin_src emacs-lisp
+(org-roam-db-gc-threshold most-positive-fixnum)
+#+end_src
+
+Set a more informative completion interface, for vertico.
+#+begin_src emacs-lisp
+(org-roam-node-display-template (concat "${title:*} "
+                                        (propertize "${tags:17}" 'face 'org-tag)))
+#+end_src
+
 *** org-contrib
 #+begin_src emacs-lisp
 (use-package org-contrib
@@ -2042,6 +2113,36 @@ Setup available embedded languages for babel.
 
 **** Custom org-agenda commmands
 #+begin_src emacs-lisp :noweb yes
+(setq my/org-super-agenda-groups
+      '((:name "Important"
+               :priority "A"
+               :tag ("money" "bills")
+               :property "urgent")
+        (:name "Overdue"
+               :deadline past
+               :order 2)
+        (:name "Due Today"
+               :deadline today
+               :order 3)
+        (:name "Current Taks"
+               :todo "NEXT"
+               :order 4)
+        (:name "Personal"
+               :habit t
+               :tag "personal"
+               :order 6)
+        (:name "House"
+               :category "house"
+               :tag "house"
+               :order 6)
+        (:name "Subaru"
+               :tag ("car" "subaru")
+               :category "car"
+               :order 6)
+        (:name "Github"
+               :tag "issue"
+               :order 12)))
+
 (setq org-agenda-custom-commands
       '(("n" "Agenda and all TODOs"
          (;; (agenda "" ((org-agenda-span 7)
@@ -2055,66 +2156,10 @@ Setup available embedded languages for babel.
           ;;                (:discard (:anything t))))))
           (agenda "" ((org-super-agenda-groups nil)))
           (alltodo "" ((org-agenda-overriding-header "")
-                       (org-super-agenda-groups
-                        '((:name "Important"
-                                 :priority "A"
-                                 :tag ("money" "bills")
-                                 :property "urgent")
-                          (:name "Overdue"
-                                 :deadline past
-                                 :order 2)
-                          (:name "Due Today"
-                                 :deadline today
-                                 :order 3)
-                          (:name "Current Taks"
-                                 :todo "NEXT"
-                                 :order 4)
-                          (:name "Personal"
-                                 :habit t
-                                 :tag "personal"
-                                 :order 6)
-                          (:name "House"
-                                 :category "house"
-                                 :tag "house"
-                                 :order 6)
-                          (:name "Subaru"
-                                 :tag ("vechicle" "subaru")
-                                 :category "vechicle"
-                                 :order 6)
-                          (:name "Issues"
-                                 :tag "issue"
-                                 :order 12)))))))
+                       (org-super-agenda-groups my/org-super-agenda-groups)))))
         ("g" "Custom list of all TODO entries"
          ((alltodo "" ((org-agenda-overriding-header "")
-                       (org-super-agenda-groups
-                        '((:name "Important"
-                                 :priority "A"
-                                 :tag ("money" "bills")
-                                 :property "urgent")
-                          (:name "Overdue"
-                                 :deadline past
-                                 :order 2)
-                          (:name "Due Today"
-                                 :deadline today
-                                 :order 3)
-                          (:name "Current Taks"
-                                 :todo "NEXT"
-                                 :order 4)
-                          (:name "Personal"
-                                 :habit t
-                                 :tag "personal"
-                                 :order 6)
-                          (:name "House"
-                                 :category "house"
-                                 :tag "house"
-                                 :order 6)
-                          (:name "Subaru"
-                                 :tag ("vechicle" "subaru")
-                                 :category "vechicle"
-                                 :order 6)
-                          (:name "Issues"
-                                 :tag "issue"
-                                 :order 12)))))))))
+                       (org-super-agenda-groups my/org-super-agenda-groups)))))))
 #+end_src
 
 *** org-fancy-priorities
@@ -2213,58 +2258,6 @@ And type =<sh Tab= to insert bash source block.
   :elpaca t)
 #+end_src
 
-*** org-roam
-#+begin_src emacs-lisp :noweb yes
-(use-package org-roam
-  :elpaca t
-  :after org
-  :init
-  (when (version<= "29" emacs-version)
-    (setq org-roam-database-connector 'sqlite-builtin))
-  :custom
-  <<org-roam-custom>>
-  :config
-  (org-roam-db-autosync-mode)
-  ;; (add-to-list 'display-buffer-alist
-  ;;              '("\\*org-roam\\*"
-  ;;                (display-buffer-in-direction)
-  ;;                (direction . right)
-  ;;                (window-width . 0.33)
-  ;;                (window-height . fit-window-to-buffer)))
-  )
-#+end_src
-**** custom
-:PROPERTIES:
-:header-args: :noweb-ref org-roam-custom
-:END:
-#+begin_src emacs-lisp
-(org-roam-directory (file-truename "~/notes"))
-#+end_src
-
-Provide link completion matching outside of Org links.
-#+begin_src emacs-lisp
-(org-roam-completion-everywhere t)
-#+end_src
-
-How to store link on org-mode outline node:
-  - t            :: Create an ID if needed to make a link to the current entry.
-  - use-exixting :: Use existing ID, do not create one.
-#+begin_src emacs-lisp
-;; (org-id-link-to-org-use-id 'create-if-interactive)
-(org-id-link-to-org-use-id 'use-existing)
-#+end_src
-
-Make =org-roam= snappier during sqlite database synchronization.
-#+begin_src emacs-lisp
-(org-roam-db-gc-threshold most-positive-fixnum)
-#+end_src
-
-Set a more informative completion interface, for vertico.
-#+begin_src emacs-lisp
-(org-roam-node-display-template (concat "${title:*} "
-                                        (propertize "${tags:10}" 'face 'org-tag)))
-#+end_src
-
 *** org-roam-ui
 #+begin_src emacs-lisp
 (use-package org-roam-ui
@@ -2339,6 +2332,35 @@ Set a more informative completion interface, for vertico.
   :elpaca t
   :config
   (org-link-beautify-mode))
+#+end_src
+
+** LaTeX
+*** AUCTeX
+#+begin_src emacs-lisp
+(use-package tex
+  :elpaca auctex
+  :init
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq-default TeX-master nil))
+#+end_src
+
+*** xenops
+[[https://github.com/dandavison/xenops][Source]]
+#+begin_src emacs-lisp
+(use-package xenops
+  :elpaca t
+  :init
+  (setq xenops-math-image-scale-factor 1.4)
+  (setq xenops-cache-directory (expand-file-name "var/xenops"
+                                                 user-emacs-directory))
+  :hook
+  (latex-mode . xenops-mode)
+  (LaTeX-mode . xenops-mode)
+  ;; (org-mode . xenops-mode)
+  (xenops-mode . (lambda ()
+                   (advice-remove 'org-fill-paragraph
+                                  #'xenops-math-fill-paragraph-after-advice))))
 #+end_src
 
 ** Modeline
@@ -2626,10 +2648,11 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
   ;; :elpaca t
   :load-path "~/code/emacs/evil-org-mode"
   :after (org evil evil-collection)
-  ;; :hook (org-mode . evil-org-mode)
+  :hook ((org-mode . evil-org-mode)
+         (org-agenda-mode . (lambda ()
+                              (require 'evil-org-agenda)
+                              (evil-org-agenda-set-keys))))
   :config
-  (require 'evil-org-agenda)
-  (evil-org-agenda-set-keys)
   (evil-org-set-key-theme '(operators
                             textobjects
                             insert
@@ -2640,7 +2663,6 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
                             ;; heading
                             )))
 #+end_src
-
 
 *** evil-xkbswitch
 #+begin_src emacs-lisp
@@ -2665,7 +2687,7 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
          ([remap query-replace-regexp] . anzu-query-replace-regexp)))
 #+end_src
 
-** Keybindings
+** [#B] Keybindings
 :PROPERTIES:
 :header-args: :noweb-ref evil-collection-keybindings
 :END:
@@ -2699,20 +2721,17 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
 #+end_src
 
 #+begin_src emacs-lisp
-(general-def
-  :keymaps 'universal-argument-map
+(general-def :keymaps 'universal-argument-map
   "M-u" 'universal-argument-more)
 #+end_src
 
 #+begin_src emacs-lisp
-(general-def
-  :states 'motion
+(general-def :states 'motion
   ";" '(:keymap semicolon-leader-map))
 #+end_src
 
 #+begin_src emacs-lisp
-(general-def
-  :states 'insert
+(general-def :states 'insert
   "C-l" 'right-char)
 #+end_src
 
@@ -2721,17 +2740,34 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
 (general-def :keymaps 'leader-map
   "h"  '(:keymap help-map :which-key "help")
   "n"  '(:keymap my/notes-map :which-key "notes")
+  "m"  '(:keymap my/bookmark-map :which-key "bookmark")
   "b"  'consult-buffer
   "ff" 'find-file
   "fo" 'consult-outline
   "fg" 'consult-grep
   "fi" 'consult-imenu
   "fr" 'consult-recent-file
+  "fd" 'consult-dir
   "fb" 'consult-bookmark
   "fv" 'vertico-repeat-select) ;; v for vertico
 #+end_src
 
-*** COMMENT Lsp-mode                                             :keybindings:
+#+begin_src emacs-lisp
+(general-def :keymaps 'help-map
+  "M" 'describe-keymap)
+#+end_src
+
+*** Bookmarks                                                    :keybindings:
+#+begin_src emacs-lisp
+(general-def :keymaps 'my/bookmark-map
+  "m" 'consult-bookmark
+  "n" 'bookmark-set
+  "b" 'bookmark-set
+  "d" 'bookmark-delete
+  "l" 'bookmark-bmenu-list)
+#+end_src
+
+*** COMMENT lsp-mode                                             :keybindings:
 #+begin_src emacs-lisp
 (with-eval-after-load 'lsp-mode
  (general-def :keymaps 'leader-map
@@ -2789,8 +2825,7 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
 
 *** Dired                                                        :keybindings:
 #+begin_src emacs-lisp
-(general-def :keymaps 'dired-mode-map
-  :states 'normal
+(general-def :keymaps 'dired-mode-map :states 'normal
   "SPC" '(:keymap leader-map) ;; use 'Space' as leader key
   ;; "<backspace>" 'dired-up-directory
   "<backspace>" 'execute-extended-command ;; emacs M-x
@@ -2809,8 +2844,7 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
   "." 'hydra-dired/body
   "M-RET" 'my/dired-xdg-open)
 
-(general-def :keymaps 'dired-mode-map
-  :states 'visual
+(general-def :keymaps 'dired-mode-map :states 'visual
   "d" 'dired-flag-file-deletion
   "u" 'dired-unmark)
 #+end_src
@@ -2919,15 +2953,13 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
 #+end_src
 
 #+begin_src emacs-lisp
-(general-def :keymaps 'org-src-mode-map
-  :states 'normal
+(general-def :keymaps 'org-src-mode-map :states 'normal
   "z '" 'org-edit-src-exit)
 #+end_src
 
 #+begin_src emacs-lisp
 (with-eval-after-load 'org
-  (general-def :keymaps 'org-mode-map
-    :states '(normal visual)
+  (general-def :keymaps 'org-mode-map :states '(normal visual)
     "g h" 'evil-org-beginning-of-line
     "g l" 'evil-org-end-of-line
     ;; "H" 'org-up-element
@@ -2948,23 +2980,10 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
 
 (add-hook 'evil-org-mode-hook
           (lambda ()
-            (general-def :keymaps 'local
-              :states 'insert
+            (general-def :keymaps 'local :states 'insert
               "C-t" 'evil-shift-right-line
               "C-d" 'evil-shift-left-line)))
   #+end_src
-
-#+begin_src emacs-lisp
-(general-def :keymaps 'my/notes-map
-  "a" 'org-agenda
-  "s" 'org-store-link
-  "n" 'org-roam-node-find
-  "c" 'org-roam-capture
-  "w" 'org-roam-buffer-toggle
-  "b" 'org-switchb
-  "l" 'org-roam-node-insert
-  "u" 'org-roam-ui-mode)
-#+end_src
 
 **** Org transclusion
 #+begin_src emacs-lisp
@@ -2989,6 +3008,20 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
   ;; "C-c C-c" #'org-transclusion-live-sync-exit
   ;; "C-y" #'org-transclusion-live-sync-paste
   "q" #'org-transclusion-live-sync-exit)
+#+end_src
+
+*** Org-Roam
+#+begin_src emacs-lisp
+(general-def :keymaps 'my/notes-map
+  "a" 'org-agenda
+  "s" 'org-store-link
+  "n" 'org-roam-node-find
+  "c" 'org-roam-capture
+  "w" 'org-roam-buffer-toggle
+  "b" 'org-switchb
+  "l" 'org-roam-node-insert
+  "t" 'org-roam-tag-add
+  "u" 'org-roam-ui-mode)
 #+end_src
 
 *** Info mode                                                    :keybindings:
