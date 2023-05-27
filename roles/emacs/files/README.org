@@ -172,24 +172,6 @@ Make elpaca native keybindings have precedence over evil keymaps in elpaca buffe
   :config (general-auto-unbind-keys))
 #+end_src
 
-*** all-the-icons
-#+begin_src emacs-lisp
-(use-package all-the-icons
-  :elpaca t
-  :config
-  (let ((cache (expand-file-name ".all-the-icons-font-installed"
-                                 user-emacs-directory)))
-    (unless (file-exists-p cache)
-      (all-the-icons-install-fonts t)
-      (with-temp-buffer (write-file cache)))))
-#+end_src
-
-*** nerd-icons
-#+begin_src emacs-lisp
-(use-package nerd-icons
-  :elpaca t)
-#+end_src
-
 ** My keymaps
 Define custom keymaps, which I will use later, here in one place.
 
@@ -247,11 +229,8 @@ Paste and indent after / before.
 
 ** Core settings
 *** Emacs
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noweb yes 
 (use-package better-defaults :elpaca t)
-#+end_src
-
-#+begin_src emacs-lisp :noweb yes
 (use-package emacs
   :after better-defaults
   :custom
@@ -259,7 +238,6 @@ Paste and indent after / before.
   :config
   <<config-emacs-settings>>)
 #+end_src
-
 **** custom
 :PROPERTIES:
 :header-args: :noweb-ref customize-emacs-variables
@@ -351,14 +329,86 @@ Prompt for =y= or =n= instead of =yes= or =no=.
 (defalias 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
-***** Setup fonts and initial frame size and position
+*** Fonts
+- [[https://idiocy.org/emacs-fonts-and-fontsets.html][Emacs, fonts and fontsets]]
 
-#+begin_src emacs-lisp :tangle no
+# *** all-the-icons
+# #+begin_src emacs-lisp
+# (use-package all-the-icons
+#   :elpaca t
+#   :config
+#   (let ((cache (expand-file-name ".all-the-icons-font-installed"
+#                                  user-emacs-directory)))
+#     (unless (file-exists-p cache)
+#       (all-the-icons-install-fonts t)
+#       (with-temp-buffer (write-file cache)))))
+# #+end_src
+
+#+begin_src emacs-lisp :noweb yes 
 (when window-system
   (set-face-attribute 'default nil :font "Inconsolata LGC" :height 125)
+  ;; (set-face-attribute 'default nil :font "Roboto Mono" :height 125)
   ;; (set-face-attribute 'default nil :font "Monego" :height 125)
-  (set-frame-size (selected-frame) 134 63)
-  (set-frame-position (selected-frame) 1190 35))
+  <<emacs-icons-fonts>>
+  <<frame-size-and-position>>)
+
+#+end_src
+
+**** Icons
+:PROPERTIES:
+:header-args: :noweb-ref emacs-icons-fonts
+:END:
+
+Emacs doesn't recognize [[id:0c1a10e0-1456-4e88-aadb-6a7fc45c2930][Vscode Codicons]] and [[id:b5e79f3d-a8e5-4df1-b34b-eee32de54782][Material Design Icons]] fonts.
+So for icons need to install [[id:75194bd4-5012-4a57-bf00-f8467afe5bd7][Symbols Nerd Font Mono]] and [[id:bd42899e-c6df-4a9c-a71d-952d4692b507][Material Icons]] fonts.
+
+***** Nerd Font
+
+Material Design 
+#+begin_src emacs-lisp
+(set-fontset-font t '(?\xf0001 . ?\xf1af0) "Symbols Nerd Font Mono" nil 'prepend)
+#+end_src
+
+#+begin_src emacs-lisp
+;; (set-fontset-font t ?\xe876 "Material Design Icons" nil 'prepend)
+;; (set-fontset-font t ? "Material Design Icons" nil 'prepend)
+;; (set-fontset-font t ? "Material Design Icons Desktop" nil 'prepend)
+#+end_src
+
+***** COMMENT Unicode Symbols for Legacy Computing
+#+begin_src emacs-lisp
+(set-fontset-font t '(?\x1fb00 . ?\x1fbca) "LegacyComputing" nil 'prepend)
+#+end_src
+
+***** Codicons
+#+begin_src emacs-lisp
+;; (set-fontset-font t 'latin "Noto Sans")
+;; (set-fontset-font t '(?\xea60 . ?\xec11) "codicon" nil 'prepend)
+
+;; (set-fontset-font t '(? . ?) "codicon")
+
+;; (let ((fontset (face-attribute 'default :fontset)))
+;;   (set-fontset-font fontset '(?\xea60 . ?\xec11) "codicon" nil 'append))
+
+;; (set-fontset-font (frame-parameter nil 'font)
+;;                   '(?\xea60 . ?\xec11)
+;;                   (font-spec :family "codicon"
+;;                              :weight nil
+;;                              :size nil)
+;;                   nil
+;;                   'prepend)
+#+end_src
+
+***** COMMENT FontAwesome
+#+begin_src emacs-lisp
+(let ((fontset (face-attribute 'default :fontset)))
+  (set-fontset-font fontset '(?\xf000 . ?\xf2ff) "FontAwesome" nil 'append))
+#+end_src
+
+**** Set initial frame size and position
+#+begin_src emacs-lisp :noweb-ref frame-size-and-position
+(set-frame-size (selected-frame) 134 63)
+(set-frame-position (selected-frame) 1190 35)
 #+end_src
 
 *** Custom file
@@ -1376,8 +1426,10 @@ The one with =:favorite t= will be used for the modeline.
           :favorite t)
    (:name "Mail lists"
           :query ,(concat "flag:list "
-                          "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Корзина "
-                          "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Спам")
+                          "AND maildir:\"/anuvyklack@gmail/[Gmail]/Вся почта\" ")
+          ;; :query ,(concat "flag:list "
+          ;;                 "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Корзина "
+          ;;                 "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Спам")
           :key ?l)
    ;; (:name "Unread messages" :query "flag:unread AND NOT flag:trashed" :key ?u)
    (:name "Today's messages"
@@ -1692,7 +1744,7 @@ Marks for headers. Each is a cons-cell: ~(basic . fancy)~.
                       (ibuffer-do-sort-by-alphabetic)))))
 #+end_src
 
-** Orgmode
+** Org mode
 *** org
 #+begin_src emacs-lisp :noweb yes
 (use-package org
@@ -1746,9 +1798,10 @@ Show inline images by default in org-mode.
 (org-image-actual-width '(400))
 #+end_src
 
-↴, ▼, ▶, ⤵
+↴ ▼ ▶ ⤵       󱞣
 #+begin_src emacs-lisp
-(org-ellipsis " ...")
+;; (org-ellipsis " ")
+(org-ellipsis " ↴")
 #+end_src
 
 Open src block buffer to the right of the current window keeping all other
@@ -1999,12 +2052,6 @@ Setup available embedded languages for babel.
   ;;                                ;; ("DEADLINE:" . "")
   ;;                                ))
   (prettify-symbols-mode))
-#+end_src
-
-****** FontAwesome
-#+begin_src emacs-lisp
-(let ((fontset (face-attribute 'default :fontset)))
-  (set-fontset-font fontset '(?\xf000 . ?\xf2ff) "FontAwesome" nil 'append))
 #+end_src
 
 ***** COMMENT Highlight syntax for inline code blocks
@@ -2734,6 +2781,7 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
 (general-def :states 'motion
   "M-u" 'universal-argument
   "SPC" '(:keymap leader-map) ;; use 'Space' as leader key
+  ";" '(:keymap semicolon-leader-map)
   ;; "<backspace>" 'evil-ex ;; evil command (:) state
   "<backspace>" 'execute-extended-command ;; emacs M-x
   "g h" 'evil-first-non-blank
@@ -2751,6 +2799,9 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
   "z =" 'flyspell-correct-wrapper
   "g <tab>" 'tab-new)
 
+(general-def :states 'normal
+  "g a" 'describe-char)
+
 (general-def :states '(normal visual)
   "C-p" 'consult-yank-from-kill-ring)
 
@@ -2761,11 +2812,6 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
 #+begin_src emacs-lisp
 (general-def :keymaps 'universal-argument-map
   "M-u" 'universal-argument-more)
-#+end_src
-
-#+begin_src emacs-lisp
-(general-def :states 'motion
-  ";" '(:keymap semicolon-leader-map))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -3107,12 +3153,22 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
 #+begin_src emacs-lisp
 (set-face-attribute 'org-verbatim nil :foreground "#4250ef" :background "#f5f5f5")
 (set-face-attribute 'org-code     nil :foreground "#cf25aa" :background "#f5f5f5")
+#+end_src
+
+#+begin_src emacs-lisp
+(set-face-attribute 'org-level-1  nil :foreground "#375cd8" :weight 'normal :height 1.08)
+(set-face-attribute 'org-level-2  nil :foreground "#cf25aa" :weight 'normal :height 1.08)
+(set-face-attribute 'org-level-3  nil :foreground "#1f77bb" :weight 'normal :height 1.08)
+(set-face-attribute 'org-level-4  nil :foreground "#b65050" :weight 'normal :height 1.08)
+(set-face-attribute 'org-level-5  nil :foreground "#6052cf" :weight 'normal :height 1.08)
+#+end_src
+
+#+begin_src emacs-lisp
 ;; (set-face-attribute 'org-level-1  nil :foreground "#375cd8" :height 1.27)
 ;; (set-face-attribute 'org-level-2  nil :foreground "#cf25aa" :height 1.20)
 ;; (set-face-attribute 'org-level-3  nil :foreground "#1f77bb" :height 1.15)
 ;; (set-face-attribute 'org-level-4  nil :foreground "#b65050" :height 1.1)
 ;; (set-face-attribute 'org-level-5  nil :foreground "#6052cf" :height 1.05)
-
 #+end_src
 
 *** COMMENT shanty-themes

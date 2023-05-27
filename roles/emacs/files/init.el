@@ -65,18 +65,6 @@
   :elpaca t
   :config (general-auto-unbind-keys))
 
-(use-package all-the-icons
-  :elpaca t
-  :config
-  (let ((cache (expand-file-name ".all-the-icons-font-installed"
-                                 user-emacs-directory)))
-    (unless (file-exists-p cache)
-      (all-the-icons-install-fonts t)
-      (with-temp-buffer (write-file cache)))))
-
-(use-package nerd-icons
-  :elpaca t)
-
 (define-prefix-command 'leader-map)
 (define-prefix-command 'semicolon-leader-map)
 (define-prefix-command 'my/orgmode-leader-map)
@@ -115,7 +103,6 @@ shell command."
    (evil-indent (evil-get-marker ?\[) (evil-get-marker ?\]))))
 
 (use-package better-defaults :elpaca t)
-
 (use-package emacs
   :after better-defaults
   :custom
@@ -145,12 +132,36 @@ shell command."
   (horizontal-scroll-bar-mode -1)
   (blink-cursor-mode 0)
   (set-fringe-mode 3)
-  (column-number-mode 1)
-  (when window-system
-    (set-face-attribute 'default nil :font "Inconsolata LGC" :height 125)
-    ;; (set-face-attribute 'default nil :font "Monego" :height 125)
-    (set-frame-size (selected-frame) 134 63)
-    (set-frame-position (selected-frame) 1190 35)))
+  (column-number-mode 1))
+
+(when window-system
+  (set-face-attribute 'default nil :font "Inconsolata LGC" :height 125)
+  ;; (set-face-attribute 'default nil :font "Roboto Mono" :height 125)
+  ;; (set-face-attribute 'default nil :font "Monego" :height 125)
+  (set-fontset-font t '(?\xf0001 . ?\xf1af0) "Symbols Nerd Font Mono" nil 'prepend)
+  ;; (set-fontset-font t ?\xe876 "Material Design Icons" nil 'prepend)
+  ;; (set-fontset-font t ? "Material Design Icons" nil 'prepend)
+  ;; (set-fontset-font t ? "Material Design Icons Desktop" nil 'prepend)
+  ;; (set-fontset-font t 'latin "Noto Sans")
+  ;; (set-fontset-font t '(?\xea60 . ?\xec11) "codicon" nil 'prepend)
+  
+  ;; (set-fontset-font t '(? . ?) "codicon")
+  
+  ;; (let ((fontset (face-attribute 'default :fontset)))
+  ;;   (set-fontset-font fontset '(?\xea60 . ?\xec11) "codicon" nil 'append))
+  
+  ;; (set-fontset-font (frame-parameter nil 'font)
+  ;;                   '(?\xea60 . ?\xec11)
+  ;;                   (font-spec :family "codicon"
+  ;;                              :weight nil
+  ;;                              :size nil)
+  ;;                   nil
+  ;;                   'prepend)
+  (set-frame-size (selected-frame) 134 63)
+  (set-frame-position (selected-frame) 1190 35))
+
+(set-frame-size (selected-frame) 134 63)
+(set-frame-position (selected-frame) 1190 35)
 
 (setq-default custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
@@ -641,8 +652,10 @@ shell command."
             :favorite t)
      (:name "Mail lists"
             :query ,(concat "flag:list "
-                            "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Корзина "
-                            "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Спам")
+                            "AND maildir:\"/anuvyklack@gmail/[Gmail]/Вся почта\" ")
+            ;; :query ,(concat "flag:list "
+            ;;                 "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Корзина "
+            ;;                 "AND NOT maildir:/anuvyklack@gmail/[Gmail]/Спам")
             :key ?l)
      ;; (:name "Unread messages" :query "flag:unread AND NOT flag:trashed" :key ?u)
      (:name "Today's messages"
@@ -768,7 +781,8 @@ shell command."
   (org-imenu-depth 8)
   (org-startup-with-inline-images t)
   (org-image-actual-width '(400))
-  (org-ellipsis " ...")
+  ;; (org-ellipsis " ")
+  (org-ellipsis " ↴")
   ;; (org-src-window-setup 'split-window-right)
   (org-src-window-setup 'current-window) ;; edit in current window
   (org-edit-src-content-indentation 0)
@@ -882,9 +896,7 @@ shell command."
     ;;                                ;; ("SCHEDULED:" . "")
     ;;                                ;; ("DEADLINE:" . "")
     ;;                                ))
-    (prettify-symbols-mode))
-  (let ((fontset (face-attribute 'default :fontset)))
-    (set-fontset-font fontset '(?\xf000 . ?\xf2ff) "FontAwesome" nil 'append)))
+    (prettify-symbols-mode)))
 
 (use-package org-roam
   :elpaca t
@@ -1169,6 +1181,7 @@ shell command."
   (general-def :states 'motion
     "M-u" 'universal-argument
     "SPC" '(:keymap leader-map) ;; use 'Space' as leader key
+    ";" '(:keymap semicolon-leader-map)
     ;; "<backspace>" 'evil-ex ;; evil command (:) state
     "<backspace>" 'execute-extended-command ;; emacs M-x
     "g h" 'evil-first-non-blank
@@ -1186,6 +1199,9 @@ shell command."
     "z =" 'flyspell-correct-wrapper
     "g <tab>" 'tab-new)
   
+  (general-def :states 'normal
+    "g a" 'describe-char)
+  
   (general-def :states '(normal visual)
     "C-p" 'consult-yank-from-kill-ring)
   
@@ -1193,8 +1209,6 @@ shell command."
     "z n" (lambda () (narrow-to-region) (evil-exit-visual-state)))
   (general-def :keymaps 'universal-argument-map
     "M-u" 'universal-argument-more)
-  (general-def :states 'motion
-    ";" '(:keymap semicolon-leader-map))
   (general-def :states 'insert
     "C-l" 'right-char)
   (general-def :keymaps 'leader-map
@@ -1540,12 +1554,16 @@ shell command."
   (set-cursor-color "black")
   (set-face-attribute 'org-verbatim nil :foreground "#4250ef" :background "#f5f5f5")
   (set-face-attribute 'org-code     nil :foreground "#cf25aa" :background "#f5f5f5")
+  (set-face-attribute 'org-level-1  nil :foreground "#375cd8" :weight 'normal :height 1.08)
+  (set-face-attribute 'org-level-2  nil :foreground "#cf25aa" :weight 'normal :height 1.08)
+  (set-face-attribute 'org-level-3  nil :foreground "#1f77bb" :weight 'normal :height 1.08)
+  (set-face-attribute 'org-level-4  nil :foreground "#b65050" :weight 'normal :height 1.08)
+  (set-face-attribute 'org-level-5  nil :foreground "#6052cf" :weight 'normal :height 1.08)
   ;; (set-face-attribute 'org-level-1  nil :foreground "#375cd8" :height 1.27)
   ;; (set-face-attribute 'org-level-2  nil :foreground "#cf25aa" :height 1.20)
   ;; (set-face-attribute 'org-level-3  nil :foreground "#1f77bb" :height 1.15)
   ;; (set-face-attribute 'org-level-4  nil :foreground "#b65050" :height 1.1)
   ;; (set-face-attribute 'org-level-5  nil :foreground "#6052cf" :height 1.05)
-  
   )
 
 (add-hook 'prog-mode-hook
