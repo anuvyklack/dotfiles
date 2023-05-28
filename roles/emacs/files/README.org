@@ -375,7 +375,7 @@ Material Design
 ;; (set-fontset-font t ? "Material Design Icons Desktop" nil 'prepend)
 #+end_src
 
-***** COMMENT Unicode Symbols for Legacy Computing
+***** Unicode Symbols for Legacy Computing
 #+begin_src emacs-lisp
 (set-fontset-font t '(?\x1fb00 . ?\x1fbca) "LegacyComputing" nil 'prepend)
 #+end_src
@@ -923,14 +923,12 @@ password is read from the minibuffer.
 )
 #+end_src
 
-** COMMENT LSP
+** LSP
 *** lsp-mode
 #+begin_src emacs-lisp
 (use-package lsp-mode
   :elpaca t
   :init
-  ;; ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-  ;; (setq lsp-keymap-prefix "C-c l")
   :hook (;; (python-mode . lsp)
          (lsp-mode . lsp-enable-which-key-integration))
   :commands lsp)
@@ -939,7 +937,8 @@ password is read from the minibuffer.
 ;; (use-package lsp-treemacs :elpaca t :commands lsp-treemacs-errors-list)
 
 #+end_src
-**** lsp-pyright
+
+**** COMMENT lsp-pyright
 #+begin_src emacs-lisp
 (use-package lsp-pyright
   :elpaca t
@@ -1146,9 +1145,27 @@ Save minibuffer history.
   ;; (projectile-project-search-path)
   :config
   (projectile-mode)
-  (keymap-set leader-map "p" 'projectile-command-map)
-  (keymap-set projectile-command-map "B" #'projectile-ibuffer)
+  (general-def :keymaps 'projectile-command-map
+    "B" 'projectile-ibuffer)
   (keymap-unset projectile-command-map "I" t))
+
+#+end_src
+
+**** consult-projectile
+#+begin_src emacs-lisp
+(use-package consult-projectile
+  :elpaca t
+  ;; :straight (consult-projectile
+  ;;            :type git :host gitlab
+  ;;            :repo "OlMon/consult-projectile" :branch "master")
+  :bind (([remap projectile-switch-to-buffer] . consult-projectile-switch-to-buffer)
+         ([remap projectile-find-dir] . consult-projectile-find-dir)
+         ([remap projectile-find-file] . consult-projectile-find-file)
+         ([remap projectile-recentf] . consult-projectile-recentf)
+         ;; ([remap projectile-switch-project] . consult-projectile-switch-project)
+         ([remap projectile-switch-project] . consult-projectile)
+         ))
+
 #+end_src
 
 *** COMMENT origami
@@ -2113,13 +2130,7 @@ Setup available embedded languages for babel.
   :custom
   <<org-roam-custom>>
   :config
-  (org-roam-db-autosync-mode)
-  ;; (add-to-list 'display-buffer-alist
-  ;;              '("\\*org-roam\\*"
-  ;;                (display-buffer-in-direction)
-  ;;                (direction . right)
-  ;;                (window-width . 0.33)
-  ;;                (window-height . fit-window-to-buffer)))
+  <<org-roam-config>>
   )
 #+end_src
 **** custom
@@ -2152,6 +2163,45 @@ Set a more informative completion interface, for vertico.
 #+begin_src emacs-lisp
 (org-roam-node-display-template (concat "${title:*} "
                                         (propertize "${tags:17}" 'face 'org-tag)))
+#+end_src
+
+**** config
+:PROPERTIES:
+:header-args: :noweb-ref org-roam-config
+:END:
+
+#+begin_src emacs-lisp
+(org-roam-db-autosync-mode)
+#+end_src
+
+#+begin_src emacs-lisp
+;; (add-to-list 'display-buffer-alist
+;;              '("\\*org-roam\\*"
+;;                (display-buffer-in-direction)
+;;                (direction . right)
+;;                (window-width . 0.33)
+;;                (window-height . fit-window-to-buffer)))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun org-roam-node-insert-immediate (arg &rest args)
+  (interactive "P")
+  (let ((args (cons arg args))
+        (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                  '(:immediate-finish t)))))
+    (apply #'org-roam-node-insert args)))
+#+end_src
+
+**** org-roam-dailies
+#+begin_src emacs-lisp
+(use-package org-roam-dailies
+  :after org-roam
+  :custom
+  (org-roam-dailies-directory "journal/")
+  ;; (org-roam-dailies-capture-templates
+  ;;  '(("d" "default" entry "* %<%I:%M %p>: %?"
+  ;;     :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+  )
 #+end_src
 
 *** org-contrib
@@ -2823,6 +2873,7 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
 #+begin_src emacs-lisp
 (general-def :keymaps 'leader-map
   "h"  '(:keymap help-map :which-key "help")
+  "p"  '(:keymap projectile-command-map :which-key "projectile")
   "n"  '(:keymap my/notes-map :which-key "notes")
   "m"  '(:keymap my/bookmark-map :which-key "bookmark")
   "b"  'consult-buffer
@@ -2851,11 +2902,13 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
   "l" 'bookmark-bmenu-list)
 #+end_src
 
-*** COMMENT lsp-mode                                             :keybindings:
+*** lsp-mode                                                     :keybindings:
 #+begin_src emacs-lisp
 (with-eval-after-load 'lsp-mode
- (general-def :keymaps 'leader-map
-   "l" '(:keymap lsp-command-keymap :which-key "LSP")))
+  (general-def :keymaps 'leader-map
+    "l" '(:keymap lsp-command-map :which-key "LSP")
+    ;; "l" '(:keymap lsp-command-keymap :which-key "LSP")
+    ))
 #+end_src
 
 *** Corfu                                                        :keybindings:
@@ -2879,6 +2932,8 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
     "C-b" 'vertico-scroll-down
     "C-d" 'consult-dir
     ;; "C-j" 'consult-dir-jump-file
+    "gg" 'vertico-first
+    "G"  'vertico-last
     "q" 'abort-recursive-edit)
 
   (general-def :keymaps 'vertico-map :states 'insert
@@ -3018,7 +3073,7 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
   (outline-hide-sublevels (or levels 1)))
 #+end_src
 
-*** Orgmode                                                      :keybindings:
+*** Org Mode                                                     :keybindings:
 #+begin_src emacs-lisp
 (general-def :keymaps 'my/orgmode-leader-map
   "SPC" 'org-ctrl-c-ctrl-c
@@ -3094,18 +3149,23 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
   "q" #'org-transclusion-live-sync-exit)
 #+end_src
 
-*** Org-Roam
+*** Org-Roam                                                     :keybindings:
 #+begin_src emacs-lisp
 (general-def :keymaps 'my/notes-map
   "a" 'org-agenda
   "s" 'org-store-link
   "n" 'org-roam-node-find
   "c" 'org-roam-capture
-  "w" 'org-roam-buffer-toggle
-  "b" 'org-switchb
+  "b" 'org-roam-buffer-toggle
+  "v" 'org-switchb
   "l" 'org-roam-node-insert
   "t" 'org-roam-tag-add
-  "u" 'org-roam-ui-mode)
+  "u" 'org-roam-ui-mode
+  "d" '(:keymap org-roam-dailies-map))
+
+(general-def :keymaps 'org-roam-dailies-map
+  "Y" 'org-roam-dailies-capture-yesterday
+  "T" 'org-roam-dailies-capture-tomorrow)
 #+end_src
 
 *** Info mode                                                    :keybindings:

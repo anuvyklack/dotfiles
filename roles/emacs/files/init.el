@@ -142,6 +142,7 @@ shell command."
   ;; (set-fontset-font t ?\xe876 "Material Design Icons" nil 'prepend)
   ;; (set-fontset-font t ? "Material Design Icons" nil 'prepend)
   ;; (set-fontset-font t ? "Material Design Icons Desktop" nil 'prepend)
+  (set-fontset-font t '(?\x1fb00 . ?\x1fbca) "LegacyComputing" nil 'prepend)
   ;; (set-fontset-font t 'latin "Noto Sans")
   ;; (set-fontset-font t '(?\xea60 . ?\xec11) "codicon" nil 'prepend)
   
@@ -393,6 +394,16 @@ shell command."
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
 )
 
+(use-package lsp-mode
+  :elpaca t
+  :init
+  :hook (;; (python-mode . lsp)
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
+
+(use-package lsp-ui :elpaca t :commands lsp-ui-mode)
+;; (use-package lsp-treemacs :elpaca t :commands lsp-treemacs-errors-list)
+
 (use-package puni
   :disabled
   :elpaca t
@@ -525,9 +536,22 @@ shell command."
   ;; (projectile-project-search-path)
   :config
   (projectile-mode)
-  (keymap-set leader-map "p" 'projectile-command-map)
-  (keymap-set projectile-command-map "B" #'projectile-ibuffer)
+  (general-def :keymaps 'projectile-command-map
+    "B" 'projectile-ibuffer)
   (keymap-unset projectile-command-map "I" t))
+
+(use-package consult-projectile
+  :elpaca t
+  ;; :straight (consult-projectile
+  ;;            :type git :host gitlab
+  ;;            :repo "OlMon/consult-projectile" :branch "master")
+  :bind (([remap projectile-switch-to-buffer] . consult-projectile-switch-to-buffer)
+         ([remap projectile-find-dir] . consult-projectile-find-dir)
+         ([remap projectile-find-file] . consult-projectile-find-file)
+         ([remap projectile-recentf] . consult-projectile-recentf)
+         ;; ([remap projectile-switch-project] . consult-projectile-switch-project)
+         ([remap projectile-switch-project] . consult-projectile)
+         ))
 
 (use-package helpful
   :elpaca t
@@ -920,6 +944,21 @@ shell command."
   ;;                (direction . right)
   ;;                (window-width . 0.33)
   ;;                (window-height . fit-window-to-buffer)))
+  (defun org-roam-node-insert-immediate (arg &rest args)
+    (interactive "P")
+    (let ((args (cons arg args))
+          (org-roam-capture-templates (list (append (car org-roam-capture-templates)
+                                                    '(:immediate-finish t)))))
+      (apply #'org-roam-node-insert args)))
+  )
+
+(use-package org-roam-dailies
+  :after org-roam
+  :custom
+  (org-roam-dailies-directory "journal/")
+  ;; (org-roam-dailies-capture-templates
+  ;;  '(("d" "default" entry "* %<%I:%M %p>: %?"
+  ;;     :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
   )
 
 (use-package org-contrib
@@ -1213,6 +1252,7 @@ shell command."
     "C-l" 'right-char)
   (general-def :keymaps 'leader-map
     "h"  '(:keymap help-map :which-key "help")
+    "p"  '(:keymap projectile-command-map :which-key "projectile")
     "n"  '(:keymap my/notes-map :which-key "notes")
     "m"  '(:keymap my/bookmark-map :which-key "bookmark")
     "b"  'consult-buffer
@@ -1232,6 +1272,11 @@ shell command."
     "b" 'bookmark-set
     "d" 'bookmark-delete
     "l" 'bookmark-bmenu-list)
+  (with-eval-after-load 'lsp-mode
+    (general-def :keymaps 'leader-map
+      "l" '(:keymap lsp-command-map :which-key "LSP")
+      ;; "l" '(:keymap lsp-command-keymap :which-key "LSP")
+      ))
   (general-def :keymaps 'corfu-map
     :states 'insert
     "<escape>" 'corfu-quit
@@ -1247,6 +1292,8 @@ shell command."
       "C-b" 'vertico-scroll-down
       "C-d" 'consult-dir
       ;; "C-j" 'consult-dir-jump-file
+      "gg" 'vertico-first
+      "G"  'vertico-last
       "q" 'abort-recursive-edit)
   
     (general-def :keymaps 'vertico-map :states 'insert
@@ -1409,11 +1456,16 @@ shell command."
     "s" 'org-store-link
     "n" 'org-roam-node-find
     "c" 'org-roam-capture
-    "w" 'org-roam-buffer-toggle
-    "b" 'org-switchb
+    "b" 'org-roam-buffer-toggle
+    "v" 'org-switchb
     "l" 'org-roam-node-insert
     "t" 'org-roam-tag-add
-    "u" 'org-roam-ui-mode)
+    "u" 'org-roam-ui-mode
+    "d" '(:keymap org-roam-dailies-map))
+  
+  (general-def :keymaps 'org-roam-dailies-map
+    "Y" 'org-roam-dailies-capture-yesterday
+    "T" 'org-roam-dailies-capture-tomorrow)
   (general-def
     :keymaps 'Info-mode-map
     :states '(normal visual)
