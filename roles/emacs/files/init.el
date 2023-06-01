@@ -61,8 +61,18 @@
   :no-require
   :custom (use-package-enable-imenu-support t))
 
+(use-package which-key
+  :elpaca t
+  :diminish which-key-mode
+  :custom
+  (which-key-idle-delay 0.6)
+  (which-key-popup-type 'side-window)
+  :init
+  (which-key-mode))
+
 (use-package general
   :elpaca t
+  :after which-key
   :config (general-auto-unbind-keys))
 
 (define-prefix-command 'leader-map)
@@ -101,6 +111,22 @@ shell command."
   (with-undo-amagamate ;; emacs 29
    (evil-paste-before 1)
    (evil-indent (evil-get-marker ?\[) (evil-get-marker ?\]))))
+
+(require 'ansi-color)
+(defun display-ansi-colors ()
+  (interactive)
+  (ansi-color-apply-on-region (point-min) (point-max)))
+
+(defun my/toggle-line-spacing ()
+  "Toggle line spacing between no extra space to extra 0.3 line height."
+  (interactive)
+  (if line-spacing
+      (setq line-spacing nil)
+    (setq line-spacing 0.3))
+  (redraw-frame (selected-frame)))
+
+(use-package far
+  :elpaca (:host github :repo "eshrh/far.el"))
 
 (use-package better-defaults :elpaca t)
 (use-package emacs
@@ -143,6 +169,7 @@ shell command."
   ;; (set-fontset-font t ? "Material Design Icons" nil 'prepend)
   ;; (set-fontset-font t ? "Material Design Icons Desktop" nil 'prepend)
   (set-fontset-font t '(?\x1fb00 . ?\x1fbca) "LegacyComputing" nil 'prepend)
+  (set-fontset-font t '(?🯰 . ?🯹) "LegacyComputing" nil 'prepend)
   ;; (set-fontset-font t 'latin "Noto Sans")
   ;; (set-fontset-font t '(?\xea60 . ?\xec11) "codicon" nil 'prepend)
   
@@ -215,15 +242,18 @@ shell command."
   (add-to-list 'Info-directory-list
                (expand-file-name ".nix-profile/share/info" (getenv "HOME"))))
 
+(setq ansi-color-for-compilation-mode t)
+(add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
+
 (use-package vertico
   :elpaca t
   :custom
   (vertico-count 14) ;; How many candidates to show.
   (vertico-scroll-margin 2)
   (vertico-cycle nil)
-  ;; Grow and shrink the Vertico minibuffer
-  ;; (setq vertico-resize t)
-  ;; (read-extended-command-predicate #'command-completion-default-include-p)
+  ;; (vertico-resize t) ;; Grow and shrink the Vertico minibuffer.
+  (vertico-resize 'grow-only)
+  (read-extended-command-predicate #'command-completion-default-include-p)
   (enable-recursive-minibuffers t)
   (minibuffer-depth-indicate-mode t)
   (read-file-name-completion-ignore-case t)
@@ -267,7 +297,14 @@ shell command."
   (orderless-component-separator #'orderless-escapable-split-on-space)
   (orderless-matching-styles '(orderless-initialism
                                orderless-prefixes
-                               orderless-regexp)))
+                               orderless-regexp))
+  :config
+  ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil)
+  (setq completion-category-overrides '((file (styles . (partial-completion)))))
+  )
 
 (use-package consult
   :elpaca t
@@ -330,10 +367,10 @@ shell command."
   ;; (corfu-preview-current nil)    ;; Disable current candidate preview
   ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
   ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
-  ;; (corfu-scroll-margin 5)        ;; Use scroll margin  :init
+  ;; (corfu-scroll-margin 5)        ;; Use scroll margin
   (completion-cycle-threshold 3)
-  ;; (read-extended-command-predicate #'command-completion-default-include-p)
   (tab-always-indent 'complete)
+  (tab-first-completion nil)
   :config
   (defun corfu-enable-in-minibuffer ()
     "Enable Corfu in the minibuffer if `completion-at-point' is bound."
@@ -346,17 +383,33 @@ shell command."
       (corfu-mode 1)))
   
   (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer)
-  (defun corfu-enable-always-in-minibuffer ()
-    "Enable Corfu in the minibuffer if Vertico are not active."
-    (unless (or (bound-and-true-p vertico--input)
-                (eq (current-local-map) read-passwd-map))
-      (setq-local corfu-auto t ;; Enable/disable auto completion
-                  corfu-echo-delay t ;; Disable automatic echo and popup
-                  corfu-auto-prefix 2
-                  corfu-popupinfo-delay nil)
-      (corfu-mode 1)))
+  (defun corfu-move-to-minibuffer ()
+    (interactive)
+    (when completion-in-region--data
+      (let ((completion-extra-properties corfu--extra)
+            completion-cycle-threshold completion-cycling)
+        (apply #'consult-completion-in-region completion-in-region--data))))
   
-  (add-hook 'minibuffer-setup-hook #'corfu-enable-always-in-minibuffer 1))
+  (keymap-set corfu-map "M-m" #'corfu-move-to-minibuffer)
+  (add-to-list 'corfu-continue-commands #'corfu-move-to-minibuffer)
+  (add-to-list 'load-path (expand-file-name "elpaca/repos/corfu/extensions"
+                                            user-emacs-directory))
+  (use-package corfu-history
+    :config
+    (corfu-history-mode))
+  (use-package corfu-popupinfo
+    :custom
+    (corfu-popupinfo-delay (cons 0.5 0.5))
+    :config
+    (corfu-popupinfo-mode)))
+
+(use-package dabbrev
+  :after cofru
+  ;; Swap M-/ and C-M-/
+  :bind (("M-/" . dabbrev-completion)
+         ("C-M-/" . dabbrev-expand))
+  :custom
+  (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'")))
 
 (use-package cape
   :elpaca t
@@ -396,69 +449,44 @@ shell command."
 
 (use-package lsp-mode
   :elpaca t
-  :init
-  :hook (;; (python-mode . lsp)
-         (lsp-mode . lsp-enable-which-key-integration))
-  :commands lsp)
-
-(use-package lsp-ui :elpaca t :commands lsp-ui-mode)
-;; (use-package lsp-treemacs :elpaca t :commands lsp-treemacs-errors-list)
-
-(use-package puni
-  :disabled
-  :elpaca t
-  :defer t
-  :hook
-  (term-mode . puni-disable-puni-mode)
-  :init
-  ;; The autoloads of Puni are set up so you can enable `puni-mode` or
-  ;; `puni-global-mode` before `puni` is actually loaded. Only after you press
-  ;; any key that calls Puni commands, it's loaded.
-  (puni-global-mode))
-
-(use-package lispy
-  :elpaca t
+  :commands lsp
   :custom
-  (lispy-safe-delete t)
-  (lispy-safe-copy t)
-  (lispy-safe-paste t)
-  :hook (emacs-lisp-mode . lispy-mode))
-
-(use-package lispyville
-  :elpaca t
-  :after general
-  :hook (lispy-mode . my/lispyville-mode)
-  :config
-  (lispyville-set-key-theme
-   '(operators c-w c-u prettify additional-motions additional wrap))
-  (defun my/lispyville-mode ()
-    (lispyville-mode)
-    (general-def
-      :keymaps 'local
-      :states 'normal
-      "(" 'lispyville-backward-up-list
-      "g c" 'lispyville-comment-or-uncomment
-      "[ SPC" 'evil-collection-unimpaired-insert-newline-above
-      "] SPC" 'evil-collection-unimpaired-insert-newline-below)
-    (general-def
-      :keymaps 'local
-      :states '(motion normal visual)
-      ";" '(:keymap semicolon-leader-map)
-      ;; ";" '(:keymap evilem-map)
-      )
-    (general-def
-      :keymaps 'local
-      :states 'visual
-      "g c" 'lispyville-comment-or-uncomment)))
-
-(use-package which-key
-  :elpaca t
-  :diminish which-key-mode
-  :custom
-  (which-key-idle-delay 1.2)
-  (which-key-popup-type 'side-window)
+  (lsp-completion-provider :none) ;; I use Corfu
+  (lsp-headerline-breadcrumb-enable-diagnostics nil)
+  (lsp-headerline-breadcrumb-icons-enable t)
+  (lsp-diagnostics-provider :flycheck)
   :init
-  (which-key-mode))
+  (defun my/lsp-mode-setup-completion ()
+    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
+          '(orderless))) ;; Configure orderless
+  :hook ((lsp-mode . lsp-enable-which-key-integration)
+         (lsp-completion-mode . my/lsp-mode-setup-completion)
+         (c-mode . lsp)
+         (c++-mode . lsp)))
+
+(use-package lsp-treemacs
+  :elpaca t
+  :commands lsp-treemacs-errors-list)
+
+(use-package lsp-ui
+  :elpaca t
+  :commands lsp-ui-mode)
+
+(use-package consult-lsp
+  :elpaca t
+  :after '(consult lsp-mode))
+
+(use-package flycheck
+  :elpaca t
+  :init (global-flycheck-mode))
+
+(use-package pixel-scroll
+  :when (fboundp #'pixel-scroll-precision-mode)
+  :hook (after-init . pixel-scroll-precision-mode)
+  :custom
+  (scroll-margin 0)
+  ;; pixel-scroll-precision-interpolate-page
+  )
 
 (use-package avy
   :elpaca t
@@ -550,8 +578,7 @@ shell command."
          ([remap projectile-find-file] . consult-projectile-find-file)
          ([remap projectile-recentf] . consult-projectile-recentf)
          ;; ([remap projectile-switch-project] . consult-projectile-switch-project)
-         ([remap projectile-switch-project] . consult-projectile)
-         ))
+         ([remap projectile-switch-project] . consult-projectile)))
 
 (use-package helpful
   :elpaca t
@@ -573,17 +600,16 @@ shell command."
 
 (use-package easy-escape
   :elpaca t
-  :hook (emacs-lisp-mode . easy-escape-minor-mode)
-  ;; :config
-  ;; (add-hook 'emacs-lisp-mode-hook 'easy-escape-minor-mode)
-  )
+  :hook (emacs-lisp-mode . easy-escape-minor-mode))
 
-(use-package far
-  :elpaca (:host github :repo "eshrh/far.el"))
+(use-package flyspell
+  :custom
+  (flyspell-issue-message-flag nil))
 
 (use-package flyspell-correct
   :elpaca t
   :hook ((markdown-mode . flyspell-mode)
+         ;; (org-mode . flyspell-mode)
          ;; (text-mode . flyspell-mode)
          ))
 
@@ -610,7 +636,7 @@ shell command."
 
 (use-package dired
   :custom
-  (dired-listing-switches "-lahF -v --group-directories-first")
+  (dired-listing-switches "-lAhF -v --group-directories-first")
   (dired-kill-when-opening-new-dired-buffer t)
   (dired-no-confirm t)
   (dired-recursive-deletes 'always)
@@ -706,7 +732,7 @@ shell command."
   (mu4e-trash-folder  "/anuvyklack@gmail/[Gmail]/Корзина")
   (mu4e-maildir-shortcuts
    '((:maildir "/anuvyklack@gmail/[Gmail]/Отправленные" :key ?s)
-     (:maildir "/anuvyklack@gmail/Архив" 								:key ?a)
+     (:maildir "/anuvyklack@gmail/Архив"                :key ?a)
      ;; (:maildir "/anuvyklack@gmail/Inbox"                :key ?i)
      (:maildir "/anuvyklack@gmail/[Gmail]/Вся почта"    :key ?A)
      (:maildir "/anuvyklack@gmail/[Gmail]/Корзина"      :key ?t)))
@@ -792,7 +818,7 @@ shell command."
   ;; (add-to-list 'bufler-filter-buffer-modes 'org-roam-mode)
   (my/append-to-list 'bufler-filter-buffer-modes
                      '(org-roam-mode
-                       magit-status-mode magit-refs-mode magit-log-mode
+                       ;; magit-status-mode magit-refs-mode magit-log-mode
                        mu4e-main-mode)))
 
 (use-package org
@@ -833,7 +859,7 @@ shell command."
   (org-fontify-quote-and-verse-blocks t)
   ;; (org-list-description-max-indent 20)
   ;; (org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
-  (org-list-indent-offset 1)
+  ;; (org-list-indent-offset 1)
   (org-cycle-include-plain-lists 'integrate)
   ;; (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "DOING" "|" "DONE" "CANCELED")))
   ;; (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "STARTED" "|" "DONE" "CANCELED")))
@@ -851,6 +877,9 @@ shell command."
   (org-pretty-entities t)
   (org-attach-store-link-p t)
   (org-attach-use-inheritance t)
+  ;; (org-use-tag-inheritance . nil)
+  ;; (org-tags-exclude-from-inheritance . '("soft" "cli"))
+  ;; (org-tags-match-list-sublevels nil)
   :config
   (setq org-file-apps '(("\\.pdf\\'" . "evince %s")
                         ("\\.djvu\\'" . "evince %s")
@@ -961,6 +990,16 @@ shell command."
   ;;     :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
   )
 
+(use-package consult-org-roam
+  :elpaca t
+  :after org-roam
+  :custom
+  (consult-org-roam-grep-func #'consult-ripgrep)
+  (consult-org-roam-buffer-narrow-key ?r)
+  ;; (consult-org-roam-buffer-after-buffers t)
+  :config
+  (consult-org-roam-mode 1))
+
 (use-package org-contrib
   :elpaca t
   :config
@@ -1014,10 +1053,11 @@ shell command."
                :tag "house"
                :order 6)
         (:name "Subaru"
-               :tag ("car" "subaru")
                :category "car"
+               :tag ("car" "subaru")
                :order 6)
         (:name "Github"
+               :category "issue"
                :tag "issue"
                :order 12)))
 
@@ -1149,7 +1189,7 @@ shell command."
   ;;                ;; :ref "aa0e2dd"
   ;;                :ref "379b45bffe7d67683f17c3e815797a082d8793d3")
   :custom
-  (doom-modeline-height 30)
+  (doom-modeline-height 27)
   (doom-modeline-buffer-file-name-style 'relative-from-project)
   (doom-modeline-icon t)
   (doom-modeline-major-mode-icon t)
@@ -1251,14 +1291,14 @@ shell command."
   (general-def :states 'insert
     "C-l" 'right-char)
   (general-def :keymaps 'leader-map
-    "h"  '(:keymap help-map :which-key "help")
+    "h"  '(:keymap help-map :wk "help")
     "p"  '(:keymap projectile-command-map :which-key "projectile")
     "n"  '(:keymap my/notes-map :which-key "notes")
     "m"  '(:keymap my/bookmark-map :which-key "bookmark")
     "b"  'consult-buffer
     "ff" 'find-file
     "fo" 'consult-outline
-    "fg" 'consult-grep
+    "fg" 'consult-ripgrep
     "fi" 'consult-imenu
     "fr" 'consult-recent-file
     "fd" 'consult-dir
@@ -1461,7 +1501,8 @@ shell command."
     "l" 'org-roam-node-insert
     "t" 'org-roam-tag-add
     "u" 'org-roam-ui-mode
-    "d" '(:keymap org-roam-dailies-map))
+    "d" '(:keymap org-roam-dailies-map)
+    "/" 'consult-org-roam-search)
   
   (general-def :keymaps 'org-roam-dailies-map
     "Y" 'org-roam-dailies-capture-yesterday
