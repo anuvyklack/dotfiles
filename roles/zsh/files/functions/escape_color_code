@@ -4,7 +4,7 @@
 # Usage: escape_color_code 012
 
 escape_color_code() {
-    local color="%F{$1}"
-    echo -E ${(qqqq)${(%)color}}
+  local color="%F{$1}"
+  echo -E ${(qqqq)${(%)color}}
 }
 

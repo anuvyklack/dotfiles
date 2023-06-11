@@ -1,6 +1,5 @@
 #!/usr/bin/env zsh
 
-back_in_history ()
-{
+back_in_history () {
   ~$(dirs -v | fzf | rg -o '\d+')
 }

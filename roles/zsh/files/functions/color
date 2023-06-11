@@ -47,13 +47,13 @@ color ()
   local reset="${csi}0;${rc}"
 
   case $style in
-    bold|b)           b=1;            shift ;;
-    faint|f)          b=2;            shift ;;
-    italic|i)         b=3;            shift ;;
+    bold|b)           b=1;             shift ;;
+    faint|f)          b=2;             shift ;;
+    italic|i)         b=3;             shift ;;
     bold-italic|bi)   b=3${rc}${csi}1; shift ;;
-    underline|u)      b=4;            shift ;;
-    inverse|in)       b=7;            shift ;;
-    strikethrough|s)  b=9;            shift ;;
+    underline|u)      b=4;             shift ;;
+    inverse|in)       b=7;             shift ;;
+    strikethrough|s)  b=9;             shift ;;
   esac
 
   case $color in
