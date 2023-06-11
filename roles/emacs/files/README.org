@@ -9,7 +9,6 @@
 These settings are going into different init file: =early-init.el=, which will be
 invoked before GUI invocation and general =init.el= file.
 ** Preamble
-
 #+begin_src emacs-lisp
 ;;; early-init.el -*- lexical-binding: t; buffer-read-only: t; no-byte-compile: t -*-
 ;;;
@@ -62,7 +61,7 @@ than the system default.
 (setq frame-inhibit-implied-resize t)
 #+end_src
 
-** (provide 'early-init)
+** The end of =early-init.el= file
 This concludes the =early-init.el= file.
 
 #+begin_src emacs-lisp
@@ -152,10 +151,10 @@ Make elpaca native keybindings have precedence over evil keymaps in elpaca buffe
 ** Libraries
 *** s, dash, diminish, hydra
 #+begin_src emacs-lisp
-(use-package s    :elpaca t) ;; string manipulation library
-(use-package dash :elpaca t) ;; list manipulation library
+(use-package s        :elpaca t) ;; string manipulation library
+(use-package dash     :elpaca t) ;; list manipulation library
 (use-package diminish :elpaca t)
-(use-package hydra :elpaca t)
+(use-package hydra    :elpaca t)
 #+end_src
 
 *** use-package
@@ -268,7 +267,7 @@ Provides ~far-fill-paragraph~ function which fills the paragraph at the point.
   :elpaca (:host github :repo "eshrh/far.el"))
 #+end_src
 
-** Core settings
+** Emacs core settings
 *** Emacs
 #+begin_src emacs-lisp :noweb yes
 (use-package better-defaults :elpaca t)
@@ -351,11 +350,6 @@ Do not jump half the page when point goes out of the screen.
 (scroll-bar-mode -1)
 (horizontal-scroll-bar-mode -1)
 (blink-cursor-mode 0)
-#+end_src
-
-Give some breathing room.
-#+begin_src emacs-lisp
-(set-fringe-mode 3)
 #+end_src
 
 Show column number in modeline.
@@ -562,6 +556,22 @@ Convert ansi-colors to emacs faces in compiliers output.
 (add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
 #+end_src
 
+*** fringes
+- [[https://emacsredux.com/blog/2015/01/18/customizing-the-fringes/][Customizing the Fringes | Emacs Redux]]
+
+The fringes are used to display symbols that provide information about the text
+in the window. You can type =M-x fringe-mode= to disable the fringes, or modify
+their width. This command affects fringes in all frames; to modify fringes on
+the selected frame only, use =M-x set-fringe-style=. You can make your changes to
+the fringes permanent by customizing the variable ~fringe-mode~.
+
+#+begin_src emacs-lisp
+(use-package fringe
+  :config
+  (set-fringe-mode 10) ;; default is 8
+  )
+#+end_src
+
 ** Completion
 *** Minibuffer completion
 **** COMMENT fido-vertical-mode
@@ -739,14 +749,13 @@ Add to ~load-path~ directory with vertico extensions.
 (use-package embark
   :elpaca t
   :config
-  (general-def
-    :states 'motion
+  (general-def :states 'motion
     "," 'embark-act
     "M-," 'embark-dwim)
-  ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
-  ;; strategy, if you want to see the documentation from multiple providers.
-  (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
-  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+  ;; ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
+  ;; ;; strategy, if you want to see the documentation from multiple providers.
+  ;; (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;; ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
   )
 #+end_src
 
@@ -996,7 +1005,7 @@ code for further details.
 #+end_src
 
 ** LSP
-*** lsp-mode
+*** COMMENT lsp-mode
 **** lsp-mode
 #+begin_src emacs-lisp
 (use-package lsp-mode
@@ -1005,27 +1014,36 @@ code for further details.
   :custom
   (lsp-completion-provider :none) ;; I use Corfu
   (lsp-headerline-breadcrumb-enable-diagnostics nil)
-  (lsp-headerline-breadcrumb-icons-enable t)
-  (lsp-diagnostics-provider :flycheck)
+  ;; (lsp-headerline-breadcrumb-icons-enable t)
+  ;; (lsp-diagnostics-provider :flycheck)
   :init
   (defun my/lsp-mode-setup-completion ()
     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
           '(orderless))) ;; Configure orderless
   :hook ((lsp-mode . lsp-enable-which-key-integration)
          (lsp-completion-mode . my/lsp-mode-setup-completion)
-         (c-mode . lsp)
-         (c++-mode . lsp)))
-
-(use-package lsp-treemacs
-  :elpaca t
-  :commands lsp-treemacs-errors-list)
+         ((c-mode c++-mode) . lsp)
+         ))
 #+end_src
 
 **** lsp-ui
 #+begin_src emacs-lisp
 (use-package lsp-ui
   :elpaca t
-  :commands lsp-ui-mode)
+  :commands lsp-ui-mode
+  :config
+  ;; (setq lsp-ui-doc-enable nil)
+  ;; (setq lsp-ui-doc-delay 0.5)
+  (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+  (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+  )
+#+end_src
+
+**** lsp-treemacs
+#+begin_src emacs-lisp
+(use-package lsp-treemacs
+  :elpaca t
+  :commands lsp-treemacs-errors-list)
 #+end_src
 
 **** COMMENT lsp-pyright
@@ -1048,13 +1066,136 @@ code for further details.
 #+begin_src emacs-lisp
 (use-package flycheck
   :elpaca t
-  :init (global-flycheck-mode))
+  :init (global-flycheck-mode)
+  :custom
+  (flycheck-display-errors-function #'flycheck-display-error-messages-unless-error-list)
+  ;; (flycheck-indication-mode nil)
+  )
+#+end_src
+
+**** flycheck-pos-tip
+#+begin_src emacs-lisp
+(use-package flycheck-pos-tip
+  :elpaca t
+  :after flycheck
+  :config
+  (flycheck-pos-tip-mode))
 #+end_src
 
 **** COMMENT dap-mode
 #+begin_src emacs-lisp
 (use-package dap-mode :elpaca t)
 (use-package dap-python :elpaca t)
+#+end_src
+
+*** eglot
+**** COMMENT eldoc-box
+#+begin_src emacs-lisp
+(use-package eldoc-box
+  :elpaca t
+  :config
+  (setq eldoc-echo-area-use-multiline-p nil))
+  #+end_src
+
+**** eglot
+- [[id:c6b7443a-e17f-4795-975d-e852eeddf3eb][eglot example config]]
+
+#+begin_src emacs-lisp :noweb yes 
+(use-package project :elpaca t)
+(use-package eglot
+  :elpaca t
+  :after (project projectile cape)
+  :preface
+  <<eglot-hook>>
+  :custom
+  <<eglot-custom>>
+  :config
+  <<eglot-config>>
+  )
+#+end_src
+***** custom
+:PROPERTIES:
+:header-args: :noweb-ref eglot-custom
+:END:
+#+begin_src emacs-lisp
+(eglot-autoshutdown t)
+(eglot-extend-to-xref t)
+(eldoc-idle-delay 0.0)
+#+end_src
+
+Don't use event's buffer.
+#+begin_src emacs-lisp
+(eglot-events-buffer-size 0)
+#+end_src
+
+#+begin_src emacs-lisp
+(flymake-no-changes-timeout 0.5)
+#+end_src
+
+***** config
+:PROPERTIES:
+:header-args: :noweb-ref eglot-config
+:END:
+#+begin_src emacs-lisp
+(advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
+#+end_src
+
+[[https://www.reddit.com/r/emacs/comments/1447fy2/comment/jnev6ca/?utm_source=share&utm_medium=web2x&context=3][Source]]
+#+begin_src emacs-lisp
+(fset #'jsonrpc--log-event #'ignore)
+#+end_src
+
+***** hook
+:PROPERTIES:
+:header-args: :noweb-ref eglot-hook
+:END:
+#+begin_src emacs-lisp
+(add-hook 'c-mode-hook 'eglot-ensure)
+(add-hook 'c++-mode-hook 'eglot-ensure)
+#+end_src
+
+#+begin_src emacs-lisp
+;; (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-mode t)
+;; (add-hook 'eglot-managed-mode-hook
+;;           (lambda ()
+;;             "Make sure Eldoc will show us all of the feedback at point."
+;;             (setq-local eldoc-documentation-strategy
+;;                         #'eldoc-documentation-compose)))
+#+end_src
+
+**** consult-eglot
+This package provides a single command ~consult-eglot-symbols~ that query
+workspace symbol from eglot using consult.
+
+#+begin_src emacs-lisp
+(use-package consult-eglot
+  :elpaca t
+  :after eglot)
+
+;; (setq eglot-server-programs)
+#+end_src
+
+** Snippets
+*** COMMENT tempel
+#+begin_src emacs-lisp
+;; Templates that can be used as 'capf'
+(use-package tempel
+  :after corfu
+  :init
+  (defun tempel-setup-capf ()
+    ;; Add the Tempel Capf to `completion-at-point-functions'.
+    ;; `tempel-expand' only triggers on exact matches. Alternatively use
+    ;; `tempel-complete' if you want to see all matches, but then you
+    ;; should also configure `tempel-trigger-prefix', such that Tempel
+    ;; does not trigger too often when you don't expect it. NOTE: We add
+    ;; `tempel-expand' *before* the main programming mode Capf, such
+    ;; that it will be tried first.
+    (setq-local completion-at-point-functions
+                (cons #'tempel-expand
+                      completion-at-point-functions)))
+  :hook
+  (prog-mode . tempel-setup-capf)
+  (text-mode . tempel-setup-capf))
 #+end_src
 
 ** Smooth scrolling
@@ -1135,8 +1276,8 @@ By replacing ~scroll-up~ / ~scroll-down~ functions.
   "C-b" 'good-scroll-down-full-screen)
 
 (general-def
- "<next>"  'good-scroll-up-full-screen
- "<prior>" 'good-scroll-down-full-screen)
+  "<next>"  'good-scroll-up-full-screen
+  "<prior>" 'good-scroll-down-full-screen)
 #+end_src
 
 ** Structural editing
@@ -1260,6 +1401,14 @@ By replacing ~scroll-up~ / ~scroll-down~ functions.
   (general-def
     :states 'visual
     "v" 'er/expand-region))
+
+;; (defun my/collapse-region ()
+;;   (interactive)
+;;   (er/expand-region -1))
+;; (general-def
+;;   :states 'visual
+;;   "v" 'er/expand-region
+;;   "C-v" 'my/collapse-region)
 #+end_src
 
 *** magit
@@ -1276,7 +1425,7 @@ By replacing ~scroll-up~ / ~scroll-down~ functions.
 (use-package zoxide
   :elpaca t
   :bind (:map leader-map
-         ("fz" . zoxide-find-file)))
+              ("fz" . zoxide-find-file)))
 #+end_src
 
 *** gcmh (Garbage Collector Magic Hack)
@@ -1297,8 +1446,8 @@ https://gitlab.com/koral/gcmh
   :config
   (when (fboundp 'startup-redirect-eln-cache)
     (startup-redirect-eln-cache
-      (convert-standard-filename
-        (expand-file-name  "var/eln-cache/" user-emacs-directory)))))
+     (convert-standard-filename
+      (expand-file-name  "var/eln-cache/" user-emacs-directory)))))
 #+end_src
 
 *** recentf
@@ -1334,9 +1483,9 @@ Save minibuffer history.
 #+begin_src emacs-lisp
 (use-package projectile
   :elpaca t
-  ;; :custom
-  ;; (projectile-auto-discover t)
-  ;; (projectile-project-search-path)
+  :custom
+  (projectile-auto-discover t)
+  (projectile-project-search-path '("~"))
   :config
   (projectile-mode)
   (general-def :keymaps 'projectile-command-map
@@ -1360,7 +1509,7 @@ Save minibuffer history.
          ([remap projectile-switch-project] . consult-projectile)))
 #+end_src
 
-*** COMMENT origami
+*** origami
 #+begin_src emacs-lisp
 (use-package origami
   :elpaca t
@@ -1368,6 +1517,7 @@ Save minibuffer history.
   ;; (origami-show-fold-header t) ;; highlight fold headers
   ;; :config
   ;; (global-origami-mode 1)
+  ;; (setq origami-fold-style 'triple-braces)
   )
 #+end_src
 
@@ -1455,6 +1605,23 @@ Spell check
   (global-anzu-mode))
 #+end_src
 
+*** COMMENT adaptive-wrap
+#+begin_src emacs-lisp
+(use-package adaptive-wrap
+  :elpaca t
+  :config
+  (adaptive-wrap-prefix-mode))
+#+end_src
+
+*** visual-fill-column
+#+begin_src emacs-lisp
+(use-package visual-fill-column
+  :elpaca t
+  :config
+  ;; (visual-line-mode) ;; Wrap long lines on words.
+  (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
+  )
+#+end_src
 
 *** COMMENT moom
 #+begin_src emacs-lisp
@@ -1498,7 +1665,86 @@ Spell check
 #+end_src
 
 ** Dired
-*** dired
+*** COMMENT Dirvish
+#+begin_src emacs-lisp :noweb yes 
+(use-package dirvish
+  :elpaca t
+  :custom
+  <<dirvish-custom>>
+  ;; :hook ((dired-mode . dired-omit-mode)
+  ;;        ;; (dired-mode . dired-hide-details-mode)
+  ;;        )
+  ;; :bind (([remap dired] . dirvish-dwim)
+  ;;        ([remap dired-sort-toggle-or-edit] . dirvish-quicksort)
+  ;;        ([remap dired-do-redisplay] . dirvish-ls-switches-menu)
+  ;;        ([remap dired-do-copy] . dirvish-yank-menu))
+  :config
+  (dirvish-override-dired-mode)
+  (dirvish-peek-mode)
+  ;; (dirvish-side-follow-mode)
+  (setq dirvish-preview-dispatchers
+        (cl-substitute 'pdf-preface 'pdf dirvish-preview-dispatchers))
+  (defun dirvish-ibuffer ()
+    (interactive)
+    (dirvish-quit)
+    (ibuffer))
+  )
+#+end_src
+**** custom
+:PROPERTIES:
+:header-args: :noweb-ref dirvish-custom
+:END:
+
+| *-l*               | use a long listing format                     |
+| *-a*, *--all*        | do not ignore entries starting with =.=         |
+| *-A*, *--almost-all* | do not list implied =.= and =..=                  |
+| *-F*, *--classify*   | append indicator (one of =*/=>@¦=) to entries   |
+| *-v*               | natural sort of (version) numbers within text |
+
+#+begin_src emacs-lisp
+(dired-listing-switches "-lAh -v --group-directories-first")
+;; (dired-listing-switches "-lAhF -v --group-directories-first")
+;; (dired-listing-switches "-l --human-readable --group-directories-first")
+#+end_src
+
+#+begin_src emacs-lisp
+(dired-kill-when-opening-new-dired-buffer t)
+(delete-by-moving-to-trash t)
+(dired-recursive-deletes 'always)
+(dired-recursive-copies 'always)
+(dired-no-confirm t)
+(dired-dwim-target t)
+(dired-omit-files "\\`[.]?#\\|\\`[.][.]?\\'\\|\\`[.].+")
+#+end_src
+
+#+begin_src emacs-lisp
+(dirvish-default-layout '(0 0.4 0.6))
+(dirvish-layout-recipes '((0 1 0)
+                          (0 0.4 0.6)))
+(dirvish-attributes '(vc-state file-size subtree-state collapse all-the-icons))
+(dirvish-side-width 38)
+(dirvish-mode-line-format '(:left (sort symlink) :right (vc-info yank index)))
+(dirvish-header-line-format '(:left (path) :right (free-space)))
+#+end_src
+
+#+begin_src emacs-lisp
+(dirvish-open-with-programs (let ((qimgv (executable-find "qimgv"))
+                                  (vlc   (executable-find "vlc")))
+                              `((,dirvish-image-exts ,qimgv "%f")
+                                (,dirvish-video-exts ,vlc "%f"))))
+#+end_src
+
+#+begin_src emacs-lisp
+(dirvish-quick-access-entries
+ `(("h" "~/"                          "Home")
+   ("d" "~/Downloads/"                "Downloads")
+   ("m" "/run/media/"                 "Drives")
+   ("t" "~/.local/share/Trash/files/" "TrashCan")
+   ("e" ,user-emacs-directory         "Emacs")))
+#+end_src
+
+*** Dired
+**** dired
 #+begin_src emacs-lisp :noweb yes
 (use-package dired
   :custom
@@ -1508,7 +1754,7 @@ Spell check
   (dired-mode . dired-hide-details-mode)
   (dired-mode . hl-line-mode))
 #+end_src
-**** custom
+***** custom
 :PROPERTIES:
 :header-args: :noweb-ref dired-custom
 :END:
@@ -1521,19 +1767,20 @@ Spell check
 
 #+begin_src emacs-lisp
 (dired-listing-switches "-lAhF -v --group-directories-first")
+;; (dired-listing-switches "-l --human-readable --group-directories-first")
 #+end_src
 
 #+begin_src emacs-lisp
 (dired-kill-when-opening-new-dired-buffer t)
-(dired-no-confirm t)
+(delete-by-moving-to-trash t)
 (dired-recursive-deletes 'always)
 (dired-recursive-copies 'always)
-(delete-by-moving-to-trash t)
+(dired-no-confirm t)
 (dired-dwim-target t)
 (dired-omit-files "\\`[.]?#\\|\\`[.][.]?\\'\\|\\`[.].+")
 #+end_src
 
-*** dired-hacks
+**** dired-hacks
 [[https://github.com/Fuco1/dired-hacks][GitHub - Fuco1/dired-hacks: Collection of useful dired additions]]
 
 #+begin_src emacs-lisp
@@ -1544,14 +1791,14 @@ Spell check
 (use-package dired-toggle-sudo :elpaca t)
 #+end_src
 
-*** wdired
+**** wdired
 #+begin_src emacs-lisp
 (use-package wdired
   ;; :custom (wdired-allow-to-change-permissions t)
   )
 #+end_src
 
-*** dired-collapse
+**** dired-collapse
 Toggle collapsing of unique nested paths in Dired.
 
 #+begin_src emacs-lisp
@@ -1561,7 +1808,7 @@ Toggle collapsing of unique nested paths in Dired.
   )
 #+end_src
 
-*** dired-rainbow
+**** dired-rainbow
 #+begin_src emacs-lisp
 (use-package dired-rainbow
   :elpaca t
@@ -1575,7 +1822,7 @@ Toggle collapsing of unique nested paths in Dired.
   (dired-rainbow-define-chmod executable-unix "#4e9a06" "-.*x.*"))
 #+end_src
 
-*** diredfl
+**** diredfl
 Addtional syntax highlighting for dired
 #+begin_src emacs-lisp
 (use-package diredfl ;; Addtional syntax highlighting for dired
@@ -1587,7 +1834,7 @@ Addtional syntax highlighting for dired
   )
 #+end_src
 
-*** COMMENT dired-recent
+**** COMMENT dired-recent
 *I'm not sure that this package is needed, since I already use [[*consult-dir][consult-dir]].*
 =C-x C-d= to open ~dired-recent-open~.
 
@@ -1833,7 +2080,9 @@ Marks for headers. Each is a cons-cell: ~(basic . fancy)~.
   (my/append-to-list 'bufler-filter-buffer-modes
                      '(org-roam-mode
                        ;; magit-status-mode magit-refs-mode magit-log-mode
-                       mu4e-main-mode)))
+                       mu4e-main-mode))
+  (my/append-to-list 'bufler-filter-buffer-name-regexps
+                     '("\\*EGLOT")))
 #+end_src
 
 [[*Bufler keybindings][Bufler keybindings]]
@@ -1843,13 +2092,13 @@ Marks for headers. Each is a cons-cell: ~(basic . fancy)~.
 
 #+begin_src emacs-lisp :noweb yes
 (use-package ibuffer
-:after projectile
-:custom
-<<ibuffer-custom>>
-:hook
-<<ibuffer-hook>>
-:config
-<<ibuffer-config>>)
+  :after projectile
+  :custom
+  <<ibuffer-custom>>
+  :hook
+  <<ibuffer-hook>>
+  :config
+  <<ibuffer-config>>)
 #+end_src
 
 ***** custom
@@ -1870,13 +2119,13 @@ Marks for headers. Each is a cons-cell: ~(basic . fancy)~.
 ;; (ibuffer-formats)
 ;; (define-ibuffer-column)
 (ibuffer-formats '((mark modified read-only locked
-                          " "
-                          (name 25 25 :left :elide)
-                          "   "
-                          ;; (filename-and-process 75 -1 :left :elide)
-                          (project-relative-filename-or-process 75 -1 :left :elide)
-                          " "
-                          mode)))
+                         " "
+                         (name 25 25 :left :elide)
+                         "   "
+                         ;; (filename-and-process 75 -1 :left :elide)
+                         (project-relative-filename-or-process 75 -1 :left :elide)
+                         " "
+                         mode)))
 #+end_src
 
 ***** hook
@@ -1886,11 +2135,11 @@ Marks for headers. Each is a cons-cell: ~(basic . fancy)~.
 
 #+begin_src emacs-lisp
 (ibuffer . (lambda ()
-            (ibuffer-auto-mode) ;; Automatically update the ibuffer
-            (hl-line-mode)
-            ;; (setq truncate-lines t) ;; do not wrap long lines
-            ;; (ibuffer-switch-to-saved-filter-groups "home")
-            ))
+             (ibuffer-auto-mode) ;; Automatically update the ibuffer
+             (hl-line-mode)
+             ;; (setq truncate-lines t) ;; do not wrap long lines
+             ;; (ibuffer-switch-to-saved-filter-groups "home")
+             ))
 #+end_src
 
 ***** config
@@ -1900,62 +2149,62 @@ Marks for headers. Each is a cons-cell: ~(basic . fancy)~.
 
 #+begin_src emacs-lisp
 (define-ibuffer-column project-relative-filename-or-process
-(:name "Filename/Process"
-  :header-mouse-map ibuffer-filename/process-header-map
-  :summarizer
-  (lambda (strings)
-    (setq strings (delete "" strings))
-    (let ((procs 0)
-          (files 0))
-      (dolist (string strings)
-        (when (get-text-property 1 'ibuffer-process string)
-          (setq procs (1+ procs)))
-        (setq files (1+ files)))
-      (concat (cond ((zerop files) "No files")
-                    ((= 1 files) "1 file")
-                    (t (format "%d files" files)))
-              ", "
-              (cond ((zerop procs) "no processes")
-                    ((= 1 procs) "1 process")
-                    (t (format "%d processes" procs)))))))
-(let ((proc (get-buffer-process buffer))
-      (filename (ibuffer-make-column-filename buffer mark)))
-  (if proc
-      (concat (propertize (format "(%s %s)" proc (process-status proc))
-                          'font-lock-face 'italic
-                          'ibuffer-process proc)
-              (if (> (length filename) 0)
-                  (format " %s" filename)
-                ""))
-    ;; else
-    (let ((root-dir (cdr (ibuffer-projectile-root buffer))))
-      (if root-dir
-          (file-relative-name filename root-dir)
-        (abbreviate-file-name filename)
-        ;; filename
-        )))))
+  (:name "Filename/Process"
+         :header-mouse-map ibuffer-filename/process-header-map
+         :summarizer
+         (lambda (strings)
+           (setq strings (delete "" strings))
+           (let ((procs 0)
+                 (files 0))
+             (dolist (string strings)
+               (when (get-text-property 1 'ibuffer-process string)
+                 (setq procs (1+ procs)))
+               (setq files (1+ files)))
+             (concat (cond ((zerop files) "No files")
+                           ((= 1 files) "1 file")
+                           (t (format "%d files" files)))
+                     ", "
+                     (cond ((zerop procs) "no processes")
+                           ((= 1 procs) "1 process")
+                           (t (format "%d processes" procs)))))))
+  (let ((proc (get-buffer-process buffer))
+        (filename (ibuffer-make-column-filename buffer mark)))
+    (if proc
+        (concat (propertize (format "(%s %s)" proc (process-status proc))
+                            'font-lock-face 'italic
+                            'ibuffer-process proc)
+                (if (> (length filename) 0)
+                    (format " %s" filename)
+                  ""))
+      ;; else
+      (let ((root-dir (cdr (ibuffer-projectile-root buffer))))
+        (if root-dir
+            (file-relative-name filename root-dir)
+          (abbreviate-file-name filename)
+          ;; filename
+          )))))
 #+end_src
 
 **** COMMENT all-the-icons-ibuffer
 
 #+begin_src emacs-lisp
 (use-package all-the-icons-ibuffer
-:elpaca t
-:after all-the-icons
-:hook (ibuffer-mode . all-the-icons-ibuffer-mode)
-:custom
-(all-the-icons-ibuffer-human-readable-size t))
+  :elpaca t
+  :after all-the-icons
+  :hook (ibuffer-mode . all-the-icons-ibuffer-mode)
+  :custom
+  (all-the-icons-ibuffer-human-readable-size t))
 #+end_src
 
 **** ibuffer-projectile
 
 #+begin_src emacs-lisp
 (use-package ibuffer-projectile
-:elpaca t
-:hook (ibuffer . (lambda ()
-                    (ibuffer-projectile-set-filter-groups)
-                    (unless (eq ibuffer-sorting-mode 'alphabetic)
-                      (ibuffer-do-sort-by-alphabetic)))))
+  :elpaca t
+  :hook (ibuffer . (lambda ()
+                     (ibuffer-projectile-set-filter-groups)
+                     (unless (eq ibuffer-sorting-mode 'alphabetic)
+                       (ibuffer-do-sort-by-alphabetic)))))
 #+end_src
 
 ** Org-mode
@@ -2012,10 +2261,11 @@ Show inline images by default in org-mode.
 (org-image-actual-width '(400))
 #+end_src
 
-↴ ▼ ▶ ⤵       󱞣
+↴ ▼ ▶ ⤵    󱞣
 #+begin_src emacs-lisp
 ;; (org-ellipsis " ")
-(org-ellipsis " ↴")
+;; (org-ellipsis " ↴")
+(org-ellipsis " ⤵")
 #+end_src
 
 Open src block buffer to the right of the current window keeping all other
@@ -2087,11 +2337,6 @@ Properties apply also for sublevels.
 (org-src-tab-acts-natively t)
 #+end_src
 
-Allow babel code execution without confirming it every time.
-#+begin_src emacs-lisp
-(org-confirm-babel-evaluate nil)
-#+end_src
-
 #+begin_src emacs-lisp
 (org-src-fontify-natively t)
 (org-fontify-whole-heading-line t)
@@ -2118,20 +2363,6 @@ Consider plain lists items as a lower level subheadings, during cycling
 with =Tab= key.
 #+begin_src emacs-lisp
 (org-cycle-include-plain-lists 'integrate)
-#+end_src
-
-#+begin_src emacs-lisp
-;; (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "DOING" "|" "DONE" "CANCELED")))
-;; (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "STARTED" "|" "DONE" "CANCELED")))
-(org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "INPROGRES" "|" "DONE" "CANCELED")))
-#+end_src
-
-Make priority signs be integers from 1 to 5, with 3 as default.
-Default priorities are: =#A=, =#B=, =#C=, with =#B= as default.
-#+begin_src emacs-lisp
-(org-priority-highest 65) ;; A
-(org-priority-lowest 67)  ;; C
-(org-priority-default 67) ;; C
 #+end_src
 
 Track time when tasks were finished.
@@ -2165,9 +2396,47 @@ Include entries from the Emacs diary into Org mode’s agenda.
 #+end_src
 
 #+begin_src emacs-lisp
-;; (org-use-tag-inheritance . nil)
-;; (org-tags-exclude-from-inheritance . '("soft" "cli"))
-;; (org-tags-match-list-sublevels nil)
+;; (org-use-tag-inheritance nil)
+;; (org-tags-exclude-from-inheritance '("soft" "cli"))
+(org-tags-match-list-sublevels nil)
+#+end_src
+
+***** "TODO" keywords and Priorities
+#+begin_src emacs-lisp
+(org-todo-keywords '((sequence ;; "󰒅" ;; SOMEDAY
+                               "󰔌" ;; SOMEDAY
+                               "󰄱" ;; TODO
+                               "󱗝" ;; NEXT
+                               "󰡖" ;; NEXT
+                               "󰤌" ;; IN PROCESS
+                               "󱅊" ;; IN PROGRESS
+                               "󰔟" ;; WAITING
+                               "|"
+                               "󰄵" ;; DONE
+                               "󱈎" ;; ARCHIVED
+                               "󰅘" ;; CANCELLED
+                               )
+                     (sequence "SOMEDAY" "TODO" "NEXT" "INPROGRESS" "WAITING" "|" "DONE" "ARCHIVED" "CANCELLED")))
+#+end_src
+
+Make priority signs be integers from 1 to 5, with 3 as default.
+Default priorities are: =#A=, =#B=, =#C=, with =#B= as default.
+#+begin_src emacs-lisp
+(org-priority-highest ?A)
+(org-priority-lowest  ?D) 
+(org-priority-default ?C)
+#+end_src
+
+***** babel
+Allow babel code execution without confirming it every time.
+#+begin_src emacs-lisp
+(org-confirm-babel-evaluate nil)
+#+end_src
+
+Use PlantUML executable instead of =.jar= file together with Java.
+#+begin_src emacs-lisp
+(org-plantuml-exec-mode 'plantuml)
+(org-plantuml-jar-path (expand-file-name "~/.nix-profile/lib/plantuml.jar"))
 #+end_src
 
 **** config
@@ -2187,7 +2456,7 @@ don't set if I set it in use-package =:custom= section.
                       ("\\.x?html?\\'" . default)))
 #+end_src
 
-***** babel languages
+***** Babel
 Setup available embedded languages for babel.
 
 #+begin_src emacs-lisp
@@ -2195,7 +2464,16 @@ Setup available embedded languages for babel.
                              '((sql . t)
                                (shell . t)
                                (emacs-lisp . t)
-                               (python . t)))
+                               (python . t)
+                               (plantuml . t)))
+#+end_src
+
+Redisplay images produced by babel after evaluating the block source.
+#+begin_src emacs-lisp
+(add-hook 'org-babel-after-execute-hook
+          (lambda ()
+            (when org-inline-image-overlays
+              (org-redisplay-inline-images))))
 #+end_src
 
 ***** Returning convenient paragrapsh behavior in evil
@@ -2216,7 +2494,7 @@ Setup available embedded languages for babel.
 #+end_src
 
 ***** Fonts and icons
-****** Font in agenda buffer
+****** COMMENT Font in agenda buffer
 #+begin_src emacs-lisp
 (defun my/org-setup-agenda-buffer-face ()
   (setq buffer-face-mode-face '(:family "iA Writer Mono S"))
@@ -2311,13 +2589,13 @@ Setup available embedded languages for babel.
 (defun my/config-fontify-inline-src-code ()
   "Fontify inline source code, such as src_html[:exports code]{<em>to be emphased</em>}."
   (font-lock-add-keywords nil
-    '((my/fontify-inline-src-code
-       (1 '(:foreground "black" :weight normal :height 10) t) ; src_ part
-       (2 '(:foreground "cyan" :weight bold :height 75 :underline "red") t) ; "lang" part.
-       (3 '(:foreground "#555555" :height 70) t) ; [:header arguments] part.
-       (4 'org-code t) ; "code..." part.
-       ))
-    'append))
+                          '((my/fontify-inline-src-code
+                             (1 '(:foreground "black" :weight normal :height 10) t) ; src_ part
+                             (2 '(:foreground "cyan" :weight bold :height 75 :underline "red") t) ; "lang" part.
+                             (3 '(:foreground "#555555" :height 70) t) ; [:header arguments] part.
+                             (4 'org-code t) ; "code..." part.
+                             ))
+                          'append))
 
 (add-hook 'org-mode-hook #'my/config-fontify-inline-src-code)
 #+end_src
@@ -2351,8 +2629,8 @@ Provide link completion matching outside of Org links.
 #+end_src
 
 How to store link on org-mode outline node:
-  - t            :: Create an ID if needed to make a link to the current entry.
-  - use-exixting :: Use existing ID, do not create one.
+- t            :: Create an ID if needed to make a link to the current entry.
+- use-exixting :: Use existing ID, do not create one.
 #+begin_src emacs-lisp
 ;; (org-id-link-to-org-use-id 'create-if-interactive)
 (org-id-link-to-org-use-id 'use-existing)
@@ -2379,6 +2657,10 @@ Set a more informative completion interface, for vertico.
 #+end_src
 
 #+begin_src emacs-lisp
+(add-to-list 'org-default-properties "ROAM_EXCLUDE")
+#+end_src
+
+#+begin_src emacs-lisp
 ;; (add-to-list 'display-buffer-alist
 ;;              '("\\*org-roam\\*"
 ;;                (display-buffer-in-direction)
@@ -2387,6 +2669,11 @@ Set a more informative completion interface, for vertico.
 ;;                (window-height . fit-window-to-buffer)))
 #+end_src
 
+***** functions
+:PROPERTIES:
+:header-args: :noweb-ref org-roam-config
+:END:
+****** Insert node immediate
 #+begin_src emacs-lisp
 (defun org-roam-node-insert-immediate (arg &rest args)
   (interactive "P")
@@ -2394,6 +2681,15 @@ Set a more informative completion interface, for vertico.
         (org-roam-capture-templates (list (append (car org-roam-capture-templates)
                                                   '(:immediate-finish t)))))
     (apply #'org-roam-node-insert args)))
+#+end_src
+
+****** Create untracked node
+#+begin_src emacs-lisp
+(defun org-roam-create-untracked-node ()
+  "Create Org-Roam node with `ROAM_EXCLUDE' property."
+  (interactive)
+  (org-id-get-create)
+  (org-set-property "ROAM_EXCLUDE" "t"))
 #+end_src
 
 **** org-roam-dailies
@@ -2483,8 +2779,8 @@ Display org-roam buffers right after non-org-roam buffers in ~consult-buffer~
 
 #+begin_src emacs-lisp
 (setq org-agenda-prefix-format '((agenda . " %i %-14:c%?-12t% s")
-                                 (todo . " %i %-14:c")
-                                 (tags . " %i %-14:c")
+                                 (todo   . " %i %-14:c")
+                                 (tags   . " %i %-14:c")
                                  (search . " %i %-14:c")))
 #+end_src
 
@@ -2553,7 +2849,7 @@ Display org-roam buffers right after non-org-roam buffers in ~consult-buffer~
                        (org-super-agenda-groups my/org-super-agenda-groups)))))))
 #+end_src
 
-*** org-fancy-priorities
+*** COMMENT org-fancy-priorities
    █
 ⬢ ⬣ ⯀ ⯁
 #+begin_src emacs-lisp
@@ -2563,15 +2859,16 @@ Display org-roam buffers right after non-org-roam buffers in ~consult-buffer~
   :custom
   ;; (org-fancy-priorities-list '("🟥" "🟧" "🟨" "🟩" "🟦" "🟪"))
   ;; (org-fancy-priorities-list '("" "" ""))
-  (org-fancy-priorities-list '("" "" ""))
+  ;; (org-fancy-priorities-list '("" "" ""))
   ;; (org-fancy-priorities-list '("█" "█" "█"))
   ;; (org-fancy-priorities-list '("⯀" "⯀" "⯀"))
   ;; (org-fancy-priorities-list '("⬢" "⬢" "⬢"))
   ;; (org-fancy-priorities-list '("⬣" "⬣" "⬣"))
   (org-priority-faces
    '((?A :foreground "red" :weight bold)
-     (?B :foreground "orange" :weight bold)
-     (?C :foreground "Chartreuse3" :weight bold)))
+     ;; (?B :foreground "orange" :weight bold)
+     (?B :foreground "#FFCC32" :weight bold)
+     (?C :foreground "#7CB342" :weight bold)))
   )
 #+end_src
 
@@ -3112,7 +3409,11 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
   "C-p" 'consult-yank-from-kill-ring)
 
 (general-def :states 'visual
-  "z n" (lambda () (narrow-to-region) (evil-exit-visual-state)))
+  "z n" (lambda ()
+          (interactive)
+          (narrow-to-region (region-beginning)
+                            (region-end))
+          (evil-exit-visual-state)))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -3220,6 +3521,50 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
 #+end_src
 
 *** Dired
+**** COMMENT Dirvish
+#+begin_src emacs-lisp
+(general-def :keymaps 'dired-mode-map
+  :states 'normal
+  ;; left click for expand/collapse dir or open file
+  "<mouse-1>" 'dirvish-subtree-toggle-or-open
+  ;; middle click for opening file / entering dir in other window
+  "<mouse-2>" 'dired-mouse-find-file-other-window
+  ;; right click for opening file / entering dir
+  "<mouse-3>" 'dired-mouse-find-file
+  "<tab>" 'dirvish-toggle-subtree
+  "<backspace>" 'dired-up-directory
+  "l"   'dired-find-file
+  "h"   'dired-up-directory
+  "f"   'find-file
+  "gh"  'dired-home-directory
+  "C-o" 'dirvish-history-go-backward
+  "C-i" 'dirvish-history-go-forward
+  "q"   'dirvish-quit
+  "?"   'dirvish-dispatch
+  "gb"  '(dirvish-ibuffer :which-key "ibuffer")
+  "a"   'dirvish-quick-access
+  "p"   'dirvish-yank-menu
+  "s"   'dirvish-quicksort
+  "w"   'dirvish-layout-toggle
+  "<"   'dired-prev-marked-file
+  ">"   'dired-next-marked-file
+  "gh"  'dirvish-history-jump)
+(general-def :keymaps 'dired-mode-map
+  :states 'visual
+  "d" 'dired-flag-file-deletion
+  "u" 'dired-unmark)
+(general-def :keymaps 'dired-mode-map
+  :states 'normal
+  :prefix "SPC"
+  "n" 'dirvish-narrow
+  "m" 'dirvish-mark-menu
+  "s" 'dirvish-setup-menu
+  "e" 'dirvish-emerge-menu
+  "l" 'dired-launch-command
+  "f" '(nil :which-key t))
+#+end_src
+
+**** Dired
 #+begin_src emacs-lisp
 (general-def :keymaps 'dired-mode-map :states 'normal
   "SPC" '(:keymap leader-map) ;; use 'Space' as leader key
@@ -3245,8 +3590,7 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
   "u" 'dired-unmark)
 #+end_src
 
-**** dired hydra
-
+***** dired hydra
 #+begin_src emacs-lisp
 (defhydra hydra-dired (:hint nil :color pink)
   "
@@ -3312,15 +3656,22 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
   "?" 'hydra:bufler/body)
 #+end_src
 
+*** Origami
+#+begin_src emacs-lisp
+(general-def :keymaps 'origami-mode-map
+  :states 'normal
+  "z j" 'origami-forward-fold
+  "z k" 'origami-previous-fold)
+#+end_src
+
 *** Outline
 #+begin_src emacs-lisp
-(general-def
-  :keymaps 'outline-mode-map
+(general-def :keymaps 'outline-mode-map
   :states 'normal
   "<tab>" 'outline-cycle
+  "z m" 'my/outline-hide-sublevels
   "z j" 'outline-next-visible-heading
-  "z k" 'outline-previous-visible-heading
-  "z m" 'my/outline-hide-sublevels)
+  "z k" 'outline-previous-visible-heading)
 #+end_src
 
 **** my functions for outline keybindings
@@ -3345,17 +3696,20 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
   "L" 'org-cliplink
   "a" 'org-attach
   "[" 'org-agenda-file-to-front
-  "]" 'org-remove-file)
+  "]" 'org-remove-file
+  "|" 'org-table-create-or-convert-from-region)
 #+end_src
 
 #+begin_src emacs-lisp
-(general-def :keymaps 'org-src-mode-map :states 'normal
+(general-def :keymaps 'org-src-mode-map
+  :states 'normal
   "z '" 'org-edit-src-exit)
 #+end_src
 
 #+begin_src emacs-lisp
 (with-eval-after-load 'org
-  (general-def :keymaps 'org-mode-map :states '(normal visual)
+  (general-def :keymaps 'org-mode-map
+    :states '(normal visual)
     "g h" 'evil-org-beginning-of-line
     "g l" 'evil-org-end-of-line
     ;; "H" 'org-up-element
@@ -3409,6 +3763,7 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
 *** Org-Roam
 #+begin_src emacs-lisp
 (general-def :keymaps 'my/notes-map
+  "I" 'org-roam-create-untracked-node
   "a" 'org-agenda
   "s" 'org-store-link
   "n" 'org-roam-node-find
@@ -3467,7 +3822,7 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
 (set-cursor-color "black")
 #+end_src
 
-**** orgmode faces
+**** Org-mode faces
 :PROPERTIES:
 :header-args: :noweb-ref ef-themes-config
 :END:
@@ -3477,12 +3832,28 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
 (set-face-attribute 'org-code     nil :foreground "#cf25aa" :background "#f5f5f5")
 #+end_src
 
+***** Headings
 #+begin_src emacs-lisp
-(set-face-attribute 'org-level-1  nil :foreground "#375cd8" :weight 'normal :height 1.08)
-(set-face-attribute 'org-level-2  nil :foreground "#cf25aa" :weight 'normal :height 1.08)
-(set-face-attribute 'org-level-3  nil :foreground "#1f77bb" :weight 'normal :height 1.08)
-(set-face-attribute 'org-level-4  nil :foreground "#b65050" :weight 'normal :height 1.08)
-(set-face-attribute 'org-level-5  nil :foreground "#6052cf" :weight 'normal :height 1.08)
+(set-face-attribute 'org-level-1  nil :foreground "#375cd8" :weight 'normal :height 1.09)
+(set-face-attribute 'org-level-2  nil :foreground "#cf25aa" :weight 'normal :height 1.09)
+(set-face-attribute 'org-level-3  nil :foreground "#1f77bb" :weight 'normal :height 1.09)
+(set-face-attribute 'org-level-4  nil :foreground "#b65050" :weight 'normal :height 1.09)
+(set-face-attribute 'org-level-5  nil :foreground "#6052cf" :weight 'normal :height 1.09)
+#+end_src
+
+Add a box with the same color as a background around every org heading. It does
+take effect of adding padding around headings, but it is a hack and not reliable.
+#+begin_src emacs-lisp
+;; (set-face-attribute 'org-level-1  nil :foreground "#375cd8" :weight 'normal :height 1.08
+;;                                       :box `(:line-width 4 :color ,(face-background 'default)))
+;; (set-face-attribute 'org-level-2  nil :foreground "#cf25aa" :weight 'normal :height 1.08
+;;                                       :box `(:line-width 4 :color ,(face-background 'default)))
+;; (set-face-attribute 'org-level-3  nil :foreground "#1f77bb" :weight 'normal :height 1.08
+;;                                       :box `(:line-width 4 :color ,(face-background 'default)))
+;; (set-face-attribute 'org-level-4  nil :foreground "#b65050" :weight 'normal :height 1.08
+;;                                       :box `(:line-width 4 :color ,(face-background 'default)))
+;; (set-face-attribute 'org-level-5  nil :foreground "#6052cf" :weight 'normal :height 1.08
+;;                                       :box `(:line-width 4 :color ,(face-background 'default)))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -3491,6 +3862,52 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
 ;; (set-face-attribute 'org-level-3  nil :foreground "#1f77bb" :height 1.15)
 ;; (set-face-attribute 'org-level-4  nil :foreground "#b65050" :height 1.1)
 ;; (set-face-attribute 'org-level-5  nil :foreground "#6052cf" :height 1.05)
+#+end_src
+
+***** "TODO" keywords
+#+begin_src emacs-lisp
+;; "SOMEDAY" "TODO" "NEXT" "INPROGRESS" "WAITING" "|" "DONE" "CANCELLED"
+(setq org-todo-keyword-faces
+      '(("SOMEDAY"    . (:foreground "#6e6e6e"))
+        ("TODO"       . (:foreground "#cf7200"))
+        ;; ("NEXT"       . (:foreground "#de0000"))
+        ("INPROGRESS" . (:foreground "#0076c8"))
+        ("WAITING"    . (:foreground "#cf7200"))
+        ;; ("DONE"       . (:foreground "#598d3f"))
+        ("CANCELLED"  . (:foreground "#63735b"))
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ("󰒅" . (:foreground "#7b7b7b"))
+        ("󰿦" . (:foreground "#7b7b7b"))
+        ("󰔌" . (:foreground "#7b7b7b"))
+        ;; ("󰄱" . (:foreground ""))
+        ;; ("󱗝" . (:foreground ""))
+        ;; ("󰡖" . (:foreground ""))
+        ;; ("󰤌" . (:foreground ""))
+        ;; ("󱅊" . (:foreground ""))
+        ("󰔟" . (:foreground "#0076c8"))
+        ;; ("󰄵" . (:foreground ""))
+        ("󰅘" . (:foreground "#6e6e6e"))
+        ("󱈎" . (:foreground "#6e6e6e"))))
+#+end_src
+
+***** Priorities
+#+begin_src emacs-lisp
+(setq org-priority-faces
+      '((?A :foreground "red" :weight bold)
+        (?B :foreground "orange" :weight bold)
+        (?C :foreground "#7CB342" :weight bold)
+        (?D :foreground "#2196F3" :weight bold)
+        ;; (?D :foreground "#AB47BC" :weight bold)
+        ))
+#+end_src
+
+*** COMMENT modus-themes
+#+begin_src emacs-lisp
+(use-package modus-themes
+  :elpaca t
+  :config
+  (load-theme 'modus-operandi-tritanopia :no-confirm)
+  )
 #+end_src
 
 *** COMMENT shanty-themes
@@ -3582,10 +3999,31 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
 #+begin_src emacs-lisp
 (use-package markdown-mode
   :elpaca t
-  :mode ("README\\.md\\'" . gfm-mode)
+  :mode ("README\\.md\\'" . gfm-mode) ;; Github Flavored Markdown
+  ;; :hook (gfm-mode . visual-line-mode) ;; Wrap long lines on words.
   ;; :custom
   ;; (markdown-command "multimarkdown")
   )
+#+end_src
+
+*** Yaml
+#+begin_src emacs-lisp
+(use-package yaml-mode
+  :elpaca t
+  ;; :config
+  ;; (my/append-to-list 'auto-mode-alist
+  ;;                    '(("\\.yml\\'" . yaml-mode)
+  ;;                      ("\\.yaml\\'" . yaml-mode)))
+  )
+#+end_src
+
+*** PlantUML
+#+begin_src emacs-lisp
+(use-package plantuml-mode
+  :elpaca t
+  :custom
+  (plantuml-jar-path (expand-file-name "~/.nix-profile/lib/plantuml.jar"))
+  (plantuml-default-exec-mode 'executable))
 #+end_src
 
 *** COMMENT Options for =init.el= file
@@ -3605,6 +4043,6 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
 This concludes the =init.el= file.
 
 #+begin_src emacs-lisp
-  (provide 'init.el)
-  ;;; init.el ends here
+(provide 'init.el)
+;;; init.el ends here
 #+end_src

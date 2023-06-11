@@ -52,10 +52,10 @@
   (with-eval-after-load 'elpaca-ui   (evil-make-intercept-map elpaca-ui-mode-map))
   (with-eval-after-load 'elpaca-info (evil-make-intercept-map elpaca-info-mode-map)))
 
-(use-package s    :elpaca t) ;; string manipulation library
-(use-package dash :elpaca t) ;; list manipulation library
+(use-package s        :elpaca t) ;; string manipulation library
+(use-package dash     :elpaca t) ;; list manipulation library
 (use-package diminish :elpaca t)
-(use-package hydra :elpaca t)
+(use-package hydra    :elpaca t)
 
 (use-package use-package
   :no-require
@@ -157,7 +157,6 @@ shell command."
   (scroll-bar-mode -1)
   (horizontal-scroll-bar-mode -1)
   (blink-cursor-mode 0)
-  (set-fringe-mode 3)
   (column-number-mode 1))
 
 (when window-system
@@ -244,6 +243,11 @@ shell command."
 
 (setq ansi-color-for-compilation-mode t)
 (add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
+
+(use-package fringe
+  :config
+  (set-fringe-mode 10) ;; default is 8
+  )
 
 (use-package vertico
   :elpaca t
@@ -338,14 +342,13 @@ shell command."
 (use-package embark
   :elpaca t
   :config
-  (general-def
-    :states 'motion
+  (general-def :states 'motion
     "," 'embark-act
     "M-," 'embark-dwim)
-  ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
-  ;; strategy, if you want to see the documentation from multiple providers.
-  (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
-  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+  ;; ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
+  ;; ;; strategy, if you want to see the documentation from multiple providers.
+  ;; (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;; ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
   )
 
 (use-package embark-consult
@@ -447,38 +450,35 @@ shell command."
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
 )
 
-(use-package lsp-mode
+(use-package project :elpaca t)
+(use-package eglot
   :elpaca t
-  :commands lsp
+  :after (project projectile cape)
+  :preface
+  (add-hook 'c-mode-hook 'eglot-ensure)
+  (add-hook 'c++-mode-hook 'eglot-ensure)
+  ;; (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-mode t)
+  ;; (add-hook 'eglot-managed-mode-hook
+  ;;           (lambda ()
+  ;;             "Make sure Eldoc will show us all of the feedback at point."
+  ;;             (setq-local eldoc-documentation-strategy
+  ;;                         #'eldoc-documentation-compose)))
   :custom
-  (lsp-completion-provider :none) ;; I use Corfu
-  (lsp-headerline-breadcrumb-enable-diagnostics nil)
-  (lsp-headerline-breadcrumb-icons-enable t)
-  (lsp-diagnostics-provider :flycheck)
-  :init
-  (defun my/lsp-mode-setup-completion ()
-    (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-          '(orderless))) ;; Configure orderless
-  :hook ((lsp-mode . lsp-enable-which-key-integration)
-         (lsp-completion-mode . my/lsp-mode-setup-completion)
-         (c-mode . lsp)
-         (c++-mode . lsp)))
+  (eglot-autoshutdown t)
+  (eglot-extend-to-xref t)
+  (eldoc-idle-delay 0.0)
+  (eglot-events-buffer-size 0)
+  (flymake-no-changes-timeout 0.5)
+  :config
+  (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
+  (fset #'jsonrpc--log-event #'ignore)
+  )
 
-(use-package lsp-treemacs
+(use-package consult-eglot
   :elpaca t
-  :commands lsp-treemacs-errors-list)
+  :after eglot)
 
-(use-package lsp-ui
-  :elpaca t
-  :commands lsp-ui-mode)
-
-(use-package consult-lsp
-  :elpaca t
-  :after '(consult lsp-mode))
-
-(use-package flycheck
-  :elpaca t
-  :init (global-flycheck-mode))
+;; (setq eglot-server-programs)
 
 (use-package pixel-scroll
   :when (fboundp #'pixel-scroll-precision-mode)
@@ -513,6 +513,14 @@ shell command."
     :states 'visual
     "v" 'er/expand-region))
 
+;; (defun my/collapse-region ()
+;;   (interactive)
+;;   (er/expand-region -1))
+;; (general-def
+;;   :states 'visual
+;;   "v" 'er/expand-region
+;;   "C-v" 'my/collapse-region)
+
 (use-package magit
   :elpaca t
   :custom
@@ -522,7 +530,7 @@ shell command."
 (use-package zoxide
   :elpaca t
   :bind (:map leader-map
-         ("fz" . zoxide-find-file)))
+              ("fz" . zoxide-find-file)))
 
 (use-package gcmh
   :elpaca t
@@ -535,8 +543,8 @@ shell command."
   :config
   (when (fboundp 'startup-redirect-eln-cache)
     (startup-redirect-eln-cache
-      (convert-standard-filename
-        (expand-file-name  "var/eln-cache/" user-emacs-directory)))))
+     (convert-standard-filename
+      (expand-file-name  "var/eln-cache/" user-emacs-directory)))))
 
 (use-package recentf
   :after no-littering
@@ -559,9 +567,9 @@ shell command."
 
 (use-package projectile
   :elpaca t
-  ;; :custom
-  ;; (projectile-auto-discover t)
-  ;; (projectile-project-search-path)
+  :custom
+  (projectile-auto-discover t)
+  (projectile-project-search-path '("~"))
   :config
   (projectile-mode)
   (general-def :keymaps 'projectile-command-map
@@ -579,6 +587,15 @@ shell command."
          ([remap projectile-recentf] . consult-projectile-recentf)
          ;; ([remap projectile-switch-project] . consult-projectile-switch-project)
          ([remap projectile-switch-project] . consult-projectile)))
+
+(use-package origami
+  :elpaca t
+  ;; :custom
+  ;; (origami-show-fold-header t) ;; highlight fold headers
+  ;; :config
+  ;; (global-origami-mode 1)
+  ;; (setq origami-fold-style 'triple-braces)
+  )
 
 (use-package helpful
   :elpaca t
@@ -634,14 +651,22 @@ shell command."
   :config
   (global-anzu-mode))
 
+(use-package visual-fill-column
+  :elpaca t
+  :config
+  ;; (visual-line-mode) ;; Wrap long lines on words.
+  (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
+  )
+
 (use-package dired
   :custom
   (dired-listing-switches "-lAhF -v --group-directories-first")
+  ;; (dired-listing-switches "-l --human-readable --group-directories-first")
   (dired-kill-when-opening-new-dired-buffer t)
-  (dired-no-confirm t)
+  (delete-by-moving-to-trash t)
   (dired-recursive-deletes 'always)
   (dired-recursive-copies 'always)
-  (delete-by-moving-to-trash t)
+  (dired-no-confirm t)
   (dired-dwim-target t)
   (dired-omit-files "\\`[.]?#\\|\\`[.][.]?\\'\\|\\`[.].+")
   :hook
@@ -819,7 +844,9 @@ shell command."
   (my/append-to-list 'bufler-filter-buffer-modes
                      '(org-roam-mode
                        ;; magit-status-mode magit-refs-mode magit-log-mode
-                       mu4e-main-mode)))
+                       mu4e-main-mode))
+  (my/append-to-list 'bufler-filter-buffer-name-regexps
+                     '("\\*EGLOT")))
 
 (use-package org
   :after evil
@@ -832,7 +859,8 @@ shell command."
   (org-startup-with-inline-images t)
   (org-image-actual-width '(400))
   ;; (org-ellipsis " ")
-  (org-ellipsis " ↴")
+  ;; (org-ellipsis " ↴")
+  (org-ellipsis " ⤵")
   ;; (org-src-window-setup 'split-window-right)
   (org-src-window-setup 'current-window) ;; edit in current window
   (org-edit-src-content-indentation 0)
@@ -852,7 +880,6 @@ shell command."
   (org-startup-folded 'show2levels)
   (org-use-property-inheritance t)
   (org-src-tab-acts-natively t)
-  (org-confirm-babel-evaluate nil)
   (org-src-fontify-natively t)
   (org-fontify-whole-heading-line t)
   (org-fontify-done-headline t)
@@ -861,12 +888,6 @@ shell command."
   ;; (org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
   ;; (org-list-indent-offset 1)
   (org-cycle-include-plain-lists 'integrate)
-  ;; (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "DOING" "|" "DONE" "CANCELED")))
-  ;; (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "STARTED" "|" "DONE" "CANCELED")))
-  (org-todo-keywords '((sequence "TODO" "WAITING" "NEXT" "INPROGRES" "|" "DONE" "CANCELED")))
-  (org-priority-highest 65) ;; A
-  (org-priority-lowest 67)  ;; C
-  (org-priority-default 67) ;; C
   (org-log-done 'time)
   (org-deadline-warning-days 14)
   (org-log-redeadline 'note)
@@ -877,9 +898,29 @@ shell command."
   (org-pretty-entities t)
   (org-attach-store-link-p t)
   (org-attach-use-inheritance t)
-  ;; (org-use-tag-inheritance . nil)
-  ;; (org-tags-exclude-from-inheritance . '("soft" "cli"))
-  ;; (org-tags-match-list-sublevels nil)
+  ;; (org-use-tag-inheritance nil)
+  ;; (org-tags-exclude-from-inheritance '("soft" "cli"))
+  (org-tags-match-list-sublevels nil)
+  (org-todo-keywords '((sequence ;; "󰒅" ;; SOMEDAY
+                                 "󰔌" ;; SOMEDAY
+                                 "󰄱" ;; TODO
+                                 "󱗝" ;; NEXT
+                                 "󰡖" ;; NEXT
+                                 "󰤌" ;; IN PROCESS
+                                 "󱅊" ;; IN PROGRESS
+                                 "󰔟" ;; WAITING
+                                 "|"
+                                 "󰄵" ;; DONE
+                                 "󱈎" ;; ARCHIVED
+                                 "󰅘" ;; CANCELLED
+                                 )
+                       (sequence "SOMEDAY" "TODO" "NEXT" "INPROGRESS" "WAITING" "|" "DONE" "ARCHIVED" "CANCELLED")))
+  (org-priority-highest ?A)
+  (org-priority-lowest  ?D) 
+  (org-priority-default ?C)
+  (org-confirm-babel-evaluate nil)
+  (org-plantuml-exec-mode 'plantuml)
+  (org-plantuml-jar-path (expand-file-name "~/.nix-profile/lib/plantuml.jar"))
   :config
   (setq org-file-apps '(("\\.pdf\\'" . "evince %s")
                         ("\\.djvu\\'" . "evince %s")
@@ -891,7 +932,12 @@ shell command."
                                '((sql . t)
                                  (shell . t)
                                  (emacs-lisp . t)
-                                 (python . t)))
+                                 (python . t)
+                                 (plantuml . t)))
+  (add-hook 'org-babel-after-execute-hook
+            (lambda ()
+              (when org-inline-image-overlays
+                (org-redisplay-inline-images))))
   (with-eval-after-load 'evil
     (define-advice forward-evil-paragraph
         (:around (orig-fun &rest args) use-default-paragraph-definiton-in-org)
@@ -900,11 +946,6 @@ shell command."
                 (paragraph-separate (default-value 'paragraph-separate)))
             (apply orig-fun args))
         (apply orig-fun args))))
-  (defun my/org-setup-agenda-buffer-face ()
-    (setq buffer-face-mode-face '(:family "iA Writer Mono S"))
-    (buffer-face-mode))
-  
-  (add-hook 'org-agenda-mode-hook 'my/org-setup-agenda-buffer-face)
   (defun my/org-icons ()
     "Beautify org mode keywords."
     (setq prettify-symbols-alist
@@ -967,6 +1008,7 @@ shell command."
                                           (propertize "${tags:17}" 'face 'org-tag)))
   :config
   (org-roam-db-autosync-mode)
+  (add-to-list 'org-default-properties "ROAM_EXCLUDE")
   ;; (add-to-list 'display-buffer-alist
   ;;              '("\\*org-roam\\*"
   ;;                (display-buffer-in-direction)
@@ -979,6 +1021,11 @@ shell command."
           (org-roam-capture-templates (list (append (car org-roam-capture-templates)
                                                     '(:immediate-finish t)))))
       (apply #'org-roam-node-insert args)))
+  (defun org-roam-create-untracked-node ()
+    "Create Org-Roam node with `ROAM_EXCLUDE' property."
+    (interactive)
+    (org-id-get-create)
+    (org-set-property "ROAM_EXCLUDE" "t"))
   )
 
 (use-package org-roam-dailies
@@ -1016,8 +1063,8 @@ shell command."
       org-agenda-start-with-log-mode nil)
 
 (setq org-agenda-prefix-format '((agenda . " %i %-14:c%?-12t% s")
-                                 (todo . " %i %-14:c")
-                                 (tags . " %i %-14:c")
+                                 (todo   . " %i %-14:c")
+                                 (tags   . " %i %-14:c")
                                  (search . " %i %-14:c")))
 
 (use-package org-super-agenda
@@ -1078,23 +1125,6 @@ shell command."
         ("g" "Custom list of all TODO entries"
          ((alltodo "" ((org-agenda-overriding-header "")
                        (org-super-agenda-groups my/org-super-agenda-groups)))))))
-
-(use-package org-fancy-priorities
-  :elpaca t
-  :hook (org-mode . org-fancy-priorities-mode)
-  :custom
-  ;; (org-fancy-priorities-list '("🟥" "🟧" "🟨" "🟩" "🟦" "🟪"))
-  ;; (org-fancy-priorities-list '("" "" ""))
-  (org-fancy-priorities-list '("" "" ""))
-  ;; (org-fancy-priorities-list '("█" "█" "█"))
-  ;; (org-fancy-priorities-list '("⯀" "⯀" "⯀"))
-  ;; (org-fancy-priorities-list '("⬢" "⬢" "⬢"))
-  ;; (org-fancy-priorities-list '("⬣" "⬣" "⬣"))
-  (org-priority-faces
-   '((?A :foreground "red" :weight bold)
-     (?B :foreground "orange" :weight bold)
-     (?C :foreground "Chartreuse3" :weight bold)))
-  )
 
 (use-package org-superstar
   :elpaca t
@@ -1285,7 +1315,11 @@ shell command."
     "C-p" 'consult-yank-from-kill-ring)
   
   (general-def :states 'visual
-    "z n" (lambda () (narrow-to-region) (evil-exit-visual-state)))
+    "z n" (lambda ()
+            (interactive)
+            (narrow-to-region (region-beginning)
+                              (region-end))
+            (evil-exit-visual-state)))
   (general-def :keymaps 'universal-argument-map
     "M-u" 'universal-argument-more)
   (general-def :states 'insert
@@ -1422,13 +1456,16 @@ shell command."
     "x" 'bufler-list-buffer-kill
     "W" 'bufler-list-buffer-peek
     "?" 'hydra:bufler/body)
-  (general-def
-    :keymaps 'outline-mode-map
+  (general-def :keymaps 'origami-mode-map
+    :states 'normal
+    "z j" 'origami-forward-fold
+    "z k" 'origami-previous-fold)
+  (general-def :keymaps 'outline-mode-map
     :states 'normal
     "<tab>" 'outline-cycle
+    "z m" 'my/outline-hide-sublevels
     "z j" 'outline-next-visible-heading
-    "z k" 'outline-previous-visible-heading
-    "z m" 'my/outline-hide-sublevels)
+    "z k" 'outline-previous-visible-heading)
   (defun my/outline-hide-sublevels (levels)
     (interactive "p")
     (outline-hide-sublevels (or levels 1)))
@@ -1445,11 +1482,14 @@ shell command."
     "L" 'org-cliplink
     "a" 'org-attach
     "[" 'org-agenda-file-to-front
-    "]" 'org-remove-file)
-  (general-def :keymaps 'org-src-mode-map :states 'normal
+    "]" 'org-remove-file
+    "|" 'org-table-create-or-convert-from-region)
+  (general-def :keymaps 'org-src-mode-map
+    :states 'normal
     "z '" 'org-edit-src-exit)
   (with-eval-after-load 'org
-    (general-def :keymaps 'org-mode-map :states '(normal visual)
+    (general-def :keymaps 'org-mode-map
+      :states '(normal visual)
       "g h" 'evil-org-beginning-of-line
       "g l" 'evil-org-end-of-line
       ;; "H" 'org-up-element
@@ -1492,6 +1532,7 @@ shell command."
     ;; "C-y" #'org-transclusion-live-sync-paste
     "q" #'org-transclusion-live-sync-exit)
   (general-def :keymaps 'my/notes-map
+    "I" 'org-roam-create-untracked-node
     "a" 'org-agenda
     "s" 'org-store-link
     "n" 'org-roam-node-find
@@ -1647,16 +1688,55 @@ shell command."
   (set-cursor-color "black")
   (set-face-attribute 'org-verbatim nil :foreground "#4250ef" :background "#f5f5f5")
   (set-face-attribute 'org-code     nil :foreground "#cf25aa" :background "#f5f5f5")
-  (set-face-attribute 'org-level-1  nil :foreground "#375cd8" :weight 'normal :height 1.08)
-  (set-face-attribute 'org-level-2  nil :foreground "#cf25aa" :weight 'normal :height 1.08)
-  (set-face-attribute 'org-level-3  nil :foreground "#1f77bb" :weight 'normal :height 1.08)
-  (set-face-attribute 'org-level-4  nil :foreground "#b65050" :weight 'normal :height 1.08)
-  (set-face-attribute 'org-level-5  nil :foreground "#6052cf" :weight 'normal :height 1.08)
+  (set-face-attribute 'org-level-1  nil :foreground "#375cd8" :weight 'normal :height 1.09)
+  (set-face-attribute 'org-level-2  nil :foreground "#cf25aa" :weight 'normal :height 1.09)
+  (set-face-attribute 'org-level-3  nil :foreground "#1f77bb" :weight 'normal :height 1.09)
+  (set-face-attribute 'org-level-4  nil :foreground "#b65050" :weight 'normal :height 1.09)
+  (set-face-attribute 'org-level-5  nil :foreground "#6052cf" :weight 'normal :height 1.09)
+  ;; (set-face-attribute 'org-level-1  nil :foreground "#375cd8" :weight 'normal :height 1.08
+  ;;                                       :box `(:line-width 4 :color ,(face-background 'default)))
+  ;; (set-face-attribute 'org-level-2  nil :foreground "#cf25aa" :weight 'normal :height 1.08
+  ;;                                       :box `(:line-width 4 :color ,(face-background 'default)))
+  ;; (set-face-attribute 'org-level-3  nil :foreground "#1f77bb" :weight 'normal :height 1.08
+  ;;                                       :box `(:line-width 4 :color ,(face-background 'default)))
+  ;; (set-face-attribute 'org-level-4  nil :foreground "#b65050" :weight 'normal :height 1.08
+  ;;                                       :box `(:line-width 4 :color ,(face-background 'default)))
+  ;; (set-face-attribute 'org-level-5  nil :foreground "#6052cf" :weight 'normal :height 1.08
+  ;;                                       :box `(:line-width 4 :color ,(face-background 'default)))
   ;; (set-face-attribute 'org-level-1  nil :foreground "#375cd8" :height 1.27)
   ;; (set-face-attribute 'org-level-2  nil :foreground "#cf25aa" :height 1.20)
   ;; (set-face-attribute 'org-level-3  nil :foreground "#1f77bb" :height 1.15)
   ;; (set-face-attribute 'org-level-4  nil :foreground "#b65050" :height 1.1)
   ;; (set-face-attribute 'org-level-5  nil :foreground "#6052cf" :height 1.05)
+  ;; "SOMEDAY" "TODO" "NEXT" "INPROGRESS" "WAITING" "|" "DONE" "CANCELLED"
+  (setq org-todo-keyword-faces
+        '(("SOMEDAY"    . (:foreground "#6e6e6e"))
+          ("TODO"       . (:foreground "#cf7200"))
+          ;; ("NEXT"       . (:foreground "#de0000"))
+          ("INPROGRESS" . (:foreground "#0076c8"))
+          ("WAITING"    . (:foreground "#cf7200"))
+          ;; ("DONE"       . (:foreground "#598d3f"))
+          ("CANCELLED"  . (:foreground "#63735b"))
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+          ("󰒅" . (:foreground "#7b7b7b"))
+          ("󰿦" . (:foreground "#7b7b7b"))
+          ("󰔌" . (:foreground "#7b7b7b"))
+          ;; ("󰄱" . (:foreground ""))
+          ;; ("󱗝" . (:foreground ""))
+          ;; ("󰡖" . (:foreground ""))
+          ;; ("󰤌" . (:foreground ""))
+          ;; ("󱅊" . (:foreground ""))
+          ("󰔟" . (:foreground "#0076c8"))
+          ;; ("󰄵" . (:foreground ""))
+          ("󰅘" . (:foreground "#6e6e6e"))
+          ("󱈎" . (:foreground "#6e6e6e"))))
+  (setq org-priority-faces
+        '((?A :foreground "red" :weight bold)
+          (?B :foreground "orange" :weight bold)
+          (?C :foreground "#7CB342" :weight bold)
+          (?D :foreground "#2196F3" :weight bold)
+          ;; (?D :foreground "#AB47BC" :weight bold)
+          ))
   )
 
 (add-hook 'prog-mode-hook
@@ -1697,10 +1777,25 @@ shell command."
 
 (use-package markdown-mode
   :elpaca t
-  :mode ("README\\.md\\'" . gfm-mode)
+  :mode ("README\\.md\\'" . gfm-mode) ;; Github Flavored Markdown
+  ;; :hook (gfm-mode . visual-line-mode) ;; Wrap long lines on words.
   ;; :custom
   ;; (markdown-command "multimarkdown")
   )
+
+(use-package yaml-mode
+  :elpaca t
+  ;; :config
+  ;; (my/append-to-list 'auto-mode-alist
+  ;;                    '(("\\.yml\\'" . yaml-mode)
+  ;;                      ("\\.yaml\\'" . yaml-mode)))
+  )
+
+(use-package plantuml-mode
+  :elpaca t
+  :custom
+  (plantuml-jar-path (expand-file-name "~/.nix-profile/lib/plantuml.jar"))
+  (plantuml-default-exec-mode 'executable))
 
 (provide 'init.el)
 ;;; init.el ends here
