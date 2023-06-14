@@ -653,6 +653,8 @@ shell command."
 
 (use-package visual-fill-column
   :elpaca t
+  :custom
+  (visual-fill-column-center-text t)
   :config
   ;; (visual-line-mode) ;; Wrap long lines on words.
   (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
@@ -896,13 +898,14 @@ shell command."
   (org-agenda-restore-windows-after-quit t)
   (org-agenda-include-diary nil)
   (org-pretty-entities t)
-  (org-attach-store-link-p t)
-  (org-attach-use-inheritance t)
   ;; (org-use-tag-inheritance nil)
   ;; (org-tags-exclude-from-inheritance '("soft" "cli"))
   (org-tags-match-list-sublevels nil)
-  (org-todo-keywords '((sequence ;; "󰒅" ;; SOMEDAY
-                                 "󰔌" ;; SOMEDAY
+  (org-attach-store-link-p t)
+  (org-attach-use-inheritance t)
+  (org-attach-auto-tag "ATTACH")
+  (org-todo-keywords '((sequence "󰔌" ;; SOMEDAY
+                                 "󰒅" ;; SOMEDAY
                                  "󰄱" ;; TODO
                                  "󱗝" ;; NEXT
                                  "󰡖" ;; NEXT
@@ -991,6 +994,23 @@ shell command."
     ;;                                ;; ("DEADLINE:" . "")
     ;;                                ))
     (prettify-symbols-mode)))
+
+(use-package org-superstar
+  :elpaca t
+  :after org
+  :custom
+  (org-superstar-remove-leading-stars nil)
+  (org-superstar-headline-bullets-list '("●"))
+  ;; (org-superstar-leading-bullet)
+  (org-superstar-item-bullet-alist '((?- . ?•)
+                                     (?* . ?‣)))
+  :hook (org-mode . org-superstar-mode))
+
+(use-package org-pretty-tags
+  :elpaca t
+  :hook (org-mode . org-pretty-tags-mode)
+  :custom
+  (org-pretty-tags-surrogate-strings '(("ATTACH" . "  󰁦  "))))
 
 (use-package org-roam
   :elpaca t
@@ -1126,17 +1146,6 @@ shell command."
          ((alltodo "" ((org-agenda-overriding-header "")
                        (org-super-agenda-groups my/org-super-agenda-groups)))))))
 
-(use-package org-superstar
-  :elpaca t
-  :after org
-  :custom
-  (org-superstar-remove-leading-stars nil)
-  (org-superstar-item-bullet-alist nil)
-  (org-superstar-item-bullet-alist '(;; (?+ . ?●)
-                                     ;; (?- . ?•)
-                                     (?* . ?➤)))
-  :hook (org-mode . org-superstar-mode))
-
 (use-package org-tempo
   :after org
   :config
@@ -1188,8 +1197,7 @@ shell command."
 (use-package org-auto-tangle
   :elpaca t
   :defer t
-  :custom
-  (org-auto-tangle-babel-safelist '("~/.config/emacs/README.org"))
+  :custom (org-auto-tangle-babel-safelist '("~/.config/emacs/README.org"))
   :hook (org-mode . org-auto-tangle-mode))
 
 (use-package tex
@@ -1212,6 +1220,36 @@ shell command."
   (xenops-mode . (lambda ()
                    (advice-remove 'org-fill-paragraph
                                   #'xenops-math-fill-paragraph-after-advice))))
+
+(use-package pdf-tools
+  :elpaca t
+  :config
+  (pdf-loader-install))
+
+(use-package org-pdftools
+  :elpaca t
+  :hook ((org-mode . org-pdftools-setup-link)
+         (pdf-view-mode . org-pdftools-setup-link)))
+
+(use-package nov
+  :elpaca t
+  :custom
+  (nov-text-width 80)
+  :hook
+  (nov-mode . visual-line-mode)
+  (nov-mode . visual-fill-column-mode)
+  :config
+  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
+
+(use-package fb2-reader
+  :elpaca t
+  :mode ("\\.fb2\\(\\.zip\\)?\\'" . fb2-reader-mode)
+  :commands (fb2-reader-continue)
+  :custom
+  ;; This mode renders book with fixed width, adjust to your preferences.
+  (fb2-reader-page-width 80)
+  (fb2-reader-image-max-width 400)
+  (fb2-reader-image-max-height 400))
 
 (use-package doom-modeline
   :elpaca t
@@ -1557,7 +1595,13 @@ shell command."
     "C-j" 'Info-next
     "C-k" 'Info-prev
     "gj" 'Info-forward-node
-    "gk" 'Info-backward-node))
+    "gk" 'Info-backward-node)
+  (general-def :keymaps 'pdf-view-mode-map
+    :states 'normal
+    "J" 'pdf-view-scroll-up-or-next-page
+    "K" 'pdf-view-scroll-down-or-previous-page
+    "`" 'pdf-view-jump-to-register
+   ))
 
 (use-package evil-nerd-commenter
   :elpaca t
@@ -1631,8 +1675,13 @@ shell command."
   :config
   (evil-snipe-mode)
   (evil-snipe-override-mode)
-  (push 'telega-root-mode evil-snipe-disabled-modes)
-  ;; (push 'helpful-mode evil-snipe-disabled-modes)
+  ;; (push 'telega-root-mode evil-snipe-disabled-modes)
+  (my/append-to-list 'evil-snipe-disabled-modes
+                     '(telega-root-mode
+                       pdf-view-mode
+                       ;; helpful-mode
+                       nov-mode
+                       ))
   ;; (push 'Custom-mode evil-snipe-disabled-modes)
   ;; (define-key evil-snipe-parent-transient-map (kbd ";")
   ;;   (evilem-create 'evil-snipe-repeat

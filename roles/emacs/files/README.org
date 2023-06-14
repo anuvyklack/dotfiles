@@ -399,7 +399,6 @@ So for icons need to install [[id:75194bd4-5012-4a57-bf00-f8467afe5bd7][Symbols 
 
 ***** Nerd Font
 
-Material Design
 #+begin_src emacs-lisp
 (set-fontset-font t '(?\xf0001 . ?\xf1af0) "Symbols Nerd Font Mono" nil 'prepend)
 #+end_src
@@ -1617,6 +1616,8 @@ Spell check
 #+begin_src emacs-lisp
 (use-package visual-fill-column
   :elpaca t
+  :custom
+  (visual-fill-column-center-text t)
   :config
   ;; (visual-line-mode) ;; Wrap long lines on words.
   (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
@@ -2391,20 +2392,22 @@ Include entries from the Emacs diary into Org mode’s agenda.
 #+end_src
 
 #+begin_src emacs-lisp
-(org-attach-store-link-p t)
-(org-attach-use-inheritance t)
-#+end_src
-
-#+begin_src emacs-lisp
 ;; (org-use-tag-inheritance nil)
 ;; (org-tags-exclude-from-inheritance '("soft" "cli"))
 (org-tags-match-list-sublevels nil)
 #+end_src
 
+***** attachments
+#+begin_src emacs-lisp
+(org-attach-store-link-p t)
+(org-attach-use-inheritance t)
+(org-attach-auto-tag "ATTACH")
+#+end_src
+
 ***** "TODO" keywords and Priorities
 #+begin_src emacs-lisp
-(org-todo-keywords '((sequence ;; "󰒅" ;; SOMEDAY
-                               "󰔌" ;; SOMEDAY
+(org-todo-keywords '((sequence "󰔌" ;; SOMEDAY
+                               "󰒅" ;; SOMEDAY
                                "󰄱" ;; TODO
                                "󱗝" ;; NEXT
                                "󰡖" ;; NEXT
@@ -2598,6 +2601,135 @@ Redisplay images produced by babel after evaluating the block source.
                           'append))
 
 (add-hook 'org-mode-hook #'my/config-fontify-inline-src-code)
+#+end_src
+
+*** Appearence
+**** org-superstar
+#+begin_src emacs-lisp
+(use-package org-superstar
+  :elpaca t
+  :after org
+  :custom
+  (org-superstar-remove-leading-stars nil)
+  (org-superstar-headline-bullets-list '("●"))
+  ;; (org-superstar-leading-bullet)
+  (org-superstar-item-bullet-alist '((?- . ?•)
+                                     (?* . ?‣)))
+  :hook (org-mode . org-superstar-mode))
+#+end_src
+
+#+RESULTS:
+
+**** org-pretty-tags
+#+begin_src emacs-lisp
+(use-package org-pretty-tags
+  :elpaca t
+  :hook (org-mode . org-pretty-tags-mode)
+  :custom
+  (org-pretty-tags-surrogate-strings '(("ATTACH" . "  󰁦  "))))
+#+end_src
+
+**** COMMENT org-fancy-priorities
+   █
+⬢ ⬣ ⯀ ⯁
+#+begin_src emacs-lisp
+(use-package org-fancy-priorities
+  :elpaca t
+  :hook (org-mode . org-fancy-priorities-mode)
+  :custom
+  ;; (org-fancy-priorities-list '("🟥" "🟧" "🟨" "🟩" "🟦" "🟪"))
+  ;; (org-fancy-priorities-list '("" "" ""))
+  ;; (org-fancy-priorities-list '("" "" ""))
+  ;; (org-fancy-priorities-list '("█" "█" "█"))
+  ;; (org-fancy-priorities-list '("⯀" "⯀" "⯀"))
+  ;; (org-fancy-priorities-list '("⬢" "⬢" "⬢"))
+  ;; (org-fancy-priorities-list '("⬣" "⬣" "⬣"))
+  (org-priority-faces
+   '((?A :foreground "red" :weight bold)
+     ;; (?B :foreground "orange" :weight bold)
+     (?B :foreground "#FFCC32" :weight bold)
+     (?C :foreground "#7CB342" :weight bold)))
+  )
+#+end_src
+
+**** COMMENT org-modern
+#+begin_src emacs-lisp
+(use-package org-modern
+  :elpaca t
+  :after org
+  :hook ((org-mode . org-modern-mode)
+         (org-agenda-finalize . org-modern-agenda)))
+#+end_src
+
+**** COMMENT svg-tag-mode
+#+begin_src emacs-lisp
+(use-package svg-tag-mode
+  :elpaca t
+  :config
+  (setq svg-tag-tags
+        '(
+          ;; ("\\(:[A-Za-z0-9_]+\\)" . ((lambda (tag)
+          ;;                          (svg-tag-make tag :beg 1))))
+          ;; ("\\(:[A-Za-z0-9_]+:\\)$" . ((lambda (tag)
+          ;;                            (svg-tag-make tag :beg 1 :end -1))))))
+
+          ;; Progress
+          ;; ("\\(\\[[0-9]\\{1,3\\}%\\]\\)" . ((lambda (tag)
+          ;;                             (svg-progress-percent (substring tag 1 -2)))))
+          ("\\(\\[[0-9]+/[0-9]+\\]\\)" . ((lambda (tag)
+                                      (svg-progress-count (substring tag 1 -1)))))
+
+          ;; ;; Citation of the form [cite:@Knuth:1984]
+          ;; ("\\(\\[cite:@[A-Za-z]+:\\)" . ((lambda (tag)
+          ;;                              (svg-tag-make tag
+          ;;                                            :inverse t
+          ;;                                            :beg 7 :end -1
+          ;;                                            :crop-right t))))
+          ;; ("\\[cite:@[A-Za-z]+:\\([0-9]+\\]\\)" . ((lambda (tag)
+          ;;                                      (svg-tag-make tag
+          ;;                                                    :end -1
+          ;;                                                    :crop-left t))))
+
+          ;; ;; Active date (with or without day name, with or without time)
+          ;; (,(format "\\(<%s>\\)" date-re) .
+          ;;  ((lambda (tag)
+          ;;     (svg-tag-make tag :beg 1 :end -1 :margin 0))))
+          ;; (,(format "\\(<%s \\)%s>" date-re day-time-re) .
+          ;;  ((lambda (tag)
+          ;;     (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0))))
+          ;; (,(format "<%s \\(%s>\\)" date-re day-time-re) .
+          ;;  ((lambda (tag)
+          ;;     (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0))))
+          ;; 
+          ;; ;; Inactive date  (with or without day name, with or without time)
+          ;; (,(format "\\(\\[%s\\]\\)" date-re) .
+          ;;  ((lambda (tag)
+          ;;     (svg-tag-make tag :beg 1 :end -1 :margin 0 :face 'org-date))))
+          ;; (,(format "\\(\\[%s \\)%s\\]" date-re day-time-re) .
+          ;;  ((lambda (tag)
+          ;;     (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0 :face 'org-date))))
+          ;; (,(format "\\[%s \\(%s\\]\\)" date-re day-time-re) .
+          ;;  ((lambda (tag)
+          ;;     (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'org-date)))))
+        )))
+#+end_src
+
+**** COMMENT org-link-beautify
+#+begin_src emacs-lisp
+(use-package org-link-beautify
+  :elpaca t
+  :config
+  (org-link-beautify-mode))
+#+end_src
+
+**** COMMENT org-tag-beautify
+#+begin_src emacs-lisp
+(use-package org-tag-beautify
+  :elpaca t
+  :custom (org-tag-beautify-data-dir "~/Code/Emacs/org-tag-beautify/data/")
+  :init
+  (org-tag-beautify-add-tags-to-list)
+  (org-tag-beautify-mode 1))
 #+end_src
 
 *** org-roam
@@ -2849,50 +2981,6 @@ Display org-roam buffers right after non-org-roam buffers in ~consult-buffer~
                        (org-super-agenda-groups my/org-super-agenda-groups)))))))
 #+end_src
 
-*** COMMENT org-fancy-priorities
-   █
-⬢ ⬣ ⯀ ⯁
-#+begin_src emacs-lisp
-(use-package org-fancy-priorities
-  :elpaca t
-  :hook (org-mode . org-fancy-priorities-mode)
-  :custom
-  ;; (org-fancy-priorities-list '("🟥" "🟧" "🟨" "🟩" "🟦" "🟪"))
-  ;; (org-fancy-priorities-list '("" "" ""))
-  ;; (org-fancy-priorities-list '("" "" ""))
-  ;; (org-fancy-priorities-list '("█" "█" "█"))
-  ;; (org-fancy-priorities-list '("⯀" "⯀" "⯀"))
-  ;; (org-fancy-priorities-list '("⬢" "⬢" "⬢"))
-  ;; (org-fancy-priorities-list '("⬣" "⬣" "⬣"))
-  (org-priority-faces
-   '((?A :foreground "red" :weight bold)
-     ;; (?B :foreground "orange" :weight bold)
-     (?B :foreground "#FFCC32" :weight bold)
-     (?C :foreground "#7CB342" :weight bold)))
-  )
-#+end_src
-
-*** org-superstar
-
-Ⅰ Ⅱ Ⅲ Ⅳ Ⅴ Ⅵ Ⅶ Ⅷ Ⅸ Ⅹ Ⅺ Ⅻ
-◍ ● ○ ◉ ▣ □ ◁
-
-⬤ ⬢ ⬡ ⭘ ⯁ 🞄
-✴ ⋄ ◦ • •
-
-#+begin_src emacs-lisp
-(use-package org-superstar
-  :elpaca t
-  :after org
-  :custom
-  (org-superstar-remove-leading-stars nil)
-  (org-superstar-item-bullet-alist nil)
-  (org-superstar-item-bullet-alist '(;; (?+ . ?●)
-                                     ;; (?- . ?•)
-                                     (?* . ?➤)))
-  :hook (org-mode . org-superstar-mode))
-#+end_src
-
 *** org-tempo
 Org 9.2 introduced a new template expansion mechanism, combining
 ~org-insert-structure-template~ bound to =C-c C-,= (my binding is =z,=).
@@ -2975,51 +3063,8 @@ And type =<sh Tab= to insert bash source block.
 (use-package org-auto-tangle
   :elpaca t
   :defer t
-  :custom
-  (org-auto-tangle-babel-safelist '("~/.config/emacs/README.org"))
+  :custom (org-auto-tangle-babel-safelist '("~/.config/emacs/README.org"))
   :hook (org-mode . org-auto-tangle-mode))
-#+end_src
-
-*** COMMENT org-modern
-
-#+begin_src emacs-lisp
-(use-package org-modern
-  :elpaca t
-  :after org
-  :hook ((org-mode . org-modern-mode)
-         (org-agenda-finalize . org-modern-agenda)))
-#+end_src
-
-*** COMMENT svg-tag-mode
-
-#+begin_src emacs-lisp
-(use-package svg-tag-mode
-  :elpaca t
-  ;; :custom
-  ;; (svg-tag-tags '((":lol:" ((lambda (tag)
-  ;;                              (svg-tag-make "TODO"))))))
-  :config
-  (setq svg-tag-tags
-        '((":TODO:" . ((svg-tag-make "TODO" :face 'org-tag
-                                     :radius 0 :inverse t :margin 0)))
-          (":NOTE:" . ((svg-tag-make "NOTE" :face 'font-lock-comment-face
-                                     :inverse nil :margin 0 :radius 0)))
-          ("\([0-9a-zA-Z]\)" . ((lambda (tag)
-                                  (svg-tag-make tag :beg 1 :end -1 :radius 12))))
-          ("\([0-9a-zA-Z][0-9a-zA-Z]\)" . ((lambda (tag)
-                                             (svg-tag-make tag :beg 1 :end -1 :radius 8))))
-          ("|[0-9a-zA-Z- ]+?|" . ((lambda (tag)
-                                    (svg-tag-make tag :face 'font-lock-comment-face
-                                                  :margin 0 :beg 1 :end -1)))))))
-#+end_src
-
-*** COMMENT org-link-beautify
-
-#+begin_src emacs-lisp
-(use-package org-link-beautify
-  :elpaca t
-  :config
-  (org-link-beautify-mode))
 #+end_src
 
 ** LaTeX
@@ -3049,6 +3094,52 @@ And type =<sh Tab= to insert bash source block.
   (xenops-mode . (lambda ()
                    (advice-remove 'org-fill-paragraph
                                   #'xenops-math-fill-paragraph-after-advice))))
+#+end_src
+
+** Documents
+*** pdf
+**** pdf-tools
+#+begin_src emacs-lisp
+(use-package pdf-tools
+  :elpaca t
+  :config
+  (pdf-loader-install))
+#+end_src
+
+**** org-pdftools
+Add support for org links from pdftools buffer.
+
+#+begin_src emacs-lisp
+(use-package org-pdftools
+  :elpaca t
+  :hook ((org-mode . org-pdftools-setup-link)
+         (pdf-view-mode . org-pdftools-setup-link)))
+#+end_src
+
+*** epub
+#+begin_src emacs-lisp
+(use-package nov
+  :elpaca t
+  :custom
+  (nov-text-width 80)
+  :hook
+  (nov-mode . visual-line-mode)
+  (nov-mode . visual-fill-column-mode)
+  :config
+  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode)))
+#+end_src
+
+*** fb2-reader
+#+begin_src emacs-lisp
+(use-package fb2-reader
+  :elpaca t
+  :mode ("\\.fb2\\(\\.zip\\)?\\'" . fb2-reader-mode)
+  :commands (fb2-reader-continue)
+  :custom
+  ;; This mode renders book with fixed width, adjust to your preferences.
+  (fb2-reader-page-width 80)
+  (fb2-reader-image-max-width 400)
+  (fb2-reader-image-max-height 400))
 #+end_src
 
 ** Modeline
@@ -3319,8 +3410,13 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
   :config
   (evil-snipe-mode)
   (evil-snipe-override-mode)
-  (push 'telega-root-mode evil-snipe-disabled-modes)
-  ;; (push 'helpful-mode evil-snipe-disabled-modes)
+  ;; (push 'telega-root-mode evil-snipe-disabled-modes)
+  (my/append-to-list 'evil-snipe-disabled-modes
+                     '(telega-root-mode
+                       pdf-view-mode
+                       ;; helpful-mode
+                       nov-mode
+                       ))
   ;; (push 'Custom-mode evil-snipe-disabled-modes)
   ;; (define-key evil-snipe-parent-transient-map (kbd ";")
   ;;   (evilem-create 'evil-snipe-repeat
@@ -3793,6 +3889,16 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
   "C-k" 'Info-prev
   "gj" 'Info-forward-node
   "gk" 'Info-backward-node)
+#+end_src
+
+*** Pdf-tools
+#+begin_src emacs-lisp
+(general-def :keymaps 'pdf-view-mode-map
+  :states 'normal
+  "J" 'pdf-view-scroll-up-or-next-page
+  "K" 'pdf-view-scroll-down-or-previous-page
+  "`" 'pdf-view-jump-to-register
+ )
 #+end_src
 
 ** Color schemes
