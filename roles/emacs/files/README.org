@@ -149,17 +149,19 @@ Make elpaca native keybindings have precedence over evil keymaps in elpaca buffe
 #+end_src
 
 ** Libraries
-*** s, dash, diminish, hydra
+*** s, dash, diminish, hydra, ov
 #+begin_src emacs-lisp
 (use-package s        :elpaca t) ;; string manipulation library
 (use-package dash     :elpaca t) ;; list manipulation library
 (use-package diminish :elpaca t)
 (use-package hydra    :elpaca t)
+(use-package ov       :elpaca t) ;; overlays
 #+end_src
 
 *** use-package
 #+begin_src emacs-lisp
 (use-package use-package
+  :after general
   :no-require
   :custom (use-package-enable-imenu-support t))
 #+end_src
@@ -181,7 +183,8 @@ Make elpaca native keybindings have precedence over evil keymaps in elpaca buffe
 (use-package general
   :elpaca t
   :after which-key
-  :config (general-auto-unbind-keys))
+  :config
+  (general-auto-unbind-keys))
 #+end_src
 
 ** Keymaps
@@ -532,9 +535,45 @@ Make =electric-pair= mode not to complete ~<>~ pair when ~<~ char entered in org
 #+end_src
 
 *** tab-bar-mode
-#+begin_src emacs-lisp
+Per-frame tabs, with each tab representing a window configuration (like in Vim).
+#+begin_src emacs-lisp :noweb yes 
 (use-package tab-bar
+  :custom
+  <<tab-bar-custom>>
   :config (tab-bar-mode 1))
+#+end_src
+**** custom
+:PROPERTIES:
+:header-args: :noweb-ref tab-bar-custom
+:END:
+
+Show tab numbers.
+#+begin_src emacs-lisp
+(tab-bar-tab-hints nil)
+#+end_src
+
+Hide tab bar if only 1 tabs open.
+#+begin_src emacs-lisp
+(tab-bar-show 1)
+#+end_src
+
+Hide tab close button.
+#+begin_src emacs-lisp
+(tab-bar-close-button-show nil)
+#+end_src
+
+Buffer to show in new tab.
+#+begin_src emacs-lisp
+;; (tab-bar-new-tab-choice "*dashboard*")
+#+end_src
+
+Replace ~tab-bar-format-tabs~ with ~tab-bar-format-tabs-groups~ to make tab bar
+displays tab groups. [[https://git.savannah.gnu.org/cgit/emacs.git/commit/etc/NEWS?id=f9b737fb9d21ac7adff403274167e76e77d033b8][Source]]
+#+begin_src emacs-lisp
+(tab-bar-format '(tab-bar-format-history
+                  tab-bar-format-tabs-groups
+                  tab-bar-separator
+                  tab-bar-format-add-tab))
 #+end_src
 
 *** info
@@ -587,8 +626,11 @@ the fringes permanent by customizing the variable ~fringe-mode~.
   :custom
   <<vertico-custom>>
   :bind (:map minibuffer-local-map
-         ("C-h" . backward-kill-word))
+              ("C-h" . backward-kill-word))
   :init
+  ;; Add directory with vertico extensions to `load-path'.
+  (add-to-list 'load-path (expand-file-name "elpaca/repos/vertico/extensions"
+                                            user-emacs-directory))
   <<vertico-init>>
   :config
   <<vertico-config>>
@@ -608,8 +650,8 @@ the fringes permanent by customizing the variable ~fringe-mode~.
 #+end_src
 
 *Emacs 28:* Hide commands in =M-x= which do not work in the current mode.
-- Vertico commands are hidden in normal buffers.
-- Corfu commands are hidden, since they are not supposed to be used via =M-x=.
+  - Vertico commands are hidden in normal buffers.
+  - Corfu commands are hidden, since they are not supposed to be used via =M-x=.
 #+begin_src emacs-lisp
 (read-extended-command-predicate #'command-completion-default-include-p)
 #+end_src
@@ -670,18 +712,44 @@ Do not allow the cursor in the minibuffer prompt.
 :PROPERTIES:
 :header-args: :noweb-ref vertico-extensions
 :END:
-
-Add to ~load-path~ directory with vertico extensions.
-#+begin_src emacs-lisp
-(add-to-list 'load-path (expand-file-name "elpaca/repos/vertico/extensions"
-                                          user-emacs-directory))
-#+end_src
-
+****** vertico-repeat
 #+begin_src emacs-lisp
 (use-package vertico-repeat
   :config
   (keymap-global-set "M-r" #'vertico-repeat)
   (add-hook 'minibuffer-setup-hook #'vertico-repeat-save))
+#+end_src
+
+****** COMMENT vertico-multiform
+#+begin_src emacs-lisp
+(use-package vertico-multiform
+  :config
+  (vertico-multiform-mode)
+
+  (setq vertico-multiform-commands
+        '((consult-line buffer)
+          (consult-imenu reverse buffer)
+          (execute-extended-command flat)))
+
+  (setq vertico-multiform-categories
+        '((file buffer grid)
+          (imenu (:not indexed mouse))
+          (symbol (vertico-sort-function . vertico-sort-alpha))))
+
+  ;; ;; Configure the display per command.
+  ;; ;; Use a buffer with indices for imenu
+  ;; ;; and a flat (Ido-like) menu for M-x.
+  ;; (setq vertico-multiform-commands
+  ;;       '((consult-imenu buffer indexed)
+  ;;         (execute-extended-command unobtrusive)))
+
+  ;; ;; Configure the display per completion category.
+  ;; ;; Use the grid display for files and a buffer
+  ;; ;; for the consult-grep commands.
+  ;; (setq vertico-multiform-categories
+  ;;       '((file grid)
+  ;;         (consult-grep buffer)))
+)
 #+end_src
 
 **** orderless
@@ -737,10 +805,8 @@ Add to ~load-path~ directory with vertico extensions.
 #+begin_src emacs-lisp
 (use-package all-the-icons-completion
   :elpaca t
-  :after (marginalia all-the-icons)
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
-  :init
-  (all-the-icons-completion-mode))
+  :init (all-the-icons-completion-mode))
 #+end_src
 
 **** embark
@@ -762,8 +828,7 @@ Add to ~load-path~ directory with vertico extensions.
 #+begin_src emacs-lisp
 (use-package embark-consult
   :elpaca t
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
 #+end_src
 
 *** Text completion
@@ -773,6 +838,9 @@ Add to ~load-path~ directory with vertico extensions.
   :elpaca t
   :init
   (global-corfu-mode)
+  ;; Add directory with corfu extensions to ~load-path~.
+  (add-to-list 'load-path (expand-file-name "elpaca/repos/corfu/extensions"
+                                            user-emacs-directory))
   :custom
   <<corfu-custom>>
   :config
@@ -872,29 +940,20 @@ password is read from the minibuffer.
 :header-args: :noweb-ref corfu-extensions
 :END:
 
-Add to ~load-path~ directory with corfu extensions.
-#+begin_src emacs-lisp
-(add-to-list 'load-path (expand-file-name "elpaca/repos/corfu/extensions"
-                                          user-emacs-directory))
-#+end_src
-
 Remembers selected candidates and sorts the candidates by their history position.
 #+begin_src emacs-lisp
 (use-package corfu-history
-  :config
-  (corfu-history-mode))
+  :config (corfu-history-mode))
 #+end_src
 
 Display candidate documentation or source in a popup next to the candidate menu.
 #+begin_src emacs-lisp
 (use-package corfu-popupinfo
-  :custom
-  (corfu-popupinfo-delay (cons 0.5 0.5))
-  :config
-  (corfu-popupinfo-mode))
+  :custom (corfu-popupinfo-delay (cons 0.5 0.5))
+  :config (corfu-popupinfo-mode))
 #+end_src
 
-**** COMMENT kind-icons
+**** kind-icons
 #+begin_src emacs-lisp
 (use-package kind-icon
   :elpaca t
@@ -906,7 +965,7 @@ Display candidate documentation or source in a popup next to the candidate menu.
 #+end_src
 
 **** dabbrev
-Use Dabbrev with Corfu!
+Use Dabbrev with Corfu.
 #+begin_src emacs-lisp
 (use-package dabbrev
   :after cofru
@@ -1604,12 +1663,72 @@ Spell check
   (global-anzu-mode))
 #+end_src
 
-*** COMMENT adaptive-wrap
+*** unpackaged
+[[https://github.com/alphapapa/unpackaged.el#flexibly-fillunfill-paragraphs][Source]]
 #+begin_src emacs-lisp
-(use-package adaptive-wrap
-  :elpaca t
-  :config
-  (adaptive-wrap-prefix-mode))
+(defvar unpackaged/flex-fill-paragraph-column nil
+  "Last fill column used in command `unpackaged/flex-fill-paragraph'.")
+
+;;;###autoload
+(defun unpackaged/flex-fill-paragraph (&optional fewer-lines unfill)
+  "Fill paragraph, incrementing fill column to cause a change when repeated.
+The global value of `fill-column' is not modified; it is only
+bound around calls to `fill-paragraph'.
+
+When called for the first time in a sequence, unfill to the
+default `fill-column'.
+
+When called repeatedly, increase `fill-column' until filling
+changes.
+
+With one universal prefix, increase `fill-column' until the
+number of lines is reduced.  With two, unfill completely."
+  (interactive "P")
+  (let* ((fewer-lines (or fewer-lines (equal current-prefix-arg '(4))))
+         (unfill (or unfill (equal current-prefix-arg '(16))))
+         (fill-column
+          (cond (unfill (setf unpackaged/flex-fill-paragraph-column nil)
+                        most-positive-fixnum)
+                (t (setf unpackaged/flex-fill-paragraph-column
+                         (if (equal last-command this-command)
+                             (or (unpackaged/flex-fill-paragraph--next-fill-column fewer-lines)
+                                 fill-column)
+                           fill-column))))))
+    (fill-paragraph)
+    (message "Fill column: %s" fill-column)))
+
+(defun unpackaged/flex-fill-paragraph--next-fill-column (&optional fewer-lines)
+  "Return next `fill-column' value.
+If FEWER-LINES is non-nil, reduce the number of lines in the
+buffer, otherwise just change the current paragraph."
+  ;; This works well, but because of all the temp buffers, sometimes when called
+  ;; in rapid succession, it can cause GC, which can be noticeable.  It would be
+  ;; nice to avoid that.  Note that this has primarily been tested on
+  ;; `emacs-lisp-mode'; hopefully it works well in other modes.
+  (let* ((point (point))
+         (source-buffer (current-buffer))
+         (mode major-mode)
+         (fill-column (or unpackaged/flex-fill-paragraph-column fill-column))
+         (old-fill-column fill-column)
+         (hash (unless fewer-lines
+                 (buffer-hash)))
+         (original-num-lines (when fewer-lines
+                               (line-number-at-pos (point-max)))))
+    (with-temp-buffer
+      (delay-mode-hooks
+        (funcall mode))
+      (setq-local fill-column old-fill-column)
+      (insert-buffer-substring source-buffer)
+      (goto-char point)
+      (cl-loop while (fill-paragraph)
+               ;; If filling doesn't change after 100 iterations, abort by returning nil.
+               if (> (- fill-column old-fill-column) 100)
+               return nil
+               else do (cl-incf fill-column)
+               while (if fewer-lines
+                         (= original-num-lines (line-number-at-pos (point-max)))
+                       (string= hash (buffer-hash)))
+               finally return fill-column))))
 #+end_src
 
 *** visual-fill-column
@@ -1622,6 +1741,14 @@ Spell check
   ;; (visual-line-mode) ;; Wrap long lines on words.
   (add-hook 'visual-line-mode-hook #'visual-fill-column-mode)
   )
+#+end_src
+
+*** COMMENT adaptive-wrap
+#+begin_src emacs-lisp
+(use-package adaptive-wrap
+  :elpaca t
+  :config
+  (adaptive-wrap-prefix-mode))
 #+end_src
 
 *** COMMENT moom
@@ -2400,7 +2527,7 @@ Include entries from the Emacs diary into Org mode’s agenda.
 ***** attachments
 #+begin_src emacs-lisp
 (org-attach-store-link-p t)
-(org-attach-use-inheritance t)
+(org-attach-use-inheritance nil)
 (org-attach-auto-tag "ATTACH")
 #+end_src
 
@@ -2603,7 +2730,7 @@ Redisplay images produced by babel after evaluating the block source.
 (add-hook 'org-mode-hook #'my/config-fontify-inline-src-code)
 #+end_src
 
-*** Appearence
+*** APPEARENCE
 **** org-superstar
 #+begin_src emacs-lisp
 (use-package org-superstar
@@ -2613,12 +2740,10 @@ Redisplay images produced by babel after evaluating the block source.
   (org-superstar-remove-leading-stars nil)
   (org-superstar-headline-bullets-list '("●"))
   ;; (org-superstar-leading-bullet)
-  (org-superstar-item-bullet-alist '((?- . ?•)
+  (org-superstar-item-bullet-alist '(;;(?- . ?•)
                                      (?* . ?‣)))
   :hook (org-mode . org-superstar-mode))
 #+end_src
-
-#+RESULTS:
 
 **** org-pretty-tags
 #+begin_src emacs-lisp
@@ -2949,6 +3074,9 @@ Display org-roam buffers right after non-org-roam buffers in ~consult-buffer~
                :habit t
                :tag "personal"
                :order 6)
+        (:name "Projects"
+               :tag "PROJECT"
+               :order 6)
         (:name "House"
                :category "house"
                :tag "house"
@@ -3116,7 +3244,7 @@ Add support for org links from pdftools buffer.
          (pdf-view-mode . org-pdftools-setup-link)))
 #+end_src
 
-*** epub
+*** epub (nov.el)
 #+begin_src emacs-lisp
 (use-package nov
   :elpaca t
@@ -3142,6 +3270,12 @@ Add support for org links from pdftools buffer.
   (fb2-reader-image-max-height 400))
 #+end_src
 
+*** COMMENT djvu
+#+begin_src emacs-lisp
+(use-package djvu
+  :elpaca t)
+#+end_src
+
 ** Modeline
 *** doom-modeline
 #+begin_src emacs-lisp
@@ -3163,7 +3297,7 @@ Add support for org links from pdftools buffer.
   (doom-modeline-mode 1))
 #+end_src
 
-** Messaging
+** Extra tools
 *** telega
 #+begin_src emacs-lisp :noweb yes
 (use-package telega
@@ -3172,7 +3306,6 @@ Add support for org links from pdftools buffer.
   :custom
   <<telega-custom>>)
 #+end_src
-
 **** custom
 :PROPERTIES:
 :header-args: :noweb-ref telega-custom
@@ -3183,10 +3316,15 @@ Add support for org links from pdftools buffer.
 #+end_src
 
 Telega uses Ido completing read function instead of the default one (that the
-user prefers).
-[[https://github.com/zevlg/telega.el/issues/358#issuecomment-1126650770][Source]]
+user prefers). [[https://github.com/zevlg/telega.el/issues/358#issuecomment-1126650770][Source]]
 #+begin_src emacs-lisp
 (telega-completing-read-function completing-read-function)
+#+end_src
+
+*** pocket-reader
+#+begin_src emacs-lisp
+(use-package pocket-reader
+  :elpaca t)
 #+end_src
 
 ** Evil mode
@@ -3471,7 +3609,7 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
          ([remap query-replace-regexp] . anzu-query-replace-regexp)))
 #+end_src
 
-** Keybindings                                                    :keybindings:
+** Keybindings
 :PROPERTIES:
 :header-args: :noweb-ref evil-collection-keybindings
 :END:
@@ -3556,7 +3694,7 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
 #+end_src
 
 *** LSP
-**** lsp-mode
+**** COMMENT lsp-mode
 #+begin_src emacs-lisp
 (with-eval-after-load 'lsp-mode
   (general-def :keymaps 'leader-map
@@ -3569,8 +3707,20 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
 #+begin_src emacs-lisp
 (general-def :keymaps 'corfu-map
   :states 'insert
-  "<escape>" 'corfu-quit
-  "C-l" 'corfu-insert)
+  ;; "<escape>" 'corfu-quit
+  "C-о" 'corfu-next     ;; (ru)
+  "C-л" 'corfu-previous ;; (ru)
+  "<tab>" 'corfu-insert)
+#+end_src
+
+Swap ~corfu-scroll-down~ and ~corfu-scroll-up~ functions.
+#+begin_src emacs-lisp
+(when evil-want-C-u-scroll
+  (evil-collection-define-key 'insert 'corfu-map
+    (kbd "C-u") 'corfu-scroll-down))
+(when evil-want-C-d-scroll
+  (evil-collection-define-key 'insert 'corfu-map
+    (kbd "C-d") 'corfu-scroll-up))
 #+end_src
 
 *** Minibuffer
@@ -3594,6 +3744,8 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
     "C-y" 'yank
     "C-j" 'vertico-next
     "C-k" 'vertico-previous
+    "C-о" 'vertico-next     ;; (ru)
+    "C-л" 'vertico-previous ;; (ru)
     "C-l" 'vertico-insert
     "C-d" 'consult-dir
     "C-n" 'vertico-next-group
@@ -3817,7 +3969,8 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
     "z /" 'org-sparse-tree
     "z ;" 'org-toggle-comment
     "SPC" '(:keymap my/orgmode-leader-map)
-    "K" 'helpful-at-point)
+    "K"   'helpful-at-point
+    "M-q" 'unpackaged/flex-fill-paragraph)
 
   (general-def :keymaps 'org-mode-map
     :states 'insert
@@ -4005,6 +4158,15 @@ take effect of adding padding around headings, but it is a hack and not reliable
         (?D :foreground "#2196F3" :weight bold)
         ;; (?D :foreground "#AB47BC" :weight bold)
         ))
+#+end_src
+
+*** COMMENT OS^1 
+[[https://github.com/sashimacs/os1-theme][Source]]
+#+begin_src emacs-lisp
+(use-package os1-theme
+  :elpaca (:host github :repo "sashimacs/os1-theme")
+  :defer nil
+  :config (load-theme 'os1 :no-confirm))
 #+end_src
 
 *** COMMENT modus-themes

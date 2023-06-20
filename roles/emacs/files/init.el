@@ -56,8 +56,10 @@
 (use-package dash     :elpaca t) ;; list manipulation library
 (use-package diminish :elpaca t)
 (use-package hydra    :elpaca t)
+(use-package ov       :elpaca t) ;; overlays
 
 (use-package use-package
+  :after general
   :no-require
   :custom (use-package-enable-imenu-support t))
 
@@ -73,7 +75,8 @@
 (use-package general
   :elpaca t
   :after which-key
-  :config (general-auto-unbind-keys))
+  :config
+  (general-auto-unbind-keys))
 
 (define-prefix-command 'leader-map)
 (define-prefix-command 'semicolon-leader-map)
@@ -234,6 +237,15 @@ shell command."
   (outline-minor-mode-cycle t))
 
 (use-package tab-bar
+  :custom
+  (tab-bar-tab-hints nil)
+  (tab-bar-show 1)
+  (tab-bar-close-button-show nil)
+  ;; (tab-bar-new-tab-choice "*dashboard*")
+  (tab-bar-format '(tab-bar-format-history
+                    tab-bar-format-tabs-groups
+                    tab-bar-separator
+                    tab-bar-format-add-tab))
   :config (tab-bar-mode 1))
 
 (use-package info
@@ -264,8 +276,11 @@ shell command."
   (read-buffer-completion-ignore-case t)
   (completion-ignore-case t)
   :bind (:map minibuffer-local-map
-         ("C-h" . backward-kill-word))
+              ("C-h" . backward-kill-word))
   :init
+  ;; Add directory with vertico extensions to `load-path'.
+  (add-to-list 'load-path (expand-file-name "elpaca/repos/vertico/extensions"
+                                            user-emacs-directory))
   (ido-mode -1)
   (vertico-mode)
   :config
@@ -284,8 +299,6 @@ shell command."
                                        cursor-intangible t
                                        face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-  (add-to-list 'load-path (expand-file-name "elpaca/repos/vertico/extensions"
-                                            user-emacs-directory))
   (use-package vertico-repeat
     :config
     (keymap-global-set "M-r" #'vertico-repeat)
@@ -334,10 +347,8 @@ shell command."
 
 (use-package all-the-icons-completion
   :elpaca t
-  :after (marginalia all-the-icons)
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
-  :init
-  (all-the-icons-completion-mode))
+  :init (all-the-icons-completion-mode))
 
 (use-package embark
   :elpaca t
@@ -353,13 +364,15 @@ shell command."
 
 (use-package embark-consult
   :elpaca t
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
 
 (use-package corfu
   :elpaca t
   :init
   (global-corfu-mode)
+  ;; Add directory with corfu extensions to ~load-path~.
+  (add-to-list 'load-path (expand-file-name "elpaca/repos/corfu/extensions"
+                                            user-emacs-directory))
   :custom
   ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto t)                 ;; Enable auto completion
@@ -395,16 +408,19 @@ shell command."
   
   (keymap-set corfu-map "M-m" #'corfu-move-to-minibuffer)
   (add-to-list 'corfu-continue-commands #'corfu-move-to-minibuffer)
-  (add-to-list 'load-path (expand-file-name "elpaca/repos/corfu/extensions"
-                                            user-emacs-directory))
   (use-package corfu-history
-    :config
-    (corfu-history-mode))
+    :config (corfu-history-mode))
   (use-package corfu-popupinfo
-    :custom
-    (corfu-popupinfo-delay (cons 0.5 0.5))
-    :config
-    (corfu-popupinfo-mode)))
+    :custom (corfu-popupinfo-delay (cons 0.5 0.5))
+    :config (corfu-popupinfo-mode)))
+
+(use-package kind-icon
+  :elpaca t
+  :after corfu
+  :custom
+  (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package dabbrev
   :after cofru
@@ -650,6 +666,70 @@ shell command."
   :elpaca t
   :config
   (global-anzu-mode))
+
+(defvar unpackaged/flex-fill-paragraph-column nil
+  "Last fill column used in command `unpackaged/flex-fill-paragraph'.")
+
+;;;###autoload
+(defun unpackaged/flex-fill-paragraph (&optional fewer-lines unfill)
+  "Fill paragraph, incrementing fill column to cause a change when repeated.
+The global value of `fill-column' is not modified; it is only
+bound around calls to `fill-paragraph'.
+
+When called for the first time in a sequence, unfill to the
+default `fill-column'.
+
+When called repeatedly, increase `fill-column' until filling
+changes.
+
+With one universal prefix, increase `fill-column' until the
+number of lines is reduced.  With two, unfill completely."
+  (interactive "P")
+  (let* ((fewer-lines (or fewer-lines (equal current-prefix-arg '(4))))
+         (unfill (or unfill (equal current-prefix-arg '(16))))
+         (fill-column
+          (cond (unfill (setf unpackaged/flex-fill-paragraph-column nil)
+                        most-positive-fixnum)
+                (t (setf unpackaged/flex-fill-paragraph-column
+                         (if (equal last-command this-command)
+                             (or (unpackaged/flex-fill-paragraph--next-fill-column fewer-lines)
+                                 fill-column)
+                           fill-column))))))
+    (fill-paragraph)
+    (message "Fill column: %s" fill-column)))
+
+(defun unpackaged/flex-fill-paragraph--next-fill-column (&optional fewer-lines)
+  "Return next `fill-column' value.
+If FEWER-LINES is non-nil, reduce the number of lines in the
+buffer, otherwise just change the current paragraph."
+  ;; This works well, but because of all the temp buffers, sometimes when called
+  ;; in rapid succession, it can cause GC, which can be noticeable.  It would be
+  ;; nice to avoid that.  Note that this has primarily been tested on
+  ;; `emacs-lisp-mode'; hopefully it works well in other modes.
+  (let* ((point (point))
+         (source-buffer (current-buffer))
+         (mode major-mode)
+         (fill-column (or unpackaged/flex-fill-paragraph-column fill-column))
+         (old-fill-column fill-column)
+         (hash (unless fewer-lines
+                 (buffer-hash)))
+         (original-num-lines (when fewer-lines
+                               (line-number-at-pos (point-max)))))
+    (with-temp-buffer
+      (delay-mode-hooks
+        (funcall mode))
+      (setq-local fill-column old-fill-column)
+      (insert-buffer-substring source-buffer)
+      (goto-char point)
+      (cl-loop while (fill-paragraph)
+               ;; If filling doesn't change after 100 iterations, abort by returning nil.
+               if (> (- fill-column old-fill-column) 100)
+               return nil
+               else do (cl-incf fill-column)
+               while (if fewer-lines
+                         (= original-num-lines (line-number-at-pos (point-max)))
+                       (string= hash (buffer-hash)))
+               finally return fill-column))))
 
 (use-package visual-fill-column
   :elpaca t
@@ -902,7 +982,7 @@ shell command."
   ;; (org-tags-exclude-from-inheritance '("soft" "cli"))
   (org-tags-match-list-sublevels nil)
   (org-attach-store-link-p t)
-  (org-attach-use-inheritance t)
+  (org-attach-use-inheritance nil)
   (org-attach-auto-tag "ATTACH")
   (org-todo-keywords '((sequence "󰔌" ;; SOMEDAY
                                  "󰒅" ;; SOMEDAY
@@ -1002,7 +1082,7 @@ shell command."
   (org-superstar-remove-leading-stars nil)
   (org-superstar-headline-bullets-list '("●"))
   ;; (org-superstar-leading-bullet)
-  (org-superstar-item-bullet-alist '((?- . ?•)
+  (org-superstar-item-bullet-alist '(;;(?- . ?•)
                                      (?* . ?‣)))
   :hook (org-mode . org-superstar-mode))
 
@@ -1114,6 +1194,9 @@ shell command."
         (:name "Personal"
                :habit t
                :tag "personal"
+               :order 6)
+        (:name "Projects"
+               :tag "PROJECT"
                :order 6)
         (:name "House"
                :category "house"
@@ -1275,6 +1358,9 @@ shell command."
   (telega-directory (file-truename "~/.local/share/telega"))
   (telega-completing-read-function completing-read-function))
 
+(use-package pocket-reader
+  :elpaca t)
+
 (use-package evil
   :elpaca t
   :init
@@ -1384,15 +1470,18 @@ shell command."
     "b" 'bookmark-set
     "d" 'bookmark-delete
     "l" 'bookmark-bmenu-list)
-  (with-eval-after-load 'lsp-mode
-    (general-def :keymaps 'leader-map
-      "l" '(:keymap lsp-command-map :which-key "LSP")
-      ;; "l" '(:keymap lsp-command-keymap :which-key "LSP")
-      ))
   (general-def :keymaps 'corfu-map
     :states 'insert
-    "<escape>" 'corfu-quit
-    "C-l" 'corfu-insert)
+    ;; "<escape>" 'corfu-quit
+    "C-о" 'corfu-next     ;; (ru)
+    "C-л" 'corfu-previous ;; (ru)
+    "<tab>" 'corfu-insert)
+  (when evil-want-C-u-scroll
+    (evil-collection-define-key 'insert 'corfu-map
+      (kbd "C-u") 'corfu-scroll-down))
+  (when evil-want-C-d-scroll
+    (evil-collection-define-key 'insert 'corfu-map
+      (kbd "C-d") 'corfu-scroll-up))
   (with-eval-after-load 'vertico
     (general-def :keymaps 'vertico-map :states '(normal visual)
       "C-j" 'vertico-next
@@ -1412,6 +1501,8 @@ shell command."
       "C-y" 'yank
       "C-j" 'vertico-next
       "C-k" 'vertico-previous
+      "C-о" 'vertico-next     ;; (ru)
+      "C-л" 'vertico-previous ;; (ru)
       "C-l" 'vertico-insert
       "C-d" 'consult-dir
       "C-n" 'vertico-next-group
@@ -1539,7 +1630,8 @@ shell command."
       "z /" 'org-sparse-tree
       "z ;" 'org-toggle-comment
       "SPC" '(:keymap my/orgmode-leader-map)
-      "K" 'helpful-at-point)
+      "K"   'helpful-at-point
+      "M-q" 'unpackaged/flex-fill-paragraph)
   
     (general-def :keymaps 'org-mode-map
       :states 'insert
