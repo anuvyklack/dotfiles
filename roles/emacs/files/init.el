@@ -6,7 +6,7 @@
 ;;;
 ;;; Code:
 
-(defvar elpaca-installer-version 0.4)
+(defvar elpaca-installer-version 0.5)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
@@ -33,7 +33,7 @@
                                        "--eval" "(byte-recompile-directory \".\" 0 'force)")))
                  ((require 'elpaca))
                  ((elpaca-generate-autoloads "elpaca" repo)))
-            (kill-buffer buffer)
+            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
           (error "%s" (with-current-buffer buffer (buffer-string))))
       ((error) (warn "%s" err) (delete-directory repo 'recursive))))
   (unless (require 'elpaca-autoloads nil t)
@@ -239,7 +239,8 @@ shell command."
 (use-package tab-bar
   :custom
   (tab-bar-tab-hints nil)
-  (tab-bar-show 1)
+  ;; (tab-bar-show 1)
+  (tab-bar-show t)
   (tab-bar-close-button-show nil)
   ;; (tab-bar-new-tab-choice "*dashboard*")
   (tab-bar-format '(tab-bar-format-history
@@ -495,14 +496,6 @@ shell command."
   :after eglot)
 
 ;; (setq eglot-server-programs)
-
-(use-package pixel-scroll
-  :when (fboundp #'pixel-scroll-precision-mode)
-  :hook (after-init . pixel-scroll-precision-mode)
-  :custom
-  (scroll-margin 0)
-  ;; pixel-scroll-precision-interpolate-page
-  )
 
 (use-package avy
   :elpaca t
@@ -981,6 +974,8 @@ buffer, otherwise just change the current paragraph."
   ;; (org-use-tag-inheritance nil)
   ;; (org-tags-exclude-from-inheritance '("soft" "cli"))
   (org-tags-match-list-sublevels nil)
+  (org-footnote-define-inline nil)
+  (org-footnote-auto-adjust t)
   (org-attach-store-link-p t)
   (org-attach-use-inheritance nil)
   (org-attach-auto-tag "ATTACH")
@@ -1005,8 +1000,10 @@ buffer, otherwise just change the current paragraph."
   (org-plantuml-exec-mode 'plantuml)
   (org-plantuml-jar-path (expand-file-name "~/.nix-profile/lib/plantuml.jar"))
   :config
-  (setq org-file-apps '(("\\.pdf\\'" . "evince %s")
-                        ("\\.djvu\\'" . "evince %s")
+  (setq org-file-apps '(("\\.pdf\\'" . "xdg-open %s")
+                        ("\\.djvu\\'" . "xdg-open %s")
+                        ;; ("\\.pdf\\'" . "evince %s")
+                        ("\\.\\(?:jpe?g\\|png\\)\\'" . "xdg-open %s")
                         (auto-mode . emacs)
                         (directory . emacs)
                         ("\\.mm\\'" . default)
@@ -1447,7 +1444,8 @@ buffer, otherwise just change the current paragraph."
   (general-def :keymaps 'universal-argument-map
     "M-u" 'universal-argument-more)
   (general-def :states 'insert
-    "C-l" 'right-char)
+    "C-l" 'right-char
+    "C-ч 8" 'iso-transl-ctl-x-8-map)
   (general-def :keymaps 'leader-map
     "h"  '(:keymap help-map :wk "help")
     "p"  '(:keymap projectile-command-map :which-key "projectile")
@@ -1473,9 +1471,10 @@ buffer, otherwise just change the current paragraph."
   (general-def :keymaps 'corfu-map
     :states 'insert
     ;; "<escape>" 'corfu-quit
+    ;; "<tab>" 'corfu-insert
     "C-о" 'corfu-next     ;; (ru)
     "C-л" 'corfu-previous ;; (ru)
-    "<tab>" 'corfu-insert)
+    )
   (when evil-want-C-u-scroll
     (evil-collection-define-key 'insert 'corfu-map
       (kbd "C-u") 'corfu-scroll-down))
@@ -1603,6 +1602,7 @@ buffer, otherwise just change the current paragraph."
     "n i" 'org-id-get-create
     "n p" 'org-set-property
     "n h" 'org-babel-insert-header-arg
+    "n f" 'org-footnote-action
     "l" 'org-insert-link
     "d" 'org-deadline
     "s" 'org-schedule
@@ -1613,9 +1613,9 @@ buffer, otherwise just change the current paragraph."
     "[" 'org-agenda-file-to-front
     "]" 'org-remove-file
     "|" 'org-table-create-or-convert-from-region)
-  (general-def :keymaps 'org-src-mode-map
-    :states 'normal
-    "z '" 'org-edit-src-exit)
+  ;; (general-def :keymaps 'org-src-mode-map
+  ;;   :states 'normal
+  ;;   "z '" 'org-edit-src-exit)
   (with-eval-after-load 'org
     (general-def :keymaps 'org-mode-map
       :states '(normal visual)

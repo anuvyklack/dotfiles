@@ -1,7 +1,7 @@
 # -*- evil-shift-width: 2; fill-column: 80; comment-column: 75; -*-
 #+startup: show2levels
 #+auto_tangle: t
-
+­
 * early-init.el
 :PROPERTIES:
 :header-args: :tangle "./early-init.el"
@@ -90,7 +90,7 @@ This concludes the =early-init.el= file.
 [[https://github.com/progfolio/elpaca][GitHub - progfolio/elpaca: An elisp package manager]]
 
 #+begin_src emacs-lisp
-(defvar elpaca-installer-version 0.4)
+(defvar elpaca-installer-version 0.5)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
@@ -117,7 +117,7 @@ This concludes the =early-init.el= file.
                                        "--eval" "(byte-recompile-directory \".\" 0 'force)")))
                  ((require 'elpaca))
                  ((elpaca-generate-autoloads "elpaca" repo)))
-            (kill-buffer buffer)
+            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
           (error "%s" (with-current-buffer buffer (buffer-string))))
       ((error) (warn "%s" err) (delete-directory repo 'recursive))))
   (unless (require 'elpaca-autoloads nil t)
@@ -552,9 +552,11 @@ Show tab numbers.
 (tab-bar-tab-hints nil)
 #+end_src
 
-Hide tab bar if only 1 tabs open.
++Hide tab bar if only 1 tabs open.+
+Always show tab bar.
 #+begin_src emacs-lisp
-(tab-bar-show 1)
+;; (tab-bar-show 1)
+(tab-bar-show t)
 #+end_src
 
 Hide tab close button.
@@ -1256,7 +1258,7 @@ workspace symbol from eglot using consult.
   (text-mode . tempel-setup-capf))
 #+end_src
 
-** Smooth scrolling
+** COMMENT Smooth scrolling
 *** pixel-scroll
 #+begin_src emacs-lisp
 (use-package pixel-scroll
@@ -1265,6 +1267,7 @@ workspace symbol from eglot using consult.
   :custom
   (scroll-margin 0)
   ;; pixel-scroll-precision-interpolate-page
+  (pixel-scroll-precision-large-scroll-height 40.0)
   )
 #+end_src
 
@@ -2524,6 +2527,12 @@ Include entries from the Emacs diary into Org mode’s agenda.
 (org-tags-match-list-sublevels nil)
 #+end_src
 
+***** footnotes
+#+begin_src emacs-lisp
+(org-footnote-define-inline nil)
+(org-footnote-auto-adjust t)
+#+end_src
+
 ***** attachments
 #+begin_src emacs-lisp
 (org-attach-store-link-p t)
@@ -2574,12 +2583,14 @@ Use PlantUML executable instead of =.jar= file together with Java.
 :header-args: :noweb-ref org-config
 :END:
 ***** Applications used to open external files
-I set up it here, but not in custom section, because of bug: the options just
-don't set if I set it in use-package =:custom= section.
+I set up it config section, but not in custom section, because of bug: the
+options just don't set if I set it in use-package =:custom= section.
 
 #+begin_src emacs-lisp
-(setq org-file-apps '(("\\.pdf\\'" . "evince %s")
-                      ("\\.djvu\\'" . "evince %s")
+(setq org-file-apps '(("\\.pdf\\'" . "xdg-open %s")
+                      ("\\.djvu\\'" . "xdg-open %s")
+                      ;; ("\\.pdf\\'" . "evince %s")
+                      ("\\.\\(?:jpe?g\\|png\\)\\'" . "xdg-open %s")
                       (auto-mode . emacs)
                       (directory . emacs)
                       ("\\.mm\\'" . default)
@@ -3657,7 +3668,8 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
 
 #+begin_src emacs-lisp
 (general-def :states 'insert
-  "C-l" 'right-char)
+  "C-l" 'right-char
+  "C-ч 8" 'iso-transl-ctl-x-8-map)
 #+end_src
 
 *** Leader map
@@ -3708,9 +3720,10 @@ color theme). Other faces such as ~diff-added~ will be used for other actions.
 (general-def :keymaps 'corfu-map
   :states 'insert
   ;; "<escape>" 'corfu-quit
+  ;; "<tab>" 'corfu-insert
   "C-о" 'corfu-next     ;; (ru)
   "C-л" 'corfu-previous ;; (ru)
-  "<tab>" 'corfu-insert)
+  )
 #+end_src
 
 Swap ~corfu-scroll-down~ and ~corfu-scroll-up~ functions.
@@ -3936,6 +3949,7 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
   "n i" 'org-id-get-create
   "n p" 'org-set-property
   "n h" 'org-babel-insert-header-arg
+  "n f" 'org-footnote-action
   "l" 'org-insert-link
   "d" 'org-deadline
   "s" 'org-schedule
@@ -3949,9 +3963,9 @@ _Z_ compress       _g_ chgrp        _e_xtension mark   _=_ pdiff
 #+end_src
 
 #+begin_src emacs-lisp
-(general-def :keymaps 'org-src-mode-map
-  :states 'normal
-  "z '" 'org-edit-src-exit)
+;; (general-def :keymaps 'org-src-mode-map
+;;   :states 'normal
+;;   "z '" 'org-edit-src-exit)
 #+end_src
 
 #+begin_src emacs-lisp
