@@ -1,0 +1,15 @@
+# /etc/udevmon.yaml
+---
+
+# # Laptop keyboard
+# - JOB: "intercept -g $DEVNODE | dual-function-keys -c /etc/interception-tools/laptop-keyboard.yaml | uinput -d $DEVNODE"
+#   DEVICE:
+#     NAME: AT Translated Set 2 keyboard
+#     EVENTS:
+#       EV_KEY: [ KEY_CAPSLOCK, KEY_SPACE, KEY_LEFTSHIFT, KEY_RIGHTSHIFT ]
+
+# Kinesis Advantage2 Keyboard
+- JOB: "intercept -g $DEVNODE | dual-function-keys -c /etc/interception-tools/kinesis-advantage2.yaml | uinput -d $DEVNODE"
+  DEVICE:
+    EVENTS:
+      EV_KEY: [ KEY_CAPSLOCK, KEY_ESC, KEY_SPACE, KEY_LEFTSHIFT, KEY_RIGHTSHIFT ]

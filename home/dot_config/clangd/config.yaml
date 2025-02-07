@@ -1,0 +1,5 @@
+Diagnostics:
+  UnusedIncludes: Strict
+
+CompileFlags:
+  Add: [-std=c++23]

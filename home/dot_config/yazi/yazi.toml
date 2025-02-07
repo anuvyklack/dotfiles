@@ -1,0 +1,27 @@
+[manager]
+ratio          = [1, 2, 2]
+sort_by        = "natural"
+sort_dir_first = true
+linemode       = "size" # "none"
+
+[preview]
+tab_size     = 4
+max_width    = 3000 # default: 600
+max_height   = 4000 # default: 900
+image_filter = "nearest"
+cache_dir    = "$XDG_CACHE_HOME/yazi"
+ueberzug_scale  = 2
+ueberzug_offset = [1, 1, 1, 1]
+
+[opener]
+edit = [
+    # { run = '${EDITOR:=vi} "$@"', desc = "$EDITOR", block = true, for = "unix" },
+    { run = 'emacs "$@"',   orphan = true, desc = "emacs",        for = "unix" },
+    { run = 'code "%*"',    orphan = true, desc = "code",         for = "windows" },
+    { run = 'code -w "%*"',  block = true, desc = "code (block)", for = "windows" },
+]
+open = [
+    { run = 'xdg-open "$0"',  orphan = true, desc = "Open", for = "linux" },
+    { run = 'open "$@"',      orphan = true, desc = "Open", for = "macos" },
+    { run = 'start "" "%1"',  orphan = true, desc = "Open", for = "windows" },
+]

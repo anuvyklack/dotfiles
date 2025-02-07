@@ -1,0 +1,71 @@
+# vim: ft=gitconfig
+[user]
+    email = anuvyklack@gmail.com
+    name = Yuriy Artemyev
+[core]
+    editor = nvim
+    autocrlf = false
+[pager]
+    diff = delta
+    log = delta
+    reflog = delta
+    show = delta
+[delta]
+    plus-style = "syntax #012800"
+    minus-style = "syntax #340001"
+    syntax-theme = Monokai Extended
+    navigate = true
+    line-numbers = true
+    side-by-side = false
+[interactive]
+    diffFilter = delta --color-only
+[alias]
+    unstage = reset HEAD --
+    graph = log --decorate --all --oneline --graph
+    yolo = !git commit -m \"$(curl -s whatthecommit.com/index.txt)\"
+# [credential]
+#     # for wsl
+#     helper = /mnt/c/Users/artyu/scoop/apps/mingit/current/mingw64/libexec/git-core/git-credential-manager.exe
+[rerere]
+    enabled = 1
+    autoupdate = 1
+[color]
+    ui = auto
+[difftool]
+    prompt = false
+[diff]
+    tool = bc3
+[difftool "bc3"]
+    trustExitCode = true
+[merge]
+	tool = bc3
+[mergetool "bc3"]
+	trustExitCode = true
+# [diff]
+#     tool = nvimdiff
+# [difftool "nvimdiff"]
+#     cmd = nvim  -R -f -d -c 'wincmd l' $LOCAL $REMOTE
+# [mergetool "nvimmerge"]
+#     cmd = nvim  -f -d -c 'wincmd l' $LOCAL $MERGED $REMOTE
+#     # cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+# [diff-so-fancy]
+#     stripLeadingSymbols = false
+#     rulerWidth = 80
+[maintenance]
+	repo = /home/anuvyklack/.local/share/zsh/plugins/conda-zsh-completion
+	repo = /home/anuvyklack/.local/share/zsh/plugins/fzf-tab
+	repo = /home/anuvyklack/.local/share/zsh/plugins/nb
+	repo = /home/anuvyklack/.local/share/zsh/plugins/powerlevel10k
+	repo = /home/anuvyklack/.local/share/zsh/plugins/vifmimg
+	repo = /home/anuvyklack/.local/share/zsh/plugins/vifmpane
+	repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-autosuggestions
+	repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-completions
+	repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-history-substring-search
+	repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-snap
+	repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-syntax-highlighting
+	repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-vi-mode
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

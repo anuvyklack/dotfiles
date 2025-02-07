@@ -1,0 +1,171 @@
+#!/usr/bin/env zsh
+
+function install_missing_programs { #{{{
+    function title {
+        print_title $(color white bold 'Installing') $@
+    }
+
+    # bin {{{
+    if ! (( $+commands[bin] )); then
+        title $(color green bold 'bin')
+
+        emulate -L zsh
+
+        bin_base_version=0.8.0
+        wget -O /tmp/bin "https://github.com/marcosnils/bin/releases/download/v${bin_base_version}/bin_${bin_base_version}_Linux_x86_64"
+        chmod 0770 /tmp/bin  # make executable
+
+        # Create config file
+        bin_config_file="$HOME/.config/bin/config.json";
+        mkdir --parents $bin_config_file:h  # Create parent directories of config file.
+        if ! [ -s $bin_config_file ]; then
+            echo '{'                                             > $bin_config_file
+            echo "    \"default_path\" : \"$HOME/.local/bin\"," >> $bin_config_file
+            echo '    "bins": {}'                               >> $bin_config_file
+            echo '}'                                            >> $bin_config_file
+        fi
+
+        # Install bin
+        {
+            if ! [ $(/tmp/bin list | grep github.com/marcosnils/bin) ]; then
+              /tmp/bin install github.com/marcosnils/bin
+            fi
+        } always {
+            rm /tmp/bin
+        }
+
+        unset bin_base_version
+        unset bin_config_file
+        echo
+    fi #}}}
+
+    # rg {{{
+    if ! (( $+commands[rg] )); then
+        title $(color blue bold 'ripgrep')
+        echo
+        bin install https://github.com/BurntSushi/ripgrep
+        echo
+    fi #}}}
+
+    # bat {{{
+    if ! (( $+commands[bat] )); then
+        title $(color blue bold 'bat')
+
+        echo
+        bin install https://github.com/sharkdp/bat
+        echo
+        print \$ $(color green bold 'bat') $(color white bold 'cache --build')
+        bat cache --build
+
+        # bat_install_or_update
+
+        echo
+    fi #}}}
+
+    # exa {{{
+    if ! (( $+commands[exa] )); then
+        title $(color Yellow bold 'exa')
+        echo
+        bin install https://github.com/ogham/exa
+        echo
+    fi #}}}
+
+    # fzf {{{
+    if ! (( $+commands[fzf] )); then
+        title $(color Yellow bold 'fzf')
+        echo
+        bin install https://github.com/junegunn/fzf
+        echo
+        # github_file $ZSH[scripts]/fzf-key-bindings.zsh 'https://github.com/junegunn/fzf/blob/master/shell/key-bindings.zsh'
+    fi #}}}
+
+    # zoxide {{{
+    if ! (( $+commands[zoxide] )); then
+        title $(color Magenta bold 'zoxide')
+        echo
+        bin install https://github.com/ajeetdsouza/zoxide
+        echo
+    fi
+    #}}}
+
+    # delta {{{
+    if ! (( $+commands[delta] )); then
+        title $(color green bold 'delta')
+        echo
+        bin install https://github.com/dandavison/delta
+        echo
+    fi #}}}
+
+    # topgrade {{{
+    if ! (( $+commands[topgrade] )); then
+        title $(color red bold 'topgrade')
+        echo
+        bin install https://github.com/r-darwish/topgrade
+        echo
+    fi #}}}
+
+    # dust {{{
+    if ! (( $+commands[dust] )); then
+        title $(color yellow bold 'dust')
+        echo
+        bin install https://github.com/bootandy/dust
+        echo
+    fi #}}}
+
+    # duf {{{
+    if ! (( $+commands[duf] )); then
+        title $(color blue bold 'duf')
+        echo
+        bin install https://github.com/muesli/duf
+        echo
+    fi #}}}
+
+    # broot {{{
+    if ! (( $+commands[broot] )); then
+        title $(color red bold 'broot')
+        echo
+        bin install https://github.com/Canop/broot
+        echo
+    fi #}}}
+
+    # mcfly {{{
+    if ! (( $+commands[mcfly] )); then
+        title $(color Magenta bold 'mcfly')
+        echo
+        bin install https://github.com/cantino/mcfly
+        echo
+    fi #}}}
+
+    # btop++ {{{
+    if ! (( $+commands[btop] )); then
+        title $(color red bold 'btop')
+        echo
+        bin install https://github.com/aristocratos/btop
+        echo
+    fi #}}}
+
+    # # glow {{{
+    # if ! (( $+commands[glow] ));
+    # then
+    #     title $(color Magenta bold 'glow')
+    #     echo
+    #     bin install https://github.com/charmbracelet/glow
+    #     echo
+    # fi #}}}
+
+    # pipx apps
+    if (( $+commands[pipx] )); then
+        # ueberzug {{{
+        if ! (( $+commands[ueberzug])); then
+            title $(color Magenta bold 'ueberzug')
+            echo
+            pipx install ueberzug
+            echo
+        fi #}}}
+    fi
+
+    # print Everything is installed
+    unset string
+}
+
+# vim: tw=75 ts=2 sw=2 fdm=marker

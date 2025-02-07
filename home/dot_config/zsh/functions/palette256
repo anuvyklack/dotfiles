@@ -1,0 +1,13 @@
+#!/usr/bin/env zsh
+
+# Use this function to print 256 color palette and releted codes.
+
+# Usage: palette
+function palette256 {
+    local -a colors
+    for i in {000..255}; do
+        colors+=("%F{$i}$i%f")
+    done
+    print -cP $colors
+}
+

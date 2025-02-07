@@ -1,0 +1,3 @@
+[".emacs.d"]
+    type = "git-repo"
+    url = "https://github.com/doomemacs/doomemacs"

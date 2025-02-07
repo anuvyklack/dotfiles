@@ -1,0 +1,31 @@
+# Syntax Highlighting Colors
+fish_color_normal abb2bf                    #abb2bf
+fish_color_command 61afef                   #61afef
+fish_color_quote 98c379                     #98c379
+fish_color_redirection 56b6c2               #56b6c2
+fish_color_end abb2bf                       #abb2bf
+fish_color_error e06c75                     #e06c75
+fish_color_param abb2bf                     #abb2bf
+fish_color_comment 5c6370                   #5c6370
+fish_color_match 56b6c2 --underline         #56b6c2
+fish_color_search_match --background=2e6399 #2e6399
+fish_color_operator c678dd                  #c678dd
+fish_color_escape 56b6c2                    #56b6c2
+fish_color_cwd e06c75                       #e06c75
+fish_color_autosuggestion 5c6370            #5c6370
+fish_color_valid_path abb2bf --underline    #abb2bf
+fish_color_history_current 56b6c2           #56b6c2
+fish_color_selection --background=5c6370    #5c6370
+fish_color_user 61afef                      #61afef
+fish_color_host 98c379                      #98c379
+fish_color_cancel 5c6370                    #5c6370
+
+# Completion Pager Colors
+fish_pager_color_completion abb2bf          #abb2bf
+fish_pager_color_prefix c678dd              #c678dd
+fish_pager_color_description d1a166         #d1a166
+fish_pager_color_progress 56b6c2            #56b6c2
+fish_pager_color_selected_background --reverse
+fish_pager_color_selected_prefix --bold
+fish_pager_color_selected_completion --bold
+fish_pager_color_selected_description --background=abb2bf

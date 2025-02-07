@@ -1,0 +1,10 @@
+{{- if (and .is_fedora (not (lookPath "nix"))) -}}
+#!/usr/bin/sh
+
+# Get sudo rights here, to not request them further.
+sudo true
+
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | \
+  sh -s -- install
+
+{{- end }}

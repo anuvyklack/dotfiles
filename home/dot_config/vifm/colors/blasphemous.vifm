@@ -1,0 +1,269 @@
+" Reset all styles first
+highlight clear
+
+" #B1C5D8
+" #C8D6E3
+" #F4E9C8
+
+" #A89984
+
+" #3D241F
+" #3A3735
+
+" #896E6E
+" #5F4F37
+
+" #304E67
+
+" #43353C
+" #433537
+
+" #603837
+" #60373C
+
+highlight Border     gui=bold          guifg=default  guibg=#43353C
+highlight TopLineSel gui=bold          guifg=#E6C9C4  guibg=#433537
+highlight TopLine    gui=none          guifg=#E6C9C4  guibg=#433537
+highlight StatusLine gui=none          guifg=#E6C9C4  guibg=#433537
+
+" #867666
+" #A9876A
+" #A2786D
+" #CBA683
+" #BF927B
+" #DFBF8E
+" #CAAE80
+" #BFB2A2
+" #D5C4A1
+" #97A3B0
+
+" #43353C
+" #896E6E
+" #9C8585
+" #BA9F9F
+" #C7AAAA
+" #CEB5B5
+" #D4BABA
+
+highlight Win        gui=none          guifg=#D4BABA  guibg=#292121
+highlight AuxWin     gui=none          guifg=#C7B399  guibg=#2A9FCB
+
+" #6A5556
+" #8C674A
+" #736E58
+" #725348
+
+" #684967
+" #4A3449
+" #422E41
+" #3A2939
+" #332332
+" #2B1E2A
+
+" #433537
+" #4F3F41
+" #37293A
+
+" #3A2930
+
+" #9BBBA5
+" #E8B05A
+" #DDB271
+" #DDAF52
+" #DEBC7A
+" #FFE7A3
+" #FBE8C6
+" #82BEC4
+" #8CCDD4
+" #DFD3BA
+
+" #CAAE80
+" #EEB597
+" #CFB4B9
+" #E0A3AB
+" #AD777F
+
+highlight WildMenu   gui=bold          guifg=#292121  guibg=#CFB4B9
+
+" #C1B264
+" #AB9A42
+" #3A2930
+" #EAC4B0
+" #CEA490
+" #D4A894
+" #DEB3A0
+" #E6C9C4
+highlight SuggestBox gui=none          guifg=#DEB3A0  guibg=#3A2930
+" highlight SuggestBox gui=none          guifg=#E6C9C4  guibg=#3A2930
+" highlight SuggestBox gui=none          guifg=#C1B264  guibg=#2C1819
+
+" highlight SuggestBox gui=bold          guifg=#8CCDD4  guibg=#3A2930
+" highlight SuggestBox gui=none          guifg=#EBEBEB  guibg=#3A2930
+" highlight SuggestBox gui=none          guifg=#FBE8C6  guibg=#3A2930
+" highlight SuggestBox gui=bold          guifg=#DDC7A1  guibg=#37293A
+
+highlight CurrLine  gui=bold,inverse   guifg=default  guibg=default
+highlight OtherLine gui=bold           guifg=default  guibg=#43353C
+highlight Selected  gui=bold           guifg=#FFFFFF  guibg=#524149
+
+" #595E74  #7F86A6
+" #5F6D83  #899DBD
+
+" #F27E6D
+" #D77061
+" #DA816F
+highlight Directory  gui=bold          guifg=#E89B72  guibg=default
+
+highlight CmdLine    gui=none          guifg=#E4CECB  guibg=#292121
+
+" #d75f00
+" #f76d47
+highlight ErrorMsg   gui=none          guifg=#f76d47  guibg=#292121
+
+" highlight JobLine
+
+highlight Executable  gui=none  guifg=#4DDBA0  guibg=default
+
+highlight Link        gui=none  guifg=#D27FEB  guibg=default
+highlight HardLink    gui=none  guifg=#9D75FF  guibg=default
+highlight BrokenLink  gui=bold  guifg=#FF3E00  guibg=default
+
+" #02A3E9
+" #00D5FF
+highlight Socket      gui=none  guifg=#00D5FF  guibg=default
+
+" #CDE7DC
+" #8CA6A3
+" #899DBD
+" #A4B6D1
+" #B0C3E0
+" #C8DEFF
+
+" #B4B4B4
+" #C3C3C3
+highlight Device      gui=none  guifg=#C3C3C3  guibg=default
+" highlight Device      gui=none  guifg=#899DBD  guibg=default
+
+" #FFB700
+" #AFDE77
+" #BDE192
+" #C7EC9C
+highlight Fifo        gui=none    guifg=#BDE192  guibg=default
+
+" #A5BEAB
+" #82BEC4
+" #7BBEC9
+
+highlight {*.jpg,*.jpeg,*.png,*.gif}
+\                    gui=none  guifg=#82BEC4  guibg=default
+" \                   gui=none  guifg=#AB9A3F  guibg=default
+
+highlight {*.webm,*.mp2,*.mpeg,*.mpe,*.mpv,*.ogg,*.mp4,*.m4p,*.m4v,*.avi,*.wmv,*.mov,*.qt,*.flv,*.swf,*.avchd,*.mpg}
+\                    gui=none  guifg=#9CC4F5  guibg=default
+
+" #DB4758
+" #FF4168
+" #F1495C
+" #EA6962
+
+" #820F60
+" #AD1919
+
+" #E3452C
+" #E55F3D
+
+" #FF5F58
+" #FF6C66
+" #FF716B
+" #FF746E
+" #FF7C77
+" #EA6962
+" #EB726C
+" #D76767
+
+" " highlight {*.pdf}   gui=none  guifg=#FF5F58  guibg=default
+" " highlight {*.pdf}   gui=none  guifg=#FF6C66  guibg=default
+highlight {*.pdf}   gui=none  guifg=#FF746E  guibg=default
+" " highlight {*.pdf}   gui=none  guifg=#EA6962  guibg=default
+" " highlight {*.pdf}   gui=none  guifg=#EB726C  guibg=default
+" " highlight {*.pdf}   gui=none  guifg=#D76767  guibg=default
+
+" #E2C48F
+" #E2BE8F
+" #E2B68F
+" #E6A264
+" #B9A583
+" highlight {*.djvu,*.epub,*.fb2}
+" \                   gui=none  guifg=#B9A583 guibg=default
+
+" #BE4F2C
+highlight {*.ppt,*.pptx}
+\                   gui=none  guifg=#EEAD0E  guibg=default
+
+" #58B997
+" #26A387
+" #268BA3
+" #34A2BD
+" #38BBDC
+" #3CA2A8
+
+" #C24278  #C678DD  #713965  #682B6D
+" #BD3E97  #C655A4  #CE64AE  #DD7CC0
+
+" #FF00FF
+" #F46BF4
+" #C678DD
+" #CA89DC
+" #D27FEB
+" #C792EA
+" #C24278
+" #CF1B54
+
+" #D84885
+" #FF529C
+" #FF549D
+" #FF579F
+" #FF57A8
+
+" #FF4DA3
+" #FF007B
+" #FF2D92
+highlight {*.rar,*.zip,*.tar,*.tar.gz,*.gz,*.tgz,*.deb}
+" \                   gui=bold  guifg=#FF007B  guibg=default
+\                     gui=bold  guifg=#FF2D92  guibg=default
+" \                   gui=bold  guifg=#FF4DA3  guibg=default
+" \                   gui=none  guifg=#FF579F  guibg=default
+" \                   gui=bold  guifg=#FF579F  guibg=default
+
+" #82aaff
+" #82A3FF
+" highlight {*.lua}   gui=none  guifg=#82aaff guibg=default
+highlight {*.lua}   gui=none  guifg=#82A3FF guibg=default
+
+" #638ADA
+" #5B87E0
+" #5479C5
+" #3C67C2
+highlight {*.doc,*.docx}
+\                    gui=none  guifg=#5B87E0  guibg=default
+" \                    gui=none  guifg=#5479C5  guibg=default
+" \                    gui=none  guifg=#304A81  guibg=default
+" \                    gui=none  guifg=#345393  guibg=default
+" \                    gui=none  guifg=#0567D6  guibg=default
+" \                    gui=none  guifg=#0960C1  guibg=default
+" \                    gui=none  guifg=#2047A9  guibg=default
+" \                    gui=none  guifg=#7FA0E5  guibg=default
+" \                    gui=none  guifg=#6C8FD9  guibg=default
+" \                    gui=none  guifg=#557AC7  guibg=default
+" \                    gui=none  guifg=#4D6EB3  guibg=default
+
+" #699C69 #669966 #518E51
+" #347045
+" #236335
+" #66AB66
+highlight {*.xlsx}
+" \                    gui=none  guifg=#236335  guibg=default
+" \                    gui=none  guifg=#347045  guibg=default
+" \                    gui=none  guifg=#518E51  guibg=default
+" \                    gui=none  guifg=#699C69  guibg=default
+\                    gui=none  guifg=#66AB66  guibg=default

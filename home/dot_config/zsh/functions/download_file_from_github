@@ -1,0 +1,32 @@
+#!/usr/bin/env zsh
+
+# Other realizaiton of the same goal:
+# https://www.npmjs.com/package/github-files-fetcher
+# https://github.com/Gyumeijie/github-files-fetcher/blob/master/src/index.js
+
+function download_file_from_github {
+    # $1 - The full name (with path) of the file to save.
+    # $2 - The link to the file on github.
+
+    LINK=$2
+    # Substitute "github" substring with "raw.githubusercontent".
+    LINK=${LINK/github/raw.githubusercontent}
+    # Delete "blob/" substring.
+    LINK=${LINK/blob\/}
+
+    if (( $+commands[wget] )); then
+        # -O / --output-document :: Specify file to write documents to.
+        # --force-directories    :: Force creation of directories.
+        wget -O $1 $LINK
+
+    elif (( $+commands[curl] )); then
+        # -L / --location
+        # -J / --remote-header-name
+        # -O / --remote-name
+        curl -fsSLo $1 $LINK
+    else
+        print $(color red 'Neighter') $(color Yellow 'curl') $(color red 'nor') $(color Yellow 'wget') $(color red 'are found!')
+    fi
+}
+
+# vim: ts=4 sts=4

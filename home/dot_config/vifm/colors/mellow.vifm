@@ -1,0 +1,146 @@
+" Reset all styles first
+highlight clear
+
+" highlight Border     gui=bold          guifg=default  guibg=#F5BB89
+" highlight TopLineSel gui=bold          guifg=#A67458  guibg=#F5BB89
+" highlight TopLine    gui=none          guifg=#A67458  guibg=#F5BB89
+" highlight StatusLine gui=none          guifg=#66292F  guibg=#F5BB89
+
+highlight Border     gui=bold          guifg=default  guibg=#E0CCAE
+highlight TopLineSel gui=bold          guifg=#A67458  guibg=#E0CCAE
+highlight TopLine    gui=none          guifg=#A67458  guibg=#E0CCAE
+highlight StatusLine gui=none          guifg=#66292F  guibg=#F5BB89
+
+" highlight Win        gui=none          guifg=#66292F    guibg=#F2DDBC
+highlight Win        gui=none          guifg=#3D241F    guibg=#F2DDBC
+" highlight Win        gui=none          guifg=#8A7B85    guibg=#F2DDBC
+
+highlight AuxWin     gui=none          guifg=#C7B399  guibg=#2A9FCB
+
+"highlight OtherWin   cterm=none         ctermfg=223      ctermbg=236
+
+" #94D194
+" #7AB87A
+" #669966
+" #339933
+
+" highlight Directory  gui=bold          guifg=#E09952  guibg=default
+" highlight Directory  gui=bold          guifg=#E37D57  guibg=default
+" highlight Directory  gui=bold          guifg=#B57C64  guibg=default
+highlight Directory  gui=bold          guifg=#C27041  guibg=default
+" highlight Directory  gui=bold          guifg=#9A6548  guibg=default
+
+" #A14D1B
+" #9E552C
+" #B15D2E
+" #9A6548
+" #C27041
+" #D47D49
+
+" highlight Directory  gui=bold          guifg=#3CA2A8  guibg=default
+" highlight Directory  gui=bold          guifg=#268BA3  guibg=default
+" highlight Directory  gui=bold          guifg=#E19E2C  guibg=default
+" highlight Directory  gui=bold          guifg=#D79921  guibg=default
+" highlight Directory  gui=bold          guifg=#98971A  guibg=default
+" highlight Directory  gui=bold          guifg=#E9B143  guibg=default
+" highlight Directory  gui=bold          guifg=#779EA6  guibg=default
+" highlight Directory  gui=bold          guifg=#5D858D  guibg=default
+" highlight Directory  gui=bold          guifg=#139080  guibg=default
+" highlight Directory  gui=bold          guifg=#B9F4D0  guibg=default
+
+" highlight Directory  gui=bold          guifg=#FAC35B  guibg=default
+" highlight CurrLine
+" highlight OtherLine
+" highlight Selected
+" highlight JobLine
+" highlight ErrorMsg
+" highlight WildMenu
+" highlight CmdLine
+
+" highlight Executable
+
+" #C24278  #C678DD  #713965  #682B6D
+" #BD3E97  #C655A4  #CE64AE  #DD7CC0
+
+" #8F3F71  #B16286  #D3869B
+" #D3718C
+" #D35C7C
+
+highlight Link       gui=none          guifg=#C655A4  guibg=default
+" highlight Link       gui=none          guifg=#58B997  guibg=default
+
+" highlight BrokenLink
+" highlight Device
+" highlight Fifo
+" highlight Socket
+
+" #DB4758 #FF4168 #F1495C #EA6962
+
+" #820F60 #FF4168 #AD1919
+
+" #D65C5C #B34D4D
+
+" #AF0032
+
+highlight {*.pdf}    gui=none  guifg=#AF0032  guibg=default
+" highlight {*.pdf}    gui=none  guifg=#D65C5C  guibg=default
+" highlight {*.pdf}    gui=none  guifg=#EA6962  guibg=default
+
+" highlight {*.pdf}    gui=none  guifg=#FF4168  guibg=default
+" highlight {*.pdf}    gui=none  guifg=#F1495C  guibg=default
+" highlight {*.pdf}    gui=none  guifg=#E3452C  guibg=default
+" highlight {*.pdf}    gui=none  guifg=#E55F3D  guibg=default
+
+" #7BBEC9
+" #45818C
+
+highlight {*.jpg,*.jpeg,*.png,*.gif}
+\                    gui=none  guifg=#45818C  guibg=default
+" \                    gui=none  guifg=#7BBEC9  guibg=default
+" \                    gui=none  guifg=#75B4BF  guibg=default
+" \                    gui=none  guifg=#87A9B0  guibg=default
+" \                    gui=none  guifg=#AB9A3F  guibg=default
+
+" #F9D33D
+" #AD8F19
+
+highlight {*.rar,*.zip,*.tar,*.tar.gz,*.gz}
+\                    gui=none  guifg=#AD8F19  guibg=default
+
+" highlight {*.rar,*.zip,*.tar,*.tar.gz}
+" \                    gui=none  guifg=#D3718C  guibg=default
+" \                    gui=none  guifg=#D35C7C  guibg=default
+" \                    gui=none  guifg=#B16286  guibg=default
+
+" #30B0D7 #188FD3
+" #2BACD3 #1B91D4
+" #2A9FCB #0567D6
+" #4D6EB3 #0960C1
+" #557AC7 #2047A9
+" #6C8FD9
+" #7FA0E5
+
+" #345393
+" #304A81
+
+highlight {*.doc,*.docx}
+\                    gui=none  guifg=#304A81  guibg=default
+" \                    gui=none  guifg=#345393  guibg=default
+" \                    gui=none  guifg=#0567D6  guibg=default
+" \                    gui=none  guifg=#0960C1  guibg=default
+" \                    gui=none  guifg=#2047A9  guibg=default
+" \                    gui=none  guifg=#7FA0E5  guibg=default
+" \                    gui=none  guifg=#6C8FD9  guibg=default
+" \                    gui=none  guifg=#557AC7  guibg=default
+" \                    gui=none  guifg=#4D6EB3  guibg=default
+" \                    gui=none  guifg=#2BACD3  guibg=default
+" \                    gui=none  guifg=#FA6857  guibg=default
+
+" #699C69 #669966 #518E51
+" #347045
+" #236335
+highlight {*.xlsx}
+\                    gui=none  guifg=#236335  guibg=default
+" \                    gui=none  guifg=#347045  guibg=default
+" \                    gui=none  guifg=#518E51  guibg=default
+" \                    gui=none  guifg=#699C69  guibg=default

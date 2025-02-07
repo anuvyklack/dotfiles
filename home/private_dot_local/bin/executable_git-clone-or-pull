@@ -1,0 +1,56 @@
+#!/bin/env bash
+#-------------------------------------------------------------------------------
+# Usage:
+#     git_clone_or_pull "url" "path"
+#
+#-------------------------------------------------------------------------------
+git-check-remote() {
+    local upstream="${1:-@{u}}"  # Default upstream branch is "@{u}"
+
+    git remote update # > /dev/null 2>&1
+
+    local local_commit=$(git rev-parse @)
+    local remote_commit=$(git rev-parse "$upstream")
+    local base_commit=$(git merge-base @ "$upstream")
+
+    if [[ "$local_commit" == "$remote_commit" ]]; then
+        echo "up-to-date"
+    elif [[ "$local_commit" == "$base_commit" ]]; then
+        echo "need-pull"
+    elif [[ "$remote_commit" == "$base_commit" ]]; then
+        echo "need-push"
+    else
+        echo "diverge"
+    fi
+}
+
+git-clone-or-pull() {
+    local git_url=$1 # Repository URL in the form accepted by git
+    local repo_path=$2 # The full path to the repo directory
+    local status=1
+
+    if [ -d "$repo_path" ]; then
+        color blue bold "Repository already exists at $repo_path. Checking for updates..."
+        pushd "$repo_path" > /dev/null
+
+        if [[ "$(git-check-remote)" == "need-pull" ]]; then
+            git pull
+            status=$?
+            if [ $status -eq 0 ]; then
+                color green bold "Repository was updated."
+            else
+                color red bold "Failed to pull changes."
+            fi
+        else
+            color green bold "Repository is already up to date."
+        fi
+
+        popd > /dev/null
+        return $status
+    else
+        git clone "$git_url" "$repo_path" # > /dev/null 2>&1
+        return $?
+    fi
+}
+
+git-clone-or-pull "$@"

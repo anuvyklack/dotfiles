@@ -1,0 +1,18 @@
+{{- $personal_computer := promptBoolOnce . "personal_computer" "Is this a personal computer for daily driving? (true/false)" -}}
+
+{{- $debian := eq .chezmoi.osRelease.id "debian" | not | not -}}
+{{- $ubuntu := hasKey .chezmoi.osRelease "ubuntuCodename" -}}
+{{- $fedora := eq .chezmoi.osRelease.id "fedora" | not | not -}}
+{{- $wsl := or (env "WSL_DISTRO_NAME") (env "IS_WSL") | not | not -}}
+{{- $gnome := lookPath "gnome-shell" | not | not -}}
+{{- $headless := or (env "SSH_CLIENT" | not | not) (not (or (env "DISPLAY") (env "WAYLAND_DISPLAY"))) -}}
+
+[data]
+is_wsl = {{ $wsl }}
+is_debian = {{ $debian }}
+is_ubuntu = {{ $ubuntu }}
+is_fedora = {{ $fedora }}
+is_headless = {{ $headless }}
+is_gnome = {{ $gnome }}
+
+uname_arch = "{{ output "uname" "-m" | trim }}"

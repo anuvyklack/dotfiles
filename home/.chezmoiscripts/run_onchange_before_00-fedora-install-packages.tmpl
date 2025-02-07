@@ -1,0 +1,38 @@
+{{- if .is_fedora -}}
+#!/bin/env bash
+
+# Enable RPM Fusion repositories
+sudo dnf -y install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+sudo dnf -y install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+
+packages=(
+    fish
+    curl
+    stow
+    plocate
+    cronie # for cron
+    cronie-anacron
+    fd-find
+    bfs
+    wl-clipboard
+    gnome-tweaks # GNOME
+    dconf-editor # GNOME
+    xkb-switch
+    g3kb-switch
+    # qview
+    qimgv
+    vlc
+    openh264 # for twitch
+    ImageMagick ImageMagick-devel
+)
+
+sudo dnf update -y
+sudo dnf install -y "${packages[@]}"
+
+# Multimedia libraries and codecs
+sudo dnf group install -y Multimedia
+
+# Update the plocate database
+sudo updatedb
+
+{{- end -}}

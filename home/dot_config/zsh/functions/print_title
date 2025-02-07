@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+
+function print_title {
+    local filler='―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――'
+    string="$(color white bold '――') $@"
+    # sed 's/\x1b\[[0-9;]*m//g'
+    #        :: strip all ANSI color codes from stirng
+    # wc -m  :: print the character counts
+    string_length=$(echo -n $string | sed 's/\x1b\[[0-9;]*m//g' | wc -m)
+    print $string $(color white bold ${filler:0:-$string_length})
+}

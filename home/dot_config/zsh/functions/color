@@ -1,0 +1,162 @@
+#!/usr/bin/env zsh
+
+# Code taken from: https://github.com/molovo/color
+
+#-------------------------------------------------------------------
+#  Usage
+#-------------------------------------------------------------------
+# Simple colors:
+#
+#   color black "This string will be black"
+#   color red "This string will be red"
+#
+# Using short names for colors:
+#
+#   color g "This string will be green"
+#   color Y "This string will be bright yellow"
+#
+# Using numbers for colors:
+#
+#   color 28 "This string will be dark green"
+#   color 250 "This string will be light grey"
+#
+# Using styles:
+#
+#   color black underline "This string will be black and underlined"
+#   color r b "This string will be red and bold"
+#
+# Available colors:
+# [0-256] - https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
+#-------------------------------------------------------------------
+
+
+function color {
+  # emulate -L zsh
+
+  local color=$1 style=$2 b=0
+  shift
+
+  # ESC is control character which starts all the escape sequences.
+  # ESC is encodes with one of the next sequences, which are all equivalent:
+  # \033  \x1b  \e
+  # ESC[ --- is the CSI (Control Sequence Introducer)
+
+  local csi=$'\e[' rc=m    # Standard ANSI terminal escape values.
+  local reset="${csi}0;${rc}"
+
+  case $style in
+    bold|b)           b=1;             shift ;;
+    faint|f)          b=2;             shift ;;
+    italic|i)         b=3;             shift ;;
+    bold-italic|bi)   b=3${rc}${csi}1; shift ;;
+    underline|u)      b=4;             shift ;;
+    inverse|in)       b=7;             shift ;;
+    strikethrough|s)  b=9;             shift ;;
+  esac
+
+  case $color in
+    black|b)    echo "$csi${b};30$rc${@}$reset" ;;
+    red|r)      echo "$csi${b};31$rc${@}$reset" ;;
+    green|g)    echo "$csi${b};32$rc${@}$reset" ;;
+    yellow|y)   echo "$csi${b};33$rc${@}$reset" ;;
+    blue|bl)    echo "$csi${b};34$rc${@}$reset" ;;
+    magenta|m)  echo "$csi${b};35$rc${@}$reset" ;;
+    cyan|c)     echo "$csi${b};36$rc${@}$reset" ;;
+    white|w)    echo "$csi${b};37$rc${@}$reset" ;;
+
+    Black|bright-black|B)      echo "$csi${b};90$rc${@}$reset" ;;
+    Red|bright-red|R)          echo "$csi${b};91$rc${@}$reset" ;;
+    Green|bright-green|G)      echo "$csi${b};92$rc${@}$reset" ;;
+    Yellow|bright-yellow|Y)    echo "$csi${b};93$rc${@}$reset" ;;
+    Blue|bright-blue|Bl)       echo "$csi${b};94$rc${@}$reset" ;;
+    Magenta|bright-magenta|M)  echo "$csi${b};95$rc${@}$reset" ;;
+    Cyan|bright-cyan|C)        echo "$csi${b};96$rc${@}$reset" ;;
+    White|bright-white|W)      echo "$csi${b};97$rc${@}$reset" ;;
+
+    *)  echo "$csi${b};38;5;$(( ${color} ))$rc${@}$reset" ;;
+  esac
+}
+
+# color "$@"
+
+
+# Codes listed here are from ECMA-48, Section 8.3.117, p. 61.
+# Those that are marked with star are not widely supported or aren't closely
+# enough related to color manipulation, but are included for completeness.
+#
+# Attribute codes:
+# ----------------
+#   00 none                 * 20 gothic
+#   01 bold                 * 21 double-underline
+#   02 faint                  22 normal
+#   03 italic                 23 no-italic
+#   04 underline              24 no-underline
+#   05 blink                  25 no-blink
+# * 06 fast-blink           * 26 proportional
+#   07 reverse                27 no-reverse
+# * 07 standout               27 no-standout
+#   08 conceal                28 no-conceal
+# * 09 strikethrough        * 29 no-strikethrough
+#
+# Font selection:
+# ---------------
+# * 10 font-default
+# * 11 font-first
+# * 12 font-second
+# * 13 font-third
+# * 14 font-fourth
+# * 16 font-sixth
+# * 15 font-fifth
+# * 17 font-seventh
+# * 18 font-eighth
+# * 19 font-ninth
+#
+# Text color codes:
+# -----------------
+#   30 black                  40 bg-black
+#   31 red                    41 bg-red
+#   32 green                  42 bg-green
+#   33 yellow                 43 bg-yellow
+#   34 blue                   44 bg-blue
+#   35 magenta                45 bg-magenta
+#   36 cyan                   46 bg-cyan
+#   37 white                  47 bg-white
+# * 38 iso-8316-6           * 48 bg-iso-8316-6
+#   39 default                49 bg-default
+#
+# Other codes:
+# ------------
+# * 50 no-proportional
+# * 51 border-rectangle
+# * 52 border-circle
+# * 53 overline
+# * 54 no-border
+# * 55 no-overline
+# * 56 through 59 reserved
+#
+# Ideogram markings:
+# ------------------
+# * 60 underline-or-right
+# * 61 double-underline-or-right
+# * 62 overline-or-left
+# * 63 double-overline-or-left
+# * 64 stress
+# * 65 no-ideogram-marking
+#
+#
+# Bright text color codes:
+# ------------------------
+#   90 bright-black                  100 bg-bright-black
+#   91 bright-red                    101 bg-bright-red
+#   92 bright-green                  102 bg-bright-green
+#   93 bright-yellow                 103 bg-bright-yellow
+#   94 bright-blue                   104 bg-bright-blue
+#   95 bright-magenta                105 bg-bright-magenta
+#   96 bright-cyan                   106 bg-bright-cyan
+#   97 bright-white                  107 bg-bright-white
+#
+# A word about black and white: The "normal" shade of white is really a very
+# pale grey on many terminals; to get truly white text, you have to use bold
+# white, and to get a truly white background you have to use bold reverse white
+# bg-xxx where xxx is your desired foreground color (and which means the
+# foreground is also bold).

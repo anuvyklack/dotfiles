@@ -1,0 +1,17 @@
+#!/bin/env zsh
+
+zmodload zsh/mathfunc
+
+# Evaluate left indentation based on terminal width.
+
+# Zsh supports floating point arithmetic; decimal separator is always the
+# period. It has the rint() math function that returns the nearest integer as
+# a float (like in C) and int() function which returns an integer from a float
+# (like in awk).
+INDENT=$(( int(rint(($COLUMNS - $MANWIDTH) * 0.49)) ))
+
+# Make line of that amount of spaces.
+INDENT_LINE=$( printf %${INDENT}s )
+
+# Put it on the beginning of each line of the input file.
+sed "s/^/${INDENT_LINE}/" -

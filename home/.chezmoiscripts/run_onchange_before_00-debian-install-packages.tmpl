@@ -1,0 +1,22 @@
+{{- if .is_debian -}}
+#!/bin/env bash
+
+packages=(
+    wajig
+    man
+    curl
+    rsync
+    plocate
+    fd-find
+    p7zip
+    htop
+    fzf
+    bfs
+)
+
+sudo apt-get update -y
+sudo apt-get install -y "${packages[@]}"
+
+sudo updatedb # Update the plocate database
+
+{{- end -}}

@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Buku bookmark manager fuzzy search
+function fb {
+
+  # save newline separated string into an array
+
+  # Original code in BASH
+  # mapfile -t website <<< "$(buku -p -f 5 | column -ts$'\t' | fzf --multi)"
+
+  # The same is ZSH
+  IFS=$'\n'
+  set -f  # equal to: setopt NO_RCS
+  website=($(<<< "$(buku -p -f 5 | column -ts$'\t' | fzf --multi)"))
+  unset IFS
+  set +f  # equal to: setopt RCS
+
+  # open each website
+  for i in "${website[@]}"
+  do
+    index="$(echo "$i" | awk '{print $1}')"
+    buku -p "$index"
+    # buku -o "$index"
+  done
+}

@@ -1,0 +1,8 @@
+{{- if .is_fedora -}}
+#!/usr/bin/sh
+
+if [ command -v zsh ]; then
+    chsh -s $(which zsh)
+fi
+
+{{- end -}}

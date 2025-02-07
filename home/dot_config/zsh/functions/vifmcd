@@ -1,0 +1,6 @@
+#!/usr/bin/zsh
+
+function vifmcd {
+    local -x TERM=xterm-direct
+    source vifmpane
+}
