@@ -1,0 +1,9 @@
+[".config/kitty/color_themes/kitty-themes"]
+    type = "git-repo"
+    url = "https://github.com/kovidgoyal/kitty-themes.git"
+    refreshPeriod = "168h"
+
+[".config/kitty/kittens/kitty-smart-tab"]
+    type = "git-repo"
+    url = "https://github.com/yurikhan/kitty-smart-tab.git"
+    refreshPeriod = "168h"

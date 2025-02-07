@@ -1,0 +1,18 @@
+#!/usr/bin/env zsh
+
+function gitfile {
+    # The condition is written in such a way as to redownload
+    # the file every month.
+    # ----------------------------------------------------------
+    # There is no file that has been modified within last month:
+    # ----------------------------------------------------------
+    # (#q…)  glob qualifier
+    #     .  regular file
+    #  mM-1  was modified within last month
+    #     N  don't raise an error if nothing is found
+    # -----  ---------------------------------------------------
+    if ! [[ -f $1(#q.mM-1N) ]]; then
+        mkdir --parents $1:h
+        download_file_from_github $1 $2
+    fi
+}

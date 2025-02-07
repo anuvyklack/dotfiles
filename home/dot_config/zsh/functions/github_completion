@@ -1,0 +1,24 @@
+#!/usr/bin/env zsh
+
+function github_completion {
+    # $1 - the name of the file (exa)
+    # $2 - link to file on github
+
+    1=$ZSH[completions]/_$1  # Add underscore to make 'exa' into '_exa'.
+
+    # The condition is written in such a way as to update the
+    # completion file every month.
+    # ----------------------------------------------------------
+    # There is no file that has been modified within last month:
+    # ----------------------------------------------------------
+    # (#q…)  glob qualifier
+    #     .  regular file
+    #  mM-1  was modified within last month
+    #     N  don't raise an error if nothing is found
+    # -----  ---------------------------------------------------
+    if ! [[ -f $1(#q.mM-1N) ]]; then
+        download_file_from_github $1 $2
+    fi
+}
+
+# vim: ts=4 sts=4

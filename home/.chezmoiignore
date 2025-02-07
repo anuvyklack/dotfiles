@@ -1,0 +1,7 @@
+{{ if not .is_fedora -}}
+.chezmoiscripts/fedora/*
+{{- end }}
+
+{{ if not .is_debian -}}
+.chezmoiscripts/debian/*
+{{- end }}

@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+
+# Print standard ANSI terminal escape color sequence for the 256 color values.
+# Usage: escape_color_code 012
+
+function escape_color_code {
+  local color="%F{$1}"
+  echo -E ${(qqqq)${(%)color}}
+}
+

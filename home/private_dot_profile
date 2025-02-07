@@ -1,0 +1,2 @@
+
+. "$HOME/.atuin/bin/env"

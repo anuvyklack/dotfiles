@@ -1,0 +1,36 @@
+[misc]
+# Don't ask for confirmations
+assume_yes = true
+
+# Disable specific steps - same options as the command line flag
+disable = ["emacs", "vim"]
+
+# Ignore failures for these steps
+ignore_failures = ["git_repos", "github_cli_extensions"]
+
+# Run only specific steps - same options as the command line flag
+# only = ["tmux"]
+
+# Do not ask to retry failed steps (default: false)
+# no_retry = true
+
+# Run in new tmux session
+run_in_tmux = false
+
+# Cleanup temporary or old files
+cleanup = true
+
+
+[git]
+
+# Don't pull the predefined git repos
+pull_predefined = false
+
+#max_concurrency = 5
+# Additional git repositories to pull
+repos = [
+    "~/code/git_repos/**"
+    # "~/Git/**"
+    # "~/src/*/",
+    # "~/.config/something"
+]

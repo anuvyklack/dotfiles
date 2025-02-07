@@ -1,0 +1,4 @@
+[".config/yazi/flavors/onedark.yazi"]
+    type = "git-repo"
+    url = "https://github.com/BennyOe/onedark.yazi.git"
+    refreshPeriod = "672h"

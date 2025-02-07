@@ -1,0 +1,10 @@
+#!/usr/bin/zsh
+
+# Remove duplicate lines from the history file preserving their order.
+# https://iridakos.com/programming/2019/05/16/remove-duplicate-lines-preserving-order-linux
+function history_clear_dups {
+  local history=$ZSH[cache]/zsh_history
+  awk '!visited[$0]++' $history | sponge $history
+}
+
+# vim: ts=2 sts=2

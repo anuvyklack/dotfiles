@@ -1,0 +1,96 @@
+#!/bin/sh
+
+function update {
+    install_missing_programs
+    topgrade
+    print
+
+    # # update bat {{{
+    # string="―― $(date +%H:%M:%S) - Update bat "
+    # color white bold ${(r:80::―:)string}
+    #
+    # update_bat
+    #
+    # print
+    # # }}}
+
+    # clean apt cache {{{
+    string="―― $(date +%H:%M:%S) - Clean apt cache and unused packages "
+    color white bold ${(r:80::―:)string}
+
+    sudo apt autoremove --yes
+    sudo apt autoclean --yes
+
+    print
+    # }}}
+
+    # clean flatpak unused {{{
+    string="―― $(date +%H:%M:%S) - Clean flatpak cache and unused packages "
+    color white bold ${(r:80::―:)string}
+
+    flatpak uninstall --unused
+    # flatpak remove --unused
+
+    print
+    # }}}
+
+    # conda {{{
+    if (( $+commands[conda] )); then
+        # Remember the current conda environment if any.
+        if [[ -n $CONDA_DEFAULT_ENV ]]; then
+            local conda_env=$CONDA_DEFAULT_ENV
+        fi
+
+        string="―― $(date +%H:%M:%S) - conda "
+        color white bold ${(r:80::―:)string}
+
+        print $(color white bold 'Updating') $(color green bold 'base') $(color white bold 'environment')
+
+        conda activate base
+        conda update conda --yes
+        conda update --all --yes
+
+        # echo ''
+        # print $(color g b 'conda') $(color w 'updating') $(color y b 'nvim')
+        #
+        # conda activate nvim
+        # conda update --all --yes
+
+        # Clear cache
+        print $(color white bold 'Cleaning') $(color yellow bold 'cache')
+        conda clean --all --yes
+
+        # # Restore conda environment
+        # if [[ -n conda_env ]]
+        # then
+        #     conda activate $conda_env
+        # else
+        #     conda deactivate
+        # fi
+
+        conda deactivate
+
+        echo
+    fi
+    # }}}
+
+    # tmux plugins {{{
+    string="―― $(date +%H:%M:%S) - tmux plugins "
+    color white bold ${(r:80::―:)string}
+
+    TMUX_PLUGIN_MANAGER="${HOME}/.local/share/tmux/plugins/tpm/bin/update_plugins"
+    if [[ -s $TMUX_PLUGIN_MANAGER ]]; then
+        $TMUX_PLUGIN_MANAGER all
+    fi
+
+    print
+    # }}}
+
+    string="―― $(date +%H:%M:%S) - Update zsh-snap plugins "
+    color white bold ${(r:80::―:)string}
+    znap pull
+
+    unset string
+}
+
+# vim: tw=75 ts=4 sw=4 fdm=marker ft=zsh

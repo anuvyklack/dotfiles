@@ -1,0 +1,26 @@
+#!/usr/bin/zsh
+
+function bat_install_or_update {
+    current_version=$(bat --version 2>/dev/null | perl -ne '/^bat\s*([0-9.]+).*$/ && print "v$1"')
+
+    local latest_release='https://api.github.com/repos/sharkdp/bat/releases/latest'
+    local last_version=$(curl -s "$latest_release" | jq -r '.tag_name')
+
+    if [[ $last_version != 'null' && $current_version != $last_version ]]; then
+        local deb_url=$(
+            curl -s "$latest_release" \
+            | jq -r '.assets[] | select(.name | test("bat_.*_amd64\\.deb")) | .browser_download_url'
+        )
+
+        local temp_deb="$(mktemp)" &&
+        curl -sLo "$temp_deb" "$deb_url" &&
+        sudo dpkg --skip-same-version -i "$temp_deb"
+        rm -f "$temp_deb"
+
+        echo
+        print \$ $(color green bold 'bat') $(color white bold 'cache --build')
+        bat cache --build
+    else
+        print The last version is installed: $current_version
+    fi
+}
