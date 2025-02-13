@@ -42,7 +42,7 @@ The configuration files are read in the following order:
 
 * zshenv
 :PROPERTIES:
-:header-args: :tangle ".zshenv"
+:header-args: :tangle (file-name-concat (getenv "ZDOTDIR") ".zshenv")
 :END:
 ** Description
 *Read every time*
@@ -110,7 +110,7 @@ fi
 
 * zprofile
 :PROPERTIES:
-:header-args: :tangle ".zprofile"
+:header-args: :tangle (file-name-concat (getenv "ZDOTDIR") ".zprofile")
 :END:
 ** Description
 *Read at login*
@@ -526,7 +526,7 @@ export TENSORFLOW_PATH="$HOME/.local/lib/python3.11/site-packages"
 
 * zshrc
 :PROPERTIES:
-:header-args: :tangle ".zshrc"
+:header-args: :tangle (file-name-concat (getenv "ZDOTDIR") ".zshrc")
 :END:
 ** Description
 
@@ -2098,7 +2098,7 @@ unset my_zsh_functions
 
 * zlogin
 :PROPERTIES:
-:header-args: :tangle ".zlogin"
+:header-args: :tangle (file-name-concat (getenv "ZDOTDIR") ".zlogin")
 :END:
 ** Description
 

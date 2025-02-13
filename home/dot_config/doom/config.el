@@ -1506,7 +1506,7 @@ shell command."
   
          ;; org-M-RET-may-split-line '((default . t))
          org-insert-heading-respect-content nil
-         org-default-notes-file (expand-file-name "inbox.org" org-directory)
+         org-default-notes-file (file-name-concat org-directory "inbox.org")
   
          ;; Indentation for the content of a source code block.
          org-edit-src-content-indentation 0
@@ -1550,7 +1550,7 @@ shell command."
   ;; (setq! org-id-link-to-org-use-id 'use-existing)
   (setq! org-attach-store-link-p 'attached
          org-attach-dir-relative t
-         org-attach-id-dir (expand-file-name "org-attach/" org-directory)
+         org-attach-id-dir (file-name-concat org-directory "org-attach/")
          org-attach-method 'mv ; move
          ;; org-attach-use-inheritance nil
          org-attach-auto-tag "ATTACH"
@@ -2019,7 +2019,7 @@ include as `display-sort-function' in completion metadata."
 (use-package! org-bookmarks
   :commands (org-bookmarks)
   :init
-  (setq! org-bookmarks-file (expand-file-name "bookmarks.org" org-directory)
+  (setq! org-bookmarks-file (file-name-concat org-directory "bookmarks.org")
          org-bookmarks-add-org-capture-template t
          org-bookmarks-display-screenshot t
          )
