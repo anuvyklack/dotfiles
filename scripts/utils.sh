@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 # Get the directory of the current script:
 # cd to the current script directory and print it with `pwd`. This gives us the
 # absolute path, even if the script is called with a relative path.

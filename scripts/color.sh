@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 RESET="\e[0m"
 
 RED="\e[00;31m"
