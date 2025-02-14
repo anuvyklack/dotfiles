@@ -82,9 +82,9 @@ For WSL
  #+end_src
 
 #+begin_src sh
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_CACHE_HOME="$HOME/.cache"
-export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 #+end_src
 
 Make zsh to search my config files in ~$XDG_CONFIG_HOME~ directory:
@@ -172,8 +172,8 @@ fi
 
 ** My Variables
 #+begin_src sh
-export DOTFILES_DIR="$HOME/dotfiles"
-export SOFTWARE_DIR="$HOME/soft"
+export DOTFILES="$HOME/dotfiles"
+export SOFTWARE="$HOME/soft"
 # export STOW_DIR="/usr/local/stow"
 export LOCAL_STOW_DIR="$HOME/.local/stow"
 #+end_src
@@ -182,10 +182,9 @@ For scoping purposes, anonymous functions can be used. They will be
 automatically executed and then thrown away.
 #+begin_src sh
 function () {
-  local DIRS=($SOFTWARE_DIR $LOCAL_STOW_DIR)
-
+  local DIRS=($SOFTWARE $LOCAL_STOW_DIR)
   for local DIR in $DIRS; do
-    if ! test -d $DIR; then
+    if [[ ! -d $DIR ]]; then
       mkdir -p $DIR
     fi
   done

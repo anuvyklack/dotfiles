@@ -57,7 +57,7 @@
 
 ;; color themes
 (package! modus-themes)
-(package! ef-themes)
+(package! ef-themes :recipe (:host github :repo "anuvyklack/ef-themes")) ;; my fork
 
 ;; colors
 ;; (package! rainbow-mode)

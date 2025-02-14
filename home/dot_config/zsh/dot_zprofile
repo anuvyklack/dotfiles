@@ -21,16 +21,15 @@ then  # We are in wsl.
   export WINDOWS_USER="$(cmd.exe /C "echo %USERNAME%" 2>/dev/null | tr -d '\r')"
 fi
 
-export DOTFILES_DIR="$HOME/dotfiles"
-export SOFTWARE_DIR="$HOME/soft"
-export STOW_DIR="/usr/local/stow"
+export DOTFILES="$HOME/dotfiles"
+export SOFTWARE="$HOME/soft"
+# export STOW_DIR="/usr/local/stow"
 export LOCAL_STOW_DIR="$HOME/.local/stow"
 
 function () {
-  local DIRS=($SOFTWARE_DIR $LOCAL_STOW_DIR)
-
+  local DIRS=($SOFTWARE $LOCAL_STOW_DIR)
   for local DIR in $DIRS; do
-    if ! test -d $DIR; then
+    if [[ ! -d $DIR ]]; then
       mkdir -p $DIR
     fi
   done
@@ -50,6 +49,18 @@ path+=(
 #   $HOME/.config
 #   $cdpath
 # )
+
+if whence /home/linuxbrew/.linuxbrew/bin/brew > /dev/null 2>&1; then
+  local BREWCACHE="$HOME/.cache/Homebrew/brewenv.zsh"
+
+  if [[ ! -s $BREWCACHE(#q.md-7N) ]]; then
+    /home/linuxbrew/.linuxbrew/bin/brew shellenv > $BREWCACHE 2> /dev/null
+  fi
+  source $BREWCACHE
+
+  # Enable completion for brew and programs installes with brew.
+  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+fi
 
 # export EDITOR VISUAL
 if (( $+commands[nvim] )); then
