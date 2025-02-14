@@ -23,10 +23,10 @@ fi
 
 export DOTFILES="$HOME/dotfiles"
 export SOFTWARE="$HOME/soft"
-# export STOW_DIR="/usr/local/stow"
+export STOW_DIR="/usr/local/stow"
 export LOCAL_STOW_DIR="$HOME/.local/stow"
 
-function () {
+() {
   local DIRS=($SOFTWARE $LOCAL_STOW_DIR)
   for local DIR in $DIRS; do
     if [[ ! -d $DIR ]]; then

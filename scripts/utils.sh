@@ -8,9 +8,9 @@ source "$script_dir/color.sh"
 #-- Environment variables ------------------------------------------------------
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-export DOTFILES_DIR="$XDG_DATA_HOME/chezmoi"
-export SOFTWARE_DIR="${SOFTWARE_DIR:-$HOME/soft}"
-export STOW_DIR="/usr/local/stow"
+export DOTFILES="${DOTFILES:-XDG_DATA_HOME/chezmoi}"
+export SOFTWARE="${SOFTWARE_DIR:-$HOME/soft}"
+export STOW_DIR="${STOW_DIR:-/usr/local/stow}"
 
 [ ! -d "$STOW_DIR" ] && sudo mkdir -p "$STOW_DIR"
 

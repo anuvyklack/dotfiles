@@ -174,14 +174,14 @@ fi
 #+begin_src sh
 export DOTFILES="$HOME/dotfiles"
 export SOFTWARE="$HOME/soft"
-# export STOW_DIR="/usr/local/stow"
+export STOW_DIR="/usr/local/stow"
 export LOCAL_STOW_DIR="$HOME/.local/stow"
 #+end_src
 
 For scoping purposes, anonymous functions can be used. They will be
 automatically executed and then thrown away.
 #+begin_src sh
-function () {
+() {
   local DIRS=($SOFTWARE $LOCAL_STOW_DIR)
   for local DIR in $DIRS; do
     if [[ ! -d $DIR ]]; then

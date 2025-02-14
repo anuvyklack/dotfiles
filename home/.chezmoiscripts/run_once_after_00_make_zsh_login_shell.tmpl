@@ -1,6 +1,8 @@
 {{- if .is_fedora -}}
-#!/usr/bin/env sh
+#!/usr/bin/sh
 
-[ command -v zsh ] && chsh -s $(which zsh)
+if [ command -v zsh ]; then
+    chsh -s $(which zsh)
+fi
 
 {{- end -}}
