@@ -52,7 +52,7 @@ interception_tools() {
     if git clone-or-pull "$repo_url" "$src_dir"; then
         [ -d $build_dir ] && rm -rf $build_dir
         mkdir $build_dir
-        pushd $build_dir
+        pushd $build_dir > /dev/null
         log blue "Building" $app
         cmake -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_INSTALL_PREFIX=$install_dir \
@@ -64,7 +64,7 @@ interception_tools() {
         sudo stow --dir=$STOW_DIR -R $app
         log blue "Remove $build_dir"
         rm -rf $build_dir
-        popd
+        popd > /dev/null
     fi
 
     [ ! -d "/etc/$app" ] && sudo mkdir -p "/etc/$app"
