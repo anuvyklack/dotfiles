@@ -6,10 +6,9 @@ log_blue() {
     echo -e "\e[01;34m" "$*" "\e[0m"
 }
 
-error() {
+log_red() {
     # bold red
     echo -e "\e[01;31m" "$@" "\e[0m"
-    exit 1
 }
 
 if ! chezmoi="$(command -v chezmoi)"; then
@@ -21,7 +20,8 @@ if ! chezmoi="$(command -v chezmoi)"; then
     elif command -v wget >/dev/null; then
         chezmoi_install_script="$(wget -qO- https://get.chezmoi.io)"
     else
-        error "To install chezmoi, you must have curl or wget."
+        log_red "To install chezmoi, you must have curl or wget."
+        exit 1
     fi
     sh -c "${chezmoi_install_script}" -- -b "${bin_dir}"
 fi
