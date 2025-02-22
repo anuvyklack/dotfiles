@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Copy all symbolick links from `~/.local/share/nvim/mason/bin` to `~/.local/bin
+
+SRC_DIR="$HOME/.local/share/nvim/mason/bin"
+DEST_DIR="$HOME/.local/bin"
+
+[ ! -d "$SRC_DIR" ] && exit 1
+[ ! -d "$DEST_DIR" ] && mkdir -p "$DEST_DIR"
+
+# Find all symbolic links in the source directory
+find "$SRC_DIR" -type l | while read -r symlink; do
+  link_name=$(basename "$symlink")
+  if [ ! -e "$DEST_DIR/$link_name" ]; then
+    cp -P "$symlink" "$DEST_DIR/$link_name"
+    # echo "Copied symbolic link: $link_name"
+  fi
+done
