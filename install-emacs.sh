@@ -2,12 +2,15 @@
 
 # Setup Emacs version and download url
 app="emacs-29.4"
-download_url="https://mirror.truenetwork.ru/gnu/emacs/$app.tar.gz"
+archive="$app.tar.xz"
+download_url="https://mirror.truenetwork.ru/gnu/emacs/$archive"
+
+# set -x # enable debugging
 
 #-------------------------------------------------------------------------------
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-export DOTFILES="${DOTFILES:-XDG_DATA_HOME/chezmoi}"
+export DOTFILES="${DOTFILES:-$XDG_DATA_HOME/chezmoi}"
 export SOFTWARE="${SOFTWARE:-$HOME/soft}"
 export STOW_DIR="${STOW_DIR:-/usr/local/stow}"
 
@@ -33,7 +36,7 @@ which_os() {
 }
 
 
-log blue "Install prerequisites"
+log blue "-- Installing prerequisites --------------------------------------------------------"
 case $(which_os) in
     fedora)
         sudo dnf install -y cmake libevdev-devel systemd-devel yaml-cpp-devel boost-devel stow
@@ -43,32 +46,35 @@ case $(which_os) in
                             ImageMagick ImageMagick-devel \
                             libwebp libwebp-devel \
                             libXi-devel \
-                            xml2 libxml2 libxml2-devel
+                            xml2 libxml2 libxml2-devel \
+                            webkit2gtk4.1-devel
         echo
         ;;
     # debian|ubuntu)
     # sudo apt-get install -y build-essential git autoconf texinfo libgnutls28-dev libxml2-dev libncurses5-dev libjansson-dev
-    #     ;;
+    #    ;;
     *)
         log red "Unsapported OS: $(which_os)"
         exit 1
         ;;
 esac
 
-if [[ ! -d "$SOFTWARE/emacs-$ver" ]]; then
+log blue "Download $app"
+
+if [[ ! -d "$SOFTWARE/$app" ]]; then
     pushd $SOFTWARE > /dev/null
-    if [[ ! -f "$SOFTWARE/emacs-$ver.tar.gz" ]]; then
+    if [[ ! -f "$SOFTWARE/$archive" ]]; then
         # git clone "git://git.sv.gnu.org/emacs.git" --depth 1
         curl -LO $download_url
     fi
-    tar xf "emacs-$ver.tar.gz"
+    tar xf "$archive"
     popd > /dev/null
 fi
 
-pushd "$SOFTWARE/emacs-$ver" > /dev/null
+pushd "$SOFTWARE/$app" > /dev/null
 
 log blue "autogen.sh"
-./autogen.sh
+./autogen.sh > /dev/null
 
 log blue "Configure"
 CFLAGS="-O3 -mtune=native -march=native -fomit-frame-pointer"
@@ -78,15 +84,17 @@ CFLAGS="-O3 -mtune=native -march=native -fomit-frame-pointer"
             --with-modules --with-json --enable-link-time-optimization --with-gpm=no \
             --with-xwidgets --with-xinput2 --with-xft --with-xpm --with-xml2 \
             --with-mailutils --without-compress-install --with-imagemagick \
-            --prefix="$STOW_DIR/emacs-$ver"
+            --prefix="$STOW_DIR/$app" > /dev/null
 
-log blue "Build"
-make -j $(( $(nproc) - 1))
+log blue "-- Building ------------------------------------------------------------------------"
+make -j $(( $(nproc) - 1 )) > /dev/null
 
-log blue "Install"
+log blue "-- Installing ----------------------------------------------------------------------"
 sudo make install
 
 log blue "Stow" $app
 sudo stow --dir=$STOW_DIR -R $app
+
+# set +x # disable debugging
 
 popd > /dev/null
