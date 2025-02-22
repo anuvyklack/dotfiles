@@ -7,7 +7,7 @@ if status is-interactive
     #---------------------------------------------------------------------------
     # Color theme tuning
     #---------------------------------------------------------------------------
-    set tide_character_icon 
+    set tide_character_icon            
     set tide_character_vi_icon_default 
     set tide_character_vi_icon_visual  
     set tide_character_vi_icon_replace 
@@ -57,11 +57,43 @@ if status is-interactive
     # bind -M insert \ch 'commandline -P; and commandline -f backward-char; or commandline -i h'
     # bind -M insert \cl 'commandline -P; and commandline -f forward-char; or commandline -i l'
 
-    # "/" key starts search in completion pager (like in Vim)
+    # / :: slash key starts search in completion pager (like in Vim)
     bind -M insert / 'commandline -P; and commandline -f pager-toggle-search; or commandline -i /'
 
     # Ctrl + o :: Open yazi file manager and cd on exit
     bind -M insert \cO 'yy; commandline -f repaint'
+
+    #---------------------------------------------------------------------------
+    # Aliases & Abbreviations
+    #---------------------------------------------------------------------------
+    abbr --add gs git status
+    abbr --add gss git status -s
+    abbr --add gg git graph
+
+    alias mv='mv -v'
+    alias cp='cp -vR' # рекурсивное копирование
+    alias rm='rm -v'
+
+    # Создание каталогов без коррекции и со всеми родительскими каталогами, если
+    # они отсутствуют.
+    alias mkdir='mkdir -vp'
+
+    alias grep='grep --color=auto'
+    alias wget='wget -c' # автоматическое продолжение при разрыве соединения
+
+    alias tree="tree -I .git -I .github"
+
+    # Вывод свободного и использованного дискового пространства
+    # в "гуманистическом" представлении.
+    alias df="df -h"
+    alias du="du -h"
+
+    if type -q eza;
+        alias ls="eza -F --group-directories-first"
+        alias ll="eza -lF --group-directories-first --git"
+    else
+        alias ls="ls --color=auto --group-directories-first"
+    end
 
 end # status is-interactive
 
