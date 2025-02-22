@@ -767,19 +767,25 @@ ELEMENTS could be either a list or a single element."
   (evilem-make-motion evilem-motion-backward-WORD-begin #'evil-backward-WORD-begin)
   (evilem-make-motion evilem-motion-forward-word-end    #'evil-forward-word-end)
   (evilem-make-motion evilem-motion-forward-WORD-end    #'evil-forward-WORD-end)
-  (map! :m ";" evilem-map
-        (:map evilem-map
-         :desc "word"          "w"  #'evil-avy-goto-word-0-below
-         :desc "WORD"          "W"  #'evilem-motion-forward-WORD-begin
-         :desc "backward word" "b"  #'evil-avy-goto-word-0-above
-         :desc "backward WORD" "B"  #'evilem-motion-backward-WORD-begin
-         :desc "word end"      "e"  #'evilem-motion-forward-word-end
-         :desc "WORD end"      "E"  #'evilem-motion-forward-WORD-end
-         ;; "ge" #'evilem-motion-backward-word-end
-         ;; "gE" #'evilem-motion-backward-WORD-end
-         ;; "j"  #'evilem-motion-next-visual-line
-         ;; "k"  #'evilem-motion-previous-visual-line
-         )))
+  ;; (map! :m ";" evilem-map
+  ;;       (:map evilem-map
+  ;;        :desc "word"          "w" #'evil-avy-goto-word-0-below
+  ;;        :desc "WORD"          "W" #'evilem-motion-forward-WORD-begin
+  ;;        :desc "backward word" "b" #'evil-avy-goto-word-0-above
+  ;;        :desc "backward WORD" "B" #'evilem-motion-backward-WORD-begin
+  ;;        :desc "word end"      "e" #'evilem-motion-forward-word-end
+  ;;        :desc "WORD end"      "E" #'evilem-motion-forward-WORD-end
+  ;;        ;; "ge" #'evilem-motion-backward-word-end
+  ;;        ;; "gE" #'evilem-motion-backward-WORD-end
+  ;;        ;; "j"  #'evilem-motion-next-visual-line
+  ;;        ;; "k"  #'evilem-motion-previous-visual-line
+  ;;        ))
+  (map! :mnv "gw" #'evil-avy-goto-word-0-below
+        :mnv "gW" #'evilem-motion-forward-WORD-begin
+        :mnv "gb" #'evil-avy-goto-word-0-above
+        :mnv "gB" #'evilem-motion-backward-WORD-begin
+        :mnv "gj" #'evilem-motion-next-visual-line
+        :mnv "gk" #'evilem-motion-previous-visual-line))
 
 (use-package! evil-goggles
   :hook (doom-first-input . evil-goggles-mode)
@@ -2361,8 +2367,10 @@ include as `display-sort-function' in completion metadata."
       :map universal-argument-map
       "M-u" #'universal-argument-more)
 
-(map! :ri "C-<backspace>" #'evil-delete-backward-word
-      :ri "C-ц" #'evil-delete-backward-word)
+(map!
+ :n "gq" #'evil-fill
+ :ri "C-<backspace>" #'evil-delete-backward-word
+ :ri "C-ц" #'evil-delete-backward-word)
 
 (map! :leader
       "-" #'dired)
@@ -2951,10 +2959,12 @@ include as `display-sort-function' in completion metadata."
         ;; :nv "M-q" 'unpackaged/flex-fill-paragraph
         ))
 
-(map! :map evil-org-mode-map
-      :after evil-org
+(map! :after evil-org
+      :map evil-org-mode-map
       :mnv "gh"    #'evil-org-beginning-of-line
       :mnv "gl"    #'my/evil-end-of-line
+      :mnv "gj"    nil ; #'org-forward-element
+      :mnv "gk"    nil ; #'org-backward-element
       :n   "[ RET" #'+org/insert-item-above
       :n   "] RET" #'+org/insert-item-below
       :n   "zn"    #'org-narrow-to-subtree
