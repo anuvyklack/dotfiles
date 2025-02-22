@@ -34,6 +34,8 @@ if status is-interactive
     # visual mode, but due to fish_cursor_default, is redundant here
     set fish_cursor_visual block
 
+    set -g fish_vi_force_cursor 1
+
     #---------------------------------------------------------------------------
     # Extra tools
     #---------------------------------------------------------------------------
