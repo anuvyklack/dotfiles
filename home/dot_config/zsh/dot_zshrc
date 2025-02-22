@@ -606,8 +606,10 @@ fzf-file-widget() {
   return $ret
 }
 
-. "$HOME/.atuin/bin/env"
-eval "$(atuin init zsh)"
+if (( $+commands[atuin] )); then
+  . "$HOME/.atuin/bin/env"
+  eval "$(atuin init zsh)"
+fi
 
 if (( $+commands[zoxide] )); then
   _ZO_ECHO=1
