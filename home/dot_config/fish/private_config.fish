@@ -44,7 +44,6 @@ if status is-interactive
     if type -q zoxide
         zoxide init fish | source
     end
-    #---------------------------------------------------------------------------
 
     #---------------------------------------------------------------------------
     # Keybindings
@@ -58,13 +57,13 @@ if status is-interactive
     # bind -M insert \ch 'commandline -P; and commandline -f backward-char; or commandline -i h'
     # bind -M insert \cl 'commandline -P; and commandline -f forward-char; or commandline -i l'
 
-    # / :: Start search in completion pager (like in Vim)
+    # "/" key starts search in completion pager (like in Vim)
     bind -M insert / 'commandline -P; and commandline -f pager-toggle-search; or commandline -i /'
 
     # Ctrl + o :: Open yazi file manager and cd on exit
     bind -M insert \cO 'yy; commandline -f repaint'
 
-end
+end # status is-interactive
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
