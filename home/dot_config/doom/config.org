@@ -3823,18 +3823,15 @@ include as `display-sort-function' in completion metadata."
 (use-package! obsidian
   ;; :demand t
   :custom
-  ;; Create missing files in inbox, when clicking on a wiki link?
-  ;; t: in inbox, nil: next to the file with the link
-  (obsidian-wiki-link-create-file-in-inbox nil)
+  (obsidian-directory "~/obsidian")
   ;; The directory for daily notes (file name is YYYY-MM-DD.md)
   (obsidian-daily-notes-directory "Daily Notes")
   ;; Directory of note templates, unset (nil) by default
-  ;(obsidian-templates-directory "Templates")
+  ;;(obsidian-templates-directory "Templates")
   ;; Daily Note template name - requires a template directory.
   ;; Default: Daily Note Template.md
-  ;(obsidian-daily-note-template "Daily Note Template.md")
+  ;;(obsidian-daily-note-template "Daily Note Template.md")
   :config
-  (obsidian-specify-path "~/obsidian")
   (global-obsidian-mode t))
 #+end_src
 
