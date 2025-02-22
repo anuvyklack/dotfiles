@@ -2130,6 +2130,9 @@ include as `display-sort-function' in completion metadata."
 
 (use-package! fish-mode)
 
+(after! lua-mode
+  (setq! lua-indent-level 3))
+
 (defun my-which-key-add-command-based-replacements (&rest args)
   "Add description for command that would be shown in the which-key menu"
   (dolist (pair (-partition 2 args))
