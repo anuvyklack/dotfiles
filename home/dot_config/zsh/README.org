@@ -1592,6 +1592,7 @@ zvm_after_init_commands+=(
  #+end_src
 
 *** fzf
+#+begin_example
 ╭────────────────────────────────────────────────────────────────────────╮
 │ fzf keybindings for Zsh                                                │
 │ ───────────────────────                                                │
@@ -1610,6 +1611,7 @@ zvm_after_init_commands+=(
 │ mark <name> - register a new mark to the current directory             │
 │ CTRL-F - fzf-marks                                                     │
 ╰────────────────────────────────────────────────────────────────────────╯
+#+end_example
 
 fzf keybindings
 #+begin_src sh
@@ -1743,8 +1745,10 @@ fzf-file-widget() {
 *** atuin
 Place it after ~fzf~, because another way ~fzf~ will overwrite ~atuin~ keybindings.
 #+begin_src sh
-. "$HOME/.atuin/bin/env"
-eval "$(atuin init zsh)"
+if (( $+commands[atuin] )); then
+  . "$HOME/.atuin/bin/env"
+  eval "$(atuin init zsh)"
+fi
 #+end_src
 
 *** zoxide
