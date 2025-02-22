@@ -1,9 +1,0 @@
-["soft/interception-tools"]
-    type = "git-repo"
-    url = "https://gitlab.com/interception/linux/tools.git"
-    refreshPeriod = "672h"
-
-["soft/dual-function-keys"]
-    type = "git-repo"
-    url = "https://gitlab.com/interception/linux/plugins/dual-function-keys.git"
-    refreshPeriod = "672h"

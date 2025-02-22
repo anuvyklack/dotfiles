@@ -6,8 +6,9 @@ sudo dnf -y install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-r
 sudo dnf -y install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
 packages=(
-    fish
     curl
+    zsh
+    fish
     stow
     plocate
     cronie # for cron
@@ -15,13 +16,14 @@ packages=(
     fd-find
     bfs
     wl-clipboard
+    pandoc
     gnome-tweaks # GNOME
     dconf-editor # GNOME
     xkb-switch
-    g3kb-switch
+    g3kb-switch # GNOME extension for xkb-switch
     # qview
-    qimgv
-    vlc
+    qimgv # image viewer
+    vlc   # video player
     openh264 # for twitch
     ImageMagick ImageMagick-devel
 )
