@@ -4,9 +4,8 @@
 #+auto_tangle: t
 
 This is a configuration file for the [[https://www.zsh.org/][Z shell]] written as an [[https://orgmode.org/][Org]] document in the
-[[https://en.wikipedia.org/wiki/Literate_programming][literate programming]] paradigm. To compile it open [[https://www.gnu.org/software/emacs/][Emacs]] (of some how modern
-version) press =Alt + x= type =org-babel-tangle= and press =Enter=. This will produce
-zsh config files.
+[[https://en.wikipedia.org/wiki/Literate_programming][literate programming]] paradigm. To compile it open [[https://www.gnu.org/software/emacs/][Emacs]] press =Alt + x= type
+=org-babel-tangle= and press =Enter=. This will produce zsh config files.
 
 * Zsh configuration files
 
@@ -94,12 +93,6 @@ environment variable. If said variable is not defined, Zsh will use the user's
 home directory.
 #+begin_src sh
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
-#+end_src
-
-On Ubuntu the ~compinit~ function is called in =/etc/zsh/zshrc=. We want to disable
-this behavior according to the comment in that file. ([[https://blog.patshead.com/2011/04/improve-your-oh-my-zsh-startup-time-maybe.html][Source]])
-#+begin_src sh
-# skip_global_compinit=1
 #+end_src
 
 Ensure that a non-login, non-interactive shell has a defined environment. ([[https://github.com/sorin-ionescu/prezto/blob/master/runcoms/zshenv][Source]])
@@ -234,7 +227,6 @@ fi
 
 ** Editors
 #+begin_src sh
-# export EDITOR VISUAL
 if (( $+commands[nvim] )); then
   export EDITOR='nvim'
   export VISUAL="$EDITOR"

@@ -45,11 +45,6 @@ path+=(
   $HOME/.spoof-dpi/bin  # https://github.com/xvzc/SpoofDPI
 )
 
-# cdpath=(
-#   $HOME/.config
-#   $cdpath
-# )
-
 if whence /home/linuxbrew/.linuxbrew/bin/brew > /dev/null 2>&1; then
   local BREWCACHE="$HOME/.cache/Homebrew/brewenv.zsh"
 
@@ -62,7 +57,6 @@ if whence /home/linuxbrew/.linuxbrew/bin/brew > /dev/null 2>&1; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
 fi
 
-# export EDITOR VISUAL
 if (( $+commands[nvim] )); then
   export EDITOR='nvim'
   export VISUAL="$EDITOR"
