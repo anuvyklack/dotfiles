@@ -18,6 +18,7 @@
 
   # Allow unfree packages.
   nixpkgs.config.allowUnfree = true;
+  programs.man.generateCaches = true;
 
   # link the configuration file in current directory to the specified location in home directory
   # home.file.".config/i3/wallpaper.jpg".source = ./wallpaper.jpg;
@@ -41,6 +42,9 @@
   # };
 
   home.packages = with pkgs; [
+    # # manpages
+    # linux-manual man-pages man-pages-posix
+
     topgrade
     chezmoi
     atuin
