@@ -119,3 +119,5 @@
 (package! eval-in-repl)
 (package! fish-mode)
 (package! chezmoi)
+
+(package! scroll-on-jump)
