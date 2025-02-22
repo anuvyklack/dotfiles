@@ -3,7 +3,7 @@
 assume_yes = true
 
 # Disable specific steps - same options as the command line flag
-disable = ["emacs", "vim"]
+disable = ["chezmoi", "emacs", "vim"]
 
 # Ignore failures for these steps
 ignore_failures = ["git_repos", "github_cli_extensions"]
