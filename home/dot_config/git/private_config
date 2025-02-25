@@ -16,7 +16,7 @@
     syntax-theme = Monokai Extended
     navigate = true
     line-numbers = true
-    side-by-side = false
+    side-by-side = true # false
 [interactive]
     diffFilter = delta --color-only
 [alias]
@@ -34,13 +34,13 @@
 [difftool]
     prompt = false
 [diff]
-    tool = bc3
-[difftool "bc3"]
+    tool = bc
+[difftool "bc"]
     trustExitCode = true
 [merge]
-	tool = bc3
-[mergetool "bc3"]
-	trustExitCode = true
+    tool = bc
+[mergetool "bc"]
+    trustExitCode = true
 # [diff]
 #     tool = nvimdiff
 # [difftool "nvimdiff"]
@@ -52,20 +52,20 @@
 #     stripLeadingSymbols = false
 #     rulerWidth = 80
 [maintenance]
-	repo = /home/anuvyklack/.local/share/zsh/plugins/conda-zsh-completion
-	repo = /home/anuvyklack/.local/share/zsh/plugins/fzf-tab
-	repo = /home/anuvyklack/.local/share/zsh/plugins/nb
-	repo = /home/anuvyklack/.local/share/zsh/plugins/powerlevel10k
-	repo = /home/anuvyklack/.local/share/zsh/plugins/vifmimg
-	repo = /home/anuvyklack/.local/share/zsh/plugins/vifmpane
-	repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-autosuggestions
-	repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-completions
-	repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-history-substring-search
-	repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-snap
-	repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-syntax-highlighting
-	repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-vi-mode
+    repo = /home/anuvyklack/.local/share/zsh/plugins/conda-zsh-completion
+    repo = /home/anuvyklack/.local/share/zsh/plugins/fzf-tab
+    repo = /home/anuvyklack/.local/share/zsh/plugins/nb
+    repo = /home/anuvyklack/.local/share/zsh/plugins/powerlevel10k
+    repo = /home/anuvyklack/.local/share/zsh/plugins/vifmimg
+    repo = /home/anuvyklack/.local/share/zsh/plugins/vifmpane
+    repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-autosuggestions
+    repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-completions
+    repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-history-substring-search
+    repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-snap
+    repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-syntax-highlighting
+    repo = /home/anuvyklack/.local/share/zsh/plugins/zsh-vi-mode
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
