@@ -70,3 +70,28 @@ shell-integration-features = no-cursor,sudo,title
 
 clipboard-trim-trailing-spaces = true
 copy-on-select = true
+
+#-- Leader based keybindings ---------------------------------------------------
+
+# Use <C-g> as leader key. The same as in Tmux, because I will use eighter
+# ghostty tabs or tmux one.
+
+# General
+keybind = ctrl+g>r=reload_config
+keybind = ctrl+g>a=select_all
+keybind = ctrl+g>c=copy_to_clipboard
+keybind = ctrl+g>v=paste_from_clipboard
+keybind = ctrl+g>i=inspector:show
+keybind = ctrl+g>q=close_surface
+keybind = ctrl+g>d=close_surface
+
+# Window
+# keybind = ctrl+g>n=new_window
+keybind = ctrl+g>w=toggle_fullscreen
+keybind = ctrl+g>t=new_tab
+keybind = ctrl+g>h=goto_split:left
+keybind = ctrl+g>l=goto_split:right
+keybind = ctrl+g>j=goto_split:down
+keybind = ctrl+g>k=goto_split:up
+keybind = ctrl+g>f=toggle_split_zoom
+keybind = ctrl+g>equal=equalize_splits
