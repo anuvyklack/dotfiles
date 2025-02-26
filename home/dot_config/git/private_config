@@ -14,7 +14,7 @@
     plus-style = "syntax #012800"
     minus-style = "syntax #340001"
     syntax-theme = Monokai Extended
-    navigate = true
+    navigate = true # use n and N to move between diff sections
     line-numbers = true
     side-by-side = true # false
 [interactive]
