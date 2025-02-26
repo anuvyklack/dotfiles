@@ -13,6 +13,8 @@ opt.virtualedit = "block"
 opt.mouse = "a"
 opt.updatetime = 1000 -- The time until the CursorHold autocommand will triggered
 
+opt.shell = "/usr/bin/fish"
+
 -- Allow vim search local configuratin files in project folders.
 opt.exrc = true
 -- Disallows the use of :autocmd, shell and write commands in local exrc files.

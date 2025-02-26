@@ -1,9 +1,9 @@
 {
   "extras": [
     "lazyvim.plugins.extras.coding.mini-surround",
+    "lazyvim.plugins.extras.editor.mini-diff",
     "lazyvim.plugins.extras.lang.json",
-    "lazyvim.plugins.extras.lang.toml",
-    "lazyvim.plugins.extras.util.chezmoi"
+    "lazyvim.plugins.extras.lang.toml"
   ],
   "install_version": 8,
   "news": {
@@ -11,3 +11,4 @@
   },
   "version": 8
 }
+
