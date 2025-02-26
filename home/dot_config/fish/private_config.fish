@@ -70,6 +70,7 @@ if status is-interactive
     #---------------------------------------------------------------------------
     abbr --add gs git status
     abbr --add gss git status -s
+    abbr --add gd git diff
     abbr --add gg git graph
 
     alias mv='mv -v'
@@ -86,6 +87,7 @@ if status is-interactive
     alias tree="tree -I .git -I .github"
 
     if type -q nvim
+        alias vi="nvim"
         alias vim="nvim"
     end
 
