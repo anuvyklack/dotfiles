@@ -35,14 +35,15 @@ export LOCAL_STOW_DIR="$HOME/.local/stow"
   done
 }
 
-typeset -gU cdpath fpath mailpath path
+typeset -gU path fpath cdpath mailpath
 
 path+=(
+  $HOME/.local/bin
+  $HOME/bin
+  $HOME/.emacs.d/bin # Doom Emacs
   /usr/local/{bin,sbin}
-  /opt/visit/bin
-  /opt/ParaView-5.8.1/bin
-  $HOME/.emacs.d/bin
-  $HOME/.spoof-dpi/bin  # https://github.com/xvzc/SpoofDPI
+  # /opt/visit/bin
+  # /opt/ParaView-5.8.1/bin
 )
 
 if whence /home/linuxbrew/.linuxbrew/bin/brew > /dev/null 2>&1; then
