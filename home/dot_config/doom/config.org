@@ -3728,46 +3728,15 @@ Display org-roam buffers right after non-org-roam buffers in ~consult-buffer~
 
 *** org-bookmarks
 #+begin_src emacs-lisp
-;;; Backport from Emacs 30
-(defvar minibuffer-completion-base nil
-  "The base for the current completion.
-
-This is the part of the current minibuffer input which comes
-before the current completion field, as determined by
-`completion-boundaries'.  This is primarily relevant for file
-names, where this is the directory component of the file name.")
-
-(defun minibuffer-sort-by-history (completions)
-  "Sort COMPLETIONS by their position in `minibuffer-history-variable'.
-
-COMPLETIONS are sorted first by `minibuffer-sort-alphbetically',
-then any elements occurring in the minibuffer history list are
-moved to the front based on the chronological order they occur in
-the history.  If a history variable hasn't been specified for
-this call of `completing-read', COMPLETIONS are sorted only by
-`minibuffer-sort-alphbetically'.
-
-This is a suitable function to use for `completions-sort' or to
-include as `display-sort-function' in completion metadata."
-  (let ((alphabetized (sort completions #'string-lessp)))
-    ;; Only use history when it's specific to these completions.
-    (if (eq minibuffer-history-variable
-            (default-value minibuffer-history-variable))
-        alphabetized
-      (minibuffer--sort-by-position
-       (minibuffer--sort-preprocess-history minibuffer-completion-base)
-       alphabetized))))
-
-
 (use-package! org-bookmarks
   :commands (org-bookmarks)
   :init
   (setq! org-bookmarks-file (file-name-concat org-directory "bookmarks.org")
          org-bookmarks-add-org-capture-template t
-         org-bookmarks-display-screenshot t
-         )
+         org-bookmarks-display-screenshot t)
   (org-bookmarks-add-org-capture-template))
 #+end_src
+
 *** org-journal
 #+begin_src emacs-lisp
 (after! org-journal
