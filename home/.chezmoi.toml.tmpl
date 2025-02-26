@@ -16,3 +16,16 @@ is_headless = {{ $headless }}
 is_gnome = {{ $gnome }}
 
 uname_arch = "{{ output "uname" "-m" | trim }}"
+
+[merge]
+command = "nvim"
+args = ["-d", "{{`{{ .Destination }}`}}", "{{`{{ .Source }}`}}"]
+# args = ["-d", "{{`{{ .Destination }}`}}", "{{`{{ .Source }}`}}", "{{`{{ .Target }}`}}"]
+
+[diff]
+command = "delta"
+args = ["--paging", "always"]
+# args = ["--paging", "never"]
+# args = ["--paging", "never", "{{`{{ .Destination }}`}}", "{{`{{ .Target }}`}}"]
+pager = "delta" # "less"
+exclude = ["scripts"]
