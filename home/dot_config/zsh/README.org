@@ -188,17 +188,18 @@ automatically executed and then thrown away.
 ** Path
 Ensure path arrays do not contain duplicates.
 #+begin_src sh
-typeset -gU cdpath fpath mailpath path
+typeset -gU path fpath cdpath mailpath
 #+end_src
 
 Set the list of directories that Zsh searches for programs.
 #+begin_src sh
 path+=(
+  $HOME/.local/bin
+  $HOME/bin
+  $HOME/.emacs.d/bin # Doom Emacs
   /usr/local/{bin,sbin}
-  /opt/visit/bin
-  /opt/ParaView-5.8.1/bin
-  $HOME/.emacs.d/bin
-  $HOME/.spoof-dpi/bin  # https://github.com/xvzc/SpoofDPI
+  # /opt/visit/bin
+  # /opt/ParaView-5.8.1/bin
 )
 #+end_src
 
