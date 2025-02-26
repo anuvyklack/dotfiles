@@ -916,13 +916,13 @@ and fontified using ~easy-escape-face~.
 #+end_src
 
 *** Colorize strings that represent colors.
-**** COMMENT rainbow-mode
+**** rainbow-mode
 #+begin_src emacs-lisp
 (use-package! rainbow-mode
   :hook (emacs-lisp-mode conf-space-mode fish-mode conf-toml-mode toml-ts-mode))
 #+end_src
 
-**** colorful-mode
+**** COMMENT colorful-mode
 #+begin_src emacs-lisp
 (use-package! colorful-mode
   :hook (emacs-lisp-mode conf-space-mode fish-mode conf-toml-mode toml-ts-mode))

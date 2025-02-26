@@ -398,7 +398,7 @@ ELEMENTS could be either a list or a single element."
 
 (setq! prettify-symbols-unprettify-at-point t)
 
-(use-package! colorful-mode
+(use-package! rainbow-mode
   :hook (emacs-lisp-mode conf-space-mode fish-mode conf-toml-mode toml-ts-mode))
 
 (setq switch-to-buffer-in-dedicated-window 'pop)
