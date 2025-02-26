@@ -33,6 +33,9 @@ opt.joinspaces = false -- Put two spaces after period.
 opt.linebreak = true -- Wrap lines at convenient points.
 opt.bomb = false
 
+-- LazyVim auto format
+vim.g.autoformat = false
+
 -- Use Par Unix utility for 'gq' command
 -- setglobal formatprg=par\ -w75\ g
 -- setglobal formatprg=par\ -w80\ g
