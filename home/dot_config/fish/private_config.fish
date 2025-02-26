@@ -39,7 +39,7 @@ if status is-interactive
     #---------------------------------------------------------------------------
     # Extra tools
     #---------------------------------------------------------------------------
-    if type -q atuin;
+    if type -q atuin
         atuin init fish --disable-up-arrow | source
     end
 
@@ -85,12 +85,16 @@ if status is-interactive
 
     alias tree="tree -I .git -I .github"
 
+    if type -q nvim
+        alias vim="nvim"
+    end
+
     # Вывод свободного и использованного дискового пространства
     # в "гуманистическом" представлении.
     alias df="df -h"
     alias du="du -h"
 
-    if type -q eza;
+    if type -q eza
         alias ls="eza -F --group-directories-first"
         alias ll="eza -lF --group-directories-first --git"
     else
