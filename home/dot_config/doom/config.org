@@ -3794,10 +3794,9 @@ Display org-roam buffers right after non-org-roam buffers in ~consult-buffer~
 #+end_src
 
 ** Notes
-*** Obsidian
+*** COMMENT Obsidian
 #+begin_src emacs-lisp
 (use-package! obsidian
-  ;; :demand t
   :custom
   (obsidian-directory "~/obsidian")
   ;; The directory for daily notes (file name is YYYY-MM-DD.md)
@@ -3807,6 +3806,7 @@ Display org-roam buffers right after non-org-roam buffers in ~consult-buffer~
   ;; Daily Note template name - requires a template directory.
   ;; Default: Daily Note Template.md
   ;;(obsidian-daily-note-template "Daily Note Template.md")
+  (markdown-enable-wiki-links t)
   :config
   (global-obsidian-mode t))
 #+end_src

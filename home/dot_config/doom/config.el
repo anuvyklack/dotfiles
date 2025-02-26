@@ -2042,20 +2042,6 @@ shell command."
                                     ;; (plist-put :background 'auto)
                                     )))
 
-(use-package! obsidian
-  ;; :demand t
-  :custom
-  (obsidian-directory "~/obsidian")
-  ;; The directory for daily notes (file name is YYYY-MM-DD.md)
-  (obsidian-daily-notes-directory "Daily Notes")
-  ;; Directory of note templates, unset (nil) by default
-  ;;(obsidian-templates-directory "Templates")
-  ;; Daily Note template name - requires a template directory.
-  ;; Default: Daily Note Template.md
-  ;;(obsidian-daily-note-template "Daily Note Template.md")
-  :config
-  (global-obsidian-mode t))
-
 (after! cc-mode
   (c-add-style "my-custom-style"
                '("stroustrup" ;; "doom"
