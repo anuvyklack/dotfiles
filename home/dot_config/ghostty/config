@@ -56,6 +56,9 @@ maximize = true
 font-family = PragmataPro Mono Liga
 font-size = 13.7
 
+# Fallback Nerd font
+font-family = Symbols Nerd Font
+
 #-- Shell ----------------------------------------------------------------------
 
 command = /usr/bin/fish
