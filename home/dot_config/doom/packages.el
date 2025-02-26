@@ -60,7 +60,7 @@
 (package! ef-themes :recipe (:host github :repo "anuvyklack/ef-themes")) ;; my fork
 
 ;; colors
-;; (package! rainbow-mode)
+(package! rainbow-mode)
 (package! colorful-mode)
 
 (package! easy-escape)
