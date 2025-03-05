@@ -73,7 +73,8 @@ ELEMENTS could be either a list or a single element."
 
 ;; (setq use-default-font-for-symbols nil)
 
-(setq doom-font (font-spec :family "Inconsolata LGC" :size 12.5))
+;; (setq doom-font (font-spec :family "Inconsolata LGC" :size 12.5))
+(setq doom-font (font-spec :family "PragmataPro Mono Liga" :size 13.9))
 
 (set-fontset-font t '(?\xf0001 . ?\xf1af0) "Symbols Nerd Font Mono" nil 'prepend)
 

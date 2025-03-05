@@ -169,7 +169,8 @@ Default:
 :       doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
 
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "Inconsolata LGC" :size 12.5))
+;; (setq doom-font (font-spec :family "Inconsolata LGC" :size 12.5))
+(setq doom-font (font-spec :family "PragmataPro Mono Liga" :size 13.9))
 #+end_src
 
 If you or Emacs can't find your font, use =M-x describe-font= to look them
