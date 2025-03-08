@@ -121,3 +121,9 @@
 (package! chezmoi)
 
 (package! scroll-on-jump)
+
+;; Packages for meow based config development
+(package! leaf)
+(package! leaf-keywords)
+(package! meow :recipe (:local-repo "~/code/emacs/meow/"))
+(package! ultra-scroll :recipe (:host github :repo "jdtsmith/ultra-scroll"))
