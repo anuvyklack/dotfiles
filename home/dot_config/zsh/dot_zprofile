@@ -46,6 +46,11 @@ path+=(
   # /opt/ParaView-5.8.1/bin
 )
 
+# cdpath=(
+#   $HOME/.config
+#   $cdpath
+# )
+
 if whence /home/linuxbrew/.linuxbrew/bin/brew > /dev/null 2>&1; then
   local BREWCACHE="$HOME/.cache/Homebrew/brewenv.zsh"
 
