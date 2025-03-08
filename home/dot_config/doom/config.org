@@ -5112,3 +5112,7 @@ specially by Emacs, rather than directly from a file.
       [remap delete-window] nil
       [remap evil-window-delete] nil)
 #+end_src
+** Meow
+#+begin_src emacs-lisp
+(require 'meow)
+#+end_src

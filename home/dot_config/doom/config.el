@@ -3092,3 +3092,5 @@ shell command."
 
 (map! :map special-mode-map
       :n "q" #'my-evil-kill-buffer-and-window)
+
+(require 'meow)

@@ -53,7 +53,10 @@
 (package! dash)
 (package! posframe)
 (package! page-break-lines)
+(package! leaf)
+(package! leaf-keywords)
 ;; (package! treesit-auto)
+(package! meow)
 
 ;; color themes
 (package! modus-themes)
