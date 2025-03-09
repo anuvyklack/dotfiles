@@ -2038,7 +2038,7 @@ shell command."
 
   (setq! org-format-latex-options (thread-first
                                     org-format-latex-options
-                                    (plist-put :scale 0.85)
+                                    (plist-put :scale 0.8)
                                     ;; (plist-put :foreground 'auto)
                                     ;; (plist-put :background 'auto)
                                     )))
