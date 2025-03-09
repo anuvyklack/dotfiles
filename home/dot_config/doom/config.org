@@ -38,19 +38,19 @@ they are implemented.
 ** My custom functions
 #+begin_src emacs-lisp
 ;; https://stackoverflow.com/questions/24356401/how-to-append-multiple-elements-to-a-list-in-emacs-lisp
-(defun my/add-to-list (list elements &optional append)
+(defun my/add-to-list (lst elements &optional append)
   "Add ELEMENTS to the front of the LIST.
 
 If APPEND is non-nil add ELEMENTS to the end of the LIST.
 This function change the value of the LIST symbol.
 
-LIST sould be a symbol.
+LST sould be a symbol.
 ELEMENTS could be either a list or a single element."
   (unless (consp elements)
     (setq elements (list elements)))
-  (set list (if append
-                (append (symbol-value list) elements)
-              (append elements (symbol-value list)))))
+  (set lst (if append
+               (append (symbol-value lst) elements)
+             (append elements (symbol-value lst)))))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -863,6 +863,7 @@ Rebind scrolling keybindings implicitly by replacing
                   :n "C-b" nil)
             (remove-hook 'help-mode-hook 'my/help-mode-remove-evil-scroll-keymaps)))
 #+end_src
+
 ***** COMMENT scroll-on-jump
 #+begin_src emacs-lisp
 (use-package! scroll-on-jump
@@ -5112,6 +5113,7 @@ specially by Emacs, rather than directly from a file.
       [remap delete-window] nil
       [remap evil-window-delete] nil)
 #+end_src
+
 ** Meow
 #+begin_src emacs-lisp
 (require 'meow)
