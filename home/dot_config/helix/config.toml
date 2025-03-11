@@ -1,5 +1,6 @@
-theme = "monokai_pro_ristretto"
+# theme = "monokai_pro_ristretto"
 # theme = "melange"
+# theme = "kanagawa"
 
 [editor]
 scrolloff = 0
