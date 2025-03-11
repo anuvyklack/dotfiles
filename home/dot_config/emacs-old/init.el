@@ -174,8 +174,8 @@ ELEMENTS could be either a list or a single element."
 (use-package recentf
   :after no-littering
   :custom
-  (recentf-max-menu-items 100)
-  (recentf-max-saved-items 100)
+  (recentf-max-menu-items 300)
+  (recentf-max-saved-items 300)
   :init (recentf-mode)
   :config
   ;; Exclude all files in the no-littering directories:
@@ -600,16 +600,16 @@ ELEMENTS could be either a list or a single element."
   (evilem-make-motion evilem-motion-forward-word-end    #'evil-forward-word-end)
   (evilem-make-motion evilem-motion-forward-WORD-end    #'evil-forward-WORD-end)
   (general-def :keymaps 'semicolon-leader-map
-    "w"  #'evil-avy-goto-word-0-below
-    "W"  #'evilem-motion-forward-WORD-begin
-    "b"  #'evil-avy-goto-word-0-above
-    "B"  #'evilem-motion-backward-WORD-begin
-    "e"  #'evilem-motion-forward-word-end
-    "E"  #'evilem-motion-forward-WORD-end
-    "ge" #'evilem-motion-backward-word-end
-    "gE" #'evilem-motion-backward-WORD-end
-    "j"  #'evilem-motion-next-visual-line
-    "k"  #'evilem-motion-previous-visual-line))
+    "w"  'evil-avy-goto-word-0-below
+    "W"  'evilem-motion-forward-WORD-begin
+    "b"  'evil-avy-goto-word-0-above
+    "B"  'evilem-motion-backward-WORD-begin
+    "e"  'evilem-motion-forward-word-end
+    "E"  'evilem-motion-forward-WORD-end
+    "ge" 'evilem-motion-backward-word-end
+    "gE" 'evilem-motion-backward-WORD-end
+    "j"  'evilem-motion-next-visual-line
+    "k"  'evilem-motion-previous-visual-line))
 
 (use-package evil-snipe
   :ensure t

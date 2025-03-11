@@ -380,8 +380,8 @@ Keep track of opened files.
 (use-package recentf
   :after no-littering
   :custom
-  (recentf-max-menu-items 100)
-  (recentf-max-saved-items 100)
+  (recentf-max-menu-items 300)
+  (recentf-max-saved-items 300)
   :init (recentf-mode)
   :config
   ;; Exclude all files in the no-littering directories:
