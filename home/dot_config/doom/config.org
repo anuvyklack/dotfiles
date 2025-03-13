@@ -331,7 +331,7 @@ can specify them in ~ef-themes-to-toggle~ and then invoke the command
     '(org-code     :foreground "#cf25aa" :background "#f5f5f5")))
 #+end_src
 
-****** Lists
+****** COMMENT Lists
 #+begin_src emacs-lisp
 (with-eval-after-load 'org
   (custom-theme-set-faces! 'ef-light

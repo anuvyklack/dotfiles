@@ -135,10 +135,6 @@ ELEMENTS could be either a list or a single element."
 
 (with-eval-after-load 'org
   (custom-theme-set-faces! 'ef-light
-    '(org-list-dt :foreground "black" :inherit bold)))
-
-(with-eval-after-load 'org
-  (custom-theme-set-faces! 'ef-light
     '(org-level-1 :foreground "#375cd8" :weight normal :height 1.09)
     '(org-level-2 :foreground "#cf25aa" :weight normal :height 1.09)
     '(org-level-3 :foreground "#1f77bb" :weight normal :height 1.09)
