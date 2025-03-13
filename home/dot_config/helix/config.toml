@@ -48,3 +48,7 @@ space.P = "paste_clipboard_after" # switched with p
 
 Z = { Z = ":x", Q = ":quit!" }
 
+[keys.select]
+g = { o = "flip_selections" } # Alt-;
+
+
