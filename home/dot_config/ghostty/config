@@ -47,6 +47,13 @@ maximize = true
 # gtk-titlebar-hide-when-maximized = true
 # adw-toolbar-style = flat
 
+#-- Crusor ---------------------------------------------------------------------
+# The color of the bar cursor is controlled by terminal and has fixed color. It
+# works if you have everywhere either dark or bright theme. But if you use dark
+# theme in shell and bright in text editor --- it doesn't. This option is
+# overcome for this case.
+cursor-invert-fg-bg = true
+
 #-- Font -----------------------------------------------------------------------
 
 # font-family = Inconsolata LGC
