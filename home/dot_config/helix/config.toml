@@ -1,6 +1,13 @@
 # theme = "monokai_pro_ristretto"
 # theme = "melange"
+# theme = "melange-light"
 # theme = "kanagawa"
+# theme = "cyan_light"
+# theme = "everforest_light"
+# theme = "ferra"
+theme = "gruvbox"
+# theme = "zed_onelight"
+# theme = "onedark"
 
 [editor]
 scrolloff = 0
