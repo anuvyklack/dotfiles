@@ -556,6 +556,18 @@ Make customisations that affect Emacs faces BEFORE loading a theme
 (setq doom-theme 'ef-light)
 #+end_src
 
+**** COMMENT leuven
+
+I can wholeheartedly recommend the built-in =leuven= theme for org-mode work.
+I normally don't go in for light themes, but this one has so many nice little
+touches to spruce up org-mode elements I find myself switching to it from my
+usual dark doom or modus themes when working on org-mode projects.
+
+#+begin_src emacs-lisp
+;; (load-theme 'leuven :no-confirm)
+(setq doom-theme 'leuven)
+#+end_src
+
 **** COMMENT modus-themes
 #+begin_src emacs-lisp
 (require 'modus-themes)
