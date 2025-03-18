@@ -2498,6 +2498,14 @@ shell command."
 (use-package! dired-subtree)
 #+end_src
 
+**** dired-du
+#+begin_src emacs-lisp
+(use-package! dired-du
+  :commands dired-du-mode
+  :config
+  (setq! dired-du-size-format t))
+#+end_src
+
 *** COMMENT Doom dired module
 **** Overcome for doom 8081 issue
 - [[https://github.com/doomemacs/doomemacs/issues/8081][Issue 8081 overcome]]
