@@ -81,6 +81,7 @@
 ;; dired
 (package! diredfl)
 (package! dired-copy-paste :recipe (:host github :repo "jsilve24/dired-copy-paste"))
+(package! dired-du)
 (package! dired-preview)
 ;; (package! dired-rainbow)
 (package! dired-open)

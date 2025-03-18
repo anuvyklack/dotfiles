@@ -1263,6 +1263,11 @@ shell command."
 (use-package! dired-narrow)
 (use-package! dired-subtree)
 
+(use-package! dired-du
+  :commands dired-du-mode
+  :config
+  (setq! dired-du-size-format t))
+
 (after! elfeed
   (add-hook 'elfeed-search-mode-hook #'elfeed-update))
 
