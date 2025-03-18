@@ -1811,7 +1811,7 @@ shell command."
                  ;; (side . left)
                  (side . right)
                  (slot . 0)
-                 (window-width . 70) ; 0.4
+                 (window-width . 80) ; 0.4
                  (window-height . fit-window-to-buffer)))
   
   ;; Uncomment only one of the following two peaces, as they aim to achieve the
