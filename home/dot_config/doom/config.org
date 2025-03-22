@@ -401,7 +401,16 @@ take effect of adding padding around headings, but it is a hack and not reliable
           ("󰔟" . (:foreground "#0076c8"))
           ;; ("󰄵" . (:foreground ""))
           ("󰅘" . (:foreground "#6e6e6e"))
-          ("󱈎" . (:foreground "#6e6e6e")))))
+          ("󱈎" . (:foreground "#6e6e6e"))
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+          ("󰃃" . (:foreground "#7b7b7b"))
+          ;; ("" . )
+          ;; ("󱍻" . )
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+          ("TOREAD" . (:foreground "#7b7b7b"))
+          ;; ("READING")
+          ;; ("READ")
+          )))
 #+end_src
 
 ****** Priorities
@@ -3106,21 +3115,25 @@ Use PlantUML executable instead of =.jar= file together with Java.
 ***** =TODO= keywords and Priorities
 #+begin_src emacs-lisp
 (setq! org-todo-keywords
-       '((sequence ;; "󰔌" ; SOMEDAY
-                   "󰒅" ; SOMEDAY
-                   "󰄱" ; TODO
-                   "󰡖" ; NEXT
-                   ;; "󰤌" ; IN PROCESS
-                   "󱅊" ; IN PROGRESS
-                   "󱗝" ; IN PROGRESS
-                   "󰔟" ; WAITING
-                   "|"
-                   "󰄵" ; DONE
-                   "󱈎" ; ARCHIVED
-                   "󰅘" ; CANCELLED
-                   )
+       '((sequence
+          ;; "󰔌" ; SOMEDAY
+          "󰒅" ; SOMEDAY
+          "󰄱" ; TODO
+          "󰡖" ; NEXT
+          ;; "󰤌" ; IN PROCESS
+          ;; "󱅊" ; IN PROGRESS
+          ;; "󱗝" ; IN PROGRESS
+          "󰔟" ; WAITING
+          "|"
+          "󰄵" ; DONE
+          "󱈎" ; ARCHIVED
+          "󰅘" ; CANCELLED
+          )
+         (sequence "󰃃" "" "|" "󱍻")
          (sequence "SOMEDAY" "TODO" "NEXT" "IN-PROGRESS" "WAITING" "|"
-                   "DONE" "ARCHIVED" "CANCELLED")))
+                   "DONE" "ARCHIVED" "CANCELLED")
+         (sequence "TOREAD" "READING" "|" "READ")
+         ))
 
 ;; Make priority signs be integers from 1 to 5, with 3 as default.
 ;; Default priorities are: #A, #B, #C, with #B as default.
@@ -3800,6 +3813,7 @@ Display org-roam buffers right after non-org-roam buffers in ~consult-buffer~
   ;; (org-sliced-images-mode +1)
   )
 #+end_src
+
 *** LaTeX previews
 #+begin_src emacs-lisp
 (use-package! org-fragtog
