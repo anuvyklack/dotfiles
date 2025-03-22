@@ -187,7 +187,16 @@ ELEMENTS could be either a list or a single element."
           ("󰔟" . (:foreground "#0076c8"))
           ;; ("󰄵" . (:foreground ""))
           ("󰅘" . (:foreground "#6e6e6e"))
-          ("󱈎" . (:foreground "#6e6e6e")))))
+          ("󱈎" . (:foreground "#6e6e6e"))
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+          ("󰃃" . (:foreground "#7b7b7b"))
+          ;; ("" . )
+          ;; ("󱍻" . )
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+          ("TOREAD" . (:foreground "#7b7b7b"))
+          ;; ("READING")
+          ;; ("READ")
+          )))
 
 (setq org-priority-faces
       '((?A :foreground "red"     :weight bold)
@@ -1609,21 +1618,25 @@ shell command."
          org-cycle-inline-images-display t
          org-image-actual-width '(300))
   (setq! org-todo-keywords
-         '((sequence ;; "󰔌" ; SOMEDAY
-                     "󰒅" ; SOMEDAY
-                     "󰄱" ; TODO
-                     "󰡖" ; NEXT
-                     ;; "󰤌" ; IN PROCESS
-                     "󱅊" ; IN PROGRESS
-                     "󱗝" ; IN PROGRESS
-                     "󰔟" ; WAITING
-                     "|"
-                     "󰄵" ; DONE
-                     "󱈎" ; ARCHIVED
-                     "󰅘" ; CANCELLED
-                     )
+         '((sequence
+            ;; "󰔌" ; SOMEDAY
+            "󰒅" ; SOMEDAY
+            "󰄱" ; TODO
+            "󰡖" ; NEXT
+            ;; "󰤌" ; IN PROCESS
+            ;; "󱅊" ; IN PROGRESS
+            ;; "󱗝" ; IN PROGRESS
+            "󰔟" ; WAITING
+            "|"
+            "󰄵" ; DONE
+            "󱈎" ; ARCHIVED
+            "󰅘" ; CANCELLED
+            )
+           (sequence "󰃃" "" "|" "󱍻")
            (sequence "SOMEDAY" "TODO" "NEXT" "IN-PROGRESS" "WAITING" "|"
-                     "DONE" "ARCHIVED" "CANCELLED")))
+                     "DONE" "ARCHIVED" "CANCELLED")
+           (sequence "TOREAD" "READING" "|" "READ")
+           ))
   
   ;; Make priority signs be integers from 1 to 5, with 3 as default.
   ;; Default priorities are: #A, #B, #C, with #B as default.
