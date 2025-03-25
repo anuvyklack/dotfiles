@@ -2109,6 +2109,10 @@ shell command."
 (after! lua-mode
   (setq! lua-indent-level 3))
 
+(add-hook 'edebug-mode-hook
+  (lambda ()
+    (eldoc-mode (if edebug-mode -1 1))))
+
 (defun my-which-key-add-command-based-replacements (&rest args)
   "Add description for command that would be shown in the which-key menu"
   (dolist (pair (-partition 2 args))

@@ -4002,6 +4002,14 @@ Sources to install C and C++ grammar.
   (setq! lua-indent-level 3))
 #+end_src
 
+*** emacs-lisp
+Trun off eldoc when edebug is active
+#+begin_src emacs-lisp
+(add-hook 'edebug-mode-hook
+  (lambda ()
+    (eldoc-mode (if edebug-mode -1 1))))
+#+end_src
+
 ** My custom commands
 *** my-which-key-set-command-description
 #+begin_src emacs-lisp
