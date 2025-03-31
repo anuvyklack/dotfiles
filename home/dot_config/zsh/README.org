@@ -210,6 +210,11 @@ Set the list of directories that cd searches.
 #   $cdpath
 # )
 #+end_src
+** Proxy
+#+begin_src sh
+export socks_proxy="socks://127.0.0.1:10808"
+export https_proxy="https://127.0.0.1:10809"
+#+end_src
 
 ** Homebrew
 #+begin_src sh
