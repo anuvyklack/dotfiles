@@ -1709,7 +1709,7 @@ shell command."
   (org-superstar-remove-leading-stars nil)
   (org-superstar-headline-bullets-list '("●"))
   ;; (org-superstar-leading-bullet)
-  (org-superstar-item-bullet-alist '((?+ . ?▸)
+  (org-superstar-item-bullet-alist '((?+ . ?◦)
                                      (?- . ?•)
                                      (?* . ?◆)))
   :hook (org-mode . org-superstar-mode))
@@ -3115,3 +3115,5 @@ shell command."
       :n "q" #'my-evil-kill-buffer-and-window)
 
 (require 'meow)
+(require 'helix)
+(require 'zones)
