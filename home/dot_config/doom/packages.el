@@ -128,3 +128,4 @@
 (package! leaf-keywords)
 (package! meow :recipe (:local-repo "~/code/emacs/meow/"))
 (package! ultra-scroll :recipe (:host github :repo "jdtsmith/ultra-scroll"))
+(package! helix :recipe (:local-repo "~/code/emacs/helix/"))
