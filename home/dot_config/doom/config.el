@@ -660,17 +660,20 @@ ELEMENTS could be either a list or a single element."
 
 ;; (setq evil-respect-visual-line-mode t)
 
+(setq evil-collection-setup-minibuffer t)
+
 (after! evil
-  (setq! evil-collection-setup-minibuffer t
-         ;; evil-search-module 'isearch
+  (setq! evil-echo-state nil
          evil-want-fine-undo t
-         ;; evil-undo-system 'undo-redo
-         ;; evil-overriding-maps nil
          evil-move-beyond-eol t
          evil-shift-round t
          evil-want-C-i-jump t
          evil-vsplit-window-right t
-         evil-split-window-below t)
+         evil-split-window-below t
+         ;; evil-search-module 'isearch
+         ;; evil-undo-system 'undo-redo
+         ;; evil-overriding-maps nil
+         )
 
   ;; Bind `:ls' command to `bufler' /`ibuffer' instead of `list-buffers'.
   (evil-ex-define-cmd "ls" 'ibuffer))
