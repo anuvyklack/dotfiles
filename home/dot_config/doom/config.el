@@ -125,8 +125,8 @@ ELEMENTS could be either a list or a single element."
   '(line-number-current-line :background "#dddddd" :weight bold :inherit line-number)
   '(fringe :background "#f3f3f3"))
 
-(setq ef-themes-common-palette-overrides
-      '((cursor black)))
+(setq ef-themes-common-palette-overrides '((cursor black)))
+(custom-theme-set-faces! 'cursor :background "black")
 
 (with-eval-after-load 'org
   (custom-theme-set-faces! 'ef-light

@@ -318,8 +318,8 @@ can specify them in ~ef-themes-to-toggle~ and then invoke the command
 #+end_src
 
 #+begin_src emacs-lisp
-(setq ef-themes-common-palette-overrides
-      '((cursor black)))
+(setq ef-themes-common-palette-overrides '((cursor black)))
+(custom-theme-set-faces! 'cursor :background "black")
 #+end_src
 
 ***** Org-mode
