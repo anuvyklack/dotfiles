@@ -822,41 +822,43 @@ Rebind scrolling keybindings implicitly by replacing
     :repeat nil
     :keep-visual t
     (interactive "p")
-    (let* ((pixel-scroll-precision-interpolation-total-time 0.08)
-           (pixels-per-line (/ (window-text-height nil t)
-                               (window-text-height)))
-           (delta (* pixels-per-line
-                     num-of-lines
-                     count)))
+    (let ((pixel-scroll-precision-interpolation-total-time 0.08)
+          (delta (* (window-font-height)
+                    num-of-lines
+                    count)))
       (pixel-scroll-precision-interpolate delta nil 1)))
 
   (evil-define-command my/pixel-scroll-interpolate-line-down (count)
     :repeat nil
     :keep-visual t
     (interactive "p")
-    (let* ((pixel-scroll-precision-interpolation-total-time 0.08)
-           (pixels-per-line (/ (window-text-height nil t)
-                               (window-text-height)))
-           (delta (- (* pixels-per-line
-                        num-of-lines
-                        count))))
-      (pixel-scroll-precision-interpolate delta nil 1))))
+    (let ((pixel-scroll-precision-interpolation-total-time 0.08)
+          (delta (* (window-font-height)
+                    num-of-lines
+                    count)))
+      (pixel-scroll-precision-interpolate (- delta) nil 1))))
 
 (evil-define-command my/pixel-scroll-interpolate-half-page-up ()
   "Interpolate a scroll upwards by half page."
   :repeat nil
   :keep-visual t
   (interactive)
-  (pixel-scroll-precision-interpolate (/ (window-text-height nil t) 2)
-                                      nil 1))
+  (let* ((window-height (- (window-text-height nil t)
+                          (window-mode-line-height)
+                          (window-tab-line-height)))
+        (delta (/ window-height 2)))
+    (pixel-scroll-precision-interpolate delta nil 1)))
 
 (evil-define-command my/pixel-scroll-interpolate-half-page-down ()
   "Interpolate a scroll downwards by half page."
   :repeat nil
   :keep-visual t
   (interactive)
-  (pixel-scroll-precision-interpolate (- (/ (window-text-height nil t) 2))
-                                      nil 1))
+  (let* ((window-height (- (window-text-height nil t)
+                           (window-mode-line-height)
+                           (window-tab-line-height)))
+         (delta (/ window-height 2)))
+    (pixel-scroll-precision-interpolate (- delta) nil 1)))
 
 (evil-add-command-properties #'pixel-scroll-interpolate-down :repeat nil :keep-visual t)
 (evil-add-command-properties #'pixel-scroll-interpolate-up   :repeat nil :keep-visual t)
