@@ -3446,7 +3446,7 @@ default behaviour of the slug function, you should override the entire function.
                        t)))
 #+end_src
 
-****** org-roam buffer
+****** COMMENT org-roam buffer
 ******* COMMENT In regular window
 - [[id:20241124T151533][My notes about display-buffer-alist]]
 
@@ -3465,7 +3465,7 @@ navigation:
                (window-height . fit-window-to-buffer)))
 #+end_src
 
-******* In side window
+******* COMMENT In side window
 - [[id:20241124T151533][My notes about display-buffer-alist]]
 #+begin_src emacs-lisp
 (add-to-list 'display-buffer-alist
@@ -3517,13 +3517,11 @@ navigation:
                         (org-element-property :begin parent)
                         (org-element-property :end parent)))))
 
-
 (defun my-org-element-string (elem)
   "Get the string for org AST node."
   (string-trim (buffer-substring-no-properties
                 (org-element-property :begin elem)
                 (org-element-property :end elem))))
-
 
 (defun my-org-roam-buffer-preview-function-2 ()
   (let* ((elem (org-element-at-point))
@@ -3549,7 +3547,6 @@ navigation:
                           (org-element-property :begin elem)
                           (org-element-property :end elem)))
       (my-org-element-string elem)))))
-
 
 ;; (defun my-org-roam-buffer-preview-function-3 ()
 ;;   "Return the preview content at point - depending on context.
@@ -4127,6 +4124,7 @@ Trun off eldoc when edebug is active
    'display-fill-column-indicator-mode "Fill-column indicator"
    'evil-collection-consult-mark       "Evil marks"))
 #+end_src
+
 **** dired
 #+begin_src emacs-lisp
 (after! which-key
