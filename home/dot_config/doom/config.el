@@ -3115,3 +3115,5 @@ shell command."
       :n "q" #'my-evil-kill-buffer-and-window)
 
 (require 'meow)
+;; (require 'helix)
+;; (require 'zones)

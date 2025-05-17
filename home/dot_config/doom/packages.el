@@ -123,8 +123,15 @@
 
 (package! scroll-on-jump)
 
-;; Packages for meow based config development
-(package! leaf)
-(package! leaf-keywords)
-(package! meow :recipe (:local-repo "~/code/emacs/meow/"))
-(package! ultra-scroll :recipe (:host github :repo "jdtsmith/ultra-scroll"))
+;; ;; Packages for meow based config development
+;; (package! leaf)
+;; (package! leaf-keywords)
+;; (package! meow :recipe (:local-repo "~/code/emacs/meow/"))
+;; (package! ultra-scroll :recipe (:host github :repo "jdtsmith/ultra-scroll"))
+;; (package! helix :recipe (:local-repo "~/code/emacs/helix/"))
+;; (package! zones)
+;; (package! multiple-cursors :recipe (:local-repo "~/code/emacs/multiple-cursors.el/"))
+;; (package! evil-mc :recipe (:local-repo "~/code/emacs/evil-mc/"))
+;; (package! kak.el :recipe (:local-repo "~/code/emacs/kak.el/"))
+;; (package! evil-multiedit :recipe (:local-repo "~/code/emacs/evil-multiedit"))
+;; (package! cond-star)
