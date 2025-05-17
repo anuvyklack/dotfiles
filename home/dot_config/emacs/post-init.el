@@ -24,7 +24,7 @@
 (require 'my-meow)
 ;; (require 'my-helix)
 (require 'my-motions)
-(require 'my-smooth-scrolling)
+;; (require 'my-smooth-scrolling)
 (require 'my-help)
 (require 'my-completion)
 
