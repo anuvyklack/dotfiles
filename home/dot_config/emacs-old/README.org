@@ -295,7 +295,7 @@ using tangle approach. This setting move custom modifications to a separate file
 #+begin_src emacs-lisp
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
-  (load custom-file))
+  (load custom-file 'noerror 'nomessage))
 #+end_src
 
 *** help system
@@ -699,8 +699,9 @@ So for icons need to install [[id:75194bd4-5012-4a57-bf00-f8467afe5bd7][Symbols 
    (org-level-5 :foreground "#6052cf" :weight normal :height 1.09)))
 #+end_src
 
-Add a box with the same color as a background around every org heading. It does
-take effect of adding padding around headings, but it is a hack and not reliable.
+Add a box with the same color as a background around every org heading.
+It does take effect of adding padding around headings, but it is a hack
+and not reliable.
 #+begin_src emacs-lisp
 ;; (my/set-face-attribute
 ;;  `((org-level-1 :foreground "#375cd8" :weight normal :height 1.08

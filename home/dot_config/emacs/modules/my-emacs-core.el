@@ -24,10 +24,15 @@
 
 (setopt confirm-kill-emacs nil)
 
+(setopt history-delete-duplicates t)
+
 ;; Automatically revert the buffer when its visited file changes on disk. Auto
 ;; Revert will not revert a buffer if it has unsaved changes, or if its file on
 ;; disk is deleted or renamed.
 (add-hook 'after-init-hook #'global-auto-revert-mode)
+
+;; Vertical motion starting at end of line keeps to ends of lines.
+(setopt track-eol t)
 
 ;; Keep track of opened files.
 (leaf recentf

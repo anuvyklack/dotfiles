@@ -124,7 +124,7 @@ ELEMENTS could be either a list or a single element."
 
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
-  (load custom-file))
+  (load custom-file 'noerror 'nomessage))
 
 (setopt help-window-select t)
 
