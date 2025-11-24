@@ -74,9 +74,9 @@
     lua-language-server
     neocmakelsp
 
-    bitwarden
+    bitwarden-desktop
     # bcompare
-    floorp  # A fork of Firefox built in Japan
+    # floorp-bin  # A fork of Firefox built in Japan
     rambox
     # obsidian
 
