@@ -76,31 +76,6 @@ ELEMENTS could be either a list or a single element."
 ;; (setq doom-font (font-spec :family "Inconsolata LGC" :size 12.5))
 (setq doom-font (font-spec :family "PragmataPro Mono Liga" :size 13.9))
 
-(set-fontset-font t '(?\xf0001 . ?\xf1af0) "Symbols Nerd Font Mono" nil 'prepend)
-
-;; (set-fontset-font t ?\xe876 "Material Design Icons" nil 'prepend)
-;; (set-fontset-font t ? "Material Design Icons" nil 'prepend)
-;; (set-fontset-font t ? "Material Design Icons Desktop" nil 'prepend)
-
-(set-fontset-font t '(?\x1fb00 . ?\x1fbca) "LegacyComputing" nil 'prepend)
-(set-fontset-font t '(?🯰 . ?🯹) "LegacyComputing" nil 'prepend)
-
-;; (set-fontset-font t 'latin "Noto Sans")
-;; (set-fontset-font t '(?\xea60 . ?\xec11) "codicon" nil 'prepend)
-
-;; (set-fontset-font t '(? . ?) "codicon")
-
-;; (let ((fontset (face-attribute 'default :fontset)))
-;;   (set-fontset-font fontset '(?\xea60 . ?\xec11) "codicon" nil 'append))
-
-;; (set-fontset-font (frame-parameter nil 'font)
-;;                   '(?\xea60 . ?\xec11)
-;;                   (font-spec :family "codicon"
-;;                              :weight nil
-;;                              :size nil)
-;;                   nil
-;;                   'prepend)
-
 (setq-default line-spacing 1)
 
 (setq-default truncate-lines t)
@@ -124,9 +99,6 @@ ELEMENTS could be either a list or a single element."
   '(line-number :background "#f5f5f5" :inherit fixed-pitch)
   '(line-number-current-line :background "#dddddd" :weight bold :inherit line-number)
   '(fringe :background "#f3f3f3"))
-
-(setq ef-themes-common-palette-overrides '((cursor black)))
-(custom-theme-set-faces! 'cursor :background "black")
 
 (with-eval-after-load 'org
   (custom-theme-set-faces! 'ef-light
@@ -276,6 +248,10 @@ ELEMENTS could be either a list or a single element."
                                 ;; :box (:line-width (-1 . -1) :color "grey75")
                                 :inherit unspecified))
 
+(setq ef-themes-common-palette-overrides '((cursor black)))
+(custom-theme-set-faces! 'ef-light
+  '(cursor :background "black"))
+
 ;; (load-theme 'ef-light :no-confirm)
 (setq doom-theme 'ef-light)
 
@@ -299,16 +275,31 @@ ELEMENTS could be either a list or a single element."
 
 (setq! scroll-conservatively 101)
 
-(defun with-default-scroll-settings (fun)
-  (eval `(define-advice ,fun
-             (:around (orig-fun &rest args)
-                      scroll-conservatively)
-           (-let (((scroll-conservatively) (get 'scroll-conservatively 'standard-value)))
-             (apply orig-fun args)))))
+;; (defun with-default-scroll-settings (fun)
+;;   (eval
+;;    `(define-advice ,fun
+;;         (:around (orig-fun &rest args)
+;;                  scroll-conservatively)
+;;       (let ((scroll-conservatively (my-original-value 'scroll-conservatively)))
+;;         (apply orig-fun args)))))
+;;
+;; (mapc #'with-default-scroll-settings '(dired-do-find-regexp-and-replace
+;;                                        projectile-replace
+;;                                        projectile-replace-regexp))
 
-(mapcar #'with-default-scroll-settings '(dired-do-find-regexp-and-replace
-                                         projectile-replace
-                                         projectile-replace-regexp))
+(defun my-original-value (symbol)
+  "Return SYMBOL's original value."
+  (car (get symbol 'standard-value)))
+
+(defun with-original-scroll-conservatively-value-a (fun &rest args)
+  "Meant to be used as `:around' advice."
+  (let ((scroll-conservatively (my-original-value 'scroll-conservatively)))
+    (apply fun args)))
+
+(dolist (command '(dired-do-find-regexp-and-replace
+                   projectile-replace
+                   projectile-replace-regexp))
+  (advice-add command :around #'with-original-scroll-conservatively-value-a))
 
 (setq jit-lock-stealth-time 1.25 ; Calculate fonts when idle for 1.25 seconds
       jit-lock-stealth-nice 0.2  ; Seconds between font locking
@@ -316,12 +307,8 @@ ELEMENTS could be either a list or a single element."
 
 (setq jit-lock-defer-time 0)
 (with-eval-after-load 'evil
-  (add-hook 'evil-insert-state-entry-hook
-            (lambda () (setq jit-lock-defer-time 0.25))
-            nil t)
-  (add-hook 'evil-insert-state-exit-hook
-            (lambda () (setq jit-lock-defer-time 0))
-            nil t))
+  (add-hook 'evil-insert-state-entry-hook (lambda () (setq jit-lock-defer-time 0.25)))
+  (add-hook 'evil-insert-state-exit-hook  (lambda () (setq jit-lock-defer-time 0))))
 
 (use-package! pixel-scroll
   :hook (after-init . pixel-scroll-precision-mode)
@@ -647,7 +634,7 @@ ELEMENTS could be either a list or a single element."
 (setq! tab-bar-show t) ;; Always show tab bar.
 
 (defun my-tab-new (arg)
-  "Execute `tab-new` normally, or `tab-window-detach` with a universal argument."
+  "Execute `tab-new' normally, or `tab-window-detach' with a universal argument."
   (interactive "P")
   (if arg
       (tab-window-detach)
@@ -672,6 +659,7 @@ ELEMENTS could be either a list or a single element."
          evil-want-C-i-jump t
          evil-vsplit-window-right t
          evil-split-window-below t
+         evil-search-wrap-ring-bell t
          ;; evil-search-module 'isearch
          ;; evil-undo-system 'undo-redo
          ;; evil-overriding-maps nil
@@ -852,11 +840,10 @@ ELEMENTS could be either a list or a single element."
        completion-ignore-case t)
 
 (after! vertico
-  (setq! vertico-count 15 ; How many candidates to show
+  (setq! vertico-count 15 ;; How many candidates to show
          vertico-scroll-margin 2
          vertico-cycle nil
-         vertico-resize 'grow-only) ; Grow and shrink the Vertico minibuffer
-  )
+         vertico-resize 'grow-only)) ;; Grow and shrink the Vertico minibuffer
 
 (after! consult
   (consult-customize
@@ -967,11 +954,11 @@ ELEMENTS could be either a list or a single element."
   "Open lsp doc in popup window. If called with `universal-argument' open in split."
   ;; (interactive "P")
   (interactive)
-  (cond
-   ((null current-prefix-arg)       (eldoc-box-help-at-point))
-   ((equal current-prefix-arg '(4))
-    ;; (call-interactively #'+lookup/documentation)
-    (+lookup/documentation))))
+  (cond ((null current-prefix-arg)
+         (eldoc-box-help-at-point))
+        ((equal current-prefix-arg '(4))
+         ;; (call-interactively #'+lookup/documentation)
+         (+lookup/documentation))))
 
 ;; (defun my/eldoc-settings-for-lsp-mode ()
 ;;   "Setup my eldoc setting for lsp-mode"
@@ -1754,7 +1741,6 @@ shell command."
   (setq org-roam-completion-everywhere t)
   (setq! org-roam-db-gc-threshold most-positive-fixnum)
   (setq! org-roam-graph-executable "dot")
-  
   (setq org-roam-mode-section-functions '(org-roam-backlinks-section
                                           org-roam-reflinks-section
                                           ;; org-roam-unlinked-references-section
@@ -1846,14 +1832,6 @@ shell command."
                               "#+title: %<%Y-%m-%d>\n")
            :empty-lines 1))))
 
-(use-package! consult-org-roam
-  :after org-roam
-  :config
-  (setq! consult-org-roam-grep-func #'consult-ripgrep)
-  (setq! consult-org-roam-buffer-narrow-key ?r)
-  ;; (setq! consult-org-roam-buffer-after-buffers t)
-  (consult-org-roam-mode))
-
 (use-package! org-roam-ui
   :after org-roam
   :custom
@@ -1882,7 +1860,7 @@ shell command."
   (setq! org-bookmarks-file (file-name-concat org-directory "bookmarks.org")
          org-bookmarks-add-org-capture-template t
          org-bookmarks-display-screenshot t)
-  (org-bookmarks-add-org-capture-template))
+  (org-bookmarks-add-to-org-capture-templates))
 
 (after! org-journal
   ;; When switching from daily to weekly, monthly, yearly, or from weekly,
@@ -1941,6 +1919,9 @@ shell command."
   (+word-wrap-mode +1))
 
 (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
+
+;; (modify-syntax-entry ?- "w" emacs-lisp-mode-syntax-table)
+;; (modify-syntax-entry ?_ "w" emacs-lisp-mode-syntax-table)
 
 (add-hook 'lisp-mode-hook #'aggressive-indent-mode)
 
@@ -2184,6 +2165,7 @@ shell command."
       :nvm "SPC"   #'doom/leader ; doom-leader-map
       :ei  "M-SPC" #'doom/leader ; doom-leader-map in insert state
       :m   "C-s"   #'evil-write
+      :n   "M"     #'+lookup/documentation
       :m   "-"     #'dired-jump
       :m   "/"     #'+default/search-buffer
       :m   "?"     #'evil-ex-search-forward
@@ -2194,7 +2176,7 @@ shell command."
       :m   "z."    #'set-fill-prefix
       :n   "ga"    #'describe-char
       :mnv "gh"    #'my/evil-first-non-blank
-      :mnv "gl"    #'my/evil-end-of-line)
+      :mnv "gl"    #'evil-end-of-line-or-visual-line)
 
 (map! (:leader "n" (cons "notes" my-notes-map))
       ;; <leader> t
@@ -2521,8 +2503,8 @@ shell command."
 
       (:map with-editor-mode-map
        :n "ZZ" 'with-editor-finish
-       :n "Q" 'with-editor-cancel
-       :n "ZQ" 'with-editor-cancel)
+       :n "ZQ" 'with-editor-cancel
+       :n "Q" 'with-editor-cancel)
 
       (:map magit-diff-mode-map
        :mnv "SPC" #'doom/leader))
@@ -2615,7 +2597,64 @@ shell command."
 
 (defun my-outline-hide-sublevels (levels)
   (interactive "p")
-  (outline-hide-sublevels (or levels 1)))
+  (outline-hide-sublevels levels))
+
+(map! :map my-org-roam-ui
+      "u" #'org-roam-ui-open
+      ;; "u" #'org-roam-ui-mode
+      "f" #'org-roam-ui-follow-mode
+      "l" #'org-roam-ui-node-local)
+
+(map! :map my-notes-map
+      "*" #'+default/search-notes-for-symbol-at-point
+      "a" #'org-agenda
+      "A" #'org-roam-node-random
+      "f" #'+default/find-in-notes
+      "F" #'+default/browse-notes
+      "g" #'org-roam-graph
+      "n" #'org-roam-node-find
+      "N" #'org-roam-ref-find
+      "c" #'org-capture
+      "C" #'org-capture-goto-target
+      "d" (cons "dailies"
+                (define-keymap
+                  "-" #'org-roam-dailies-find-directory
+                  "f" #'org-roam-dailies-goto-next-note
+                  "b" #'org-roam-dailies-goto-previous-note
+                  "]" #'org-roam-dailies-goto-next-note
+                  "[" #'org-roam-dailies-goto-previous-note
+                  "d" #'org-roam-dailies-goto-date
+                  "D" #'org-roam-dailies-capture-date
+                  "n" #'org-roam-dailies-capture-today
+                  "t" #'org-roam-dailies-goto-today
+                  "T" #'org-roam-dailies-capture-today
+                  "y" #'org-roam-dailies-goto-yesterday
+                  "Y" #'org-roam-dailies-capture-yesterday
+                  "m" #'org-roam-dailies-goto-tomorrow
+                  "M" #'org-roam-dailies-capture-tomorrow))
+      "j" (cons "journal"
+                (define-keymap
+                  "j" #'org-journal-new-entry
+                  "J" #'org-journal-new-scheduled-entry
+                  "s" #'org-journal-search-forever))
+      "l" #'org-store-link
+      "t" #'org-todo-list
+      "u" (cons "org-roam ui" my-org-roam-ui)
+      "y" #'+org/export-to-clipboard
+      "Y" #'+org/export-to-clipboard-as-rich-text
+      "/" #'consult-org-roam-search)
+
+;; Bindings in org-roam buffer with backlinks.
+(map! :map org-roam-mode-map
+      :after org-roam
+      (:localleader "b" #'org-roam-buffer-toggle)
+      :n "SPC nb" #'org-roam-buffer-toggle
+      :nv "q"   #'quit-window
+      :nv "C-j" #'magit-section-forward-sibling
+      :nv "C-k" #'magit-section-backward-sibling
+      :nv "zj"  #'magit-section-forward
+      :nv "zk"  #'magit-section-backward
+      )
 
 ;; "C-c C-S-l"  #'+org/remove-link
 ;; "C-c C-i"    #'org-toggle-inline-images
@@ -2660,9 +2699,7 @@ shell command."
 ;;  "a" #'org-toggle-archive-tag
 ;;  "b" #'org-tree-to-indirect-buffer
 ;;  "c" #'org-clone-subtree-with-time-shift
-;;  "d" #'org-cut-subtree
-;;  "h" #'org-promote-subtree
-;;  "j" #'org-move-subtree-down
+
 ;;  "k" #'org-move-subtree-up
 ;;  "l" #'org-demote-subtree
 ;;  "n" #'org-narrow-to-subtree
@@ -2805,7 +2842,7 @@ shell command."
 (map! :after evil-org
       :map evil-org-mode-map
       :mnv "gh"    #'evil-org-beginning-of-line
-      :mnv "gl"    #'my/evil-end-of-line
+      :mnv "gl"    #'evil-end-of-line-or-visual-line
       :mnv "gj"    nil ; #'org-forward-element
       :mnv "gk"    nil ; #'org-backward-element
       :n   "[ RET" #'+org/insert-item-above
@@ -2836,62 +2873,6 @@ shell command."
       :n "zR" nil ;; #'+org/open-all-folds
       :n "zi" nil ;; #'org-toggle-inline-images
       )
-
-(map! :map my-org-roam-ui
-      "u" #'org-roam-ui-open
-      ;; "u" #'org-roam-ui-mode
-      "f" #'org-roam-ui-follow-mode
-      "l" #'org-roam-ui-node-local)
-
-(map! :map my-notes-map
-      "*" #'+default/search-notes-for-symbol-at-point
-      "a" #'org-agenda
-      "A" #'org-roam-node-random
-      "f" #'+default/find-in-notes
-      "F" #'+default/browse-notes
-      "g" #'org-roam-graph
-      "n" #'org-roam-node-find
-      "N" #'org-roam-ref-find
-      "c" #'org-capture
-      "C" #'org-capture-goto-target
-      "d" (cons "dailies"
-                (define-keymap
-                  "-" #'org-roam-dailies-find-directory
-                  "f" #'org-roam-dailies-goto-next-note
-                  "b" #'org-roam-dailies-goto-previous-note
-                  "]" #'org-roam-dailies-goto-next-note
-                  "[" #'org-roam-dailies-goto-previous-note
-                  "d" #'org-roam-dailies-goto-date
-                  "D" #'org-roam-dailies-capture-date
-                  "n" #'org-roam-dailies-capture-today
-                  "t" #'org-roam-dailies-goto-today
-                  "T" #'org-roam-dailies-capture-today
-                  "y" #'org-roam-dailies-goto-yesterday
-                  "Y" #'org-roam-dailies-capture-yesterday
-                  "m" #'org-roam-dailies-goto-tomorrow
-                  "M" #'org-roam-dailies-capture-tomorrow))
-      "j" (cons "journal"
-                (define-keymap
-                  "j" #'org-journal-new-entry
-                  "J" #'org-journal-new-scheduled-entry
-                  "s" #'org-journal-search-forever))
-      "l" #'org-store-link
-      "t" #'org-todo-list
-      "u" (cons "org-roam ui" my-org-roam-ui)
-      "y" #'+org/export-to-clipboard
-      "Y" #'+org/export-to-clipboard-as-rich-text
-      "/" #'consult-org-roam-search)
-
-;; Bindings in org-roam buffer with backlinks.
-(map! :map org-roam-mode-map
-      :after org-roam
-      (:localleader "b" #'org-roam-buffer-toggle)
-      :n "SPC nb" #'org-roam-buffer-toggle
-      :nv "q"   #'quit-window
-      :nv "C-j" #'magit-section-forward-sibling
-      :nv "C-k" #'magit-section-backward-sibling
-      :nv "zj"  #'magit-section-forward
-      :nv "zk"  #'magit-section-backward)
 
 ;; (setq org-pretty-entities-include-sub-superscripts nil)
 
@@ -2979,7 +2960,3 @@ shell command."
 
 (map! :map special-mode-map
       :n "q" #'my-evil-kill-buffer-and-window)
-
-(require 'meow)
-;; (require 'helix)
-;; (require 'zones)

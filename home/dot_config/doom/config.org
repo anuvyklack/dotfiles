@@ -1,6 +1,5 @@
 #+startup: show2levels
 #+auto_tangle: t
-
 * config.el
 :PROPERTIES:
 :header-args: :tangle "./config.el"
@@ -178,7 +177,7 @@ up, =M-x eval-region= to execute elisp code, and =M-x doom/reload-font= to
 refresh your font settings. If Emacs still can't find your font, it likely
 wasn't installed correctly. Font issues are rarely Doom issues!
 
-**** Icons
+**** COMMENT Icons
 Emacs doesn't recognize [[id:20241212T184323][Vscode Codicons]] and [[id:20241212T184111][Material Design Icons]] fonts.
 So for icons need to install [[id:20241212T183912][Symbols Nerd Font Mono]] and [[id:20241212T184032][Material Icons]] fonts.
 
@@ -317,11 +316,6 @@ can specify them in ~ef-themes-to-toggle~ and then invoke the command
   '(fringe :background "#f3f3f3"))
 #+end_src
 
-#+begin_src emacs-lisp
-(setq ef-themes-common-palette-overrides '((cursor black)))
-(custom-theme-set-faces! 'cursor :background "black")
-#+end_src
-
 ***** Org-mode
 ****** Code blocks
 #+begin_src emacs-lisp
@@ -361,8 +355,9 @@ can specify them in ~ef-themes-to-toggle~ and then invoke the command
 ;;      `(org-level-5 :foreground "#6052cf" :height 1.09 ,@font))))
 #+end_src
 
-Add a box with the same color as a background around every org heading. It does
-take effect of adding padding around headings, but it is a hack and not reliable.
+Add a box with the same color as a background around every org heading.
+It does take effect of adding padding around headings, but it is a hack
+and not reliable.
 #+begin_src emacs-lisp
 ;; (with-eval-after-load 'org
 ;;   (my/set-face-attribute
@@ -557,6 +552,14 @@ what I don't like.
                                 ;; :box (:line-width (-1 . -1) :color "grey75")
                                 :inherit unspecified))
 #+end_src
+
+***** Cursor
+#+begin_src emacs-lisp
+(setq ef-themes-common-palette-overrides '((cursor black)))
+(custom-theme-set-faces! 'ef-light
+  '(cursor :background "black"))
+#+end_src
+
 ***** Load theme
 Make customisations that affect Emacs faces BEFORE loading a theme
 (any change needs a theme re-load to take effect).
@@ -628,16 +631,31 @@ Disable ~hl-line-mode~ [[https://github.com/doomemacs/doomemacs/issues/4206][(is
 
 Restore original value for some functions.
 #+begin_src emacs-lisp
-(defun with-default-scroll-settings (fun)
-  (eval `(define-advice ,fun
-             (:around (orig-fun &rest args)
-                      scroll-conservatively)
-           (-let (((scroll-conservatively) (get 'scroll-conservatively 'standard-value)))
-             (apply orig-fun args)))))
+;; (defun with-default-scroll-settings (fun)
+;;   (eval
+;;    `(define-advice ,fun
+;;         (:around (orig-fun &rest args)
+;;                  scroll-conservatively)
+;;       (let ((scroll-conservatively (my-original-value 'scroll-conservatively)))
+;;         (apply orig-fun args)))))
+;;
+;; (mapc #'with-default-scroll-settings '(dired-do-find-regexp-and-replace
+;;                                        projectile-replace
+;;                                        projectile-replace-regexp))
 
-(mapcar #'with-default-scroll-settings '(dired-do-find-regexp-and-replace
-                                         projectile-replace
-                                         projectile-replace-regexp))
+(defun my-original-value (symbol)
+  "Return SYMBOL's original value."
+  (car (get symbol 'standard-value)))
+
+(defun with-original-scroll-conservatively-value-a (fun &rest args)
+  "Meant to be used as `:around' advice."
+  (let ((scroll-conservatively (my-original-value 'scroll-conservatively)))
+    (apply fun args)))
+
+(dolist (command '(dired-do-find-regexp-and-replace
+                   projectile-replace
+                   projectile-replace-regexp))
+  (advice-add command :around #'with-original-scroll-conservatively-value-a))
 #+end_src
 
 **** Smooth scrolling
@@ -652,12 +670,8 @@ Restore original value for some functions.
 #+begin_src emacs-lisp
 (setq jit-lock-defer-time 0)
 (with-eval-after-load 'evil
-  (add-hook 'evil-insert-state-entry-hook
-            (lambda () (setq jit-lock-defer-time 0.25))
-            nil t)
-  (add-hook 'evil-insert-state-exit-hook
-            (lambda () (setq jit-lock-defer-time 0))
-            nil t))
+  (add-hook 'evil-insert-state-entry-hook (lambda () (setq jit-lock-defer-time 0.25)))
+  (add-hook 'evil-insert-state-exit-hook  (lambda () (setq jit-lock-defer-time 0))))
 #+end_src
 
 ***** COMMENT KaratasFurkan
@@ -942,7 +956,7 @@ and fontified using ~easy-escape-face~.
 (setq! prettify-symbols-unprettify-at-point t)
 #+end_src
 
-*** Colorize strings that represent colors.
+*** Colorize strings that represent colors
 **** rainbow-mode
 #+begin_src emacs-lisp
 (use-package! rainbow-mode
@@ -959,6 +973,7 @@ and fontified using ~easy-escape-face~.
 - [[https://www.masteringemacs.org/article/demystifying-emacs-window-manager][Demystifying Emacs's Window Manager - Mastering Emacs]]
 - [[https://protesilaos.com/codelog/2024-02-08-emacs-window-rules-display-buffer-alist/][Protesilaos: control where buffers are displayed (the ‘display-buffer-alist’)]]
 *** variables
+
 If I trying to switch buffer in dedicated window, put it somewhere instead of
 error out (what Emacs will do when set to ~nil~).
 #+begin_src emacs-lisp
@@ -1659,7 +1674,7 @@ displays tab groups. [[https://git.savannah.gnu.org/cgit/emacs.git/commit/etc/NE
 
 #+begin_src emacs-lisp
 (defun my-tab-new (arg)
-  "Execute `tab-new` normally, or `tab-window-detach` with a universal argument."
+  "Execute `tab-new' normally, or `tab-window-detach' with a universal argument."
   (interactive "P")
   (if arg
       (tab-window-detach)
@@ -1696,6 +1711,7 @@ This variavle should be set in init.el ([[https: github.com/doomemacs/doomemacs/
          evil-want-C-i-jump t
          evil-vsplit-window-right t
          evil-split-window-below t
+         evil-search-wrap-ring-bell t
          ;; evil-search-module 'isearch
          ;; evil-undo-system 'undo-redo
          ;; evil-overriding-maps nil
@@ -1876,6 +1892,7 @@ This variavle should be set in init.el ([[https: github.com/doomemacs/doomemacs/
   ;; other faces such as `diff-added' will be used for other actions.
   (evil-goggles-use-diff-faces))
 #+end_src
+
 *** evil-org
 #+begin_src emacs-lisp
 (after! evil-org
@@ -1916,11 +1933,10 @@ Record jumps from the ~elisp-refs-mode~ buffer:
 **** vertico
 #+begin_src emacs-lisp
 (after! vertico
-  (setq! vertico-count 15 ; How many candidates to show
+  (setq! vertico-count 15 ;; How many candidates to show
          vertico-scroll-margin 2
          vertico-cycle nil
-         vertico-resize 'grow-only) ; Grow and shrink the Vertico minibuffer
-  )
+         vertico-resize 'grow-only)) ;; Grow and shrink the Vertico minibuffer
 #+end_src
 
 **** consult
@@ -1963,10 +1979,10 @@ state also.
 
 #+begin_src emacs-lisp
 (defvar my/consult-xref-active nil
-  "Flag indicating that `consult-xref` has been called.")
+  "Flag indicating that `consult-xref' has been called.")
 
 (defun my/set-consult-xref-flag (&rest args)
-  "Set `my/consult-xref-active` to t when `consult-xref` is called."
+  "Set `my/consult-xref-active' to t when `consult-xref' is called."
   (setq my/consult-xref-active t))
 
 (advice-add 'consult-xref :before #'my/set-consult-xref-flag)
@@ -2108,11 +2124,11 @@ Show eldoc content in the floating frame.
   "Open lsp doc in popup window. If called with `universal-argument' open in split."
   ;; (interactive "P")
   (interactive)
-  (cond
-   ((null current-prefix-arg)       (eldoc-box-help-at-point))
-   ((equal current-prefix-arg '(4))
-    ;; (call-interactively #'+lookup/documentation)
-    (+lookup/documentation))))
+  (cond ((null current-prefix-arg)
+         (eldoc-box-help-at-point))
+        ((equal current-prefix-arg '(4))
+         ;; (call-interactively #'+lookup/documentation)
+         (+lookup/documentation))))
 
 ;; (defun my/eldoc-settings-for-lsp-mode ()
 ;;   "Setup my eldoc setting for lsp-mode"
@@ -2293,6 +2309,7 @@ Evil version of `sly-eval-print-last-expression' that accounts for
          avy-style 'at-full
          avy-all-windows nil))
 #+end_src
+
 *** deft
 #+begin_src emacs-lisp
 (setq deft-directory "~/notes")
@@ -2567,7 +2584,7 @@ if it's a duplicate."
 #+end_src
 
 *** embark
-Doom already set this for us:
+Doom already set this for me:
 #+begin_src emacs-lisp
 ;; (after! embark
 ;;   (setq prefix-help-command #'embark-prefix-help-command))
@@ -2750,7 +2767,6 @@ Open help and man in popup window on the side
 #+end_src
 
 *** Russian language
-**** evil-xkbswitch
 #+begin_src emacs-lisp
 (use-package! evil-xkbswitch
   :after evil
@@ -2762,9 +2778,6 @@ Open help and man in popup window on the side
           evil-xkbswitch-get-layout "g3kb-switch"))
   (evil-xkbswitch-mode))
 #+end_src
-
-**** emacs-smart-input-source
-- [[https://github.com/laishulu/emacs-smart-input-source][emacs-smart-input-source]]
 
 *** structural editing
 **** evil-cleverparens
@@ -2856,6 +2869,7 @@ Start ~git-commit-mode~ in normal state.
   (interactive "r")
   (shell-command-on-region start end "pandoc -f markdown -t org" t t))
 #+end_src
+
 *** COMMENT smartparens
 Turn off =smartparens= in Doom
 #+begin_src emacs-lisp
@@ -2865,6 +2879,7 @@ Turn off =smartparens= in Doom
 (after! org
   (add-hook 'org-mode-hook #'turn-off-smartparens-mode))
 #+end_src
+
 *** chezmoi
 #+begin_src emacs-lisp
 (use-package! chezmoi
@@ -3104,6 +3119,7 @@ Use PlantUML executable instead of =.jar= file together with Java.
 (setq! org-plantuml-exec-mode 'plantuml
        org-plantuml-jar-path (expand-file-name "~/.nix-profile/lib/plantuml.jar"))
 #+end_src
+
 ***** footnotes
 #+begin_src emacs-lisp
 (setq! org-footnote-define-inline nil
@@ -3329,9 +3345,6 @@ Make =org-roam= snappier during sqlite database synchronization.
 https://github.com/org-roam/org-roam/issues/576
 #+begin_src emacs-lisp
 (setq! org-roam-graph-executable "dot")
-#+end_src
-
-#+begin_src emacs-lisp
 #+end_src
 
 #+begin_src emacs-lisp
@@ -3562,43 +3575,43 @@ navigation:
 ;;          (line-length (- line-end line-beg))                          ; Calculate line length
 ;;          (is-item (org-at-item-p))                                    ; Check if the line is an item
 ;;          (beg (cond
-;; 	       ;; If the line is an item, go to item list beginning
-;; 	       (is-item (save-excursion
-;; 		          (let* ((struct (org-list-struct))
-;; 			         (pos (progn (beginning-of-line) (point)))
-;; 			         (ind (org-list-get-nth 1 pos struct))
-;; 			         (n (if (= 0 ind)
-;; 				        (progn (org-beginning-of-item-list) 0)
-;; 			              (log ind 2))))
-;; 		            (while (> n 0)
-;; 		              (org-beginning-of-item-list)
-;; 		              (forward-line -1)
-;; 		              (org-beginning-of-item-list)
-;; 		              (setq n
-;; 			            (log (org-list-get-nth 1
-;; 						           (progn (beginning-of-line) (point))
-;; 						           struct))))
-;; 		            (point))))
-;; 	       ;; If the line length is greater than 300, return the whole line
-;; 	       ((> line-length 300) line-beg)
-;; 	       ;; Otherwise, go two lines before the current line or beginning
-;; 	       ;; of block whichever comes first
-;; 	       (t (let ((meta-end (save-excursion (org-roam-end-of-meta-data t) (point)))
-;; 		        (line-beg-1 (save-excursion (org-beginning-of-line -1) (point))))
-;; 		    (if (>= meta-end line-beg-1)
-;; 		        meta-end
-;; 		      line-beg-1)))))
+;;             ;; If the line is an item, go to item list beginning
+;;             (is-item (save-excursion
+;;                        (let* ((struct (org-list-struct))
+;;                               (pos (progn (beginning-of-line) (point)))
+;;                               (ind (org-list-get-nth 1 pos struct))
+;;                               (n (if (= 0 ind)
+;;                                      (progn (org-beginning-of-item-list) 0)
+;;                                    (log ind 2))))
+;;                          (while (> n 0)
+;;                            (org-beginning-of-item-list)
+;;                            (forward-line -1)
+;;                            (org-beginning-of-item-list)
+;;                            (setq n
+;;                                  (log (org-list-get-nth 1
+;;                                                         (progn (beginning-of-line) (point))
+;;                                                         struct))))
+;;                          (point))))
+;;             ;; If the line length is greater than 300, return the whole line
+;;             ((> line-length 300) line-beg)
+;;             ;; Otherwise, go two lines before the current line or beginning
+;;             ;; of block whichever comes first
+;;             (t (let ((meta-end (save-excursion (org-roam-end-of-meta-data t) (point)))
+;;                      (line-beg-1 (save-excursion (org-beginning-of-line -1) (point))))
+;;                  (if (>= meta-end line-beg-1)
+;;                      meta-end
+;;                    line-beg-1)))))
 ;;
 ;;          (end (cond
-;; 	       ;; If the line is an item, go to the end of item
-;; 	       (is-item (save-excursion
+;;             ;; If the line is an item, go to the end of item
+;;             (is-item (save-excursion
 ;;                           (org-end-of-item-list) (point)))
-;; 	       ;; If the line length is greater than 300, return the whole line
-;; 	       ((> line-length 300) line-end)
-;; 	       ;; Otherwise, go two lines after the current line
-;; 	       (t (let ((next-heading (save-excursion (org-next-visible-heading 1) (point)))
-;; 		        (line-end+3 (save-excursion (org-end-of-line 3) (point))))
-;; 		    (if (<= next-heading line-end+3) next-heading line-end+3))))))
+;;             ;; If the line length is greater than 300, return the whole line
+;;             ((> line-length 300) line-end)
+;;             ;; Otherwise, go two lines after the current line
+;;             (t (let ((next-heading (save-excursion (org-next-visible-heading 1) (point)))
+;;                      (line-end+3 (save-excursion (org-end-of-line 3) (point))))
+;;                  (if (<= next-heading line-end+3) next-heading line-end+3))))))
 ;;
 ;;     ;; Return the trimmed content between `beg` and `end`
 ;;     (string-trim (buffer-substring-no-properties beg end))))
@@ -3646,7 +3659,8 @@ Note that for daily files to show up in the calendar, they have to be of format
            :empty-lines 1))))
 #+end_src
 
-**** consult-org-roam
+**** COMMENT consult-org-roam
+*Last time was broken!*
 #+begin_src emacs-lisp :noweb yes
 (use-package! consult-org-roam
   :after org-roam
@@ -3773,7 +3787,7 @@ Display org-roam buffers right after non-org-roam buffers in ~consult-buffer~
   (setq! org-bookmarks-file (file-name-concat org-directory "bookmarks.org")
          org-bookmarks-add-org-capture-template t
          org-bookmarks-display-screenshot t)
-  (org-bookmarks-add-org-capture-template))
+  (org-bookmarks-add-to-org-capture-templates))
 #+end_src
 
 *** org-journal
@@ -3948,6 +3962,11 @@ Sources to install C and C++ grammar.
 (add-hook 'emacs-lisp-mode-hook #'aggressive-indent-mode)
 #+end_src
 
+#+begin_src emacs-lisp
+;; (modify-syntax-entry ?- "w" emacs-lisp-mode-syntax-table)
+;; (modify-syntax-entry ?_ "w" emacs-lisp-mode-syntax-table)
+#+end_src
+
 *** common-lisp-mode
 #+begin_src emacs-lisp
 (add-hook 'lisp-mode-hook #'aggressive-indent-mode)
@@ -4089,6 +4108,7 @@ Trun off eldoc when edebug is active
     (kill-new path-with-line-number)
     (message (concat path-with-line-number " copied to clipboard"))))
 #+end_src
+
 *** kill buffer and window
 #+begin_src emacs-lisp
 ;; kill-buffer-and-window
@@ -4280,6 +4300,7 @@ Doom bind it's leader keys in ~override-mode-map~. I don't like it.
       :nvm "SPC"   #'doom/leader ; doom-leader-map
       :ei  "M-SPC" #'doom/leader ; doom-leader-map in insert state
       :m   "C-s"   #'evil-write
+      :n   "M"     #'+lookup/documentation
       :m   "-"     #'dired-jump
       :m   "/"     #'+default/search-buffer
       :m   "?"     #'evil-ex-search-forward
@@ -4290,7 +4311,7 @@ Doom bind it's leader keys in ~override-mode-map~. I don't like it.
       :m   "z."    #'set-fill-prefix
       :n   "ga"    #'describe-char
       :mnv "gh"    #'my/evil-first-non-blank
-      :mnv "gl"    #'my/evil-end-of-line)
+      :mnv "gl"    #'evil-end-of-line-or-visual-line)
 
 (map! (:leader "n" (cons "notes" my-notes-map))
       ;; <leader> t
@@ -4468,6 +4489,7 @@ Doom bind it's leader keys in ~override-mode-map~. I don't like it.
 ;;       :ng "zn"  #'dirvish-narrow
 ;;       :n  "gz"  #'dirvish-history-jump)
 #+end_src
+
 *** image-dired
 #+begin_src emacs-lisp
 (map! :map image-dired-thumbnail-mode-map
@@ -4653,8 +4675,8 @@ population of ~which-key~ menu.
 
       (:map with-editor-mode-map
        :n "ZZ" 'with-editor-finish
-       :n "Q" 'with-editor-cancel
-       :n "ZQ" 'with-editor-cancel)
+       :n "ZQ" 'with-editor-cancel
+       :n "Q" 'with-editor-cancel)
 
       (:map magit-diff-mode-map
        :mnv "SPC" #'doom/leader))
@@ -4705,7 +4727,7 @@ population of ~which-key~ menu.
 
 *** outline
 
-Doom disables outline keybindings from evil-collection, so I copy ones I use
+Doom disables outline keybindings from evil-collection, so I copy those I use
 here.
 
 #+begin_src emacs-lisp
@@ -4757,7 +4779,67 @@ here.
 
 (defun my-outline-hide-sublevels (levels)
   (interactive "p")
-  (outline-hide-sublevels (or levels 1)))
+  (outline-hide-sublevels levels))
+#+end_src
+
+*** org-roam
+#+begin_src emacs-lisp
+(map! :map my-org-roam-ui
+      "u" #'org-roam-ui-open
+      ;; "u" #'org-roam-ui-mode
+      "f" #'org-roam-ui-follow-mode
+      "l" #'org-roam-ui-node-local)
+
+(map! :map my-notes-map
+      "*" #'+default/search-notes-for-symbol-at-point
+      "a" #'org-agenda
+      "A" #'org-roam-node-random
+      "f" #'+default/find-in-notes
+      "F" #'+default/browse-notes
+      "g" #'org-roam-graph
+      "n" #'org-roam-node-find
+      "N" #'org-roam-ref-find
+      "c" #'org-capture
+      "C" #'org-capture-goto-target
+      "d" (cons "dailies"
+                (define-keymap
+                  "-" #'org-roam-dailies-find-directory
+                  "f" #'org-roam-dailies-goto-next-note
+                  "b" #'org-roam-dailies-goto-previous-note
+                  "]" #'org-roam-dailies-goto-next-note
+                  "[" #'org-roam-dailies-goto-previous-note
+                  "d" #'org-roam-dailies-goto-date
+                  "D" #'org-roam-dailies-capture-date
+                  "n" #'org-roam-dailies-capture-today
+                  "t" #'org-roam-dailies-goto-today
+                  "T" #'org-roam-dailies-capture-today
+                  "y" #'org-roam-dailies-goto-yesterday
+                  "Y" #'org-roam-dailies-capture-yesterday
+                  "m" #'org-roam-dailies-goto-tomorrow
+                  "M" #'org-roam-dailies-capture-tomorrow))
+      "j" (cons "journal"
+                (define-keymap
+                  "j" #'org-journal-new-entry
+                  "J" #'org-journal-new-scheduled-entry
+                  "s" #'org-journal-search-forever))
+      "l" #'org-store-link
+      "t" #'org-todo-list
+      "u" (cons "org-roam ui" my-org-roam-ui)
+      "y" #'+org/export-to-clipboard
+      "Y" #'+org/export-to-clipboard-as-rich-text
+      "/" #'consult-org-roam-search)
+
+;; Bindings in org-roam buffer with backlinks.
+(map! :map org-roam-mode-map
+      :after org-roam
+      (:localleader "b" #'org-roam-buffer-toggle)
+      :n "SPC nb" #'org-roam-buffer-toggle
+      :nv "q"   #'quit-window
+      :nv "C-j" #'magit-section-forward-sibling
+      :nv "C-k" #'magit-section-backward-sibling
+      :nv "zj"  #'magit-section-forward
+      :nv "zk"  #'magit-section-backward
+      )
 #+end_src
 
 *** org-mode
@@ -4805,9 +4887,7 @@ here.
 ;;  "a" #'org-toggle-archive-tag
 ;;  "b" #'org-tree-to-indirect-buffer
 ;;  "c" #'org-clone-subtree-with-time-shift
-;;  "d" #'org-cut-subtree
-;;  "h" #'org-promote-subtree
-;;  "j" #'org-move-subtree-down
+
 ;;  "k" #'org-move-subtree-up
 ;;  "l" #'org-demote-subtree
 ;;  "n" #'org-narrow-to-subtree
@@ -4950,7 +5030,7 @@ here.
 (map! :after evil-org
       :map evil-org-mode-map
       :mnv "gh"    #'evil-org-beginning-of-line
-      :mnv "gl"    #'my/evil-end-of-line
+      :mnv "gl"    #'evil-end-of-line-or-visual-line
       :mnv "gj"    nil ; #'org-forward-element
       :mnv "gk"    nil ; #'org-backward-element
       :n   "[ RET" #'+org/insert-item-above
@@ -4988,64 +5068,6 @@ here.
       )
 #+end_src
 
-*** org-roam
-#+begin_src emacs-lisp
-(map! :map my-org-roam-ui
-      "u" #'org-roam-ui-open
-      ;; "u" #'org-roam-ui-mode
-      "f" #'org-roam-ui-follow-mode
-      "l" #'org-roam-ui-node-local)
-
-(map! :map my-notes-map
-      "*" #'+default/search-notes-for-symbol-at-point
-      "a" #'org-agenda
-      "A" #'org-roam-node-random
-      "f" #'+default/find-in-notes
-      "F" #'+default/browse-notes
-      "g" #'org-roam-graph
-      "n" #'org-roam-node-find
-      "N" #'org-roam-ref-find
-      "c" #'org-capture
-      "C" #'org-capture-goto-target
-      "d" (cons "dailies"
-                (define-keymap
-                  "-" #'org-roam-dailies-find-directory
-                  "f" #'org-roam-dailies-goto-next-note
-                  "b" #'org-roam-dailies-goto-previous-note
-                  "]" #'org-roam-dailies-goto-next-note
-                  "[" #'org-roam-dailies-goto-previous-note
-                  "d" #'org-roam-dailies-goto-date
-                  "D" #'org-roam-dailies-capture-date
-                  "n" #'org-roam-dailies-capture-today
-                  "t" #'org-roam-dailies-goto-today
-                  "T" #'org-roam-dailies-capture-today
-                  "y" #'org-roam-dailies-goto-yesterday
-                  "Y" #'org-roam-dailies-capture-yesterday
-                  "m" #'org-roam-dailies-goto-tomorrow
-                  "M" #'org-roam-dailies-capture-tomorrow))
-      "j" (cons "journal"
-                (define-keymap
-                  "j" #'org-journal-new-entry
-                  "J" #'org-journal-new-scheduled-entry
-                  "s" #'org-journal-search-forever))
-      "l" #'org-store-link
-      "t" #'org-todo-list
-      "u" (cons "org-roam ui" my-org-roam-ui)
-      "y" #'+org/export-to-clipboard
-      "Y" #'+org/export-to-clipboard-as-rich-text
-      "/" #'consult-org-roam-search)
-
-;; Bindings in org-roam buffer with backlinks.
-(map! :map org-roam-mode-map
-      :after org-roam
-      (:localleader "b" #'org-roam-buffer-toggle)
-      :n "SPC nb" #'org-roam-buffer-toggle
-      :nv "q"   #'quit-window
-      :nv "C-j" #'magit-section-forward-sibling
-      :nv "C-k" #'magit-section-backward-sibling
-      :nv "zj"  #'magit-section-forward
-      :nv "zk"  #'magit-section-backward)
-#+end_src
 *** latex
 #+begin_src emacs-lisp
 ;; (setq org-pretty-entities-include-sub-superscripts nil)
@@ -5161,9 +5183,3 @@ specially by Emacs, rather than directly from a file.
       [remap evil-window-delete] nil)
 #+end_src
 
-** Meow
-#+begin_src emacs-lisp
-(require 'meow)
-;; (require 'helix)
-;; (require 'zones)
-#+end_src
