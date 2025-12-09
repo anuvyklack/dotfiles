@@ -28,7 +28,7 @@
 [flavor]
 use = "onedark"
 
-[manager]
+[mgr]
 cwd = { fg = "#c678dd", bold = true }
 
 # The file (or directory) the cursor is currently on.
