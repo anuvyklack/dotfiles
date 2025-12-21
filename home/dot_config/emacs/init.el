@@ -1,7 +1,7 @@
 ;;; init.el -*- lexical-binding: t; no-byte-compile: t; -*-
 ;;; Fonts
 ;;
-;; Set up fonts before other configuration so error messages during startup stay
+;; Set up fonts before anything else so error messages during startup were
 ;; readable.
 ;;
 ;; Place cursor before character and press "ga" to see information about it.
@@ -24,22 +24,22 @@
          ;; (font-spec :family "TX-02" :size 12.8)
          ))
     (set-face-font 'default font)
-    (set-face-font 'fixed-pitch font)
+    (set-face-font 'fixed-pitch font)))
 
-    ;; General Punctuation Unicode Block
-    ;; ---------------------------------
-    ;;   When text is bold or italic, Emacs falls back to other fonts if the
-    ;; main one doesn’t have the required glyphs for those styles. Force Emacs
-    ;; to use the main font for punctuation.
-    ;;
-    ;;   These are all the glyphs, so you can quickly see which ones your font
-    ;; supports:
-    ;;  ‐ ‑ ‒ – — ― ‖ ‗
-    ;; ‘ ’ ‚ ‛ “ ” „ ‟
-    ;; † ‡ • ‣ ․ ‥ … ‧ ‰ ‱ ′ ″ ‴ ‵ ‶ ‷ ‸ ‹ ›
-    ;; ※ ‼ ‽ ‾ ‿ ⁀ ⁁ ⁂ ⁃ ⁄ ⁅ ⁆ ⁇ ⁈ ⁉ ⁊ ⁋ ⁌ ⁍
-    ;; ⁎ ⁏ ⁐ ⁑ ⁒ ⁓ ⁔ ⁕ ⁖ ⁗ ⁘ ⁙ ⁚ ⁛ ⁜ ⁝ ⁞
-    (helheim-set-fontset-font font '((#x2010 . #x205e)))))
+;; General Punctuation Unicode Block
+;; ---------------------------------
+;;   When text is bold or italic, Emacs falls back to other fonts if the
+;; main one doesn’t have the required glyphs for those styles. Force Emacs
+;; to use the main font for punctuation.
+;;
+;;   These are all the glyphs, so you can quickly see which ones your font
+;; supports:
+;;  ‐ ‑ ‒ – — ― ‖ ‗
+;; ‘ ’ ‚ ‛ “ ” „ ‟
+;; † ‡ • ‣ ․ ‥ … ‧ ‰ ‱ ′ ″ ‴ ‵ ‶ ‷ ‸ ‹ ›
+;; ※ ‼ ‽ ‾ ‿ ⁀ ⁁ ⁂ ⁃ ⁄ ⁅ ⁆ ⁇ ⁈ ⁉ ⁊ ⁋ ⁌ ⁍
+;; ⁎ ⁏ ⁐ ⁑ ⁒ ⁓ ⁔ ⁕ ⁖ ⁗ ⁘ ⁙ ⁚ ⁛ ⁜ ⁝ ⁞
+(helheim-set-fontset-font (face-font 'default) '((#x2010 . #x205e)))
 
 (helheim-set-fontset-font "Symbols Nerd Font Mono"
   '((#xe5fa . #xe6b7) ;; Seti-UI + Custom  
@@ -88,12 +88,17 @@
 
 ;;; Helheim core
 
-;; In case you use VPN. Emacs populates `url-proxy-services' variable from:
-;; `https_proxy', `socks_proxy', `no_proxy' environment variables.
+;; In case you use VPN. Also Emacs populates `url-proxy-services' variable
+;; from: `https_proxy', `socks_proxy', `no_proxy' environment variables.
 (setq url-proxy-services '(("socks" . "127.0.0.1:10808")
                            ("https" . "127.0.0.1:10809"))
       gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
+(when (< emacs-major-version 31)
+  (load-file (expand-file-name "prepare-user-lisp.el" user-lisp-directory))
+  (prepare-user-lisp))
+
+(require 'helheim-elpaca)
 (require 'helheim-core)
 
 ;;; Color theme
@@ -109,49 +114,13 @@
 ;;   You may try it with ": load-theme" then type "leuven".
 (use-package leuven-theme :ensure t)
 
-(use-package helheim-ef-themes
+;; (use-package helheim-ef-themes
+;;   :config
+;;   (load-theme 'ef-light t))
+
+(use-package my-ef-themes
   :config
   (load-theme 'ef-light t))
-
-;;; Helheim modules
-
-(require 'helheim-keybindings)
-(require 'hel-leader)
-
-(require 'helheim-emacs-lisp)
-
-(require 'helheim-tab-bar) ; Each tab represents a set of windows, as in Vim.
-(require 'helheim-dired)   ; File-manager
-(require 'helheim-ibuffer) ; Opened buffers menu.
-(require 'helheim-outline-mode) ; See "Outline Mode" in Emacs manual.
-(require 'helheim-git)
-
-(require 'helheim-corfu)   ; Code completion
-(require 'helheim-vertico) ; Emacs version of command pallet
-(require 'helheim-consult) ; A set of search commands with preview
-(require 'helheim-embark)  ; Hard to explain :)
-
-(require 'helheim-deadgrep) ; Interface to Ripgrep
-;; (require 'helheim-edit-indirect) ; Alternative "zn" binding
-(require 'helheim-chezmoi) ; Integration with chezmoi dotfile manager
-
-;;;; Org mode
-
-;; The `org-directory' variable must be set before `helheim-org' loaded!
-(setopt org-directory (expand-file-name "~/notes/"))
-
-;; Which modules to load. Place cursor on variable and press "M" to see
-;; all possible values.
-(setq org-modules '(ol-bibtex ol-docview ol-info))
-
-(setopt org-cliplink-max-length nil
-        org-cliplink-ellipsis "…"
-        org-cliplink-secrets-path (expand-file-name ".org-cliplink-secrets.el"
-                                                    org-directory))
-
-(require 'helheim-org)
-(require 'helheim-org-node)
-(require 'helheim-daily-notes)
 
 ;;; My config
 
@@ -167,8 +136,30 @@
 ;; ;; See also `search-invisible'
 ;; (global-reveal-mode)
 
-;;;; Appearance
-;;;;; Colorize strings that represent colors
+;; (elpaca imenu-list)
+
+;;; Helheim modules
+
+(require 'helheim-emacs-lisp)
+(require 'helheim-outline-mode) ; See "Outline Mode" in Emacs manual.
+
+(require 'helheim-tab-bar)  ; Each tab represents a set of windows, as in Vim.
+(require 'helheim-xref)     ; Go to defenition framework
+(require 'helheim-dired)    ; File-manager
+(require 'helheim-ibuffer)  ; Opened buffers menu.
+(require 'helheim-git)
+
+(require 'helheim-corfu)    ; Code completion menus
+(require 'helheim-vertico)  ; Emacs version of command pallet
+(require 'helheim-consult)  ; A set of search commands with preview
+(require 'helheim-deadgrep) ; Interface to Ripgrep
+(require 'helheim-embark)   ; Context-aware action menus
+
+;; (require 'helheim-edit-indirect) ; Alternative "zn" binding
+(require 'helheim-chezmoi) ; Integration with chezmoi dotfile manager
+
+;;; Appearance
+;;;; Colorize strings that represent colors
 
 (use-package rainbow-mode
   :ensure t
@@ -178,15 +169,7 @@
          fish-mode-hook
          toml-ts-mode-hook))
 
-;;;;; DISABLED show time in tab bar
-
-;; (use-package time
-;;   :custom
-;;   (display-time-24hr-format t)
-;;   (display-time-use-mail-icon t)
-;;   :hook (elpaca-after-init-hook . display-time-mode))
-
-;;;; Window managment
+;;; Window managment
 
 ;; (add-to-list 'display-buffer-alist
 ;;              '((major-mode . org-mode)
@@ -194,8 +177,8 @@
 ;;                (mode . org-mode)
 ;;                (body-function . select-window)))
 
-;;;; Minibuffer & Completion
-;;;;; cape
+;;; Minibuffer & Completion
+;;;; cape
 
 ;; (hel-keymap-global-set :state 'insert
 ;;   ;; Emulate Vim's omni-completion keybinds
@@ -222,13 +205,13 @@
 ;;   ;; "C-p" '+corfu/dabbrev-this-buffer
 ;;   )
 
-;;;; Extra facilities
-;;;;; project.el
+;;; Extra facilities
+;;;; project.el
 
 (hel-keymap-set project-prefix-map
   "b" 'project-list-buffers)
 
-;;;;; dired
+;;;; dired
 
 ;; My custom version.
 (define-advice helheim-dired-do-add-id (:override () custom-version)
@@ -251,7 +234,7 @@
             (rename-file file newname)))))))
   (dired-revert))
 
-;;;;;;  Extra highlighting
+;;;;;  Extra highlighting
 
 ;; (use-package dired-rainbow
 ;;   :ensure t
@@ -280,11 +263,11 @@
 ;;     (dired-rainbow-define-chmod executable-unix "#38c172" "-.*x.*")
 ;;     ))
 
-;;;;; magit
+;;;; magit
 
 (setopt magit-diff-refine-hunk 'all)
 
-;;;;; repeat-mode
+;;;; repeat-mode
 
 ;; Evaluate `describe-repeat-maps' to see all repeatable commands.
 (use-package repeat
@@ -299,16 +282,61 @@
   ;; (put 'tab-previous 'repeat-map nil)
   )
 
-;;;;; Russian language
+;;;; separedit
+
+(use-package separedit
+  :ensure t
+  :custom
+  (separedit-default-mode 'org-mode) ;; 'markdown-mode
+  (separedit-preserve-string-indentation t)
+  (separedit-continue-fill-column t)
+  (separedit-write-file-when-execute-save nil)
+  (separedit-remove-trailing-spaces-in-comment t)
+  :commands separedit
+  :init
+  ;; Key binding for modes you want edit or simply bind ‘global-map’ for all.
+  (hel-keymap-global-set :state 'normal
+    "z '" 'separedit)
+  ;; (dolist (keymap (list prog-mode-map
+  ;;                       minibuffer-local-map
+  ;;                       help-mode-map
+  ;;                       helpful-mode-map))
+  ;;   (hel-keymap-set keymap :state 'normal
+  ;;     "z '" 'separedit))
+  ;; (with-eval-after-load 'obsidian
+  ;;   (hel-keymap-set obsidian-mode-map :state 'normal
+  ;;     "z '" 'separedit))
+  :config
+  (hel-keymap-set edit-indirect-mode-map :state 'normal
+    "Z Z" 'edit-indirect-commit
+    "Z Q" 'edit-indirect-abort)
+  (hel-keymap-set separedit-mode-map
+    "<remap> <edit-indirect-commit>" 'separedit-commit
+    "<remap> <edit-indirect-abort>"  'separedit-abort
+    "<remap> <save-buffer>"          'separedit-save))
+
+;;;; Russian language
 
 (setopt default-input-method 'russian-computer)
 
 (hel-keymap-global-set
   "C-v" 'toggle-input-method)
 
-;;;; Org-mode
-;;;;; Variables
-;;;;;; General settings
+;;; Org mode
+
+;; The `org-directory' variable must be set before `helheim-org' loaded!
+(setopt org-directory (expand-file-name "~/notes/"))
+
+;; Which modules to load. Place cursor on variable and press "M" to see
+;; all possible values.
+(setq org-modules '(ol-bibtex ol-docview ol-info))
+
+(require 'helheim-org)
+(require 'helheim-org-node)
+(require 'helheim-daily-notes)
+
+;;;; Variables
+;;;;; General settings
 
 (setopt org-mem-watch-dirs '("~/notes/" "~/notes-old/" "~/Private/"))
 
@@ -335,7 +363,7 @@
  org-blank-before-new-entry '((heading . auto)
                               (plain-list-item . auto)))
 
-;;;;;; appearence
+;;;;; appearence
 
 (setopt org-startup-folded 'show2levels ; Initial visibility
         org-startup-indented t)
@@ -349,7 +377,7 @@
 ;; Enclose text in "{}" after "_" to make it treated as subscript.
 (setopt org-use-sub-superscripts '{})
 
-;;;;;; org-attach
+;;;;; org-attach
 
 (setopt org-file-apps '((system . "xdg-open %s")
                         ("\\.pdf\\'" . system)
@@ -358,7 +386,7 @@
                         (auto-mode . emacs)
                         ("\\.x?html?\\'" . default)))
 
-;;;;;; Capture templates
+;;;;; Capture templates
 
 (setq org-capture-templates
       '(("j" "journal" plain
@@ -368,7 +396,7 @@
          ;; :kill-buffer t
          )))
 
-;;;;;; babel
+;;;;; babel
 
 (setopt
  ;; Open source block with `org-edit-special' in the same window.
@@ -388,12 +416,12 @@
  org-plantuml-exec-mode 'plantuml
  org-plantuml-jar-path (expand-file-name "~/.nix-profile/lib/plantuml.jar"))
 
-;;;;;; footnotes
+;;;;; footnotes
 
 (setq org-footnote-define-inline nil
       org-footnote-auto-adjust t)
 
-;;;;;; TODO keywords and Priorities
+;;;;; TODO keywords and Priorities
 
 ;; (setq org-todo-keywords
 ;;       '((sequence "󰒅" "󰄱" "󰡖" "" "|" "󰄵" "󱈎" "󰅘") ;; 󰔌 󱗝 󰜄 󰤌
@@ -410,7 +438,7 @@
 ;; [[info:org#Breaking Down Tasks]]
 (setq org-hierarchical-todo-statistics nil)
 
-;;;;;; tags
+;;;;; tags
 
 ;; (setq org-use-tag-inheritance nil)
 (setq org-tags-match-list-sublevels nil)
@@ -419,7 +447,7 @@
   (cl-callf append org-tags-exclude-from-inheritance
     '("00")))
 
-;;;;; Org files appearence
+;;;; Org files appearence
 
 ;; (setq org-level-color-stars-only t)
 
@@ -456,7 +484,7 @@
   :hook (org-mode-hook . org-appear-mode)
   :custom (org-hide-emphasis-markers t))
 
-;;;;;; Prettify symbols mode
+;;;;; Prettify symbols mode
 
 ;; ("TODO" . "")
 ;; ("WAIT" . "")
@@ -486,7 +514,7 @@
 ;; (":logbook:" . ?)
 ;; (":end:" . "―")
 
-;;;;; LaTeX
+;;;; LaTeX
 
 ;; LaTeX previews
 (use-package org-fragtog
@@ -500,7 +528,7 @@
                                        ;; (plist-put :background 'auto)
                                        )))
 
-;;;;; org-tempo
+;;;; org-tempo
 
 ;; Org 9.2 introduced a new template expansion mechanism, combining
 ;; `org-insert-structure-template' bound to "z," (default binding "C-c C-,").
@@ -526,11 +554,7 @@
                                        ("su" . "src lua")
                                        ,@org-structure-template-alist)))
 
-;;;;; org-node
-
-(setopt helheimg-org-node-visit-backlink-in-another-window nil)
-
-;;;;; org-journal
+;;;; org-journal
 
 (use-package org-journal
   :ensure t
@@ -543,13 +567,13 @@
   (org-extend-today-until 4)
   (org-journal-date-format "%x, %A")) ;; "DATE, WEEKDAY"
 
-;;;;; org-auto-tangle
+;;;; org-auto-tangle
 
 (use-package org-auto-tangle
   :ensure t
   :hook (org-mode-hook . org-auto-tangle-mode))
 
-;;;;; zotero integration
+;;;; zotero integration
 
 ;; Redirect `zotero:' links to the system for handling
 (with-eval-after-load 'org
@@ -557,7 +581,7 @@
                            :follow (lambda (zpath)
                                      (browse-url (format "zotero:%s" zpath)))))
 
-;;;;; DISABLED scrolling over images
+;;;; DISABLED scrolling over images
 ;; Doesn't work properly.
 
 ;; (use-package org-sliced-images
@@ -565,8 +589,8 @@
 ;;   :after org
 ;;   :config (org-sliced-images-mode)) ;; It is global minor mode.
 
-;;;; Major modes
-;;;;; org-mode
+;;; Major modes
+;;;; Org-mode
 
 (add-hook 'org-mode-hook #'auto-fill-mode) ; Hard wrap long lines.
 
@@ -574,15 +598,37 @@
                            (display-line-numbers-mode -1)
                            (visual-line-mode -1)))
 
-;;;;; fish
+;;;; Markdown
+
+(use-package helheim-markdown
+  :custom
+  ;; Command to call standalone Markdown previewer
+  (markdown-open-command nil)
+  ;; Command to open image link via `markdown-follow-*' commands
+  (markdown-open-image-command nil)
+  (markdown-asymmetric-header nil)
+  ;; (markdown-marginalize-headers t)
+  (markdown-list-item-bullets '("●" "◎" "○" "◆" "◇" "►" "•"))
+  ;; (markdown-code-lang-modes)
+  ;; (markdown-link-space-sub-char " ")
+  (markdown-enable-math t)
+  (markdown-reference-location 'subtree)
+  ;; (markdown-hide-markup t)
+  (markdown-hide-urls t)
+  ;; (markdown-enable-wiki-links t)
+  ;; (markdown-wiki-link-fontify-missing t)
+  ;; (markdown-wiki-link-search-type 'project)
+  )
+
+;;;; fish
 
 (use-package fish-mode :ensure t)
 
-;;;; Keybindings
+;;; Keybindings
 
-(use-package hel-leader
-  :custom
-  (hel-leader-send-C-x-with-control-modifier nil))
+(require 'hel-leader)
+(require 'helheim-keybindings)
+(require 'helheim-disable-isearch)
 
 (hel-keymap-global-set
   "M-;"   'eval-expression
@@ -611,11 +657,7 @@
 (hel-keymap-set org-mode-map :state 'normal
   "M" 'helpful-at-point)
 
-;; (hel-keymap-global-set
-;;   "<remap> <find-file>" 'find-file-at-point
-;;   "<remap> <find-file-read-only>" 'ffap-read-only
-;;   "<remap> <find-alternate-file>" 'ffap-alternate-file
-;;   "<remap> <dired>" 'dired-at-point
-;;   "<remap> <dired-other-window>" 'ffap-dired-other-window)
+(hel-keymap-set lisp-mode-shared-map :state 'insert
+  "C-h" 'backward-delete-char-untabify)
 
 ;;; init.el ends here
