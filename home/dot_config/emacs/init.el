@@ -100,6 +100,7 @@
 
 (require 'helheim-elpaca)
 (require 'helheim-core)
+(require 'helheim-tree-sitter)
 
 ;;; Color theme
 
@@ -140,6 +141,10 @@
 
 ;;; Helheim modules
 
+(require 'hel-leader)
+(require 'helheim-keybindings)
+(require 'helheim-disable-isearch)
+
 (require 'helheim-emacs-lisp)
 (require 'helheim-outline-mode) ; See "Outline Mode" in Emacs manual.
 
@@ -156,7 +161,7 @@
 (require 'helheim-embark)   ; Context-aware action menus
 
 ;; (require 'helheim-edit-indirect) ; Alternative "zn" binding
-(require 'helheim-chezmoi) ; Integration with chezmoi dotfile manager
+(require 'helheim-chezmoi)  ; Integration with chezmoi dotfile manager
 
 ;;; Appearance
 ;;;; Colorize strings that represent colors
@@ -622,13 +627,15 @@
 
 ;;;; fish
 
-(use-package fish-mode :ensure t)
+(elpaca fish-mode)
+
+;;;; yaml
+
+(use-package yaml-pro
+  :ensure t
+  :hook (yaml-ts-mode . yaml-pro-ts-mode))
 
 ;;; Keybindings
-
-(require 'hel-leader)
-(require 'helheim-keybindings)
-(require 'helheim-disable-isearch)
 
 (hel-keymap-global-set
   "M-;"   'eval-expression
