@@ -56,12 +56,14 @@ export http_proxy="http://127.0.0.1:10809"
 export https_proxy="http://127.0.0.1:10809"
 
 if whence /home/linuxbrew/.linuxbrew/bin/brew > /dev/null 2>&1; then
-  local BREWCACHE="$HOME/.cache/Homebrew/brewenv.zsh"
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
-  if [[ ! -s $BREWCACHE(#q.md-7N) ]]; then
-    /home/linuxbrew/.linuxbrew/bin/brew shellenv > $BREWCACHE 2> /dev/null
-  fi
-  source $BREWCACHE
+  # local BREWCACHE="$HOME/.cache/Homebrew/brewenv.zsh"
+  #
+  # if [[ ! -s $BREWCACHE(#q.md-7N) ]]; then
+  #   /home/linuxbrew/.linuxbrew/bin/brew shellenv > $BREWCACHE 2> /dev/null
+  # fi
+  # source $BREWCACHE
 
   # Enable completion for brew and programs installes with brew.
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
