@@ -51,6 +51,10 @@ path+=(
 #   $cdpath
 # )
 
+export socks_proxy="socks://127.0.0.1:10808"
+export http_proxy="http://127.0.0.1:10809"
+export https_proxy="http://127.0.0.1:10809"
+
 if whence /home/linuxbrew/.linuxbrew/bin/brew > /dev/null 2>&1; then
   local BREWCACHE="$HOME/.cache/Homebrew/brewenv.zsh"
 
