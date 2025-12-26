@@ -35,7 +35,7 @@ scrollback-limit = 100000000
 window-decoration = server
 gtk-tabs-location = hidden
 maximize = true
-fullscreen = true
+# fullscreen = true # disable all window manager decoration
 # gtk-titlebar-hide-when-maximized = true
 # adw-toolbar-style = flat
 
