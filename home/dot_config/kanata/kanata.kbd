@@ -27,7 +27,7 @@
   tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
   @cap a    s    d    f    g    h    j    k    l    ;    '    ret
   @lsf z    x    c    v    b    n    m    ,    .    /    @rsf
-  lctl lmet lalt           @spctl         ralt rctl)
+  @ctl lmet @nav           @spctl         ralt rctl)
 
 
 ;; Dvorak layer
@@ -36,7 +36,7 @@
   tab  '    ,    .    p    y    f    g    c    r    l    /    =    \
   @cap a    o    e    u    i    d    h    t    n    s    -    ret
   @lsf ;    q    j    k    x    b    m    w    v    z    @rsf
-  lctl lmet lalt           @spctl         ralt rctl)
+  @ctl lmet @nav           @spctl         ralt rctl)
 
 
 ;; defalias is used to declare a shortcut for a more complicated action to keep
@@ -48,19 +48,21 @@
   grl   (tap-hold 200 200 grv (layer-toggle layers))
   qwr   (layer-switch qwerty)
   dvk   (layer-switch dvorak)
-  cap   (tap-hold 200 200 esc (layer-toggle navigation))
-  lsf   (tap-hold-press 200 200 S-9 lsft) ;; ( or shift
-  rsf   (tap-hold-press 200 200 S-0 rsft) ;; ) or shift
+  cap   (tap-hold 200 200 esc lalt)
+  ctl   (tap-hold 200 200 M-spc lctl) ;; switch keyboard language layout / Ctrl
+  nav   (tap-hold 200 200 bspc (layer-toggle navigation))
+  lsf   (tap-hold-press 200 200 S-9 lsft) ;; ( / shift
+  rsf   (tap-hold-press 200 200 S-0 rsft) ;; ) / shift
   spctl (tap-hold-press 200 200 spc lctl))
 
 
 ;; From "Extend Extra Extreme"
 (deflayer navigation
   XX   XX   XX   XX   XX   XX   XX   XX   XX   XX   XX   XX  XX  XX
-  XX   XX   @mwu XX   XX   XX   home pgdn pgup end  XX   XX  XX  XX
-  XX   XX   @mwd lsft lctl XX   left down up   rght bspc XX  XX
+  _    XX   @mwu XX   XX   XX   home pgdn pgup end  XX   XX  XX  XX
+  _    lalt @mwd lsft lctl XX   left down up   rght bspc XX  XX
   XX   XX   XX   XX   XX   XX   XX   XX   XX   XX   XX   XX
-  XX   _    lalt           lctl           XX   XX)
+  XX   _    _              lctl           XX   XX)
 
 
 (defalias
