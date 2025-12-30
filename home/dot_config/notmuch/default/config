@@ -10,6 +10,7 @@
 # configured here named ".notmuch".
 #
 [database]
+path=.mail
 
 # User configuration
 #
@@ -29,7 +30,7 @@
 [user]
 name=Yuriy Artemyev
 primary_email=anuvyklack@gmail.com
-other_email=artyuriy@outlook.com;artyuriy@rambler.ru
+other_email=artyuriy@outlook.com;artyuriy@rambler.ru;
 
 # Configuration for "notmuch new"
 #

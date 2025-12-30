@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# # Immediately archive all messages from "me"
+# notmuch tag -new -- tag:new and from:anuvyklack@gmail.com
+#
+# # tag all message from notmuch mailing list
+# notmuch tag +notmuch -- tag:new and to:notmuch@notmuchmail.org
+
+# Do nothing with sent messages
+notmuch tag -new -- tag:sent
+
+# Delete messages from:
+# ---------------------
+# Ozon
+notmuch tag +spam -- tag:new and from:ozontravel@news.ozon.ru
+
+# Instagram
+notmuch tag +spam -- tag:new and from:posts-recap@mail.instagram.com
+notmuch tag +spam -- tag:new and from:follow-suggestions@mail.instagram.com
+
+# Twitch
+notmuch tag +spam -- from:no-reply@twitch.tv and tag:new
+
+# Finally
+# -------
+# Retag all "new" messages "inbox" and "unread"
+# notmuch tag +inbox +unread -new -- tag:new
+notmuch tag -new -- tag:new
