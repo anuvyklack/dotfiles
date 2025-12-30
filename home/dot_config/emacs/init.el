@@ -1,5 +1,9 @@
 ;;; init.el -*- lexical-binding: t; no-byte-compile: t; -*-
-;;; Fonts
+;;; GUI
+
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+
+;;;; Fonts
 ;;
 ;; Set up fonts before anything else so error messages during startup were
 ;; readable.
@@ -141,10 +145,6 @@
 
 ;;; Helheim modules
 
-(require 'hel-leader)
-(require 'helheim-keybindings)
-(require 'helheim-disable-isearch)
-
 (require 'helheim-emacs-lisp)
 (require 'helheim-outline-mode) ; See "Outline Mode" in Emacs manual.
 
@@ -160,6 +160,7 @@
 (require 'helheim-deadgrep) ; Interface to Ripgrep
 (require 'helheim-embark)   ; Context-aware action menus
 
+(require 'helheim-notmuch)
 ;; (require 'helheim-edit-indirect) ; Alternative "zn" binding
 (require 'helheim-chezmoi)  ; Integration with chezmoi dotfile manager
 
@@ -636,6 +637,10 @@
   :hook (yaml-ts-mode . yaml-pro-ts-mode))
 
 ;;; Keybindings
+
+(require 'hel-leader)
+(require 'helheim-keybindings)
+(require 'helheim-disable-isearch)
 
 (hel-keymap-global-set
   "M-;"   'eval-expression
