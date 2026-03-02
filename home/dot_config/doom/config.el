@@ -902,33 +902,28 @@ ELEMENTS could be either a list or a single element."
 (add-hook! 'org-src-mode-hook
   (setq-local flycheck-disabled-checkers '(emacs-lisp emacs-lisp-checkdoc)))
 
-(after! flycheck
-  ;; https://www.masteringemacs.org/article/seamlessly-merge-multiple-documentation-sources-eldoc
-  (defun my/flycheck-eldoc-function (callback &rest _ignored)
-    "A member of `eldoc-documentation-functions', for flycheck."
-    (when-let ((flycheck-errors (and flycheck-mode
-                                     (flycheck-overlay-errors-at (point)))))
-      (mapc (lambda (err)
-              (funcall callback
-                       (format "%s: %s"
-                               (let ((level (flycheck-error-level err)))
-                                 (pcase level
-                                   ('info (propertize "I" 'face 'flycheck-error-list-info))
-                                   ('error (propertize "E" 'face 'flycheck-error-list-error))
-                                   ('warning (propertize "W" 'face 'flycheck-error-list-warning))
-                                   (_ level)))
-                               (flycheck-error-message err))
-                       :thing (or (flycheck-error-id err)
-                                  (flycheck-error-group err))
-                       :face 'font-lock-doc-face))
-            flycheck-errors)))
+(add-hook 'flycheck-mode-hook 'my/flycheck-prefer-eldoc)
 
-  (defun my/flycheck-prefer-eldoc ()
-    (add-hook 'eldoc-documentation-functions #'my/flycheck-eldoc-function 90 t)
-    (setq! flycheck-display-errors-function nil
-           flycheck-help-echo-function nil))
+(defun my/flycheck-prefer-eldoc ()
+  (add-hook 'eldoc-documentation-functions #'my/flycheck-eldoc-function 90 t)
+  (setq! flycheck-display-errors-function nil
+         flycheck-help-echo-function nil))
 
-  (add-hook 'flycheck-mode-hook #'my/flycheck-prefer-eldoc))
+(defun my/flycheck-eldoc-function (callback &rest _ignored)
+  "A member of `eldoc-documentation-functions' for flycheck."
+  (when flycheck-mode
+    (dolist (err (flycheck-overlay-errors-at (point)))
+      (funcall callback
+               (format "%s: %s"
+                       (pcase (flycheck-error-level err)
+                         ('info    (propertize "I" 'face 'flycheck-error-list-info))
+                         ('error   (propertize "E" 'face 'flycheck-error-list-error))
+                         ('warning (propertize "W" 'face 'flycheck-error-list-warning))
+                         (level    level))
+                       (flycheck-error-message err))
+               :thing (or (flycheck-error-id err)
+                          (flycheck-error-group err))
+               :face 'font-lock-doc-face))))
 
 (after! lsp-mode
   (setq! lsp-lens-enable nil

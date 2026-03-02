@@ -2060,35 +2060,32 @@ Show eldoc content in the floating frame.
 #+end_src
 
 **** eldoc integration for flycheck
-- [[https://www.masteringemacs.org/article/seamlessly-merge-multiple-documentation-sources-eldoc][Source]]
+- [[https://www.masteringemacs.org/article/seamlessly-merge-multiple-documentation-sources-eldoc][Seamlessly Merge Multiple Documentation Sources with Eldoc - Mastering Emacs]]
+
 #+begin_src emacs-lisp
-(after! flycheck
-  ;; https://www.masteringemacs.org/article/seamlessly-merge-multiple-documentation-sources-eldoc
-  (defun my/flycheck-eldoc-function (callback &rest _ignored)
-    "A member of `eldoc-documentation-functions', for flycheck."
-    (when-let ((flycheck-errors (and flycheck-mode
-                                     (flycheck-overlay-errors-at (point)))))
-      (mapc (lambda (err)
-              (funcall callback
-                       (format "%s: %s"
-                               (let ((level (flycheck-error-level err)))
-                                 (pcase level
-                                   ('info (propertize "I" 'face 'flycheck-error-list-info))
-                                   ('error (propertize "E" 'face 'flycheck-error-list-error))
-                                   ('warning (propertize "W" 'face 'flycheck-error-list-warning))
-                                   (_ level)))
-                               (flycheck-error-message err))
-                       :thing (or (flycheck-error-id err)
-                                  (flycheck-error-group err))
-                       :face 'font-lock-doc-face))
-            flycheck-errors)))
+(add-hook 'flycheck-mode-hook 'my/flycheck-prefer-eldoc)
 
-  (defun my/flycheck-prefer-eldoc ()
-    (add-hook 'eldoc-documentation-functions #'my/flycheck-eldoc-function 90 t)
-    (setq! flycheck-display-errors-function nil
-           flycheck-help-echo-function nil))
+(defun my/flycheck-prefer-eldoc ()
+  (add-hook 'eldoc-documentation-functions #'my/flycheck-eldoc-function 90 t)
+  (setq! flycheck-display-errors-function nil
+         flycheck-help-echo-function nil))
 
-  (add-hook 'flycheck-mode-hook #'my/flycheck-prefer-eldoc))
+(defun my/flycheck-eldoc-function (callback &rest _ignored)
+  "A member of `eldoc-documentation-functions' for flycheck."
+  (when flycheck-mode
+    (dolist (err (flycheck-overlay-errors-at (point)))
+      (funcall callback
+               (format "%s: %s"
+                       (pcase (flycheck-error-level err)
+                         ('info    (propertize "I" 'face 'flycheck-error-list-info))
+                         ('error   (propertize "E" 'face 'flycheck-error-list-error))
+                         ('warning (propertize "W" 'face 'flycheck-error-list-warning))
+                         (level    level))
+                       (flycheck-error-message err))
+               :thing (or (flycheck-error-id err)
+                          (flycheck-error-group err))
+               :face 'font-lock-doc-face))))
+
 #+end_src
 
 **** COMMENT flycheck-inline
@@ -3071,7 +3068,7 @@ org-roam file level tags."
         (funcall attach-tag-fun 'off)
       (run-hook-with-args 'org-attach-after-change-hook attach-dir)
       (let ((files (org-attach-file-list attach-dir)))
-	(funcall attach-tag-fun (not files)))
+        (funcall attach-tag-fun (not files)))
       (when org-attach-sync-delete-empty-dir
         (when (and (org-directory-empty-p attach-dir)
                    (if (eq 'query org-attach-sync-delete-empty-dir)
@@ -5182,4 +5179,3 @@ specially by Emacs, rather than directly from a file.
       [remap delete-window] nil
       [remap evil-window-delete] nil)
 #+end_src
-
