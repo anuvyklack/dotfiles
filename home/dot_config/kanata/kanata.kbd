@@ -61,8 +61,8 @@
   XX   XX   XX   XX   XX   XX   XX   XX   XX   XX   XX   XX  XX  XX
   _    XX   @mwu XX   XX   XX   home pgdn pgup end  XX   XX  XX  XX
   _    lalt @mwd lsft lctl XX   left down up   rght bspc XX  XX
-  XX   XX   XX   XX   XX   XX   XX   XX   XX   XX   XX   XX
-  XX   _    _              lctl           XX   XX)
+  XX   C-z  C-x  C-c  C-v  XX   XX   XX   XX   XX   XX   XX
+  XX   _    _              bspc           XX   XX)
 
 
 (defalias
