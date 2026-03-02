@@ -11,6 +11,36 @@
 ;; Place cursor before character and press "ga" to see information about it.
 ;; Press "<F1> k g a" to find out which command is bound to "ga".
 
+;; `face-font-family-alternatives'
+(let* ((font "PragmataPro Liga")
+       (spec (font-spec :family font :size 13.9 :weight 'normal))
+       ;; (font "Hack")
+       ;; (spec (font-spec :family "Hack" :size 13.0))
+       ;; (font "Cascadia Code")
+       ;; (spec (font-spec :family font :size 13.0 :weight 'normal))
+       ;; (font "TX-02")
+       ;; (spec (font-spec :family "TX-02" :size 12.8))
+       )
+  (set-face-font 'default spec)
+  (set-face-font 'fixed-pitch spec)
+  ;; Prepend our font to the "fontset-default" to make it the first fallback
+  ;; candidate for itself. This matters when text is bold or italic and the
+  ;; default font lacks glyphs for those styles but does provide them for the
+  ;; regular style. With this change, Emacs will use the regular glyphs from
+  ;; the default font when bold or italic variants are unavailable, instead of
+  ;; falling back to a different font.
+  ;;   BUG: Using `font-spec' with `set-fontset-font' doesn't work, despite
+  ;; documentation claims it is.
+  (set-fontset-font t 'unicode font nil 'prepend))
+
+;; General Punctuation Unicode Block
+;;  ‐ ‑ ‒ – — ― ‖ ‗
+;; ‘ ’ ‚ ‛ “ ” „ ‟
+;; † ‡ • ‣ ․ ‥ … ‧ ‰ ‱ ′ ″ ‴ ‵ ‶ ‷ ‸ ‹ ›
+;; ※ ‼ ‽ ‾ ‿ ⁀ ⁁ ⁂ ⁃ ⁄ ⁅ ⁆ ⁇ ⁈ ⁉ ⁊ ⁋ ⁌ ⁍
+;; ⁎ ⁏ ⁐ ⁑ ⁒ ⁓ ⁔ ⁕ ⁖ ⁗ ⁘ ⁙ ⁚ ⁛ ⁜ ⁝ ⁞
+;; №
+
 (require 'cl-macs)
 
 (cl-defun helheim-set-fontset-font (font charsets &key (fontset t) add)
@@ -18,32 +48,6 @@
   (declare (indent 1))
   (dolist (charset charsets)
     (set-fontset-font fontset charset font nil add)))
-
-(progn
-  (setq use-default-font-for-symbols t)
-  (let ((font
-         (font-spec :family "PragmataPro Liga" :size 13.9)
-         ;; (font-spec :family "Hack" :size 13.0)
-         ;; (font-spec :family "Cascadia Code" :size 13.0 :weight 'normal)
-         ;; (font-spec :family "TX-02" :size 12.8)
-         ))
-    (set-face-font 'default font)
-    (set-face-font 'fixed-pitch font)))
-
-;; General Punctuation Unicode Block
-;; ---------------------------------
-;;   When text is bold or italic, Emacs falls back to other fonts if the
-;; main one doesn’t have the required glyphs for those styles. Force Emacs
-;; to use the main font for punctuation.
-;;
-;;   These are all the glyphs, so you can quickly see which ones your font
-;; supports:
-;;  ‐ ‑ ‒ – — ― ‖ ‗
-;; ‘ ’ ‚ ‛ “ ” „ ‟
-;; † ‡ • ‣ ․ ‥ … ‧ ‰ ‱ ′ ″ ‴ ‵ ‶ ‷ ‸ ‹ ›
-;; ※ ‼ ‽ ‾ ‿ ⁀ ⁁ ⁂ ⁃ ⁄ ⁅ ⁆ ⁇ ⁈ ⁉ ⁊ ⁋ ⁌ ⁍
-;; ⁎ ⁏ ⁐ ⁑ ⁒ ⁓ ⁔ ⁕ ⁖ ⁗ ⁘ ⁙ ⁚ ⁛ ⁜ ⁝ ⁞
-(helheim-set-fontset-font (face-font 'default) '((#x2010 . #x205e)))
 
 (helheim-set-fontset-font "Symbols Nerd Font Mono"
   '((#xe5fa . #xe6b7) ;; Seti-UI + Custom  
@@ -113,10 +117,6 @@
   ;; (load-theme 'modus-operandi t)
   )
 
-;; I can recommend `leuven' theme for org-mode work. It has so many nice little
-;; touches to spruce up org-mode elements that some users switch to it from
-;; their usual dark doom or modus themes when working on org-mode projects.
-;;   You may try it with ": load-theme" then type "leuven".
 (use-package leuven-theme :ensure t)
 
 ;; (use-package helheim-ef-themes
@@ -152,17 +152,10 @@
 (require 'helheim-xref)     ; Go to defenition framework
 (require 'helheim-dired)    ; File-manager
 (require 'helheim-ibuffer)  ; Opened buffers menu.
-(require 'helheim-git)
 
-(require 'helheim-corfu)    ; Code completion menus
-(require 'helheim-vertico)  ; Emacs version of command pallet
-(require 'helheim-consult)  ; A set of search commands with preview
-(require 'helheim-deadgrep) ; Interface to Ripgrep
-(require 'helheim-embark)   ; Context-aware action menus
-
+(require 'helheim-chezmoi)  ; Integration with chezmoi dotfile manager
 (require 'helheim-notmuch)
 ;; (require 'helheim-edit-indirect) ; Alternative "zn" binding
-(require 'helheim-chezmoi)  ; Integration with chezmoi dotfile manager
 
 ;;; Appearance
 ;;;; Colorize strings that represent colors
@@ -184,6 +177,13 @@
 ;;                (body-function . select-window)))
 
 ;;; Minibuffer & Completion
+
+(require 'helheim-corfu)    ; Code completion menus
+(require 'helheim-vertico)  ; Emacs version of command pallet
+(require 'helheim-consult)  ; A set of search commands with preview
+(require 'helheim-deadgrep) ; Interface to Ripgrep
+(require 'helheim-embark)   ; Context-aware action menus
+
 ;;;; cape
 
 ;; (hel-keymap-global-set :state 'insert
@@ -210,6 +210,12 @@
 ;;   "C-n" 'cape-dabbrev
 ;;   ;; "C-p" '+corfu/dabbrev-this-buffer
 ;;   )
+
+;;; IDE
+
+;; (setopt eldoc-echo-area-use-multiline-p t)
+
+(require 'helheim-eglot)
 
 ;;; Extra facilities
 ;;;; project.el
@@ -271,7 +277,11 @@
 
 ;;;; magit
 
-(setopt magit-diff-refine-hunk 'all)
+(require 'helheim-diff-hl)
+(use-package helheim-magit
+  :custom
+  (magit-diff-refine-hunk 'all)
+  (magit-repository-directories '(("~/.config/emacs/" . 0))))
 
 ;;;; repeat-mode
 
@@ -323,7 +333,10 @@
 
 ;;;; Russian language
 
-(setopt default-input-method 'russian-computer)
+(prefer-coding-system 'cp1251)
+(prefer-coding-system 'utf-8)
+
+(setq default-input-method 'russian-computer)
 
 (hel-keymap-global-set
   "C-v" 'toggle-input-method)
@@ -344,7 +357,7 @@
 ;;;; Variables
 ;;;;; General settings
 
-(setopt org-mem-watch-dirs '("~/notes/" "~/notes-old/" "~/Private/"))
+(setopt org-mem-watch-dirs '("~/notes/" "~/Private/"))
 
 (setopt
  ;; org-M-RET-may-split-line '((default . t))
@@ -595,16 +608,49 @@
 ;;   :after org
 ;;   :config (org-sliced-images-mode)) ;; It is global minor mode.
 
+;;;; org-supertag
+
+;; (elpaca posframe)
+;;
+;; (use-package org-supertag
+;;   :ensure (org-supertag :host github :repo "yibie/org-supertag")
+;;   :custom
+;;   ;; Single vault
+;;   (org-supertag-sync-directories '("~/Private/"))
+;;
+;;   ;; ;; Multiple vaults (separate DB/state per directory)
+;;   ;; (org-supertag-sync-directories '("~/notes/" "~/Private/"))
+;;   ;; (org-supertag-sync-directories-mode 'vaults)
+;;   )
+
 ;;; Major modes
-;;;; Org-mode
+;;;; change-log-mode
+
+(hel-keymap-global-set
+  "C-c p a" '("Add ChangeLog" . add-change-log-entry-other-window)) ;; "C-x 4 a"
+
+(use-package add-log
+  :custom
+  (add-log-keep-changes-together t)
+  (add-log-dont-create-changelog-file nil)
+  ;; :config
+  ;; (hel-keymap-set change-log-mode-map :state 'normal
+  ;;   "] c" 'add-log-edit-next-comment
+  ;;   "[ c" 'add-log-edit-prev-comment)
+  )
+
+;;;; org-mode
 
 (add-hook 'org-mode-hook #'auto-fill-mode) ; Hard wrap long lines.
-
 (add-hook 'org-mode-hook (lambda ()
                            (display-line-numbers-mode -1)
                            (visual-line-mode -1)))
 
-;;;; Markdown
+;;;; shell
+
+(require 'helheim-sh)
+
+;;;; markdown
 
 (use-package helheim-markdown
   :custom
@@ -626,9 +672,9 @@
   ;; (markdown-wiki-link-search-type 'project)
   )
 
-;;;; fish
+;;;; rust
 
-(elpaca fish-mode)
+(require 'helheim-rust)
 
 ;;;; yaml
 
@@ -643,6 +689,8 @@
 (require 'helheim-disable-isearch)
 
 (hel-keymap-global-set
+  "C-k"   nil ;; unbind `kill-line'
+  "M-j"   nil ;; unbind `default-indent-new-line'
   "M-;"   'eval-expression
   "C-M-;" 'repeat-complex-command)
 
@@ -659,7 +707,7 @@
 
 (hel-keymap-global-set :state 'insert
   "C-w" 'backward-kill-word ; along with "C-backspace"
-  ;; "C-h"   'delete-backward-char
+  ;; "C-"h   'delete-backward-char
   ;; "C-/" 'dabbrev-expand
   )
 
