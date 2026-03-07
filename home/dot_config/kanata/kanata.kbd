@@ -17,7 +17,6 @@
   lsft z    x    c    v    b    n    m    ,    .    /    rsft
   lctl lmet lalt           spc            ralt rctl)
 
-
 ;; The first layer defined is the layer that will be active by default when
 ;; kanata starts up. This layer is the standard QWERTY layout except for:
 ;; - grv   :: (@grl) layer with layers: qwerty, calman
@@ -29,8 +28,27 @@
   tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
   @alt a    s    d    f    g    h    j    k    l    ;    '    ret
   @lsf z    x    c    v    b    n    m    ,    .    /    @rsf
-  @ctl lmet @spe           @nav           ralt rctl)
+  @ctl lmet @nav           @spctl         ralt rctl)
 
+;; Colemak-DH
+(deflayer colemak-dh
+  @grl  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab   q    w    f    p    b    j    l    u    y    ;    [    ]    \
+  @alt  a    r    s    t    g    m    n    e    i    o    '    ret
+  @lsf  z    x    c    d    v    k    h    ,    .    /    @rsf
+  @ctl  lmet @nav           @spctl         ralt rctl)
+
+;; The keys 1 and 2 switch the base layer to qwerty and colemak respectively.
+;;
+;; The `lrld' action stands for "live reload". This will re-parse everything
+;; except for linux-dev, meaning you cannot live reload and switch keyboard
+;; devices.
+(deflayer layers
+  _    @qwrt @clmk lrld _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _              _              _    _)
 
 ;; defalias is used to declare a shortcut for a more complicated action to keep
 ;; the deflayer declarations clean and aligned.
@@ -39,43 +57,44 @@
 (defalias
   ;; tap: backtick (grave), hold: toggle layer-switching layer while held
   grl   (tap-hold 200 200 grv (layer-while-held layers))
-  qwr   (layer-switch qwerty)
-  dvk   (layer-switch dvorak)
-  alt   (tap-hold 200 200 esc lalt)
-  nav   (tap-hold-press 200 200 spc (layer-while-held navigation))
-  spe   (tap-hold-press 200 200 bspc (layer-while-held special))
+  qwrt  (layer-switch qwerty)
+  clmk  (layer-switch colemak-dh)
   ;; mse   (layer-while-held mouse)
-  ctl   (tap-hold-press 200 200 M-spc lctl) ;; switch keyboard language layout / Ctrl
-  ;; alt   (tap-hold-press 200 200 bspc lalt)
-  lsf   (tap-hold-press 200 200 S-9 lsft) ;; ( / shift
-  rsf   (tap-hold-press 200 200 S-0 rsft) ;; ) / shift
-  ;; spctl (tap-hold-press 200 200 spc lctl)
-  )
-
-;;------------------------------------------------------------------------------
-
-;; Inspired by "Extend Extra Extreme"
-(deflayer special
-  XX   XX   XX   XX   XX   XX   XX   XX   XX   XX   XX   XX  XX  XX
-  _    XX   XX   XX   XX   XX   home pgdn pgup end  XX   XX  XX  XX
-  _    lalt lmet lsft lctl XX   left down up   rght del  XX  XX
-  XX   XX   XX   XX   XX   XX   XX   XX   XX   XX   XX   XX
-  XX   _    _              bspc           XX   XX)
+  ;;
+  spctl (tap-hold-press 200 200 spc lctl)
+  alt   (tap-hold 200 200 esc lalt)
+  nav   (tap-hold-press 200 200 bspc (layer-while-held navigation))
+  ctl   (tap-hold-press 200 200 M-spc lctl) ; switch keyboard language layout / Ctrl
+  lsf   (tap-hold-press 200 200 S-9 lsft)   ; ( / shift
+  rsf   (tap-hold-press 200 200 S-0 rsft))  ; ) / shift
 
 ;;------------------------------------------------------------------------------
 
 (deflayer navigation
-  _       _       _       _       _       _    _     _     _    _     _    _    _     _
-  C-tab   C-q     C-w     C-e     C-r     C-t  C-y   C-u   C-i  C-o   C-p  C-[  C-]   C-\
-  _       @C-a/A  @C-s/M  @C-d/S  @C-f/C  C-g  left  down  up   rght  C-;  C-'  C-ret
-  C-lsft  C-z     C-x     C-c     C-v     C-b  C-n   C-m   C-,  C-.   C-/  C-rsft
-  XX      _       C-bspc                  spc              _    _)
+  XX   F1   F2   F4   F5   F6   F7   F8   F9   F10  F11  F12 XX  XX
+  _    XX   XX   XX   XX   XX   home pgdn pgup end  XX   XX  XX  XX
+  _    lalt lmet lsft lctl XX   left down up   rght del  XX  XX
+  XX   XX   XX   XX   XX   XX   XX   XX   @u,  @u.  XX   XX
+  XX   _    _              bspc           XX   XX)
 
 (defalias
-  C-f/C  (tap-hold-press 200 200 C-f lctl)
-  C-d/S  (tap-hold-press 200 200 C-d lsft)
-  C-s/M  (tap-hold-press 200 200 C-s lmet)
-  C-a/A  (tap-hold-press 200 200 C-a lalt))
+  u, (unicode ",")
+  u. (unicode "."))
+
+;;------------------------------------------------------------------------------
+
+;; (deflayer navigation
+;;   _       _       _       _       _       _    _     _     _    _     _    _    _     _
+;;   C-tab   C-q     C-w     C-e     C-r     C-t  C-y   C-u   C-i  C-o   C-p  C-[  C-]   C-\
+;;   _       @C-a/A  @C-s/M  @C-d/S  @C-f/C  C-g  left  down  up   rght  C-;  C-'  C-ret
+;;   C-lsft  C-z     C-x     C-c     C-v     C-b  C-n   C-m   C-,  C-.   C-/  C-rsft
+;;   XX      _       C-bspc                  spc              _    _)
+;;
+;; (defalias
+;;   C-f/C  (tap-hold-press 200 200 C-f lctl)
+;;   C-d/S  (tap-hold-press 200 200 C-d lsft)
+;;   C-s/M  (tap-hold-press 200 200 C-s lmet)
+;;   C-a/A  (tap-hold-press 200 200 C-a lalt))
 
 ;;------------------------------------------------------------------------------
 
@@ -105,38 +124,18 @@
 
 ;;------------------------------------------------------------------------------
 
-;; The keys 1 and 2 switch the base layer to qwerty and dvorak respectively.
+;; ;; Colemak
+;; (deflayer colemak
+;;   grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+;;   tab  q    w    f    p    g    j    l    u    y    ;    [    ]    \
+;;   caps a    r    s    t    d    h    n    e    i    o    '    ret
+;;   lsft z    x    c    v    b    k    m    ,    .    /    rsft
+;;   lctl lmet lalt           spc            ralt rctl)
 ;;
-;; The `lrld' action stands for "live reload". This will re-parse everything
-;; except for linux-dev, meaning you cannot live reload and switch keyboard
-;; devices.
-(deflayer layers
-  _    @qwr @dvk lrld _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _              _              _    _)
-
-;; Colemak-DH
-(deflayer colemak-dh
-    grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
-    tab  q    w    f    p    b    j    l    u    y    ;    [    ]    \
-    caps a    r    s    t    g    m    n    e    i    o    '    ret
-    lsft z    x    c    d    v    k    h    ,    .    /    rsft
-    lctl lmet lalt           spc            ralt rctl)
-
-;; Colemak
-(deflayer colemak
-    grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
-    tab  q    w    f    p    g    j    l    u    y    ;    [    ]    \
-    caps a    r    s    t    d    h    n    e    i    o    '    ret
-    lsft z    x    c    v    b    k    m    ,    .    /    rsft
-    lctl lmet lalt           spc            ralt rctl)
-
-;; Dvorak
-(deflayer dvorak
-    grv  1    2    3    4    5    6    7    8    9    0    [    ]    bspc
-    tab  '    ,    .    p    y    f    g    c    r    l    /    =    \
-    caps a    o    e    u    i    d    h    t    n    s    -    ret
-    lsft ;    q    j    k    x    b    m    w    v    z    rsft
-    lctl lmet lalt           spc            ralt rctl)
+;; ;; Dvorak
+;; (deflayer dvorak
+;;   grv  1    2    3    4    5    6    7    8    9    0    [    ]    bspc
+;;   tab  '    ,    .    p    y    f    g    c    r    l    /    =    \
+;;   caps a    o    e    u    i    d    h    t    n    s    -    ret
+;;   lsft ;    q    j    k    x    b    m    w    v    z    rsft
+;;   lctl lmet lalt           spc            ralt rctl)
