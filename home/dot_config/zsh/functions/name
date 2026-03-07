@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env zsh
 
 # Переименование файлов. Надо набрать: `name file_name` и появится
 # небольшой диалог, в котором необходимо будет ввести новое имя для файла.
@@ -6,6 +6,5 @@
 function name {
     name=$1
     vared -c -p 'rename to: ' name
-    command mv $1 $name
+    command mv "$1" "$name"
 }
-
