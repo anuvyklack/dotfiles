@@ -15,13 +15,12 @@
 
 export WORDCHARS='*?[]~=&;!#$%^(){}<>'
 
-if [[ -n "$IS_WSL" || -n "$WSL_DISTRO_NAME" ]];
-then  # We are in wsl.
+if [[ -n "$IS_WSL" || -n "$WSL_DISTRO_NAME" ]]; then
+  # We are in wsl.
   export WINDOWS_HOST_IP=$(awk '/nameserver/ {print $2}' /etc/resolv.conf)
   export WINDOWS_USER="$(cmd.exe /C "echo %USERNAME%" 2>/dev/null | tr -d '\r')"
 fi
 
-export DOTFILES="$HOME/dotfiles"
 export SOFTWARE="$HOME/soft"
 export STOW_DIR="/usr/local/stow"
 export LOCAL_STOW_DIR="$HOME/.local/stow"
@@ -125,15 +124,6 @@ export ls_colors=(
   'ex=31'     # File which is executable (ie. has ‘x’ set in permissions).
 )
 
-typeset -T INFOPATH infopath
-
-typeset -gU infopath
-
-infopath+=(
-  /usr/share/info/
-  $HOME/.nix-profile/share/info
-)
-
 if (( $+commands[bat] )); then
   export BAT_PAGER="less ${LESS}"
   # export BAT_PAGER="less -RF"
@@ -141,10 +131,6 @@ fi
 
 if (( $+commands[cmake] )); then
   export CMAKE_BUILD_PARALLEL_LEVEL=15
-fi
-
-if (( $+commands[home-manager] )); then
-  source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
 fi
 
 export LSP_USE_PLISTS=true
@@ -159,9 +145,5 @@ if [[ $XDG_SESSION_TYPE == 'wayland' ]]; then
     export QT_QPA_PLATFORM=wayland
 fi
 export QT_AUTO_SCREEN_SCALE_FACTOR=1
-
-# export TENSORFLOW="$HOME/.local/lib/python3.11/site-packages/tensorflow:$PATH"
-# export TENSORFLOW_PATH="$HOME/.local/lib/python3.11/site-packages/tensorflow"
-export TENSORFLOW_PATH="$HOME/.local/lib/python3.11/site-packages"
 
 # vim: ft=zsh tw=80 ts=2 sw=2

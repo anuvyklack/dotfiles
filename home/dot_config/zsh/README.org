@@ -30,7 +30,7 @@ The configuration files are read in the following order:
   9. =/etc/zlogout=
   10. =~/.zlogout=
 
-** How I choose where to put a setting
+** How to choose where to put a setting
 
 - if it is needed by a command run non-interactively: =.zshenv=
 - if it should be updated on each new shell: =.zshenv=
@@ -47,13 +47,13 @@ The configuration files are read in the following order:
 *Read every time*
 
 This file is always sourced, so it should set environment variables which need
-to be updated frequently.  `$PATH` (or its associated counterpart path) is
+to be updated frequently.  ~$PATH~ (or its associated counterpart path) is
 a good example because you probably don't want to restart your whole session to
 make it update.  By setting it in that file, reopening a terminal emulator will
 start a new Zsh instance with the PATH value updated.
 
 But be aware that this file is read even when Zsh is launched to run a single
-command (with the -c option), even by another tool like make, and thus, it
+command (with the =-c= option), even by another tool like =make=, and thus, it
 should be kept as small as possible.  You should be very careful to not modify
 the default behavior of standard commands because it may break some tools (by
 setting aliases for example).
@@ -75,16 +75,20 @@ setting aliases for example).
 #+end_src
 
 ** Code
+
 For WSL
  #+begin_src sh
 [[ "$(umask)" = "000" ]] && umask 022
  #+end_src
 
+Define XDG base directories
 #+begin_src sh
-export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_BIN_HOME="${XDG_BIN_HOME:-$HOME/.local/bin}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+# export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/tmp/runtime-$USER}" # or $UID
 #+end_src
 
 Make zsh to search my config files in ~$XDG_CONFIG_HOME~ directory:
@@ -146,7 +150,7 @@ exec zsh --login
 
 ** WORDCHARS
 Non-alphanumeric chars treated as part of a word.
-You can tweak this if you'd prefer ^w to break on dot, underscore, etc.
+You can tweak this if you'd prefer =^w= to break on dot, underscore, etc.
 #+begin_src sh
 export WORDCHARS='*?[]~=&;!#$%^(){}<>'
 #+end_src
@@ -157,8 +161,8 @@ export WORDCHARS='*?[]~=&;!#$%^(){}<>'
 - ~$WSL_DISTRO_NAME~ variable exists in the WSL 2 version.
 - =-n= :: true if length of string is non-zero.
 #+begin_src sh
-if [[ -n "$IS_WSL" || -n "$WSL_DISTRO_NAME" ]];
-then  # We are in wsl.
+if [[ -n "$IS_WSL" || -n "$WSL_DISTRO_NAME" ]]; then
+  # We are in wsl.
   export WINDOWS_HOST_IP=$(awk '/nameserver/ {print $2}' /etc/resolv.conf)
   export WINDOWS_USER="$(cmd.exe /C "echo %USERNAME%" 2>/dev/null | tr -d '\r')"
 fi
@@ -166,7 +170,6 @@ fi
 
 ** My Variables
 #+begin_src sh
-export DOTFILES="$HOME/dotfiles"
 export SOFTWARE="$HOME/soft"
 export STOW_DIR="/usr/local/stow"
 export LOCAL_STOW_DIR="$HOME/.local/stow"
@@ -210,6 +213,7 @@ Set the list of directories that cd searches.
 #   $cdpath
 # )
 #+end_src
+
 ** Proxy
 #+begin_src sh
 export socks_proxy="socks://127.0.0.1:10808"
@@ -247,22 +251,8 @@ fi
 export PAGER='less -R'
 #+end_src
 
-** COMMENT Browser
-#+begin_src sh
-if [[ -f /opt/vivaldi/vivaldi ]]; then
-  export BROWSER='/opt/vivaldi/vivaldi'
-fi
-#+end_src
-
-** COMMENT Language
-#+begin_src sh
-if [[ -z "$LANG" ]]; then
-    export LANG='en_US.UTF-8'
-    export LANGUAGE=en_US.UTF-8
-fi
-#+end_src
-
 ** Man
+
 The width of the text column in the man.
 #+begin_src sh
 export MANWIDTH=80
@@ -377,9 +367,9 @@ export ls_colors=(
 )
 #+end_src
 
-** Info
-Tie together the scalar ~$INFOPATH~ and the array ~$infopath~
-in the same way that ~$PATH~ and ~$path~ ties.
+** COMMENT Info
+Tie together the scalar ~$INFOPATH~ and the array ~$infopath~ in the same way that
+~$PATH~ and ~$path~ ties.
 #+begin_src sh
 typeset -T INFOPATH infopath
 #+end_src
@@ -411,37 +401,37 @@ if (( $+commands[cmake] )); then
 fi
 #+end_src
 
-** Home-manager
+** COMMENT Home-manager
 #+begin_src sh
 if (( $+commands[home-manager] )); then
   source $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh
 fi
 #+end_src
+
 ** Emacs
-Use ~plists~ for deserialization
+
+lsp-mode: use ~plists~ for deserialization
 #+begin_src sh
 export LSP_USE_PLISTS=true
 #+end_src
 
 ** Par (paragraph formating)
+
 This config is recommended in par man.
 #+begin_src sh
 export PARINIT="rTbgqR B=.,?'_A_a_@ Q=_s>|"
 #+end_src
 
 ** Ripgrep
+
 #+begin_src sh
 if (( $+commands[rg] )); then
   export RIPGREP_CONFIG_PATH="$HOME/.config/rg/config"
 fi
 #+end_src
 
-** COMMENT XDG
-#+begin_src sh
-export XDG_RUNTIME_DIR="/tmp/runtime-$USER"
-#+end_src
-
 ** COMMENT pkg-config
+
 Create parameter and array and tie them together in the manner
 of ~$PATH~ and ~$path~.
 #+begin_src sh
@@ -464,60 +454,12 @@ pkg_config_path=(
 export GOPATH=$HOME/code/go
 #+end_src
 
-** COMMENT PuDB (Python debugger)
-Set ~breakpoint()~ in Python to call pudb.
-#+begin_src sh
-export PYTHONBREAKPOINT="pudb.set_trace"
-#+end_src
-
-** COMMENT Intel-MKL
-#+begin_src sh
-if [[ -s /opt/intel/mkl/bin/mklvars.sh ]]; then
-    source /opt/intel/mkl/bin/mklvars.sh intel64
-    export MKL_THREADING_LAYER=GNU
-fi
-#+end_src
-
-#+begin_src sh
-if [[ -s /etc/profile.d/modules.sh ]]; then
-  source /etc/profile.d/modules.sh
-fi
-#+end_src
-
-** COMMENT Guix
-#+begin_src sh
-export GUIX_LOCPATH="$HOME/.guix-profile/lib/locale"
-# Add Guix to $PATH.
-GUIX_PROFILE="$HOME/.config/guix/current"
-. "$GUIX_PROFILE/etc/profile"
-#+end_src
-
-** COMMENT Libraries
-#+begin_src sh
-# export PETSC_DIR=`pwd`
-# export PETSC_ARCH=""
-# export SLEPC_DIR=~/src/slepc-3.14.2
-# export DEAL_II_DIR=~/software/dealii-9.3.0/build
-#+end_src
-
-** COMMENT Manualy compiled Neovim
-#+begin_src sh
-export PATH="$HOME/neovim/bin:$PATH"
-#+end_src
-
 ** QT Applications
 #+begin_src sh
 if [[ $XDG_SESSION_TYPE == 'wayland' ]]; then
     export QT_QPA_PLATFORM=wayland
 fi
 export QT_AUTO_SCREEN_SCALE_FACTOR=1
-#+end_src
-
-** Tensorflow
-#+begin_src sh
-# export TENSORFLOW="$HOME/.local/lib/python3.11/site-packages/tensorflow:$PATH"
-# export TENSORFLOW_PATH="$HOME/.local/lib/python3.11/site-packages/tensorflow"
-export TENSORFLOW_PATH="$HOME/.local/lib/python3.11/site-packages"
 #+end_src
 
 ** Footer
@@ -561,7 +503,93 @@ It is a good practise to put here everything needed only for interactive usage:
 # Do not change this file. The main file is `README.org`.
 #+end_src
 
-** My functions
+** zimfw
+
+#+begin_src zsh
+ZIM_CONFIG_FILE="$ZDOTDIR/.zimrc"
+ZIM_HOME="$ZDOTDIR/.zim"
+
+# Download zimfw plugin manager if missing.
+if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
+    curl -fsSL --create-dirs -o ${ZIM_HOME}/zimfw.zsh \
+         https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+fi
+
+# Install missing modules and update ${ZIM_HOME}/init.zsh if missing or outdated.
+if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZIM_CONFIG_FILE} ]]; then
+  source ${ZIM_HOME}/zimfw.zsh init
+fi
+
+# Initialize modules.
+source ${ZIM_HOME}/init.zsh
+#+end_src
+
+** [[https://github.com/zsh-users/zsh-syntax-highlighting][zsh-syntax-highlighting]]
+
+#+begin_src zsh
+ZSH_HIGHLIGHT_HIGHLIGHTERS+=(brackets)
+#+end_src
+
+** [[https://github.com/zsh-users/zsh-autosuggestions][zsh-autosuggestions]]
+
+Set ~ZSH_AUTOSUGGEST_MANUAL_REBIND~ to disable automatic widget re-binding
+on each precmd. This can be a big boost to performance, but you'll need
+to handle re-binding yourself if any of the widget lists change or if you
+or another plugin wrap any of the autosuggest widgets. To re-bind widgets,
+run ~_zsh_autosuggest_bind_widgets~.
+#+begin_src zsh
+ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+#+end_src
+
+* zimrc
+:PROPERTIES:
+:header-args: :tangle (substitute-in-file-name "$ZDOTDIR/.zimrc")
+:END:
+** Description
+
+This file is not sourced during shell startup and is only used to configure
+zimfw.
+
+** Defaults
+#+begin_src zsh
+zmodule environment # Sane Zsh built-in environment options.
+zmodule git         # Handy git aliases and functions.
+zmodule input       # Correct bindkeys for input events.
+zmodule termtitle   # Custom terminal title.
+zmodule utility     # Utility aliases and functions. Adds colour to ls, grep and less.
+#+end_src
+
+** <-- Normally new modules should be added here
+Check each module documentation for any caveats.
+
+** Prompt
+#+begin_src zsh
+zmodule duration-info # Exposes how long the last command took to run to prompts.
+zmodule git-info      # Exposes git repository status information to prompts.
+zmodule asciiship     # ASCII-only version of the Spaceship and Starship prompts.
+#+end_src
+
+** Completion
+#+begin_src zsh
+zmodule zsh-users/zsh-completions --fpath src
+#+end_src
+
+Enables and configures smart and extensive tab completion, must be sourced after
+all modules that add completion definitions.
+#+begin_src zsh
+zmodule completion
+#+end_src
+
+** Modules that must be initialized last
+#+begin_src zsh
+zmodule zsh-users/zsh-syntax-highlighting
+zmodule zsh-users/zsh-history-substring-search
+zmodule zsh-users/zsh-autosuggestions
+#+end_src
+
+* COMMENT achive
+** zshrc
+*** My functions
 Setting autoloaded functions from my local library. I load them here because use
 ~color~ function later to style the output.
 #+begin_src sh
@@ -572,12 +600,7 @@ if [[ -d "$my_zsh_functions" ]]; then
 fi
 #+end_src
 
-** COMMENT Install missing programs with =bin= package manager
-#+begin_src sh
-install_missing_programs
-#+end_src
-
-** Powerlevel10k instant prompt
+*** Powerlevel10k instant prompt
 
 Enable Powerlevel10k instant prompt. Should stay close to the top of
 =~/.config/zsh/.zshrc=.  Initialization code that may require console input
@@ -592,34 +615,7 @@ then
 fi
 #+end_src
 
-** Plugin manager invocation
-
-#+begin_src sh
-declare -A ZNAP  # Create an associative array.
-ZNAP[PLUGINS]="$HOME/.local/share/zsh/plugins"
-ZNAP[SELF]="$ZNAP[PLUGINS]/zsh-snap"
-ZNAP[BIN]="$ZNAP[SELF]/znap.zsh"
-#+end_src
-
-Clone =znap=.
-#+begin_src sh
-if [[ ! -s $ZNAP[BIN] ]]; then
-  git clone 'https://github.com/marlonrichert/zsh-snap.git' $ZNAP[SELF]
-fi
-source $ZNAP[BIN]
-#+end_src
-
-#+begin_src sh
-# zstyle ':znap:*' auto-compile no
-#+end_src
-
-Do not auto compile functions in my folder, because I compile them later into
-one library file.
-#+begin_src sh
-zstyle ':znap:*' auto-compile-ignore "${my_zsh_functions}/*"
-#+end_src
-
-** Prompt
+*** Prompt
 #+begin_src sh
 THEME=powerlevel10k
 # THEME=geometry
@@ -646,20 +642,7 @@ esac
 unset THEME
 #+end_src
 
-#+begin_src sh
-# # PROMPT_TITLE='$USER@$HOST $PWD'  # default
-#
-# # Полный путь до текущей директории. Подстроку эквивалентную `$HOME`
-# # заменяем на тильду. Ковычки дожны быть одинарными. С двойными заголовок
-# # не обновляется при смене директории.
-# # PROMPT_TITLE='${PWD/#${HOME}/~}'
-#+end_src
-
-#+begin_src sh
-# PROMPT_TITLE=''
-#+end_src
-
-** Terminal title
+*** Terminal title
 Heavy inspired by: https://github.com/zpm-zsh/title
 #+begin_src sh
 _show_title() {
@@ -672,16 +655,13 @@ add-zsh-hook precmd _show_title
 _show_title
 #+end_src
 
-** Core zsh settings
-*** General
+*** Core zsh settings
+**** General
 Create an associative array.
 #+begin_src sh
 declare -A ZSH
-#+end_src
 
-#+begin_src sh
 ZSH[cache]="$HOME/.cache/zsh"
-# ZSH[completions]="$ZSH[cache]/completions"
 ZSH[completions]="$XDG_DATA_HOME/zsh/site-functions"
 ZSH[scripts]="$ZSH[cache]/scripts"
 #+end_src
@@ -789,7 +769,7 @@ READNULLCMD='less'
 SPROMPT="Ошибка! ввести %r вместо %R? ([Y]es/[N]o/[E]dit/[A]bort) "
 #+end_src
 
-*** Command history managment
+**** Command history managment
 
 #+begin_src sh
 # source $ZDOTDIR/settings/history.zsh
@@ -854,10 +834,10 @@ Patterns that would not be stored in history.
 export HISTORY_IGNORE="(cd|ranger|r|exit|:q|kill|vifm*)"
 #+end_src
 
-** Completion
-*** Completion settings
+*** Completion
+**** Completion settings
 - [[https://thevaluable.dev/zsh-completion-guide-examples/][A Guide to the Zsh Completion with Examples]]
-**** Shell completion settings
+***** Shell completion settings
 For more information open =man zshoptions= and search for “Completion”.
 
 При множестве вариатнов подстановки по нажатию =<Tab>= откроет меню и подставит
@@ -934,7 +914,7 @@ Dotfiles are matched without explicitly specifying the dot.
 unsetopt glob_dots
 #+end_src
 
-**** zstyle
+***** zstyle
 
 The general way to use zstyle to configure a Zsh module:
 #+begin_src
@@ -1158,7 +1138,7 @@ zstyle ':completion:*:sudo:*' command-path /usr/local/sbin \
                                            /usr/X11R6/bin
 #+end_src
 
-***** Group matches and describe.
+****** Group matches and describe.
 
 Categorize completion suggestions with headings.
 Required for completion to be in good groups (named after the tags).
@@ -1193,14 +1173,14 @@ zstyle ':completion:*:*:*:*:warnings'     format ' %F{magenta}-- no matches foun
 zstyle ':completion:*:default' list-prompt '%S%M matches%s'
 #+end_src
 
-***** Menu
+****** Menu
 Use the menu to select zsh completion suggestions.
 #+begin_src sh
 zstyle ':completion:*' menu select=1
 # zstyle ':completion:*' menu select=1 _complete _ignored _approximate
 #+end_src
 
-****** Navigation in completion menu
+******* Navigation in completion menu
 
 Use the vi navigation keys (hjkl) besides cursor keys in menu completion.
 #+begin_src sh
@@ -1234,7 +1214,7 @@ Shift-Tab to go back in completion menu
 bindkey -M menuselect '^[[Z' reverse-menu-complete
 #+end_src
 
-**** Corrections
+***** Corrections
 
 Run rehash on completion so new installed program are found automatically:
 #+begin_src sh
@@ -1277,7 +1257,7 @@ zstyle ':completion:*' original true
 # zstyle ':completion:*:match:*' original only
 #+end_src
 
-***** max-errors
+****** max-errors
 The style ~max-errors~ is used by the ~_approximate~ and ~_correct~ completer
 functions to determine the maximum number of errors to allow.
 
@@ -1293,7 +1273,7 @@ zstyle -e ':completion:*:approximate:*' \
   max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3>7?7:($#PREFIX+$#SUFFIX)/3))numeric)'
 #+end_src
 
-*** Completion sources
+**** Completion sources
 
 #+begin_src sh
 # source $ZDOTDIR/settings/completion.zsh
@@ -1367,8 +1347,8 @@ if (( $+functions[compdef] )); then
 fi
 #+end_src
 
-** Functions
-*** Expand aliaces
+*** Functions
+**** Expand aliaces
 [[https://blog.sebastian-daschner.com/entries/zsh-aliases][Source]]
 
 Define three types of aliaces:
@@ -1376,7 +1356,7 @@ Define three types of aliaces:
 - balias :: will be expanded without wightspace after;
 - ialias :: won't be expanded.
 
-**** Blank aliases
+***** Blank aliases
 #+begin_src sh
 typeset -a baliases
 baliases=()
@@ -1389,7 +1369,7 @@ balias() {
 }
 #+end_src
 
-**** Ignored aliases
+***** Ignored aliases
 #+begin_src sh
 typeset -a ialiases
 ialiases=()
@@ -1402,7 +1382,7 @@ ialias() {
 }
 #+end_src
 
-**** Main function
+***** Main function
 #+begin_src sh
 expand-alias-space() {
   [[ $LBUFFER =~ "\<(${(j:|:)baliases})\$" ]]; insertBlank=$?
@@ -1417,13 +1397,13 @@ expand-alias-space() {
 zle -N expand-alias-space
 #+end_src
 
-**** Expand aliaces on space
+***** Expand aliaces on space
 #+begin_src sh
 bindkey " " expand-alias-space
 bindkey -M isearch " " magic-space
 #+end_src
 
-*** Bash =help= function analog
+**** Bash =help= function analog
 #+begin_src sh
 # unalias run-help
 autoload run-help
@@ -1432,7 +1412,7 @@ autoload run-help
 HELPDIR=/usr/share/zsh/help  # in Pop_OS
 #+end_src
 
-*** File managers invocation
+**** File managers invocation
 #+begin_src sh
 run_vifm()
 {
@@ -1453,8 +1433,9 @@ run_ranger() {
 zle -N run_ranger
 #+end_src
 
-** Plugins
-*** fzf-tab
+*** Plugins
+**** fzf-tab
+
 *WARNING*: *fzf-tab* needs to be loaded after =compinit=, but before plugins which
 will wrap widgets, such as *zsh-autosuggestions* or *fast-syntax-highlighting*!!
 
@@ -1522,7 +1503,7 @@ FZF_TAB_ENABLED=false
 completion-switch
 #+end_src
 
-*** zsh-autosuggestions
+**** zsh-autosuggestions
 #+begin_src sh
 znap source zsh-users/zsh-autosuggestions
 #+end_src
@@ -1556,7 +1537,7 @@ https://github.com/zsh-users/zsh-autosuggestions/issues/351
 ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
 #+end_src
 
-*** zsh-vi-mode
+**** zsh-vi-mode
 
 Do the initialization when the script is sourced (i.e. Initialize instantly).
 #+begin_src sh
@@ -1600,7 +1581,7 @@ zvm_after_init_commands+=(
 )
  #+end_src
 
-*** fzf
+**** fzf
 #+begin_example
 ╭────────────────────────────────────────────────────────────────────────╮
 │ fzf keybindings for Zsh                                                │
@@ -1685,7 +1666,7 @@ export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 #+end_src
 
-**** Using bfs utility for directory searching.
+***** Using bfs utility for directory searching.
 [[https://github.com/tavianator/bfs][tavianator/bfs]]
 #+begin_src sh
 if (( $+commands[bfs] )); then
@@ -1700,7 +1681,7 @@ else
 fi
 #+end_src
 
-**** COMMENT Make fzf history search unique
+***** COMMENT Make fzf history search unique
 *Now this functionality is built-in.*
 #+begin_src sh
 fzf-history-widget() {
@@ -1723,7 +1704,7 @@ fzf-history-widget() {
 }
 #+end_src
 
-**** Custom CTRL-T command
+***** Custom CTRL-T command
 
 Make =CTRL-T= command return full path to the file, not relevant to =$PWD=.
 Also if this path is inside the =$HOME= directory the =$HOME= prefix exchange
@@ -1751,7 +1732,7 @@ fzf-file-widget() {
 }
 #+end_src
 
-*** atuin
+**** atuin
 Place it after ~fzf~, because another way ~fzf~ will overwrite ~atuin~ keybindings.
 #+begin_src sh
 if (( $+commands[atuin] )); then
@@ -1760,7 +1741,7 @@ if (( $+commands[atuin] )); then
 fi
 #+end_src
 
-*** zoxide
+**** zoxide
 #+begin_src sh
 if (( $+commands[zoxide] )); then
   _ZO_ECHO=1
@@ -1768,7 +1749,7 @@ if (( $+commands[zoxide] )); then
 fi
 #+end_src
 
-*** vifm
+**** vifm
 Image previews using Überzug for Vifm
 #+begin_src sh
 # znap install cirala/vifmimg
@@ -1780,7 +1761,7 @@ export VIFM_PANE_STRATEGY=left
 znap install anuvyklack/vifmpane
 #+end_src
 
-*** conda
+**** conda
 #+begin_src sh
 local -A CONDA
 CONDA[home]="/opt/miniconda3"
@@ -1789,12 +1770,12 @@ CONDA[version]=$($CONDA[home]/bin/conda --version)
 znap eval conda "${CONDA[home]}/bin/conda shell.zsh hook  # $CONDA[version]"
 #+end_src
 
-*** COMMENT zsh-interactive-cd
+**** COMMENT zsh-interactive-cd
 #+begin_src sh
 znap source changyuheng/zsh-interactive-cd
 #+end_src
 
-*** COMMENT mcfly
+**** COMMENT mcfly
 #+begin_src sh
 if (( $+commands[mcfly] )); then
   export HISTFILE=$ZSH[cache]/zsh_history
@@ -1805,14 +1786,14 @@ if (( $+commands[mcfly] )); then
 fi
 #+end_src
 
-*** COMMENT nnn
+**** COMMENT nnn
 #+begin_src sh :noweb yes
 if (( $+commands[nnn] )); then
   <<nnn-config>>
 fi
 #+end_src
 
-**** Config for *nnn* file manager
+***** Config for *nnn* file manager
 Completion and manual
 #+begin_src sh
 github_completion nnn 'https://github.com/jarun/nnn/blob/master/misc/auto-completion/zsh/_nnn'
@@ -1900,29 +1881,23 @@ plugins
 export NNN_PLUG='z:autojump;w:preview-tui'
 #+end_src
 
-*** COMMENT broot
+**** COMMENT broot
 #+begin_src sh
 if [[ -s "~/.config/broot/launcher/bash/br" ]]; then
     source ~/.config/broot/launcher/bash/br
 fi
 #+end_src
 
-*** COMMENT nb
-#+begin_src sh
-znap install xwmx/nb
-github_completion nb 'https://github.com/xwmx/nb/blob/master/etc/nb-completion.zsh'
-#+end_src
-
-*** COMMENT universalarchive
+**** COMMENT universalarchive
 #+begin_src sh
 znap source ohmyzsh/ohmyzsh plugins/universalarchive
 github_completion universalarchive \
   'https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/universalarchive/_universalarchive'
 #+end_src
 
-*** WARNING This two plugins should be last in this order!
+**** *WARNING* This two plugins should be last in this order!
 #+begin_src sh
-ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+ZSH_HIGHLIGHT_HIGHLIGHTERS+=(brackets)
 znap source zsh-users/zsh-syntax-highlighting
 #+end_src
 
@@ -1930,7 +1905,7 @@ znap source zsh-users/zsh-syntax-highlighting
 znap source zsh-users/zsh-history-substring-search
 #+end_src
 
-** Key bindings
+*** Key bindings
 
 In Vi mode, there are following keymaps:
 | ~viins~  | insert mode      |
@@ -1989,7 +1964,7 @@ bindkey -s '\e5' "!:4-4 \t"
 bindkey '^o' run_vifm
 #+end_src
 
-** Aliaces
+*** Aliaces
 
 Remove duplicate lines from the history file preserving their order.
 #+begin_src sh
@@ -2094,18 +2069,18 @@ ialias :Q='exit'
 # ialias vifm="vifmcd"
 #+end_src
 
-** Footer
+*** Footer
 #+begin_src sh
 unset my_zsh_functions
 
 # vim: tw=75 ts=2 sw=2 fdm=marker
 #+end_src
 
-* zlogin
+** zlogin
 :PROPERTIES:
 :header-args: :tangle (substitute-in-file-name "$ZDOTDIR/.zlogin")
 :END:
-** Description
+*** Description
 
 *Read at login*
 
@@ -2118,7 +2093,7 @@ for the creation of files.
 So, I use it to launch external commands which do not modify shell behaviors
 (e.g. a login manager).
 
-** Preamble
+*** Preamble
 #+begin_src sh
 #!/usr/bin/env zsh
 #
@@ -2135,7 +2110,7 @@ So, I use it to launch external commands which do not modify shell behaviors
 # Do not change this file. The main file is `README.org`.
 #+end_src
 
-** Code
+*** Code
 Execute code in the background to not affect the current session:
 #+begin_src sh
 {
@@ -2180,7 +2155,7 @@ Execute code in the background to not affect the current session:
 # vim: ts=2 sw=2
 #+end_src
 
-* zlogout
+** zlogout
 
 *Read at logout, within login shell*
 
