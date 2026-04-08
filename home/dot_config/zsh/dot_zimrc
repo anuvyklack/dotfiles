@@ -1,0 +1,17 @@
+zmodule environment # Sane Zsh built-in environment options.
+zmodule git         # Handy git aliases and functions.
+zmodule input       # Correct bindkeys for input events.
+zmodule termtitle   # Custom terminal title.
+zmodule utility     # Utility aliases and functions. Adds colour to ls, grep and less.
+
+zmodule duration-info # Exposes how long the last command took to run to prompts.
+zmodule git-info      # Exposes git repository status information to prompts.
+zmodule asciiship     # ASCII-only version of the Spaceship and Starship prompts.
+
+zmodule zsh-users/zsh-completions --fpath src
+
+zmodule completion
+
+zmodule zsh-users/zsh-syntax-highlighting
+zmodule zsh-users/zsh-history-substring-search
+zmodule zsh-users/zsh-autosuggestions
