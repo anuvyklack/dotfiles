@@ -1,15 +1,12 @@
-;;; init.el -*- lexical-binding: t; no-byte-compile: t; -*-
-;;; GUI
-
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
-
+;;; init.el -*- lexical-binding: t; no-byte-compile: t -*-
+;;; Helheim
 ;;;; Fonts
 ;;
 ;; Set up fonts before anything else so error messages during startup were
 ;; readable.
 ;;
-;; Place cursor before character and press "ga" to see information about it.
-;; Press "<F1> k g a" to find out which command is bound to "ga".
+;; Place cursor before the character and press “ga” to see information about it.
+;; Press "<F1> k ga" to find out which command is bound to "ga".
 
 ;; `face-font-family-alternatives'
 (let* ((font "PragmataPro Liga")
@@ -24,7 +21,7 @@
   (set-face-font 'default spec)
   (set-face-font 'fixed-pitch spec)
   ;; Prepend our font to the "fontset-default" to make it the first fallback
-  ;; candidate for itself. This matters when text is bold or italic and the
+  ;; candidate for itself. This plays when text is bold or italic and the
   ;; default font lacks glyphs for those styles but does provide them for the
   ;; regular style. With this change, Emacs will use the regular glyphs from
   ;; the default font when bold or italic variants are unavailable, instead of
@@ -94,7 +91,7 @@
 ;;   (set-fontset-font t (cons ?🬀 ?🯊) "LegacyComputing")
 ;;   (set-fontset-font t (cons ?🯰 ?🯹) "LegacyComputing"))
 
-;;; Helheim core
+;;;; Helheim core
 
 ;; In case you use VPN. Also Emacs populates `url-proxy-services' variable
 ;; from: `https_proxy', `socks_proxy', `no_proxy' environment variables.
@@ -106,125 +103,161 @@
   (load-file (expand-file-name "prepare-user-lisp.el" user-lisp-directory))
   (prepare-user-lisp))
 
-(require 'helheim-straight)
+(setq helheim-package-manager 'elpaca) ;; or 'straight
 (require 'helheim-core)
+(require 'helheim-minibuffer)
+(require 'helheim-completion)
 
-;;; Color theme
+;;;; Color theme
 
-(leaf helheim-modus-themes
-  :require t
-  ;; :config (load-theme 'modus-operandi t)
-  )
+(setup helheim-modus-themes
+  (:require t)
+  (load-theme 'modus-operandi t))
 
-(leaf leuven-theme :straight t)
+;; I can recommend `leuven' theme for org-mode work. It has so many nice little
+;; touches to spruce up org-mode elements that some users switch to it from
+;; their usual dark doom or modus themes when working on org-mode projects.
+;;   You may try it with ": load-theme" then type "leuven".
+(setup leuven-theme (:install t))
 
-;; (leaf helheim-ef-themes
-;;   :require t
-;;   :config (load-theme 'ef-light t))
+;; (setup helheim-ef-themes
+;;   (:require t)
+;;   (load-theme 'ef-light t))
 
-(leaf my-ef-themes
-  :require t
-  :config (load-theme 'ef-light t))
+(setup my-ef-themes
+  (:require t)
+  (load-theme 'ef-light t))
+
+;;;; Search
+
+(require 'helheim-consult)  ; A set of search commands with preview
+(require 'helheim-deadgrep) ; Interface for Ripgrep in Emacs
+
+;;;; IDE
+
+(require 'helheim-xref)     ; Go to definition framework
+(require 'helheim-eglot)    ; Built-in LSP client
+
+;;;; Version control
+
+(setup helheim-magit
+  (:require t)
+  (setopt magit-diff-refine-hunk 'all
+          magit-repository-directories '(("~/.config/emacs/" . 0))))
+
+(require 'helheim-diff-hl)  ; git gutter
+(require 'helheim-ediff)
+
+;;;; Other modules
+
+(require 'helheim-dired)    ; File-manager
+(require 'helheim-embark)   ; Context-aware action menus
+(require 'helheim-ibuffer)  ; Buffers menu
+(require 'helheim-outline)  ; See "Outline Mode" in Emacs manual
+(require 'helheim-tab-bar)  ; Each tab represents a set of windows, as in Vim
+(require 'helheim-whisper) ;; Speech to text conversion
+
+(require 'helheim-vterm)    ; Terminal emulator. Needs shell side configuration!
+(require 'helheim-edit-indirect) ; Alternative "zn" binding
+
+(require 'helheim-notmuch)
+(require 'helheim-chezmoi)  ; Integration with chezmoi dotfile manager
+
+;;;; Major modes
+
+(require 'helheim-emacs-lisp)
+(require 'helheim-sh)
+(require 'helheim-rust)
+
+(setup markdown
+  (:require helheim-markdown)
+  (setopt
+   ;; Command to call standalone Markdown previewer
+   markdown-open-command nil
+   ;; Command to open image link via `markdown-follow-*' commands
+   markdown-open-image-command nil
+   markdown-asymmetric-header nil
+   ;; markdown-marginalize-headers t
+   markdown-list-item-bullets '("●" "◎" "○" "◆" "◇" "►" "•")
+   ;; markdown-code-lang-modes
+   ;; markdown-link-space-sub-char " "
+   markdown-enable-math t
+   markdown-reference-location 'subtree
+   ;; markdown-hide-markup t
+   markdown-hide-urls t
+   ;; markdown-enable-wiki-links t
+   ;; markdown-wiki-link-fontify-missing t
+   ;; markdown-wiki-link-search-type 'project
+   ))
+
+(setup yaml-pro
+  (:install t)
+  (:hook yaml-ts-mode-hook yaml-pro-ts-mode))
+
+(setup add-log
+  (setopt add-log-keep-changes-together t
+          add-log-dont-create-changelog-file nil)
+  (:global-bind
+    "C-c p a" '("Add ChangeLog" . add-change-log-entry-other-window)) ;; "C-x 4 a"
+  (:after-load
+    (:with-keymap change-log-mode-map
+      (:bind :state 'normal
+        "] c" 'add-log-edit-next-comment
+        "[ c" 'add-log-edit-prev-comment))))
 
 ;;; My config
 
-;; User credentials. Some functionality uses this to identify you,
-;; e.g. GPG configuration, email clients, file templates and snippets.
-(setopt user-full-name "Yuriy Artemyev"
-        user-mail-address "anuvyklack@gmail.com")
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
-(setopt confirm-kill-emacs nil
-        what-cursor-show-names t
-        ibuffer-expert t)
+(setopt user-full-name "Yuriy Artemyev"
+        user-mail-address "anuvyklack@gmail.com"
+        confirm-kill-emacs nil
+        eldoc-echo-area-use-multiline-p t
+        ibuffer-expert t
+        what-cursor-show-names t)
 
 ;; ;; See also `search-invisible'
 ;; (global-reveal-mode)
 
-;; (leaf imenu-list
-;;   :straight t
-;;   :defer t)
+;; (setup imenu-list (:install t))
 
-;;; Helheim modules
+;;;; Russian language
 
-(require 'helheim-emacs-lisp)
-(require 'helheim-outline-mode) ; See "Outline Mode" in Emacs manual.
+(setopt default-input-method 'russian-computer)
+(prefer-coding-system 'cp1251)
+(prefer-coding-system 'utf-8)
+(keymap-global-set "C-v" 'toggle-input-method)
 
-(require 'helheim-tab-bar)  ; Each tab represents a set of windows, as in Vim.
-(require 'helheim-xref)     ; Go to defenition framework
-(require 'helheim-dired)    ; File-manager
-(require 'helheim-ibuffer)  ; Opened buffers menu.
+;;;; rainbow-mode
 
-(require 'helheim-chezmoi)  ; Integration with chezmoi dotfile manager
-(require 'helheim-notmuch)
-;; (require 'helheim-edit-indirect) ; Alternative "zn" binding
+;; Colorize strings that represent colors
+(setup rainbow-mode
+  (:install t)
+  (:blackout t)
+  (:hook (emacs-lisp-mode-hook
+          conf-mode-hook
+          fish-mode-hook
+          toml-ts-mode-hook)))
 
-;;; Appearance
-;;;; Colorize strings that represent colors
+;;;; repeat-mode
 
-(leaf rainbow-mode
-  :straight t
-  :blackout t
-  :hook (emacs-lisp-mode-hook
-         conf-mode-hook
-         fish-mode-hook
-         toml-ts-mode-hook))
+;; Evaluate `describe-repeat-maps' to see all repeatable commands.
+(setup repeat
+  (:hook emacs-startup-hook repeat-mode) ; run in startup hook to show message
+  (setopt repeat-exit-key "<escape>"
+          ;; repeat-exit-timeout 5
+          repeat-check-key nil)
+  ;; ;; Disable repeating for following commands
+  ;; (put 'tab-next     'repeat-map nil)
+  ;; (put 'tab-previous 'repeat-map nil)
+  )
 
-;;; Window managment
-
-;; (add-to-list 'display-buffer-alist
-;;              '((major-mode . org-mode)
-;;                (display-buffer-reuse-mode-window display-buffer-same-window)
-;;                (mode . org-mode)
-;;                (body-function . select-window)))
-
-;;; Minibuffer & Completion
-
-(require 'helheim-corfu)    ; Code completion menus
-(require 'helheim-vertico)  ; Emacs version of command pallet
-(require 'helheim-consult)  ; A set of search commands with preview
-(require 'helheim-deadgrep) ; Interface to Ripgrep
-(require 'helheim-embark)   ; Context-aware action menus
-
-;;;; cape
-
-;; (hel-keymap-global-set :state 'insert
-;;   ;; Emulate Vim's omni-completion keybinds
-;;   "C-x" #'cape-prefix-map)
-;;
-;; (hel-keymap-set cape-prefix-map
-;;   "C-o" 'completion-at-point ;; C-x C-o is Vim's omni-completion keybinding
-;;   ;; "C-e" 'cape-elisp-block
-;;   ;; "C-s" 'cape-elisp-symbol
-;;   "/" 'cape-tex
-;;   "C-/" 'cape-tex
-;;   "C-h" 'cape-history
-;;   "C-l" 'cape-line
-;;   "C-k" 'cape-keyword
-;;   "C-f" 'cape-file
-;;   "C-t" 'complete-tag
-;;   "C-w" 'cape-dict
-;;   "C-r" 'cape-rfc1345
-;;   ;; "s"   'cape-dict
-;;   ;; "C-s" 'yasnippet-capf
-;;   "C-a" 'cape-abbrev
-;;   "C-d" 'cape-dabbrev
-;;   "C-n" 'cape-dabbrev
-;;   ;; "C-p" '+corfu/dabbrev-this-buffer
-;;   )
-
-;;; IDE
-
-(setopt eldoc-echo-area-use-multiline-p t)
-
-(require 'helheim-eglot)
-
-;;; Extra facilities
 ;;;; project.el
 
 (hel-keymap-set project-prefix-map
   "b" 'project-list-buffers)
 
-;;;; dired
+;;;; Dired
 
 ;; My custom version.
 (define-advice helheim-dired-do-add-id (:override () custom-version)
@@ -247,271 +280,187 @@
             (rename-file file newname)))))))
   (dired-revert))
 
-;;;;;  Extra highlighting
-
-;; (leaf dired-rainbow
-;;   :straight t
-;;   :after dired
-;;   :config
-;;   (progn
-;;     (dired-rainbow-define-chmod directory "#6cb2eb" "d.*")
-;;     (dired-rainbow-define html "#eb5286" ("css" "less" "sass" "scss" "htm" "html" "jhtm" "mht" "eml" "mustache" "xhtml"))
-;;     (dired-rainbow-define xml "#f2d024" ("xml" "xsd" "xsl" "xslt" "wsdl" "bib" "json" "msg" "pgn" "rss" "yaml" "yml" "rdata"))
-;;     (dired-rainbow-define document "#9561e2" ("docm" "doc" "docx" "odb" "odt" "pdb" "pdf" "ps" "rtf" "djvu" "epub" "odp" "ppt" "pptx"))
-;;     (dired-rainbow-define markdown "#ffed4a" ("org" "etx" "info" "markdown" "md" "mkd" "nfo" "pod" "rst" "tex" "textfile" "txt"))
-;;     (dired-rainbow-define database "#6574cd" ("xlsx" "xls" "csv" "accdb" "db" "mdb" "sqlite" "nc"))
-;;     (dired-rainbow-define media "#de751f" ("mp3" "mp4" "MP3" "MP4" "avi" "mpeg" "mpg" "flv" "ogg" "mov" "mid" "midi" "wav" "aiff" "flac"))
-;;     (dired-rainbow-define image "#f66d9b" ("tiff" "tif" "cdr" "gif" "ico" "jpeg" "jpg" "png" "psd" "eps" "svg"))
-;;     (dired-rainbow-define log "#c17d11" ("log"))
-;;     (dired-rainbow-define shell "#f6993f" ("awk" "bash" "bat" "sed" "sh" "zsh" "vim"))
-;;     (dired-rainbow-define interpreted "#38c172" ("py" "ipynb" "rb" "pl" "t" "msql" "mysql" "pgsql" "sql" "r" "clj" "cljs" "scala" "js"))
-;;     (dired-rainbow-define compiled "#4dc0b5" ("asm" "cl" "lisp" "el" "c" "h" "c++" "h++" "hpp" "hxx" "m" "cc" "cs" "cp" "cpp" "go" "f" "for" "ftn" "f90" "f95" "f03" "f08" "s" "rs" "hi" "hs" "pyc" ".java"))
-;;     (dired-rainbow-define executable "#8cc4ff" ("exe" "msi"))
-;;     (dired-rainbow-define compressed "#51d88a" ("7z" "zip" "bz2" "tgz" "txz" "gz" "xz" "z" "Z" "jar" "war" "ear" "rar" "sar" "xpi" "apk" "xz" "tar"))
-;;     (dired-rainbow-define packaged "#faad63" ("deb" "rpm" "apk" "jad" "jar" "cab" "pak" "pk3" "vdf" "vpk" "bsp"))
-;;     (dired-rainbow-define encrypted "#ffed4a" ("gpg" "pgp" "asc" "bfe" "enc" "signature" "sig" "p12" "pem"))
-;;     (dired-rainbow-define fonts "#6cb2eb" ("afm" "fon" "fnt" "pfb" "pfm" "ttf" "otf"))
-;;     (dired-rainbow-define partition "#e3342f" ("dmg" "iso" "bin" "nrg" "qcow" "toast" "vcd" "vmdk" "bak"))
-;;     (dired-rainbow-define vc "#0074d9" ("git" "gitignore" "gitattributes" "gitmodules"))
-;;     (dired-rainbow-define-chmod executable-unix "#38c172" "-.*x.*")
-;;     ))
-
-;;;; magit
-
-(require 'helheim-diff-hl)
-
-(leaf helheim-magit
-  :require t
-  :init
-  (setopt magit-diff-refine-hunk 'all
-          magit-repository-directories '(("~/.config/emacs/" . 0))))
-
-;;;; repeat-mode
-
-;; Evaluate `describe-repeat-maps' to see all repeatable commands.
-(leaf repeat
-  :hook (emacs-startup-hook . repeat-mode) ; run in startup hook to show message
-  :custom
-  (repeat-exit-key . "<escape>")
-  ;; (repeat-exit-timeout . 5)
-  (repeat-check-key . nil)
-  ;; :config
-  ;; ;; Disable repeating for following commands
-  ;; (put 'tab-next     'repeat-map nil)
-  ;; (put 'tab-previous 'repeat-map nil)
-  )
-
 ;;;; separedit
 
-(leaf separedit
-  :straight t
-  :init
+(setup separedit
+  (:install t)
   (setopt separedit-default-mode 'org-mode ;; 'markdown-mode
           separedit-preserve-string-indentation t
           separedit-continue-fill-column t
           separedit-write-file-when-execute-save nil
           separedit-remove-trailing-spaces-in-comment t)
-  ;; :commands separedit
-  :config
   ;; Key binding for modes you want edit or simply bind ‘global-map’ for all.
-  (hel-keymap-global-set :state 'normal
+  (:global-bind :state 'normal
     "z '" 'separedit)
-  ;; (dolist (keymap (list prog-mode-map
-  ;;                       minibuffer-local-map
-  ;;                       help-mode-map
-  ;;                       helpful-mode-map))
-  ;;   (hel-keymap-set keymap :state 'normal
+  ;; (:with-keymaps (prog-mode-map
+  ;;                 minibuffer-local-map
+  ;;                 help-mode-map)
+  ;;   (:bind :state 'normal
   ;;     "z '" 'separedit))
-  ;; (with-eval-after-load 'obsidian
-  ;;   (hel-keymap-set obsidian-mode-map :state 'normal
-  ;;     "z '" 'separedit))
-  :defer-config
-  (hel-keymap-set edit-indirect-mode-map :state 'normal
-    "Z Z" 'edit-indirect-commit
-    "Z Q" 'edit-indirect-abort)
-  (hel-keymap-set separedit-mode-map
-    "<remap> <edit-indirect-commit>" 'separedit-commit
-    "<remap> <edit-indirect-abort>"  'separedit-abort
-    "<remap> <save-buffer>"          'separedit-save))
+  ;; (:with-feature helpful
+  ;;   ;; helpful-mode-map
+  ;;   (:after-load
+  ;;     (:bind :state 'normal
+  ;;       "z '" 'separedit)))
+  ;; (:with-feature obsidian
+  ;;   (:after-load
+  ;;     ;; obsidian-mode-map
+  ;;     (:bind :state 'normal
+  ;;       "z '" 'separedit)))
+  (:after-load
+    (:with-keymap separedit-mode-map
+      (:bind
+        [remap edit-indirect-commit] 'separedit-commit
+        [remap edit-indirect-abort]  'separedit-abort
+        [remap save-buffer]          'separedit-save))))
 
-;;;; Russian language
+;;;; emacs-everywhere
 
-(prefer-coding-system 'cp1251)
-(prefer-coding-system 'utf-8)
+(setup server
+  (:built-in)
+  (:when (display-graphic-p))
+  (when-let* ((name (getenv "EMACS_SERVER_NAME")))
+    (setq server-name name))
+  (unless (server-running-p)
+    (server-start)))
 
-(setq default-input-method 'russian-computer)
-
-(hel-keymap-global-set
-  "C-v" 'toggle-input-method)
+;; Entry points into this package are autoloaded; i.e. the `emacs-everywhere'
+;; function, meant to be called directly via emacsclient. See this module's
+;; readme for details.
+(setup emacs-everywhere (:install t))
 
 ;;; Org mode
 
-(leaf org
-  :require (helheim-org
-            helheim-org-node
-            helheim-daily-notes)
-  :init
+(setup org
+  ;; Following variables must be set before `org' is loaded!
   (setopt org-directory (expand-file-name "~/notes/")
           ;; Which modules to load.
           ;; Place cursor on variable and press "M" to see all possible values.
           org-modules '(ol-bibtex ol-docview ol-info)
           org-mem-watch-dirs '("~/notes/" "~/Private/"))
-  :config
-  (hel-keymap-set org-mode-map :state 'normal
-    "M" 'helpful-at-point))
+  (:require helheim-org
+            helheim-org-node
+            helheim-daily-notes)
+  (:hook org-mode-hook (lambda ()
+                         (auto-fill-mode +1) ;; Hard wrap long lines.
+                         (display-line-numbers-mode -1)
+                         (visual-line-mode -1)))
+  (:after-load
+    (hel-keymap-set org-mode-map :state 'normal
+      "M" 'helpful-at-point))
+  ;; (setopt org-M-RET-may-split-line '((default . t)))
+  (setopt org-src-tab-acts-natively t
+          org-src-preserve-indentation nil
+          org-src-content-indentation 0
+          org-src-window-setup 'current-window
+          ;; org-indirect-buffer-display 'current-window
+          org-list-allow-alphabetical t
+          org-use-property-inheritance t ; Properties apply also for sublevels.
+          ;; org-log-into-drawer t
+          ;; org-log-done 'time ; Track time when tasks were finished.
+          org-log-redeadline 'note
+          org-log-reschedule nil
+          org-deadline-warning-days 14
+          org-blank-before-new-entry '((heading . auto)
+                                       (plain-list-item . auto)))
+  (setopt org-startup-folded 'show2levels ; Initial visibility
+          org-startup-indented t
+          org-tags-column 0 ;; -80 ;; Прижимать тэги к 80 колонке справа.
+          ;; Enclose text in "{}" after "_" to make it treated as subscript.
+          org-use-sub-superscripts '{}
+          ;; org-fontify-whole-heading-line t
+          ;; org-fontify-quote-and-verse-blocks nil
+          ;; org-level-color-stars-only nil
+          )
+  ;;
+  ;; (setopt org-todo-keywords
+  ;;         '((sequence "󰒅" "󰄱" "󰡖" "" "|" "󰄵" "󱈎" "󰅘") ;; 󰔌 󱗝 󰜄 󰤌
+  ;;           ;; (sequence "󰃃" "" "|" "󱍻")
+  ;;           ))
+  ;;
+  ;; BUG: `org-priority-valid-value-p' is defined on 11376 line, but used for
+  ;;   the first time on 2500 line in the org.el file.
+  (:after-load
+    ;; Make priority signs be integers from 1 to 5, with 3 as default.
+    ;; Default priorities are: #A, #B, #C, with #B as default.
+    (setopt org-priority-highest ?A
+            org-priority-lowest  ?D
+            org-priority-default ?C))
+  ;; Consider all nested entries in the subtree for cookies.
+  ;; [[info:org#Breaking Down Tasks]]
+  (setopt org-hierarchical-todo-statistics nil)
+  ;; tags
+  ;; (setopt org-use-tag-inheritance nil)
+  (setopt org-tags-match-list-sublevels nil)
+  (:after-load
+    (add-to-list 'org-tags-exclude-from-inheritance "00")
+    ;; (cl-callf append org-tags-exclude-from-inheritance '("00"))
+    )
+  ;; footnotes
+  (setopt org-footnote-define-inline nil
+          org-footnote-auto-adjust t)
+  ;; org-attach
+  (setopt org-file-apps '((system . "xdg-open %s")
+                          ("\\.pdf\\'" . system)
+                          ("\\.djvu?\\'" . system)
+                          (directory . system)
+                          (auto-mode . emacs)
+                          ("\\.x?html?\\'" . default)))
+  ;; Capture templates
+  (setopt org-capture-templates '(("j" "journal" plain
+                                   (file+olp+datetree +org-capture-journal-file)
+                                   "%?"
+                                   :empty-lines-before 1
+                                   ;; :kill-buffer t
+                                   )))
+  ;; babel
+  (setopt org-babel-load-languages '((sql . t)
+                                     (shell . t)
+                                     (emacs-lisp . t)
+                                     (python . t)
+                                     (plantuml . t))
+          ;; Allow babel code execution without confirming it every time.
+          org-confirm-babel-evaluate nil
+          ;; Use PlantUML executable instead of `.jar' file together with Java.
+          org-plantuml-exec-mode 'plantuml
+          org-plantuml-jar-path (expand-file-name "~/.nix-profile/lib/plantuml.jar")))
 
-;;;; Variables
-;;;;; General settings
+;;;; Org appearence
 
-(setopt
- ;; org-M-RET-may-split-line '((default . t))
-
- ;; Indentation for the content of a source code block.
- org-src-tab-acts-natively t
- org-src-preserve-indentation nil
- org-edit-src-content-indentation 0
-
- ;; org-log-state-notes-into-drawer t
- ;; org-log-into-drawer t
-
- ;; org-indirect-buffer-display 'current-window
- org-list-allow-alphabetical t
-
- org-use-property-inheritance t ; Properties apply also for sublevels.
-
- ;; org-log-done 'time ; Track time when tasks were finished.
- org-deadline-warning-days 14
- org-log-redeadline 'note
- org-log-reschedule nil
- org-blank-before-new-entry '((heading . auto)
-                              (plain-list-item . auto)))
-
-;;;;; appearence
-
-(setopt org-startup-folded 'show2levels ; Initial visibility
-        org-startup-indented t)
-
-;; (setopt org-tags-column -80) ;; Прижимать тэги к 80 колонке справа.
-(setopt org-tags-column 0)
-
-;; (setopt org-fontify-whole-heading-line t
-;;         org-fontify-quote-and-verse-blocks nil)
-
-;; Enclose text in "{}" after "_" to make it treated as subscript.
-(setopt org-use-sub-superscripts '{})
-
-;;;;; org-attach
-
-(setopt org-file-apps '((system . "xdg-open %s")
-                        ("\\.pdf\\'" . system)
-                        ("\\.djvu?\\'" . system)
-                        (directory . system)
-                        (auto-mode . emacs)
-                        ("\\.x?html?\\'" . default)))
-
-;;;;; Capture templates
-
-(setq org-capture-templates
-      '(("j" "journal" plain
-         (file+olp+datetree +org-capture-journal-file)
-         "%?"
-         :empty-lines-before 1
-         ;; :kill-buffer t
-         )))
-
-;;;;; babel
-
-(setopt
- ;; Open source block with `org-edit-special' in the same window.
- org-src-window-setup 'current-window
-
- ;; Allow babel code execution without confirming it every time.
- org-confirm-babel-evaluate nil
-
- ;; Available embedded languages for babel.
- org-babel-load-languages '((sql . t)
-                            (shell . t)
-                            (emacs-lisp . t)
-                            (python . t)
-                            (plantuml . t))
-
- ;; Use PlantUML executable instead of `.jar' file together with Java.
- org-plantuml-exec-mode 'plantuml
- org-plantuml-jar-path (expand-file-name "~/.nix-profile/lib/plantuml.jar"))
-
-;;;;; footnotes
-
-(setopt org-footnote-define-inline nil
-        org-footnote-auto-adjust t)
-
-;;;;; TODO keywords and Priorities
-
-;; (setopt org-todo-keywords
-;;         '((sequence "󰒅" "󰄱" "󰡖" "" "|" "󰄵" "󱈎" "󰅘") ;; 󰔌 󱗝 󰜄 󰤌
-;;           ;; (sequence "󰃃" "" "|" "󱍻")
-;;           ))
-
-;; Make priority signs be integers from 1 to 5, with 3 as default.
-;; Default priorities are: #A, #B, #C, with #B as default.
-(setopt org-priority-highest ?A
-        org-priority-lowest  ?D
-        org-priority-default ?C)
-
-;; Consider all nested entries in the subtree for cookies.
-;; [[info:org#Breaking Down Tasks]]
-(setopt org-hierarchical-todo-statistics nil)
-
-;;;;; tags
-
-;; (setopt org-use-tag-inheritance nil)
-(setopt org-tags-match-list-sublevels nil)
-
-(with-eval-after-load 'org
-  (cl-callf append org-tags-exclude-from-inheritance '("00")))
-
-;;;; Org files appearence
-
-;; (setq org-level-color-stars-only t)
-
-;; • ◦ ‣ ￭ ■ ⋄ ○ □ ▬ ▶ ▸ ◂ ◆
-(leaf org-superstar
-  :straight t
-  :after org
-  :hook (org-mode-hook . org-superstar-mode)
-  :config
+(setup org-superstar
+  (:install t)
+  (:after org)
+  (:hook org-mode-hook org-superstar-mode)
   (setopt org-superstar-remove-leading-stars nil
           org-superstar-headline-bullets-list '("●")
           ;; org-superstar-leading-bullet
+          ;; • ◦ ‣ ￭ ■ ⋄ ○ □ ▬ ▶ ▸ ◂ ◆
           org-superstar-item-bullet-alist '((?- . ?•)
                                             (?+ . ?◦)
                                             (?* . ?◆))))
+(setup org-pretty-tags
+  (:install t)
+  (:after org)
+  (:blackout t)
+  (:hook org-mode-hook org-pretty-tags-mode)
+  (:after-load
+    ;; :attach: 󰏢  󰁦
+    ;; :link:     󰌷    󰌹 
+    ;; :emacs:   
+    ;; :cpp:      󰙲
+    ;; :git:     󰊢
+    (setopt org-pretty-tags-surrogate-strings '(("attach" . "󰏢")
+                                                ("ATTACH" . "󰏢")
+                                                ;; ("emacs" . "")
+                                                ("link" . "")
+                                                ("cpp" . "󰙲")))))
+(setup org-appear
+  (:install t)
+  (:after org)
+  (:hook org-mode-hook org-appear-mode)
+  (setopt org-hide-emphasis-markers t))
 
-(leaf org-pretty-tags
-  :straight t
-  :after org
-  :blackout t
-  :hook (org-mode-hook . org-pretty-tags-mode)
-  ;; :defer-config
-  :config
-  ;; :attach: 󰏢  󰁦
-  ;; :link:     󰌷    󰌹 
-  ;; :emacs:   
-  ;; :cpp:      󰙲
-  ;; :git:     󰊢
-  (setopt org-pretty-tags-surrogate-strings '(("attach" . "󰏢")
-                                              ("ATTACH" . "󰏢")
-                                              ;; ("emacs" . "")
-                                              ("link" . "")
-                                              ("cpp" . "󰙲"))))
-
-(leaf org-appear
-  :straight t
-  :after org
-  :hook (org-mode-hook . org-appear-mode)
-  :custom (org-hide-emphasis-markers . t))
-
-;;;;; Prettify symbols mode
-
+;; Prettify symbols mode
 ;; ("TODO" . "")
 ;; ("WAIT" . "")
 ;; ("NOPE" . "")
@@ -543,11 +492,10 @@
 ;;;; LaTeX
 
 ;; LaTeX previews
-(leaf org-fragtog
-  :straight t
-  :after org
-  :hook (org-mode-hook . org-fragtog-mode)
-  :config
+(setup org-fragtog
+  (:install t)
+  (:after org)
+  (:hook org-mode-hook org-fragtog-mode)
   (setopt org-startup-with-latex-preview t
           org-format-latex-options (-> org-format-latex-options
                                        (plist-put :scale 0.8)
@@ -564,10 +512,9 @@
 ;;
 ;; Type `<se Tab' to insert emacs-lisp source code block,
 ;; type `<sh Tab' to insert bash source block and so on.
-(leaf org-tempo
-  :after org
-  :require t
-  :config
+(setup org-tempo
+  (:after org)
+  (:require t)
   ;; Elements of length one have a tab appended. Elements of length two are
   ;; kept as is. Longer elements are truncated to length two. If an element
   ;; cannot be made unique, an error is raised.
@@ -584,112 +531,50 @@
 
 ;;;; org-journal
 
-(leaf org-journal
-  :straight t
-  :custom
-  ;; When switching from daily to weekly, monthly, yearly, or from weekly,
-  ;; monthly, yearly to daily, you need to invalidate the cache. This has
-  ;; currently to be done manually by calling `org-journal-invalidate-cache'.
-  (org-journal-file-type . 'monthly)
-  (org-extend-today-until . 4)
-  (org-journal-date-format . "%x, %A")) ;; "DATE, WEEKDAY"
+(setup org-journal
+  (:install t)
+  (setopt
+   ;; When switching from daily to weekly, monthly, yearly, or from weekly,
+   ;; monthly, yearly to daily, you need to invalidate the cache. This has
+   ;; currently to be done manually by calling `org-journal-invalidate-cache'.
+   org-journal-file-type 'monthly
+   org-extend-today-until 4
+   org-journal-date-format "%x, %A")) ;; "DATE, WEEKDAY"
 
 ;;;; org-auto-tangle
 
-(leaf org-auto-tangle
-  :straight t
-  :hook (org-mode-hook . org-auto-tangle-mode))
+(setup org-auto-tangle
+  (:install t)
+  (:hook org-mode-hook org-auto-tangle-mode))
 
 ;;;; zotero integration
 
 ;; Redirect `zotero:' links to the system for handling
 (with-eval-after-load 'org
-  (org-link-set-parameters "zotero"
-                           :follow (lambda (zpath)
-                                     (browse-url (format "zotero:%s" zpath)))))
+  (org-link-set-parameters
+   "zotero"
+   :follow (lambda (zpath)
+             (browse-url (format "zotero:%s" zpath)))))
 
 ;;;; DISABLED scrolling over images
-;; Doesn't work properly.
 
-;; (leaf org-sliced-images
-;;   :straight t
-;;   :after org
-;;   :global-minor-mode org-sliced-images-mode) ;; It is global minor mode.
+;; (setup org-sliced-images
+;;   (:install t)
+;;   (:after org)
+;;   (org-sliced-images-mode)) ;; global minor mode
 
-;;;; org-supertag
+;;;; DISABLED org-supertag
 
-;; (leaf posframe :straight t)
+;; (setup posframe (:install t))
 ;;
-;; (leaf org-supertag
-;;   :straight (org-supertag :host github :repo "yibie/org-supertag")
-;;   :custom
+;; (setup org-supertag
+;;   (:install org-supertag :host github :repo "yibie/org-supertag")
 ;;   ;; Single vault
-;;   (org-supertag-sync-directories . '("~/Private/"))
-;;
+;;   (setopt org-supertag-sync-directories '("~/Private/"))
 ;;   ;; ;; Multiple vaults (separate DB/state per directory)
-;;   ;; (org-supertag-sync-directories . '("~/notes/" "~/Private/"))
-;;   ;; (org-supertag-sync-directories-mode . 'vaults)
+;;   ;; (setopt org-supertag-sync-directories '("~/notes/" "~/Private/")
+;;   ;;         org-supertag-sync-directories-mode 'vaults)
 ;;   )
-
-;;; Major modes
-;;;; change-log-mode
-
-(hel-keymap-global-set
-  "C-c p a" '("Add ChangeLog" . add-change-log-entry-other-window)) ;; "C-x 4 a"
-
-(leaf add-log
-  :config
-  (setopt add-log-keep-changes-together t
-          add-log-dont-create-changelog-file nil)
-  ;; :defer-config
-  ;; (hel-keymap-set change-log-mode-map :state 'normal
-  ;;   "] c" 'add-log-edit-next-comment
-  ;;   "[ c" 'add-log-edit-prev-comment)
-  )
-
-;;;; org-mode
-
-(add-hook 'org-mode-hook #'auto-fill-mode) ; Hard wrap long lines.
-(add-hook 'org-mode-hook (lambda ()
-                           (display-line-numbers-mode -1)
-                           (visual-line-mode -1)))
-
-;;;; shell
-
-(require 'helheim-sh)
-
-;;;; markdown
-
-(leaf helheim-markdown
-  :require t
-  :config (setopt
-           ;; Command to call standalone Markdown previewer
-           markdown-open-command nil
-           ;; Command to open image link via `markdown-follow-*' commands
-           markdown-open-image-command nil
-           markdown-asymmetric-header nil
-           ;; markdown-marginalize-headers t
-           markdown-list-item-bullets '("●" "◎" "○" "◆" "◇" "►" "•")
-           ;; markdown-code-lang-modes
-           ;; markdown-link-space-sub-char " "
-           markdown-enable-math t
-           markdown-reference-location 'subtree
-           ;; markdown-hide-markup t
-           markdown-hide-urls t
-           ;; markdown-enable-wiki-links t
-           ;; markdown-wiki-link-fontify-missing t
-           ;; markdown-wiki-link-search-type 'project
-           ))
-
-;;;; rust
-
-(require 'helheim-rust)
-
-;;;; yaml
-
-(leaf yaml-pro
-  :straight t
-  :hook (yaml-ts-mode-hook . yaml-pro-ts-mode))
 
 ;;; Keybindings
 
@@ -697,33 +582,34 @@
 (require 'helheim-keybindings)
 (require 'helheim-disable-isearch)
 
-(hel-keymap-global-set
-  "C-k"   nil ;; unbind `kill-line'
-  "M-j"   nil ;; unbind `default-indent-new-line'
-  "M-;"   'eval-expression
-  "C-M-;" 'repeat-complex-command)
+(setup emacs
+  (:global-unbind
+    "C-k"  ;; `kill-line'
+    "M-j") ;; `default-indent-new-line'
+  (:global-bind
+    "M-;"   'eval-expression
+    "C-M-;" 'repeat-complex-command))
 
-(hel-keymap-global-set :state '(normal motion)
-  "<backspace>" 'execute-extended-command)
+(setup hel
+  (:global-bind :state '(normal motion)
+    "<backspace>" 'execute-extended-command)
+  (:global-bind :state 'normal
+    "C-;" 'hel-exchange-point-and-mark
+    "M-;"  nil) ;; unbind `hel-exchange-point-and-mark'
+  (:global-bind :state 'insert
+    "C-w" 'backward-kill-word ;; along with "C-backspace"
+    ;; "C-"h   'delete-backward-char
+    ;; "C-/" 'dabbrev-expand
+    )
+  (:with-keymap hel-window-map ;; "C-w"
+    (:bind "N" 'other-tab-prefix))
+  (:with-keymaps (prog-mode-map
+                  text-mode-map)
+    (:bind :state 'insert
+      "C-h" 'backward-delete-char-untabify)))
 
-(hel-keymap-global-set :state 'normal
-  "M-;"  nil ; unbind `hel-exchange-point-and-mark'
-  "C-;" 'hel-exchange-point-and-mark)
-
-;; "C-w"
-(hel-keymap-set hel-window-map
-  "N" 'other-tab-prefix)
-
-(hel-keymap-global-set :state 'insert
-  "C-w" 'backward-kill-word ; along with "C-backspace"
-  ;; "C-"h   'delete-backward-char
-  ;; "C-/" 'dabbrev-expand
-  )
-
-(hel-keymap-set corfu-map
-  "C-l" 'corfu-insert-separator)
-
-(hel-keymap-set lisp-mode-shared-map :state 'insert
-  "C-h" 'backward-delete-char-untabify)
+(with-eval-after-load 'corfu
+  (hel-keymap-set corfu-map
+    "C-l" 'corfu-insert-separator))
 
 ;;; init.el ends here
