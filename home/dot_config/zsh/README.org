@@ -524,8 +524,8 @@ fi
 source ${ZIM_HOME}/init.zsh
 #+end_src
 
-** Autoload custom functions
-#+begin_src sh
+** Autoload custom function
+#+begin_src zsh
 if [[ -d "${ZDOTDIR}/functions" ]]; then
   fpath+=("${ZDOTDIR}/functions")
   autoload -Uz $(echo -n $(find "$ZDOTDIR/functions/" -maxdepth 1 -type f))
@@ -543,7 +543,6 @@ fi
 #+end_src
 
 ** [[https://github.com/zsh-users/zsh-syntax-highlighting][zsh-syntax-highlighting]]
-
 #+begin_src zsh
 ZSH_HIGHLIGHT_HIGHLIGHTERS+=(brackets)
 #+end_src

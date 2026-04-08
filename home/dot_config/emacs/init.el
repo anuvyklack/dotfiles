@@ -314,7 +314,7 @@
         [remap edit-indirect-abort]  'separedit-abort
         [remap save-buffer]          'separedit-save))))
 
-;;;; emacs-everywhere
+;;;; emacs-server
 
 (setup server
   (:built-in)

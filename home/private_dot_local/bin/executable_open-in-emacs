@@ -1,0 +1,8 @@
+#!/bin/env bash
+
+if [ -n "$*" ]; then
+  emacsclient --no-wait --alternate-editor=emacs "$@"
+else
+  emacs --maximized
+  # emacsclient --no-wait --alternate-editor=emacs --create-frame
+fi
