@@ -37,9 +37,8 @@ export LOCAL_STOW_DIR="$HOME/.local/stow"
 typeset -gU path fpath cdpath mailpath
 
 path+=(
-  $HOME/.local/bin
-  $HOME/bin
-  $HOME/.emacs.d/bin # Doom Emacs
+  $XDG_BIN_HOME
+  $XDG_CONFIG_HOME/doom-emacs/bin
   /usr/local/{bin,sbin}
   # /opt/visit/bin
   # /opt/ParaView-5.8.1/bin
