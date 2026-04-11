@@ -99,10 +99,6 @@
                            ("https" . "127.0.0.1:10809"))
       gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
-(when (< emacs-major-version 31)
-  (load-file (expand-file-name "prepare-user-lisp.el" user-lisp-directory))
-  (prepare-user-lisp))
-
 (setq helheim-package-manager 'elpaca) ;; or 'straight
 (require 'helheim-core)
 (require 'helheim-minibuffer)
@@ -162,48 +158,6 @@
 
 (require 'helheim-notmuch)
 (require 'helheim-chezmoi)  ; Integration with chezmoi dotfile manager
-
-;;;; Major modes
-
-(require 'helheim-emacs-lisp)
-(require 'helheim-sh)
-(require 'helheim-rust)
-
-(setup markdown
-  (:require helheim-markdown)
-  (setopt
-   ;; Command to call standalone Markdown previewer
-   markdown-open-command nil
-   ;; Command to open image link via `markdown-follow-*' commands
-   markdown-open-image-command nil
-   markdown-asymmetric-header nil
-   ;; markdown-marginalize-headers t
-   markdown-list-item-bullets '("●" "◎" "○" "◆" "◇" "►" "•")
-   ;; markdown-code-lang-modes
-   ;; markdown-link-space-sub-char " "
-   markdown-enable-math t
-   markdown-reference-location 'subtree
-   ;; markdown-hide-markup t
-   markdown-hide-urls t
-   ;; markdown-enable-wiki-links t
-   ;; markdown-wiki-link-fontify-missing t
-   ;; markdown-wiki-link-search-type 'project
-   ))
-
-(setup yaml-pro
-  (:install t)
-  (:hook yaml-ts-mode-hook yaml-pro-ts-mode))
-
-(setup add-log
-  (setopt add-log-keep-changes-together t
-          add-log-dont-create-changelog-file nil)
-  (:global-bind
-    "C-c p a" '("Add ChangeLog" . add-change-log-entry-other-window)) ;; "C-x 4 a"
-  (:after-load
-    (:with-keymap change-log-mode-map
-      (:bind :state 'normal
-        "] c" 'add-log-edit-next-comment
-        "[ c" 'add-log-edit-prev-comment))))
 
 ;;; My config
 
@@ -317,12 +271,11 @@
 ;;;; emacs-server
 
 (setup server
-  (:built-in)
+  (:require t)
   (:when (display-graphic-p))
   (when-let* ((name (getenv "EMACS_SERVER_NAME")))
     (setq server-name name))
-  (unless (server-running-p)
-    (server-start)))
+  (unless (server-running-p) (server-start)))
 
 ;; Entry points into this package are autoloaded; i.e. the `emacs-everywhere'
 ;; function, meant to be called directly via emacsclient. See this module's
@@ -575,6 +528,54 @@
 ;;   ;; (setopt org-supertag-sync-directories '("~/notes/" "~/Private/")
 ;;   ;;         org-supertag-sync-directories-mode 'vaults)
 ;;   )
+
+;;; Major modes
+
+(require 'helheim-emacs-lisp)
+(require 'helheim-rust)
+
+(setup add-log
+  (setopt add-log-keep-changes-together t
+          add-log-dont-create-changelog-file nil)
+  (:global-bind
+    "C-c p a" '("Add ChangeLog" . add-change-log-entry-other-window)) ;; "C-x 4 a"
+  (:after-load
+    (:with-keymap change-log-mode-map
+      (:bind :state 'normal
+        "] c" 'add-log-edit-next-comment
+        "[ c" 'add-log-edit-prev-comment))))
+
+(setup markdown
+  (:require helheim-markdown)
+  (setopt
+   ;; Command to call standalone Markdown previewer
+   markdown-open-command nil
+   ;; Command to open image link via `markdown-follow-*' commands
+   markdown-open-image-command nil
+   markdown-asymmetric-header nil
+   ;; markdown-marginalize-headers t
+   markdown-list-item-bullets '("●" "◎" "○" "◆" "◇" "►" "•")
+   ;; markdown-code-lang-modes
+   ;; markdown-link-space-sub-char " "
+   markdown-enable-math t
+   markdown-reference-location 'subtree
+   ;; markdown-hide-markup t
+   markdown-hide-urls t
+   ;; markdown-enable-wiki-links t
+   ;; markdown-wiki-link-fontify-missing t
+   ;; markdown-wiki-link-search-type 'project
+   ))
+
+(setup sh
+  (:require helheim-sh)
+  (setopt sh-basic-offset 2)
+  (:hook (sh-mode-hook
+          bash-ts-mode-hook)
+         (lambda () (setq tab-width 2))))
+
+(setup yaml-pro
+  (:install t)
+  (:hook yaml-ts-mode-hook yaml-pro-ts-mode))
 
 ;;; Keybindings
 
