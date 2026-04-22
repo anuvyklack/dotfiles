@@ -40,6 +40,10 @@ then
 	source ${EMACS_VTERM_PATH}/etc/emacs-vterm-zsh.sh
 fi
 
+if [[ -n "$EAT_SHELL_INTEGRATION_DIR" ]]; then
+   source "$EAT_SHELL_INTEGRATION_DIR/zsh"
+fi
+
 ZSH_HIGHLIGHT_HIGHLIGHTERS+=(brackets)
 
 ZSH_AUTOSUGGEST_MANUAL_REBIND=1

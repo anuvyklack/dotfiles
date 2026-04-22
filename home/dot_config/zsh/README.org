@@ -531,13 +531,20 @@ if [[ -d "${ZDOTDIR}/functions" ]]; then
 fi
 #+end_src
 
-** [[https://github.com/akermu/emacs-libvterm?tab=readme-ov-file#directory-tracking-and-prompt-tracking][vterm]]
+** [[https://github.com/akermu/emacs-libvterm?tab=readme-ov-file#directory-tracking-and-prompt-tracking][Emacs vterm]]
 #+begin_src zsh
 if [[ "$INSIDE_EMACS" = 'vterm' ]] \
     && [[ -n ${EMACS_VTERM_PATH} ]] \
     && [[ -f ${EMACS_VTERM_PATH}/etc/emacs-vterm-zsh.sh ]]
 then
 	source ${EMACS_VTERM_PATH}/etc/emacs-vterm-zsh.sh
+fi
+#+end_src
+
+** [[https://codeberg.org/akib/emacs-eat][Emacs eat]]
+#+begin_src zsh
+if [[ -n "$EAT_SHELL_INTEGRATION_DIR" ]]; then
+   source "$EAT_SHELL_INTEGRATION_DIR/zsh"
 fi
 #+end_src
 
