@@ -144,22 +144,35 @@
 (require 'helheim-diff-hl)  ; git gutter
 (require 'helheim-ediff)
 
+;;;; Terminal emulators
+;; Requires shell-side configuration!
+
+(require 'helheim-eat)   ; written in emacs-lisp
+(require 'helheim-vterm) ; libvterm C library
+
+;;;; LLM
+
+(require 'helheim-agent-shell)
+
 ;;;; Other modules
 
-(require 'helheim-dired)    ; File-manager
-(require 'helheim-embark)   ; Context-aware action menus
-(require 'helheim-ibuffer)  ; Buffers menu
-(require 'helheim-outline)  ; See "Outline Mode" in Emacs manual
-(require 'helheim-tab-bar)  ; Each tab represents a set of windows, as in Vim
-(require 'helheim-whisper) ;; Speech to text conversion
+(require 'helheim-dired)   ; File-manager
+(require 'helheim-embark)  ; Context-aware action menus
+(require 'helheim-ibuffer) ; Buffers menu
+(require 'helheim-outline) ; See "Outline Mode" in Emacs manual
+(require 'helheim-tab-bar) ; Each tab represents a set of windows, as in Vim
+(require 'helheim-browser) ; Synchronize online text editor with Emacs buffer
 
-(require 'helheim-vterm)    ; Terminal emulator. Needs shell side configuration!
+(setup helheim-whisper ; Speech to text conversion
+  (:require t)
+  (setopt whisper-model "small"))
+
 (require 'helheim-edit-indirect) ; Alternative "zn" binding
 
 (require 'helheim-notmuch)
 (require 'helheim-chezmoi)  ; Integration with chezmoi dotfile manager
 
-;;; My config
+;;; My custom config
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
@@ -175,12 +188,61 @@
 
 ;; (setup imenu-list (:install t))
 
-;;;; Russian language
+;;;; cape
 
-(setopt default-input-method 'russian-computer)
-(prefer-coding-system 'cp1251)
-(prefer-coding-system 'utf-8)
-(keymap-global-set "C-v" 'toggle-input-method)
+;; (setup cape
+;;   (:global-bind :state 'insert
+;;     ;; Emulate Vim's omni-completion keybinds
+;;     "C-x"   'cape-prefix-map)
+;;   (:with-keymap cape-prefix-map
+;;     (:bind
+;;       "C-o" 'completion-at-point ;; C-x C-o is Vim's omni-completion keybinding
+;;       ;; "C-e" 'cape-elisp-block
+;;       ;; "C-s" 'cape-elisp-symbol
+;;       "/"   'cape-tex
+;;       "C-/" 'cape-tex
+;;       "C-h" 'cape-history
+;;       "C-l" 'cape-line
+;;       "C-k" 'cape-keyword
+;;       "C-f" 'cape-file
+;;       "C-t" 'complete-tag
+;;       "C-w" 'cape-dict
+;;       "C-r" 'cape-rfc1345
+;;       ;; "s"   'cape-dict
+;;       ;; "C-s" 'yasnippet-capf
+;;       "C-a" 'cape-abbrev
+;;       "C-d" 'cape-dabbrev
+;;       "C-n" 'cape-dabbrev
+;;       ;; "C-p" '+corfu/dabbrev-this-buffer
+;;       )))
+
+;;;; dired
+
+;; My custom version.
+(define-advice helheim-dired-do-add-id (:override () custom-version)
+  "Add timestamp based ID in front of the files name, unless it's already there."
+  (dolist (file (dired-get-marked-files))
+    (unless (helheim-dired-file-id file)
+      (let ((filename (file-name-nondirectory file)))
+        (cond
+         ;; Files from Reddit app on android. They have timestamp in their name,
+         ;; like this: RDT_20220820_0858002573777192519160821.jpg
+         ((string-match "^RDT_\\([0-9]\\{8\\}\\)_\\([0-9]\\{6\\}\\)" filename)
+          (let* ((date (match-string-no-properties 1 filename))
+                 (time (match-string-no-properties 2 filename))
+                 (extension (file-name-extension file))
+                 (newname (format "%sT%s.%s" date time extension)))
+            (rename-file file newname)))
+         (t
+          (let* ((id (helheim-dired-generate-file-id file))
+                 (newname (format "%s--%s" id filename)))
+            (rename-file file newname)))))))
+  (dired-revert))
+
+;;;; project.el
+
+(hel-keymap-set project-prefix-map
+  "b" 'project-list-buffers)
 
 ;;;; rainbow-mode
 
@@ -206,33 +268,12 @@
   ;; (put 'tab-previous 'repeat-map nil)
   )
 
-;;;; project.el
+;;;; russian language
 
-(hel-keymap-set project-prefix-map
-  "b" 'project-list-buffers)
-
-;;;; Dired
-
-;; My custom version.
-(define-advice helheim-dired-do-add-id (:override () custom-version)
-  "Add timestamp based ID in front of the files name, unless it's already there."
-  (dolist (file (dired-get-marked-files))
-    (unless (helheim-dired-file-id file)
-      (let ((filename (file-name-nondirectory file)))
-        (cond
-         ;; Files from Reddit app on android. They have timestamp in their name,
-         ;; like this: RDT_20220820_0858002573777192519160821.jpg
-         ((string-match "^RDT_\\([0-9]\\{8\\}\\)_\\([0-9]\\{6\\}\\)" filename)
-          (let* ((date (match-string-no-properties 1 filename))
-                 (time (match-string-no-properties 2 filename))
-                 (extension (file-name-extension file))
-                 (newname (format "%sT%s.%s" date time extension)))
-            (rename-file file newname)))
-         (t
-          (let* ((id (helheim-dired-generate-file-id file))
-                 (newname (format "%s--%s" id filename)))
-            (rename-file file newname)))))))
-  (dired-revert))
+(setopt default-input-method 'russian-computer)
+(prefer-coding-system 'cp1251)
+(prefer-coding-system 'utf-8)
+(keymap-global-set "C-v" 'toggle-input-method)
 
 ;;;; separedit
 
@@ -268,19 +309,14 @@
         [remap edit-indirect-abort]  'separedit-abort
         [remap save-buffer]          'separedit-save))))
 
-;;;; emacs-server
+;;;; DISABLE treesit-auto
 
-(setup server
-  (:require t)
-  (:when (display-graphic-p))
-  (when-let* ((name (getenv "EMACS_SERVER_NAME")))
-    (setq server-name name))
-  (unless (server-running-p) (server-start)))
-
-;; Entry points into this package are autoloaded; i.e. the `emacs-everywhere'
-;; function, meant to be called directly via emacsclient. See this module's
-;; readme for details.
-(setup emacs-everywhere (:install t))
+;; (setup treesit-auto
+;;   (:straight t)
+;;   (:require t)
+;;   (setopt treesit-auto-install 'prompt)
+;;   (treesit-auto-add-to-auto-mode-alist 'all)
+;;   (global-treesit-auto-mode))
 
 ;;; Org mode
 
@@ -360,12 +396,12 @@
                           (auto-mode . emacs)
                           ("\\.x?html?\\'" . default)))
   ;; Capture templates
-  (setopt org-capture-templates '(("j" "journal" plain
-                                   (file+olp+datetree +org-capture-journal-file)
-                                   "%?"
-                                   :empty-lines-before 1
-                                   ;; :kill-buffer t
-                                   )))
+  ;; (setopt org-capture-templates '(("j" "journal" plain
+  ;;                                  (file+olp+datetree +org-capture-journal-file)
+  ;;                                  "%?"
+  ;;                                  :empty-lines-before 1
+  ;;                                  ;; :kill-buffer t
+  ;;                                  )))
   ;; babel
   (setopt org-babel-load-languages '((sql . t)
                                      (shell . t)
@@ -390,7 +426,7 @@
           ;; • ◦ ‣ ￭ ■ ⋄ ○ □ ▬ ▶ ▸ ◂ ◆
           org-superstar-item-bullet-alist '((?- . ?•)
                                             (?+ . ?◦)
-                                            (?* . ?◆))))
+                                            (?* . ?‣))))
 (setup org-pretty-tags
   (:install t)
   (:after org)
@@ -450,11 +486,11 @@
   (:after org)
   (:hook org-mode-hook org-fragtog-mode)
   (setopt org-startup-with-latex-preview t
-          org-format-latex-options (-> org-format-latex-options
-                                       (plist-put :scale 0.8)
-                                       ;; (plist-put :foreground 'auto)
-                                       ;; (plist-put :background 'auto)
-                                       )))
+          org-format-latex-options (-doto org-format-latex-options
+                                     (plist-put :scale 0.8)
+                                     ;; (plist-put :foreground 'auto)
+                                     ;; (plist-put :background 'auto)
+                                     )))
 
 ;;;; org-tempo
 
