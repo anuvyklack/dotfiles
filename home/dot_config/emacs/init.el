@@ -165,7 +165,10 @@
 
 (setup helheim-whisper ; Speech to text conversion
   (:require t)
-  (setopt whisper-model "small"))
+  (setopt whisper-install-whispercpp 'manual
+          whisper-install-directory "~/soft/"
+          whisper-enable-speed-up t ;; WARNING
+          whisper-model "small"))
 
 (require 'helheim-edit-indirect) ; Alternative "zn" binding
 
@@ -309,6 +312,13 @@
         [remap edit-indirect-abort]  'separedit-abort
         [remap save-buffer]          'separedit-save))))
 
+;;;; server
+
+(setup server
+  (:require t)
+  (:when (display-graphic-p))
+  (unless (server-running-p) (server-start)))
+
 ;;;; DISABLE treesit-auto
 
 ;; (setup treesit-auto
@@ -318,7 +328,8 @@
 ;;   (treesit-auto-add-to-auto-mode-alist 'all)
 ;;   (global-treesit-auto-mode))
 
-;;; Org mode
+;;; Org-mode
+;;;; org-mode
 
 (setup org
   ;; Following variables must be set before `org' is loaded!
@@ -361,7 +372,6 @@
           ;; org-fontify-quote-and-verse-blocks nil
           ;; org-level-color-stars-only nil
           )
-  ;;
   ;; (setopt org-todo-keywords
   ;;         '((sequence "󰒅" "󰄱" "󰡖" "" "|" "󰄵" "󱈎" "󰅘") ;; 󰔌 󱗝 󰜄 󰤌
   ;;           ;; (sequence "󰃃" "" "|" "󱍻")
@@ -388,6 +398,8 @@
   ;; footnotes
   (setopt org-footnote-define-inline nil
           org-footnote-auto-adjust t)
+  ;; LaTeX preview
+  (setopt org-preview-latex-default-process 'xelatex)
   ;; org-attach
   (setopt org-file-apps '((system . "xdg-open %s")
                           ("\\.pdf\\'" . system)
@@ -395,13 +407,6 @@
                           (directory . system)
                           (auto-mode . emacs)
                           ("\\.x?html?\\'" . default)))
-  ;; Capture templates
-  ;; (setopt org-capture-templates '(("j" "journal" plain
-  ;;                                  (file+olp+datetree +org-capture-journal-file)
-  ;;                                  "%?"
-  ;;                                  :empty-lines-before 1
-  ;;                                  ;; :kill-buffer t
-  ;;                                  )))
   ;; babel
   (setopt org-babel-load-languages '((sql . t)
                                      (shell . t)
@@ -412,7 +417,15 @@
           org-confirm-babel-evaluate nil
           ;; Use PlantUML executable instead of `.jar' file together with Java.
           org-plantuml-exec-mode 'plantuml
-          org-plantuml-jar-path (expand-file-name "~/.nix-profile/lib/plantuml.jar")))
+          org-plantuml-jar-path (expand-file-name "~/.nix-profile/lib/plantuml.jar"))
+  ;; Capture templates
+  ;; (setopt org-capture-templates '(("j" "journal" plain
+  ;;                                  (file+olp+datetree +org-capture-journal-file)
+  ;;                                  "%?"
+  ;;                                  :empty-lines-before 1
+  ;;                                  ;; :kill-buffer t
+  ;;                                  )))
+  )
 
 ;;;; Org appearence
 
@@ -535,6 +548,18 @@
 (setup org-auto-tangle
   (:install t)
   (:hook org-mode-hook org-auto-tangle-mode))
+
+;;;; pandoc-mode
+
+(setup pandoc-mode
+  (:install t)
+  (:when (executable-find "pandoc"))
+  (:hook markdown-mode-hook)
+  (:with-keymap pandoc-mode-map
+    (:unbind "C-c /")
+    (:bind ", /" '("pandoc" . pandoc-main-transient)))
+  ;; (:hook markdown-mode-hook conditionally-turn-on-pandoc)
+  )
 
 ;;;; zotero integration
 
