@@ -63,12 +63,12 @@
 
 ;; In the modeline, we’re not restricted by a rigid grid, and non-monospace
 ;; Powerline symbols look better.
-(helheim-set-fontset-font "Symbols Nerd Font"
+(helheim-set-fontset-font "Symbols Nerd Font Mono" ;; "Symbols Nerd Font"
   `(;; Powerline Symbols
     (#xe0a0 . #xe0a2) ;;  
     (#xe0b0 . #xe0b3) ;;  
     ;; Powerline Extra Symbols
-    (#xe0b4 . #xe0c8) ;;  
+    (#xe0b4 . #xe0c8) ;;   
     (#xe0cc . #xe0d7) ;;  
     #xe0a3 #xe0ca))   ;;  
 
@@ -99,7 +99,7 @@
                            ("https" . "127.0.0.1:10809"))
       gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
-(setq helheim-package-manager 'elpaca) ;; or 'straight
+;; (setq helheim-package-manager 'elpaca) ;; or 'straight
 (require 'helheim-core)
 (require 'helheim-minibuffer)
 (require 'helheim-completion)
@@ -149,19 +149,27 @@
 
 (require 'helheim-eat)   ; written in emacs-lisp
 (require 'helheim-vterm) ; libvterm C library
+(require 'helheim-ghostel)
 
 ;;;; LLM
 
 (setup agent-shell
-  (:require helheim-agent-shell)
-  ;; (:after-load
-  ;;   (:with-keymap agent-shell-mode-map
-  ;;     ;; State-specific Enter behavior:
-  ;;     ;; - insert state = newline
-  ;;     ;; - normal state = send
-  ;;     (:bind :state 'insert "RET" 'newline)
-  ;;     (:bind :state 'normal "RET" 'comint-send-input)))
-  )
+  (require 'helheim-agent-shell)
+  (setopt agent-shell-preferred-agent-config 'claude-code
+          agent-shell-session-strategy 'prompt
+          ;; agent-shell-prefer-viewport-interaction nil
+          ;; agent-shell-tool-use-expand-by-default nil
+          ;; agent-shell-user-message-expand-by-default nil
+          )
+  (:after-load
+    (:with-keymap agent-shell-mode-map
+      ;; State-specific Enter behavior:
+      ;; - insert state = newline
+      ;; - normal state = send
+      (:bind :state 'insert "RET" 'newline)
+      (:bind :state 'normal "RET" 'comint-send-input))))
+
+(require 'helheim-mcp-server)
 
 ;;;; Other modules
 
@@ -169,6 +177,7 @@
 (require 'helheim-embark)  ; Context-aware action menus
 (require 'helheim-ibuffer) ; Buffers menu
 (require 'helheim-outline) ; See "Outline Mode" in Emacs manual
+(require 'helheim-notmuch) ; Notmuch email client
 (require 'helheim-tab-bar) ; Each tab represents a set of windows, as in Vim
 (require 'helheim-browser) ; Synchronize online text editor with Emacs buffer
 
@@ -181,12 +190,11 @@
 
 (require 'helheim-edit-indirect) ; Alternative "zn" binding
 
-(require 'helheim-notmuch)
 (require 'helheim-chezmoi)  ; Integration with chezmoi dotfile manager
 
 ;;; My custom config
 
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(setf (alist-get 'fullscreen initial-frame-alist) 'maximized)
 
 (setopt user-full-name "Yuriy Artemyev"
         user-mail-address "anuvyklack@gmail.com"
@@ -332,7 +340,7 @@
         [remap edit-indirect-abort]  'separedit-abort
         [remap save-buffer]          'separedit-save))))
 
-;;;; server
+;;;; emacs-server
 
 (setup server
   (:require t)
@@ -408,26 +416,26 @@
   ;; Consider all nested entries in the subtree for cookies.
   ;; [[info:org#Breaking Down Tasks]]
   (setopt org-hierarchical-todo-statistics nil)
-  ;; tags
+  ;; --- tags ---
   ;; (setopt org-use-tag-inheritance nil)
   (setopt org-tags-match-list-sublevels nil)
   (:after-load
     (add-to-list 'org-tags-exclude-from-inheritance "00")
-    ;; (cl-callf append org-tags-exclude-from-inheritance '("00"))
+    ;; (cl-callf -snoc org-tags-exclude-from-inheritance "00")
     )
-  ;; footnotes
+  ;; --- footnotes ---
   (setopt org-footnote-define-inline nil
           org-footnote-auto-adjust t)
-  ;; LaTeX preview
+  ;; --- LaTeX preview ---
   (setopt org-preview-latex-default-process 'xelatex)
-  ;; org-attach
+  ;; --- org-attach ---
   (setopt org-file-apps '((system . "xdg-open %s")
                           ("\\.pdf\\'" . system)
                           ("\\.djvu?\\'" . system)
                           (directory . system)
                           (auto-mode . emacs)
                           ("\\.x?html?\\'" . default)))
-  ;; babel
+  ;; --- babel ---
   (setopt org-babel-load-languages '((sql . t)
                                      (shell . t)
                                      (emacs-lisp . t)
@@ -438,7 +446,7 @@
           ;; Use PlantUML executable instead of `.jar' file together with Java.
           org-plantuml-exec-mode 'plantuml
           org-plantuml-jar-path (expand-file-name "~/.nix-profile/lib/plantuml.jar"))
-  ;; Capture templates
+  ;; --- Capture templates ---
   ;; (setopt org-capture-templates '(("j" "journal" plain
   ;;                                  (file+olp+datetree +org-capture-journal-file)
   ;;                                  "%?"
@@ -519,11 +527,11 @@
   (:after org)
   (:hook org-mode-hook org-fragtog-mode)
   (setopt org-startup-with-latex-preview t
-          org-format-latex-options (-doto org-format-latex-options
-                                     (plist-put :scale 0.8)
-                                     ;; (plist-put :foreground 'auto)
-                                     ;; (plist-put :background 'auto)
-                                     )))
+          org-format-latex-options (-> org-format-latex-options
+                                       (plist-put :scale 0.8)
+                                       ;; (plist-put :foreground 'auto)
+                                       ;; (plist-put :background 'auto)
+                                       )))
 
 ;;;; org-tempo
 
@@ -648,7 +656,6 @@
 
 ;;; Keybindings
 
-(require 'hel-leader)
 (require 'helheim-keybindings)
 (require 'helheim-disable-isearch)
 
@@ -666,11 +673,9 @@
   (:global-bind :state 'normal
     "C-;" 'hel-exchange-point-and-mark
     "M-;"  nil) ;; unbind `hel-exchange-point-and-mark'
-  (:global-bind :state 'insert
-    "C-w" 'backward-kill-word ;; along with "C-backspace"
-    ;; "C-"h   'delete-backward-char
-    ;; "C-/" 'dabbrev-expand
-    )
+  ;; (:global-bind :state 'insert
+  ;;   "C-"h   'delete-backward-char
+  ;;   "C-/" 'dabbrev-expand)
   (:with-keymap hel-window-map ;; "C-w"
     (:bind "N" 'other-tab-prefix))
   (:with-keymaps (prog-mode-map
