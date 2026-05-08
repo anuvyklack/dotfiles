@@ -80,6 +80,10 @@ copy-on-select = true
 # Use <C-g> as leader key. The same as in Tmux, because I will use eighter
 # ghostty tabs or tmux one.
 
+# Send a single C-g to the app on pressing leader twice, like tmux.
+# \x07 = BEL = Ctrl+G
+keybind = ctrl+g>ctrl+g=text:\x07
+
 # General
 keybind = ctrl+g>r=reload_config
 keybind = ctrl+g>a=select_all
