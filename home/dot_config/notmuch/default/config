@@ -47,6 +47,8 @@ other_email=artyuriy@outlook.com;artyuriy@rambler.ru;
 #		in the mail store.
 #
 [new]
+# Mark all new messages with a temporary “new” tag. These messages will then be
+# processed in the Notmuch post-new hook.
 tags=new
 ignore=/.*[.](json|lock|bak)$/
 
