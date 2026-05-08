@@ -67,10 +67,12 @@ if whence /home/linuxbrew/.linuxbrew/bin/brew > /dev/null 2>&1; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
 fi
 
-if (( $+commands[nvim] )); then
+export VISUAL="emacsclient --create-frame --alternate-editor=emacs"
+
+if (( $+commands[hx] )); then
+  export EDITOR='hx'
+elif (( $+commands[nvim] )); then
   export EDITOR='nvim'
-  export VISUAL="$EDITOR"
-  export DIFFPROG='nvim -d'
 else
   export EDITOR='vim'
 fi
