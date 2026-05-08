@@ -463,6 +463,11 @@ fi
 export QT_AUTO_SCREEN_SCALE_FACTOR=1
 #+end_src
 
+** GTK
+#+begin_src sh
+export GDK_BACKEND=wayland
+#+end_src
+
 ** Footer
 #+begin_src sh
 # vim: ft=zsh tw=80 ts=2 sw=2
