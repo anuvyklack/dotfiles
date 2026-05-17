@@ -55,9 +55,9 @@
     bfs
     # delta
     zoxide
-    jq      # A lightweight and flexible command-line JSON processor
-    # yq-go   # yaml processer: https://github.com/mikefarah/yq
-    eza     # Maitained exa fork
+    jq   # A lightweight and flexible command-line JSON processor
+    # yq-go  # yaml processer: https://github.com/mikefarah/yq
+    eza  # Maitained exa fork
     yazi # file manager
     ueberzugpp
 

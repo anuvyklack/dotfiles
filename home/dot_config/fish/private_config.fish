@@ -1,40 +1,17 @@
 if status is-interactive
     # Commands to run in interactive sessions
 
-    # Disable greeting message
-    set fish_greeting
-
     #---------------------------------------------------------------------------
     # Color theme tuning
     #---------------------------------------------------------------------------
-    set tide_character_icon            
-    set tide_character_vi_icon_default 
-    set tide_character_vi_icon_visual  
-    set tide_character_vi_icon_replace 
+    set -g tide_character_icon            
+    set -g tide_character_vi_icon_default 
+    set -g tide_character_vi_icon_visual  
+    set -g tide_character_vi_icon_replace 
 
-    set tide_character_color         dc5bfc #dc5bfc
-    set tide_character_color_failure e06c75 #e06c75
-    set tide_git_color_branch        d1a166 #d1a166
-
-    #---------------------------------------------------------------------------
-    # Emulates vim's cursor shape behavior
-    #---------------------------------------------------------------------------
-    # Set the normal and visual mode cursors to a block
-    set fish_cursor_default block
-    # Set the insert mode cursor to a line
-    set fish_cursor_insert underscore
-    # Set the replace mode cursors to an underscore
-    set fish_cursor_replace_one underscore
-    set fish_cursor_replace underscore
-    # Set the external cursor to a line. The external cursor appears when
-    # a command is started. The cursor shape takes the value of
-    # fish_cursor_default when fish_cursor_external is not specified.
-    set fish_cursor_external line
-    # The following variable can be used to configure cursor shape in
-    # visual mode, but due to fish_cursor_default, is redundant here
-    set fish_cursor_visual block
-
-    set -g fish_vi_force_cursor 1
+    set -g tide_character_color         dc5bfc #dc5bfc
+    set -g tide_character_color_failure e06c75 #e06c75
+    set -g tide_git_color_branch        d1a166 #d1a166
 
     #---------------------------------------------------------------------------
     # Extra tools
@@ -50,20 +27,41 @@ if status is-interactive
     #---------------------------------------------------------------------------
     # Keybindings
     #---------------------------------------------------------------------------
-    # commandline -P :: Evaluates to true if the commandline is showing pager
+    # commandline -P — Evaluates to true if the commandline is showing pager
     #                   contents, such as tab completions.
 
-    # # Use Ctrl + hjkl to navigate pager.
-    # bind -M insert \cj 'commandline -P; and down-or-search; or commandline -i j'
-    # bind -M insert \ck 'commandline -P; and up-or-search; or commandline -i k'
-    # bind -M insert \ch 'commandline -P; and commandline -f backward-char; or commandline -i h'
-    # bind -M insert \cl 'commandline -P; and commandline -f forward-char; or commandline -i l'
+    # Ctrl+hjkl — same as arrow keys (works in pager and commandline).
+    # ctrl-j intentionally overrides the default Enter/execute behavior.
+    bind -M insert ctrl-h 'commandline -f backward-char'
+    bind -M insert ctrl-j 'commandline -f down-line'
+    bind -M insert ctrl-k 'commandline -f up-line'
+    bind -M insert ctrl-l 'commandline -f forward-char'
+
+    # hjkl — navigate pager when pager is visible, otherwise self-insert
+    bind -M insert h 'commandline -P; and commandline -f backward-char; or commandline -i h'
+    bind -M insert j 'commandline -P; and commandline -f down-line; or commandline -i j'
+    bind -M insert k 'commandline -P; and commandline -f up-line; or commandline -i k'
+    bind -M insert l 'commandline -P; and commandline -f forward-char; or commandline -i l'
 
     # / :: slash key starts search in completion pager (like in Vim)
     bind -M insert / 'commandline -P; and commandline -f pager-toggle-search; or commandline -i /'
 
     # Ctrl + o :: Open yazi file manager and cd on exit
-    bind -M insert \cO 'yy; commandline -f repaint'
+    bind -M insert ctrl-o 'yy; commandline -f repaint'
+
+    # fish-helix
+    for mode in default visual
+        # G: go to last line (no count) or line N (with count) — Vim style
+        bind -M $mode G 'if test "$fish_bind_count" = 0
+            fish_helix_command goto_last_line
+        else
+            fish_helix_command goto_line
+        end'
+        # C-; :: alias for M-; (swap selection start/stop)
+        # x   :: alias for % (select entire buffer)
+        bind -M $mode 'ctrl-;' swap-selection-start-stop
+        bind -M $mode x 'fish_helix_command select_all'
+    end
 
     #---------------------------------------------------------------------------
     # Aliases & Abbreviations
@@ -101,6 +99,7 @@ if status is-interactive
         alias ll="eza -lF --group-directories-first --git"
     else
         alias ls="ls --color=auto --group-directories-first"
+        alias ll="ls -lF --group-directories-first"
     end
 
 end # status is-interactive

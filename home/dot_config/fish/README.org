@@ -1,0 +1,151 @@
+#+title: fish-helix Keybindings
+
+Reference for keybindings provided by the
+[[https://github.com/sshilovsky/fish-helix][fish-helix]] plugin.
+
+* Overview
+
+fish-helix brings Helix-style modal editing to the Fish shell. The central
+idea: *selections are the primary editing primitive*. In Normal mode every
+movement lands on a new 1-character selection. In Visual mode movements
+extend the existing selection. Press =0=–=9= before any Normal or Visual
+command to repeat it N times.
+
+Four modes are available:
+
+| Mode        | Description                                  |
+|-------------+----------------------------------------------|
+| Insert      | Default on startup — type normally          |
+| Normal      | Navigate and edit via selections             |
+| Visual      | Extend a selection, then act on it           |
+| Replace-one | Replace a single character, return to Normal |
+
+* Mode Switching
+
+| From          | Key     | To          | Notes                          |
+|---------------+---------+-------------+--------------------------------|
+| Insert        | =Esc=     | Normal      |                                |
+| Normal/Visual | =i=       | Insert      | Cursor before selection        |
+| Normal/Visual | =I=       | Insert      | Cursor at first non-whitespace |
+| Normal/Visual | =a=       | Insert      | Cursor after selection         |
+| Normal/Visual | =A=       | Insert      | Cursor at end of line          |
+| Normal/Visual | =o=       | Insert      | Open new line below            |
+| Normal/Visual | =O=       | Insert      | Open new line above            |
+| Normal/Visual | =C-c=     | Insert      | Cancel selection               |
+| Normal/Visual | =RET=     | —          | Execute command                |
+| Normal        | =v=       | Visual      |                                |
+| Visual        | =v= / =Esc= | Normal      |                                |
+| Normal/Visual | =r=       | Replace-one |                                |
+
+* Normal Mode
+** Navigation
+
+| Key        | Action                                 |
+|------------+----------------------------------------|
+| =h= / =←=     | Character left                         |
+| =l= / =→=     | Character right                        |
+| =k= / =↑=      | Line up / history search backward      |
+| =j= / =↓=      | Line down / history search forward     |
+| =w=          | Next word start                        |
+| =b=          | Previous word start                    |
+| =e=          | Next word end                          |
+| =W=          | Next WORD start (whitespace-delimited) |
+| =B=          | Previous WORD start                    |
+| =E=          | Next WORD end                          |
+| =gh= / =Home=  | Line start                             |
+| =gl= / =End=   | Line end (before trailing newline)     |
+| =gs=         | First non-whitespace on line           |
+| =gg=         | Buffer start (line 1)                  |
+| =N gg= / =N G= | Go to line N                           |
+| =ge= or =G=    | Last line                              |
+
+** Find / Till
+
+| Key   | Action                                     |
+|-------+--------------------------------------------|
+| =f= /c/   | Find next char /c/ — cursor lands on it     |
+| =t= /c/   | Till next char /c/ — cursor stops before it |
+| =F= /c/   | Find previous char /c/                       |
+| =T= /c/   | Till previous char /c/                       |
+| =f RET= | Find next newline                          |
+| =t RET= | Till next newline                          |
+| =F RET= | Find previous newline                      |
+| =T RET= | Till previous newline                      |
+| =M-.=   | Repeat last jump                           |
+
+** Editing
+
+| Key | Action                                        |
+|-----+-----------------------------------------------|
+| =d=   | Delete selection → killring, stay Normal     |
+| =M-d= | Delete selection without yanking, stay Normal |
+| =c=   | Delete selection, enter Insert                |
+| =M-c= | Delete without yanking, enter Insert          |
+| =y=   | Yank selection → killring, stay Normal       |
+| =p=   | Paste from killring after selection           |
+| =P=   | Paste from killring before selection          |
+| =R=   | Replace selection with killring               |
+| =~=   | Toggle case of selection                      |
+| =u=   | Undo                                          |
+| =U=   | Redo                                          |
+
+** Clipboard  (=SPC= prefix)
+
+| Key   | Action                                  |
+|-------+-----------------------------------------|
+| =SPC y= | Copy selection to system clipboard      |
+| =SPC p= | Paste from system clipboard after       |
+| =SPC P= | Paste from system clipboard before      |
+| =SPC R= | Replace selection from system clipboard |
+
+** Selection
+
+| Key        | Action                        |
+|------------+-------------------------------|
+| =;=          | Begin selection at cursor     |
+| =M-;= or =C-;= | Swap selection start and stop |
+| =%= or =x=     | Select entire buffer          |
+
+* Visual Mode
+
+Visual mode shares all Normal mode bindings; the only difference is that
+movements *extend* the existing selection instead of starting a fresh one.
+
+Additional bindings available only in Visual mode:
+
+| Key | Action                             |
+|-----+------------------------------------|
+| ="*y= | Copy to system clipboard → Normal |
+| =~=   | Toggle case → Normal              |
+
+* Replace-one Mode
+
+Entered from Normal or Visual via =r=.
+
+| Key  | Action                              |
+|------+-------------------------------------|
+| /char/ | Replace char under cursor → Normal |
+| =RET=  | Replace char with newline → Normal |
+| =Esc=  | Cancel → Normal                    |
+
+* Insert Mode
+
+| Key               | Action                                |
+|-------------------+---------------------------------------|
+| =Esc=               | Enter Normal mode                     |
+| (typing)          | Self-insert                           |
+| =SPC= =;= =\vert= =&= =^= =>= =<= =)= | Self-insert and expand abbreviation   |
+| =C-SPC=             | Insert space without expanding abbrev |
+| =RET=               | Execute command                       |
+| =Backspace= / =C-h=   | Delete char backward                  |
+| =Del=               | Delete char forward                   |
+| =S-Del=             | Delete char backward                  |
+
+* X Primary Selection
+
+These bindings work in any mode and require ~xsel~:
+
+| Key | Action                                       |
+|-----+----------------------------------------------|
+| ="*p= | Paste from X primary selection after cursor  |
+| ="*P= | Paste from X primary selection before cursor |
