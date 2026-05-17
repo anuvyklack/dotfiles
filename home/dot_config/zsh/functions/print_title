@@ -2,10 +2,10 @@
 
 function print_title {
     local filler='―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――'
-    string="$(color white bold '――') $@"
-    # sed 's/\x1b\[[0-9;]*m//g'
-    #        :: strip all ANSI color codes from stirng
-    # wc -m  :: print the character counts
-    string_length=$(echo -n $string | sed 's/\x1b\[[0-9;]*m//g' | wc -m)
+    local string="$(color white bold '――') $@"
+    setopt local_options extended_glob
+    local esc=$'\e'
+    local stripped=${string//${esc}\[[0-9;]#m/}
+    local string_length=${#stripped}
     print $string $(color white bold ${filler:0:-$string_length})
 }

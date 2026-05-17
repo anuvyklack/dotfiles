@@ -1,9 +1,7 @@
 #!/usr/bin/env zsh
 
 function n {
-    # Block nesting of nnn in subshells
-    if [ -n $NNNLVL ] && [ "${NNNLVL:-0}" -ge 1 ]
-    then
+    if [[ "${NNNLVL:-0}" -ge 1 ]]; then
         echo "nnn is already running"
         return
     fi
@@ -21,19 +19,19 @@ function n {
     # stty lnext undef
 
     # Save original $LESS value.
-    LESS_ORIG=$LESS
+    local LESS_ORIG=$LESS
 
-    # The less '-F' key make less exit if the content fits on one screen.
-    # But this behavior breakes nnn help ('?' button). So remove this flag from
-    # $LESS env variable and restore it later.
-    LESS=$(echo $LESS_ORIG | sed 's/-F//')
+    # The `-F` flag makes `less` exit immediately if the content fits
+    # on one screen. However, this breaks the `nnn` help screen (`?`).
+    # Remove all '-F' occurrences.
+    LESS="${LESS_ORIG//-F/}"
 
     nnn "$@"
 
     # Restore original $LESS value.
     LESS=$LESS_ORIG
 
-    if [ -f "$NNN_TMPFILE" ]; then
+    if [[ -f "$NNN_TMPFILE" ]]; then
         . "$NNN_TMPFILE"
         rm -f "$NNN_TMPFILE" > /dev/null
     fi

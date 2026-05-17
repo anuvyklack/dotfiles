@@ -1,17 +1,52 @@
+# * Commentary
+#
+# This file is not sourced during shell startup and is only used to configure
+# zimfw.
+
+# * Core
+
 zmodule environment # Sane Zsh built-in environment options.
 zmodule git         # Handy git aliases and functions.
 zmodule input       # Correct bindkeys for input events.
 zmodule termtitle   # Custom terminal title.
+zmodule run-help    # M-h for run-help
 zmodule utility     # Utility aliases and functions. Adds colour to ls, grep and less.
+zmodule archive     # `archive`, `unarchive` and `lsarchive` commands
 
-zmodule duration-info # Exposes how long the last command took to run to prompts.
-zmodule git-info      # Exposes git repository status information to prompts.
-zmodule asciiship     # ASCII-only version of the Spaceship and Starship prompts.
+# * Prompt
 
+# zmodule duration-info # Exposes how long the last command took to run to prompts.
+# zmodule git-info      # Exposes git repository status information to prompts.
+# zmodule asciiship     # ASCII-only version of the Spaceship and Starship prompts.
+
+zmodule joke/zim-starship
+
+# * <-- Normally new modules should be added here
+
+zmodule exa
+zmodule antoineco/zim-zoxide
+zmodule Multirious/zsh-helix-mode
+
+# * Modules that must be initialized last
+
+# Completion
 zmodule zsh-users/zsh-completions --fpath src
 
+# This module calls `compinit`. Must be loaded after all modules that add
+# completion definitions, such as `zsh-users/zsh-completions`.
 zmodule completion
+
+# Must be loaded after `compinit` but before plugins that wrap widgets
+# such as `zsh-autosuggestions` and `zsh-syntax-highlighting`.
+zmodule Aloxaf/fzf-tab
 
 zmodule zsh-users/zsh-syntax-highlighting
 zmodule zsh-users/zsh-history-substring-search
 zmodule zsh-users/zsh-autosuggestions
+
+# * .
+
+# Local Variables:
+# eval: (outli-mode 1)
+# outline-blank-line: nil
+# End:

@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 
 function man {
     # if (( WIDTH > COLUMNS )); then
     #     MANWIDTH=$COLUMNS
     # fi
 
-    LESSOPEN_ORIGINAL=$LESSOPEN
+    local LESSOPEN_ORIGINAL=$LESSOPEN
     export LESSOPEN="|- lesscenter %s"
 
     # export LESS_TERMCAP_mb=$'\E[1;31m'     # begin bold
@@ -20,10 +20,8 @@ function man {
     # character).  Colors are disabled.  See: `man grotty`
     export GROFF_NO_SGR=1
 
-    command man $*
+    command man "$@"
 
     export LESSOPEN=$LESSOPEN_ORIGINAL
-
-    unset LESSOPEN_ORIGINAL
     unset GROFF_NO_SGR
 }
