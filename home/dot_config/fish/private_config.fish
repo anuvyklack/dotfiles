@@ -30,13 +30,6 @@ if status is-interactive
     # commandline -P — Evaluates to true if the commandline is showing pager
     #                   contents, such as tab completions.
 
-    # Ctrl+hjkl — same as arrow keys (works in pager and commandline).
-    # ctrl-j intentionally overrides the default Enter/execute behavior.
-    bind -M insert ctrl-h 'commandline -f backward-char'
-    bind -M insert ctrl-j 'commandline -f down-line'
-    bind -M insert ctrl-k 'commandline -f up-line'
-    bind -M insert ctrl-l 'commandline -f forward-char'
-
     # hjkl — navigate pager when pager is visible, otherwise self-insert
     bind -M insert h 'commandline -P; and commandline -f backward-char; or commandline -i h'
     bind -M insert j 'commandline -P; and commandline -f down-line; or commandline -i j'
