@@ -1,7 +1,16 @@
 ;;; init.el -*- lexical-binding: t; no-byte-compile: t -*-
 ;;; Helheim
 ;;;; Fonts
-;;
+
+(require 'cl-macs)
+
+(cl-defun helheim-set-fontset-font (font charsets &key (fontset t) add)
+  "Force some code point diapasons to use particular FONT."
+  (declare (indent 1))
+  (dolist (charset charsets)
+    (set-fontset-font fontset charset font nil add)))
+
+;;;;; Main font
 ;; Set up fonts before anything else so error messages during startup were
 ;; readable.
 ;;
@@ -16,7 +25,7 @@
        ;; (font "Cascadia Code")
        ;; (spec (font-spec :family font :size 13.0 :weight 'normal))
        ;; (font "TX-02")
-       ;; (spec (font-spec :family "TX-02" :size 12.8))
+       ;; (spec (font-spec :family font :size 12.8))
        )
   (set-face-font 'default spec)
   (set-face-font 'fixed-pitch spec)
@@ -30,21 +39,13 @@
   ;; documentation claims it is.
   (set-fontset-font t 'unicode font nil 'prepend))
 
-;; General Punctuation Unicode Block
-;;  ‐ ‑ ‒ – — ― ‖ ‗
-;; ‘ ’ ‚ ‛ “ ” „ ‟
-;; † ‡ • ‣ ․ ‥ … ‧ ‰ ‱ ′ ″ ‴ ‵ ‶ ‷ ‸ ‹ ›
-;; ※ ‼ ‽ ‾ ‿ ⁀ ⁁ ⁂ ⁃ ⁄ ⁅ ⁆ ⁇ ⁈ ⁉ ⁊ ⁋ ⁌ ⁍
-;; ⁎ ⁏ ⁐ ⁑ ⁒ ⁓ ⁔ ⁕ ⁖ ⁗ ⁘ ⁙ ⁚ ⁛ ⁜ ⁝ ⁞
-;; №
+;; (font-face-attributes (face-attribute 'fixed-pitch :font))
+;; (font-face-attributes (face-font 'fixed-pitch))
 
-(require 'cl-macs)
+;;;;; Nerd Icons
 
-(cl-defun helheim-set-fontset-font (font charsets &key (fontset t) add)
-  "Force some code point diapasons to use particular FONT."
-  (declare (indent 1))
-  (dolist (charset charsets)
-    (set-fontset-font fontset charset font nil add)))
+;; (setq nerd-icons-scale-factor 0.9)
+(setq nerd-icons-default-adjust 0.1)
 
 (helheim-set-fontset-font "Symbols Nerd Font Mono"
   '((#xe5fa . #xe6b7) ;; Seti-UI + Custom  
@@ -63,7 +64,7 @@
 
 ;; In the modeline, we’re not restricted by a rigid grid, and non-monospace
 ;; Powerline symbols look better.
-(helheim-set-fontset-font "Symbols Nerd Font Mono" ;; "Symbols Nerd Font"
+(helheim-set-fontset-font "Symbols Nerd Font" ;; "Symbols Nerd Font"
   `(;; Powerline Symbols
     (#xe0a0 . #xe0a2) ;;  
     (#xe0b0 . #xe0b3) ;;  
@@ -73,11 +74,21 @@
     #xe0a3 #xe0ca))   ;;  
 
 ;; Restore some icons.
-(helheim-set-fontset-font "PragmataPro Liga"
+(helheim-set-fontset-font "PragmataPro"
   ;; Font Awesome
   `(#xf0c5   ;; 
     #xf114   ;; 
     #xf115)) ;; 
+
+;;;;; Unicode
+
+;; General Punctuation Unicode Block
+;;  ‐ ‑ ‒ – — ― ‖ ‗
+;; ‘ ’ ‚ ‛ “ ” „ ‟
+;; † ‡ • ‣ ․ ‥ … ‧ ‰ ‱ ′ ″ ‴ ‵ ‶ ‷ ‸ ‹ ›
+;; ※ ‼ ‽ ‾ ‿ ⁀ ⁁ ⁂ ⁃ ⁄ ⁅ ⁆ ⁇ ⁈ ⁉ ⁊ ⁋ ⁌ ⁍
+;; ⁎ ⁏ ⁐ ⁑ ⁒ ⁓ ⁔ ⁕ ⁖ ⁗ ⁘ ⁙ ⁚ ⁛ ⁜ ⁝ ⁞
+;; №
 
 ;; ;; Box Drawing
 ;; ;; #x2500  ─
@@ -99,16 +110,16 @@
                            ("https" . "127.0.0.1:10809"))
       gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
-;; (setq helheim-package-manager 'elpaca) ;; or 'straight
+(setq helheim-package-manager 'elpaca) ;; or 'straight
 (require 'helheim-core)
-(require 'helheim-minibuffer)
-(require 'helheim-completion)
 
 ;;;; Color theme
 
 (setup helheim-modus-themes
   (:require t)
-  (load-theme 'modus-operandi t))
+  (load-theme 'modus-operandi t)
+  ;; (load-theme 'modus-vivendi t)
+  )
 
 ;; I can recommend `leuven' theme for org-mode work. It has so many nice little
 ;; touches to spruce up org-mode elements that some users switch to it from
@@ -123,6 +134,38 @@
 (setup my-ef-themes
   (:require t)
   (load-theme 'ef-light t))
+
+;;;; Essentials
+
+(require 'helheim-minibuffer) ; Emacs version of command palette
+(require 'helheim-completion)
+
+(require 'helheim-ibuffer)  ; Buffers menu
+(require 'helheim-dired)    ; File-manager
+(require 'helheim-embark)   ; Context-aware action menus
+(require 'helheim-outline)  ; See "Outline Mode" in Emacs manual
+(require 'helheim-tab-bar)  ; Each tab represents a set of windows, as in Vim
+
+;;;;; Modeline
+
+(setopt mode-line-percent-position nil)
+
+(setup helheim-modeline ; Normal people call this "status line"
+  ;; The function to handle `buffer-file-name'.
+  (setq doom-modeline-buffer-file-name-function #'identity ; `buffer-file-name'
+        doom-modeline-buffer-file-truename-function #'identity) ; `buffer-file-truename'
+  (setq doom-modeline-support-imenu t)
+  ;; (:hook doom-modeline-mode-hook size-indication-mode)
+  (:require t))
+
+;; (let ((spec (font-spec :family "Basic Commercial LT" :weight 'normal))
+;;       (spec (font-spec :family "ITC Avant Garde Gothic W1G" :weight 'medium))
+;;       (spec (font-spec :family "Noto Sans" :size 13.9 :weight 'normal)))
+;;   (set-face-font 'mode-line spec)
+;;   (set-face-font 'mode-line-active spec)
+;;   (set-face-font 'mode-line-inactive spec)
+;;   (setq doom-modeline-spc-face-overrides
+;;         (list :family (face-attribute 'fixed-pitch :family))))
 
 ;;;; Search
 
@@ -147,8 +190,8 @@
 ;;;; Terminal emulators
 ;; Requires shell-side configuration!
 
-(require 'helheim-eat)   ; written in emacs-lisp
-(require 'helheim-vterm) ; libvterm C library
+; (require 'helheim-eat)   ; written in emacs-lisp
+; (require 'helheim-vterm) ; libvterm C library
 (require 'helheim-ghostel)
 
 ;;;; LLM
@@ -169,17 +212,14 @@
       (:bind :state 'insert "RET" 'newline)
       (:bind :state 'normal "RET" 'comint-send-input))))
 
-(require 'helheim-mcp-server)
+(setup mcp-server
+  (require 'helheim-mcp-server)
+  (setopt mcp-server-security-dangerous-functions '(kill-emacs)))
 
 ;;;; Other modules
 
-(require 'helheim-dired)   ; File-manager
-(require 'helheim-embark)  ; Context-aware action menus
-(require 'helheim-ibuffer) ; Buffers menu
-(require 'helheim-outline) ; See "Outline Mode" in Emacs manual
-(require 'helheim-notmuch) ; Notmuch email client
-(require 'helheim-tab-bar) ; Each tab represents a set of windows, as in Vim
-(require 'helheim-browser) ; Synchronize online text editor with Emacs buffer
+(require 'helheim-notmuch)  ; Notmuch email client
+(require 'helheim-browser)  ; Synchronize online text editor with Emacs buffer
 
 (setup helheim-whisper ; Speech to text conversion
   (:require t)
@@ -201,7 +241,9 @@
         confirm-kill-emacs nil
         eldoc-echo-area-use-multiline-p t
         ibuffer-expert t
-        what-cursor-show-names t)
+        what-cursor-show-names t
+        ;; nobreak-char-display nil
+        )
 
 ;; ;; See also `search-invisible'
 ;; (global-reveal-mode)
@@ -347,6 +389,24 @@
   (:when (display-graphic-p))
   (unless (server-running-p) (server-start)))
 
+;;;; fill-paragraph
+
+(setup my-commands
+  (:global-bind :state 'normal
+    [remap fill-paragraph] '+flex-fill-paragraph))
+
+(setup inflow
+  (:install inflow :host github :repo "eshrh/inflow.el")
+  (setopt inflow-fill-paragraph-width 80)
+  (:command inflow-fill-paragraph))
+
+(setup fancy-fill-paragraph
+  (:install t)
+  (setopt fancy-fill-paragraph-split-weights '( :em-dash 10
+                                                :en-dash 10
+                                                :space 10))
+  (:command fancy-fill-paragraph))
+
 ;;;; DISABLE treesit-auto
 
 ;; (setup treesit-auto
@@ -367,7 +427,6 @@
           org-modules '(ol-bibtex ol-docview ol-info)
           org-mem-watch-dirs '("~/notes/" "~/Private/"))
   (:require helheim-org
-            helheim-org-node
             helheim-daily-notes)
   (:hook org-mode-hook (lambda ()
                          (auto-fill-mode +1) ;; Hard wrap long lines.
@@ -559,6 +618,16 @@
                                          ("su" . "src lua")
                                          ,@org-structure-template-alist)))
 
+;;;; org-node
+
+(setup org-node
+  (require 'helheim-org-node)
+  (setopt org-mem-do-warn-title-collisions nil)
+  (setq my-private-directory (expand-file-name "~/Private/"))
+  (:global-bind
+    "C-c n n"  '("notes" . my-org-node-find)
+    "C-c n p"  '("private notes" . my-org-node-private-find)))
+
 ;;;; org-journal
 
 (setup org-journal
@@ -575,6 +644,7 @@
 
 (setup org-auto-tangle
   (:install t)
+  (:blackout t)
   (:hook org-mode-hook org-auto-tangle-mode))
 
 ;;;; zotero integration
@@ -609,18 +679,12 @@
 ;;; Major modes
 
 (require 'helheim-emacs-lisp)
+(require 'helheim-json)
 (require 'helheim-rust)
 
-(setup add-log
-  (setopt add-log-keep-changes-together t
-          add-log-dont-create-changelog-file nil)
-  (:global-bind
-    "C-c p a" '("Add ChangeLog" . add-change-log-entry-other-window)) ;; "C-x 4 a"
-  (:after-load
-    (:with-keymap change-log-mode-map
-      (:bind :state 'normal
-        "] c" 'add-log-edit-next-comment
-        "[ c" 'add-log-edit-prev-comment))))
+(setup text-mode
+  (:hook text-mode-hook (lambda ()
+                          (setq fill-column 76))))
 
 (setup markdown
   (:require helheim-markdown)
@@ -646,13 +710,25 @@
 (setup sh
   (:require helheim-sh)
   (setopt sh-basic-offset 2)
-  (:hook (sh-mode-hook
-          bash-ts-mode-hook)
-         (lambda () (setq tab-width 2))))
+  (:hook sh-base-mode-hook (lambda () (setq tab-width 2))))
+
+(setup fish-mode
+  (:install t))
 
 (setup yaml-pro
   (:install t)
   (:hook yaml-ts-mode-hook yaml-pro-ts-mode))
+
+(setup add-log
+  (setopt add-log-keep-changes-together t
+          add-log-dont-create-changelog-file nil)
+  (:global-bind
+    "C-c p a" '("Add ChangeLog" . add-change-log-entry-other-window)) ; "C-x 4 a"
+  (:after-load
+    (:with-keymap change-log-mode-map
+      (:bind :state 'normal
+        "] c" 'add-log-edit-next-comment
+        "[ c" 'add-log-edit-prev-comment))))
 
 ;;; Keybindings
 
@@ -671,8 +747,10 @@
   (:global-bind :state '(normal motion)
     "<backspace>" 'execute-extended-command)
   (:global-bind :state 'normal
+    "M-;"  nil ;; unbind `hel-exchange-point-and-mark'
     "C-;" 'hel-exchange-point-and-mark
-    "M-;"  nil) ;; unbind `hel-exchange-point-and-mark'
+    "g s" 'hel-beginning-of-line-command
+    "g h" 'hel-first-non-blank)
   ;; (:global-bind :state 'insert
   ;;   "C-"h   'delete-backward-char
   ;;   "C-/" 'dabbrev-expand)
