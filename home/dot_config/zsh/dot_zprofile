@@ -66,9 +66,11 @@ path+=(
 
 # * Proxy
 
-export socks_proxy="socks://127.0.0.1:10808"
 export http_proxy="http://127.0.0.1:10809"
 export https_proxy="http://127.0.0.1:10809"
+export socks_proxy="socks://127.0.0.1:10808"
+export all_proxy="socks5://127.0.0.1:10808"
+export no_proxy="localhost,127.0.0.1"
 
 # * Homebrew
 
