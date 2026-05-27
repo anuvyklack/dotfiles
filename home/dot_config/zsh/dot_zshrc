@@ -479,7 +479,7 @@ if (( $+commands[nvim] )); then
 fi
 
 # On Debian/Ubuntu the fd binary is renamed fdfind.
-if [[ $(grep -Es '^ID_LIKE=.*(?:ubuntu|debian)' /etc/os-release) ]]; then
+if [[ $(grep -Es '^ID_LIKE=.*(ubuntu|debian)' /etc/os-release) ]]; then
   alias fd=fdfind
 fi
 
