@@ -295,6 +295,9 @@ zstyle -e ':completion:*:approximate:*' \
 # ** helix-mode
 # *** configs
 
+# Use steady (non-blinking) underline cursor in insert mode.
+ZHM_CURSOR_INSERT=$'\e[0m\e[4 q\e]12;white\a'
+
 # Integration with `zsh-syntax-highlighting`.
 zhm-add-update-region-highlight-hook
 
