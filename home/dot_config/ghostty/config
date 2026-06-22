@@ -75,6 +75,16 @@ shell-integration-features = no-cursor,sudo,title
 clipboard-trim-trailing-spaces = true
 copy-on-select = true
 
+#-- Distinguish C-i from TAB and C-m from RET ----------------------------------
+
+# Terminals send the same byte for C-i/TAB and C-m/RET.
+# Emit a distinct CSI-u sequence for these two keys instead, which hel decodes
+# into [C-i] / [C-m]
+# 105 = 'i', 5 = Ctrl
+# 109 = 'm', 5 = Ctrl
+keybind = ctrl+i=csi:105;5u
+keybind = ctrl+m=csi:109;5u
+
 #-- Leader based keybindings ---------------------------------------------------
 
 # Use <C-g> as leader key. The same as in Tmux, because I will use eighter
