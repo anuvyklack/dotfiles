@@ -323,6 +323,21 @@ ZSH_AUTOSUGGEST_PARTIAL_ACCEPT_WIDGETS+=(
 # C-; — flip selection (native M-;)
 bindkey -M hxnor '\e[59;5u' zhm_flip_selections
 
+# C-S-v — fix "No such widget `.zhm_bracketed_paste'" error
+#
+# `input` zimfw module binds the `bracketed-paste` widget to
+# `bracketed-paste-url-magic`, which internally runs `zle .$WIDGET` expecting
+# $WIDGET to be `bracketed-paste`. helix-mode's `zhm_bracketed_paste` calls
+# `zle bracketed-paste` WITHOUT `-w`, so $WIDGET stays `zhm_bracketed_paste`;
+# url-magic then runs `zle .zhm_bracketed_paste` and aborts with: No such widget
+# `.zhm_bracketed_paste'. Re-add `-w` so $WIDGET reflects the called widget.
+# Patching the body (instead of editing the plugin file) to make it survive
+# after `zimfw update`.
+() {
+  local fn=$(typeset -f zhm_bracketed_paste)
+  eval "${fn/zle bracketed-paste/zle bracketed-paste -w}"
+}
+
 # **** Duplicate "mi" keys under "m" prefix
 
 # Patch `zhm_select_surround_pair_inner` so wrappers can pass the bracket
