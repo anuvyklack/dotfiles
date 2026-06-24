@@ -25,7 +25,10 @@ zmodule joke/zim-starship
 
 zmodule exa
 zmodule antoineco/zim-zoxide
-zmodule Multirious/zsh-helix-mode
+# Load only outside Emacs ($INSIDE_EMACS is set by Emacs terminal emulators
+# such as ghostel, eat and vterm); the --if test is re-evaluated at every
+# shell startup.
+zmodule Multirious/zsh-helix-mode --if '[[ -z "$INSIDE_EMACS" ]]'
 
 # * Modules that must be initialized last
 
