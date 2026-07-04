@@ -39,9 +39,6 @@
   ;; documentation claims it is.
   (set-fontset-font t 'unicode font nil 'prepend))
 
-;; (font-face-attributes (face-attribute 'fixed-pitch :font))
-;; (font-face-attributes (face-font 'fixed-pitch))
-
 ;;;;; Nerd Icons
 
 ;; (setq nerd-icons-scale-factor 0.9)
@@ -115,11 +112,15 @@
 
 ;;;; Color theme
 
-(setup helheim-modus-themes
-  (:require t)
-  (load-theme 'modus-operandi t)
-  ;; (load-theme 'modus-vivendi t)
-  )
+(setopt custom-safe-themes t)
+
+;; (setup helheim-modus-themes
+;;   (:require t)
+;;   (load-theme 'modus-operandi t)
+;;   ;; (load-theme 'modus-vivendi t)
+;;   )
+
+(require 'helheim-light)
 
 ;; I can recommend `leuven' theme for org-mode work. It has so many nice little
 ;; touches to spruce up org-mode elements that some users switch to it from
@@ -127,13 +128,12 @@
 ;;   You may try it with ": load-theme" then type "leuven".
 (setup leuven-theme (:install t))
 
-;; (setup helheim-ef-themes
-;;   (:require t)
-;;   (load-theme 'ef-light t))
-
-(setup my-ef-themes
-  (:require t)
-  (load-theme 'ef-light t))
+;; (setup pixel-themes
+;;   (:install pixel-themes :host github :repo "lucasobx/pixel-themes")
+;;   (pixel-themes-mode 1)
+;;   (load-theme 'pixel-themes-alia16 t)
+;;   (load-theme 'pixel-themes-gray-weather t)
+;;   (load-theme 'pixel-themes-gothic-temple t))
 
 ;;;; Essentials
 
@@ -175,7 +175,11 @@
 ;;;; IDE
 
 (require 'helheim-xref)     ; Go to definition framework
-(require 'helheim-eglot)    ; Built-in LSP client
+
+;; (require 'helheim-eglot)    ; eglot + flymake (both built-in)
+;; or
+(require 'helheim-lsp-mode)
+(require 'helheim-flycheck)
 
 ;;;; Version control
 
@@ -234,7 +238,7 @@
 
 ;;; My custom config
 
-(setf (alist-get 'fullscreen initial-frame-alist) 'maximized)
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 (setopt user-full-name "Yuriy Artemyev"
         user-mail-address "anuvyklack@gmail.com"
@@ -249,6 +253,12 @@
 ;; (global-reveal-mode)
 
 ;; (setup imenu-list (:install t))
+
+;;;; astroid (notmuch gui)
+
+;; Astroid draft files are ~/.cache/astroid/<msg-id> with no extension,
+;; so Emacs won't auto-pick a message-mode mode.
+(add-to-list 'auto-mode-alist '("/\\.cache/astroid/" . message-mode))
 
 ;;;; cape
 
@@ -301,6 +311,14 @@
             (rename-file file newname)))))))
   (dired-revert))
 
+;;;; DISABLED keycast
+
+;; (setup keycast
+;;   (:install t)
+;;   (keycast-mode-line-mode) ;; in mode-line
+;;   ;; (keycast-header-line-mode) ;; in header-line
+;;   )
+
 ;;;; DISABLED pandoc-mode
 
 ;; (setup pandoc-mode
@@ -324,6 +342,7 @@
   (:install t)
   (:blackout t)
   (:hook (emacs-lisp-mode-hook
+          help-mode-hook
           conf-mode-hook
           fish-mode-hook
           toml-ts-mode-hook)))
@@ -420,18 +439,19 @@
 ;;;; org-mode
 
 (setup org
+  ;; Which modules to load.
+  (setq org-modules '(ol-bibtex ol-docview ol-info))
   ;; Following variables must be set before `org' is loaded!
+  (defvar my-private-directory (expand-file-name "~/Private/"))
   (setopt org-directory (expand-file-name "~/notes/")
-          ;; Which modules to load.
-          ;; Place cursor on variable and press "M" to see all possible values.
-          org-modules '(ol-bibtex ol-docview ol-info)
-          org-mem-watch-dirs '("~/notes/" "~/Private/"))
+          org-mem-watch-dirs (list org-directory my-private-directory))
   (:require helheim-org
             helheim-daily-notes)
-  (:hook org-mode-hook (lambda ()
-                         (auto-fill-mode +1) ;; Hard wrap long lines.
-                         (display-line-numbers-mode -1)
-                         (visual-line-mode -1)))
+  (:hook org-mode-hook
+         (lambda ()
+           (auto-fill-mode +1) ;; Hard wrap long lines.
+           (display-line-numbers-mode -1)
+           (visual-line-mode -1)))
   (:after-load
     (hel-keymap-set org-mode-map :state 'normal
       "M" 'helpful-at-point))
@@ -467,11 +487,11 @@
   ;; BUG: `org-priority-valid-value-p' is defined on 11376 line, but used for
   ;;   the first time on 2500 line in the org.el file.
   (:after-load
-    ;; Make priority signs be integers from 1 to 5, with 3 as default.
+    ;; Make priority signs be integers from 1 to 5, with 4 as default.
     ;; Default priorities are: #A, #B, #C, with #B as default.
-    (setopt org-priority-highest ?A
-            org-priority-lowest  ?D
-            org-priority-default ?C))
+    (setopt org-priority-highest 1
+            org-priority-default 4
+            org-priority-lowest  5))
   ;; Consider all nested entries in the subtree for cookies.
   ;; [[info:org#Breaking Down Tasks]]
   (setopt org-hierarchical-todo-statistics nil)
@@ -505,6 +525,10 @@
           ;; Use PlantUML executable instead of `.jar' file together with Java.
           org-plantuml-exec-mode 'plantuml
           org-plantuml-jar-path (expand-file-name "~/.nix-profile/lib/plantuml.jar"))
+  (:hook org-src-mode-hook
+         (lambda ()
+           (setq-local flycheck-disabled-checkers '(emacs-lisp
+                                                    emacs-lisp-checkdoc))))
   ;; --- Capture templates ---
   ;; (setopt org-capture-templates '(("j" "journal" plain
   ;;                                  (file+olp+datetree +org-capture-journal-file)
@@ -513,6 +537,42 @@
   ;;                                  ;; :kill-buffer t
   ;;                                  )))
   )
+
+;;;; org agenda
+
+(setup org-agenda
+  (setopt org-agenda-window-setup 'current-window
+          org-agenda-restore-windows-after-quit t))
+
+;; (setopt org-agenda-inhibit-startup t)
+
+;; org-agenda-prefix-format
+;; org-agenda-remove-tags
+;; org-agenda-remove-times-when-in-prefix
+
+;; (setopt org-agenda-category-icon-alist)
+
+;;;;; org-agenda custom commands
+
+;; (setq org-agenda-custom-commands
+;;       '(("w" "Week agenda"
+;;          ((agenda "" ((org-agenda-span 7)
+;;                       (org-agenda-start-on-weekday nil) ; starting today
+;;                       (org-agenda-entry-types '(:deadline :scheduled :sexp))
+;;                       (org-deadline-warning-days 30)))))
+;;         ("a" "Single day agenda"
+;;          ((agenda "" ((org-agenda-span 1)
+;;                       (org-agenda-files '("~/org/study.org"))
+;;                       (org-agenda-entry-types '(:deadline :scheduled :sexp))
+;;                       (org-agenda-format-date "")
+;;                       (org-agenda-overriding-header "   Academic/Office")
+;;                       (org-deadline-warning-days 30)))
+;;           (agenda "" ((org-agenda-span 1)
+;;                       (org-agenda-files '("~/org/private.org"))
+;;                       (org-agenda-format-date "")
+;;                       (org-agenda-entry-types '(:deadline :scheduled :sexp))
+;;                       (org-deadline-warning-days 30)
+;;                       (org-agenda-overriding-header "   Private")))))))
 
 ;;;; Org appearence
 
@@ -623,7 +683,7 @@
 (setup org-node
   (require 'helheim-org-node)
   (setopt org-mem-do-warn-title-collisions nil)
-  (setq my-private-directory (expand-file-name "~/Private/"))
+  (remove-hook 'org-mem-post-full-scan-functions 'helheim-set-agenda-files)
   (:global-bind
     "C-c n n"  '("notes" . my-org-node-find)
     "C-c n p"  '("private notes" . my-org-node-private-find)))
@@ -679,8 +739,14 @@
 ;;; Major modes
 
 (require 'helheim-emacs-lisp)
+(require 'helheim-cpp)
 (require 'helheim-json)
+(require 'helheim-lua)
 (require 'helheim-rust)
+
+(setup prog-mode
+  (:hook prog-mode-hook (lambda ()
+                          (setq-local line-move-visual nil))))
 
 (setup text-mode
   (:hook text-mode-hook (lambda ()
@@ -744,7 +810,7 @@
     "C-M-;" 'repeat-complex-command))
 
 (setup hel
-  (:global-bind :state '(normal motion)
+  (:global-bind :state '(normal emacs)
     "<backspace>" 'execute-extended-command)
   (:global-bind :state 'normal
     "M-;"  nil ;; unbind `hel-exchange-point-and-mark'
