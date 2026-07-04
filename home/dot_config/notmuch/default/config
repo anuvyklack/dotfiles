@@ -10,7 +10,10 @@
 # configured here named ".notmuch".
 #
 [database]
-path=.mail
+# Absolute path required: astroid does not resolve a relative path against
+# $HOME the way the notmuch CLI does (it only expands a leading '~'), so a
+# bare '.mail' would be opened relative to astroid's launch directory.
+path=/home/anuvyklack/.mail
 
 # User configuration
 #
@@ -86,3 +89,4 @@ exclude_tags=spam
 #	commands will notice tag changes and update flags in filenames
 #
 [maildir]
+synchronize_flags=true
