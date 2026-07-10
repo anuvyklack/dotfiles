@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Fetch new mail and remote label changes.
+cd ~/.mail/account.gmail/ && gmi pull

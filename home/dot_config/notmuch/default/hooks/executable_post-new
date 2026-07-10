@@ -26,3 +26,9 @@ notmuch tag +spam -- from:no-reply@twitch.tv and tag:new
 # Retag all "new" messages "inbox" and "unread"
 # notmuch tag +inbox +unread -new -- tag:new
 notmuch tag -new -- tag:new
+
+# Push local tag changes to Gmail
+# -------------------------------
+# Runs after the rescan, so it also carries tags derived from maildir flags
+# the mail client wrote since the last sync (read, flagged, replied).
+cd ~/.mail/account.gmail/ && gmi push

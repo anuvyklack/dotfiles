@@ -53,7 +53,8 @@ other_email=artyuriy@outlook.com;artyuriy@rambler.ru;
 # Mark all new messages with a temporary “new” tag. These messages will then be
 # processed in the Notmuch post-new hook.
 tags=new
-ignore=/.*[.](json|lock|bak)$/
+# ".nnmaildir" is Gnus' nnmaildir bookkeeping directory.
+ignore=/.*[.](json|lock|bak)$/;.nnmaildir
 
 # Search configuration
 #
