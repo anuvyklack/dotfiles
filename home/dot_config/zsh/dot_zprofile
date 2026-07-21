@@ -77,6 +77,11 @@ export no_proxy="localhost,127.0.0.1"
 if whence /home/linuxbrew/.linuxbrew/bin/brew > /dev/null 2>&1; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
+  # `brew shellenv` prepends itself by assigning the scalar PATH, and that
+  # bypasses the `typeset -gU path` above: nested login shells would stack up
+  # duplicate entries. An array assignment re-applies uniqueness.
+  path=($path)
+
   # local BREWCACHE="$HOME/.cache/Homebrew/brewenv.zsh"
   #
   # if [[ ! -s $BREWCACHE(#q.md-7N) ]]; then
