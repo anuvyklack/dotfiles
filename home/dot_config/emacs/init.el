@@ -116,11 +116,11 @@
 
 ;; (setup helheim-modus-themes
 ;;   (:require t)
-;;   (load-theme 'modus-operandi t)
-;;   ;; (load-theme 'modus-vivendi t)
+;;   ;; (load-theme 'modus-operandi t)
+;;   (load-theme 'modus-vivendi t)
 ;;   )
 
-(require 'helheim-light)
+(require 'helheim-ef-light)
 
 ;; I can recommend `leuven' theme for org-mode work. It has so many nice little
 ;; touches to spruce up org-mode elements that some users switch to it from
@@ -209,12 +209,12 @@
           ;; agent-shell-user-message-expand-by-default nil
           )
   (:after-load
-    (:with-keymap agent-shell-mode-map
+    (:keymap agent-shell-mode-map
       ;; State-specific Enter behavior:
       ;; - insert state = newline
       ;; - normal state = send
-      (:bind :state 'insert "RET" 'newline)
-      (:bind :state 'normal "RET" 'comint-send-input))))
+      (:bind :state insert "RET" 'newline)
+      (:bind :state normal "RET" 'comint-send-input))))
 
 (setup mcp-server
   (require 'helheim-mcp-server)
@@ -222,7 +222,9 @@
 
 ;;;; Other modules
 
-(require 'helheim-notmuch)  ; Notmuch email client
+;; (require 'helheim-notmuch)  ; Notmuch's own interface
+(require 'helheim-gnus)     ; Gnus, with notmuch as indexer and search engine
+
 (require 'helheim-browser)  ; Synchronize online text editor with Emacs buffer
 
 (setup helheim-whisper ; Speech to text conversion
@@ -262,31 +264,33 @@
 
 ;;;; cape
 
+;; (hel-keymap-global-set :state 'insert
+;;   ;; Emulate Vim's omni-completion keybinds
+;;   "C-x"   'cape-prefix-map)
+;;
 ;; (setup cape
-;;   (:global-bind :state 'insert
-;;     ;; Emulate Vim's omni-completion keybinds
-;;     "C-x"   'cape-prefix-map)
-;;   (:with-keymap cape-prefix-map
-;;     (:bind
-;;       "C-o" 'completion-at-point ;; C-x C-o is Vim's omni-completion keybinding
-;;       ;; "C-e" 'cape-elisp-block
-;;       ;; "C-s" 'cape-elisp-symbol
-;;       "/"   'cape-tex
-;;       "C-/" 'cape-tex
-;;       "C-h" 'cape-history
-;;       "C-l" 'cape-line
-;;       "C-k" 'cape-keyword
-;;       "C-f" 'cape-file
-;;       "C-t" 'complete-tag
-;;       "C-w" 'cape-dict
-;;       "C-r" 'cape-rfc1345
-;;       ;; "s"   'cape-dict
-;;       ;; "C-s" 'yasnippet-capf
-;;       "C-a" 'cape-abbrev
-;;       "C-d" 'cape-dabbrev
-;;       "C-n" 'cape-dabbrev
-;;       ;; "C-p" '+corfu/dabbrev-this-buffer
-;;       )))
+;;   (:after-load
+;;     (:keymap cape-prefix-map
+;;       (:bind
+;;         "C-o" 'completion-at-point ;; C-x C-o is Vim's omni-completion keybinding
+;;         ;; "C-e" 'cape-elisp-block
+;;         ;; "C-s" 'cape-elisp-symbol
+;;         "/"   'cape-tex
+;;         "C-/" 'cape-tex
+;;         "C-h" 'cape-history
+;;         "C-l" 'cape-line
+;;         "C-k" 'cape-keyword
+;;         "C-f" 'cape-file
+;;         "C-t" 'complete-tag
+;;         "C-w" 'cape-dict
+;;         "C-r" 'cape-rfc1345
+;;         ;; "s"   'cape-dict
+;;         ;; "C-s" 'yasnippet-capf
+;;         "C-a" 'cape-abbrev
+;;         "C-d" 'cape-dabbrev
+;;         "C-n" 'cape-dabbrev
+;;         ;; "C-p" '+corfu/dabbrev-this-buffer
+;;         ))))
 
 ;;;; dired
 
@@ -326,9 +330,10 @@
 ;;   (:when (executable-find "pandoc"))
 ;;   (:hook markdown-mode-hook pandoc-mode)
 ;;   ;; (:hook markdown-mode-hook conditionally-turn-on-pandoc)
-;;   (:with-keymap pandoc-mode-map
-;;     (:unbind "C-c /")
-;;     (:bind ", /" '("pandoc" . pandoc-main-transient))))
+;;   (:after-load
+;;     (:keymap pandoc-mode-map
+;;       (:unbind "C-c /")
+;;       (:bind ", /" '("pandoc" . pandoc-main-transient)))))
 
 ;;;; project.el
 
@@ -362,7 +367,7 @@
 
 ;;;; russian language
 
-(setopt default-input-method 'russian-computer)
+(setopt default-input-method "russian-computer")
 (prefer-coding-system 'cp1251)
 (prefer-coding-system 'utf-8)
 (keymap-global-set "C-v" 'toggle-input-method)
@@ -377,25 +382,23 @@
           separedit-write-file-when-execute-save nil
           separedit-remove-trailing-spaces-in-comment t)
   ;; Key binding for modes you want edit or simply bind ‘global-map’ for all.
-  (:global-bind :state 'normal
+  (:global-bind :state normal
     "z '" 'separedit)
-  ;; (:with-keymaps (prog-mode-map
-  ;;                 minibuffer-local-map
-  ;;                 help-mode-map)
-  ;;   (:bind :state 'normal
+  ;; (:keymap (prog-mode-map
+  ;;           minibuffer-local-map
+  ;;           help-mode-map)
+  ;;   (:bind :state normal
   ;;     "z '" 'separedit))
-  ;; (:with-feature helpful
-  ;;   ;; helpful-mode-map
-  ;;   (:after-load
-  ;;     (:bind :state 'normal
+  ;; (with-eval-after-load 'helpful
+  ;;   (:keymap helpful-mode-map
+  ;;     (:bind :state normal
   ;;       "z '" 'separedit)))
-  ;; (:with-feature obsidian
-  ;;   (:after-load
-  ;;     ;; obsidian-mode-map
-  ;;     (:bind :state 'normal
+  ;; (with-eval-after-load 'obsidian
+  ;;   (:keymap obsidian-mode-map
+  ;;     (:bind :state normal
   ;;       "z '" 'separedit)))
   (:after-load
-    (:with-keymap separedit-mode-map
+    (:keymap separedit-mode-map
       (:bind
         [remap edit-indirect-commit] 'separedit-commit
         [remap edit-indirect-abort]  'separedit-abort
@@ -791,15 +794,14 @@
   (:global-bind
     "C-c p a" '("Add ChangeLog" . add-change-log-entry-other-window)) ; "C-x 4 a"
   (:after-load
-    (:with-keymap change-log-mode-map
-      (:bind :state 'normal
+    (:keymap change-log-mode-map
+      (:bind :state normal
         "] c" 'add-log-edit-next-comment
         "[ c" 'add-log-edit-prev-comment))))
 
 ;;; Keybindings
 
 (require 'helheim-keybindings)
-(require 'helheim-disable-isearch)
 
 (setup emacs
   (:global-unbind
@@ -810,21 +812,21 @@
     "C-M-;" 'repeat-complex-command))
 
 (setup hel
-  (:global-bind :state '(normal emacs)
+  (:global-bind :state (normal emacs)
     "<backspace>" 'execute-extended-command)
-  (:global-bind :state 'normal
+  (:global-bind :state normal
     "M-;"  nil ;; unbind `hel-exchange-point-and-mark'
     "C-;" 'hel-exchange-point-and-mark
     "g s" 'hel-beginning-of-line-command
     "g h" 'hel-first-non-blank)
-  ;; (:global-bind :state 'insert
+  ;; (:global-bind :state insert
   ;;   "C-"h   'delete-backward-char
   ;;   "C-/" 'dabbrev-expand)
-  (:with-keymap hel-window-map ;; "C-w"
+  (:keymap hel-window-map ;; "C-w"
     (:bind "N" 'other-tab-prefix))
-  (:with-keymaps (prog-mode-map
-                  text-mode-map)
-    (:bind :state 'insert
+  (:keymap (prog-mode-map
+            text-mode-map)
+    (:bind :state insert
       "C-h" 'backward-delete-char-untabify)))
 
 (with-eval-after-load 'corfu
