@@ -1,4 +1,10 @@
 #!/bin/bash
 
-# Fetch new mail and remote label changes.
+# Fetch new mail and remote label changes only.
+#
+# The matching "gmi push" lives in post-new, *after* notmuch has rescanned the
+# maildir. Pushing here instead would send stale tags: maildir flags written by
+# the mail client (e.g. Gnus marking a message read) are only turned into
+# notmuch tags during that rescan, so they would always miss the push and reach
+# Gmail one "notmuch new" late.
 cd ~/.mail/account.gmail/ && gmi pull
