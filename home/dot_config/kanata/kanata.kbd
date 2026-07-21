@@ -11,6 +11,7 @@
 ;; declarations must have the same number of keys as defsrc. Any keys not
 ;; listed in defsrc will be passed straight to the operating system.
 (defsrc
+  esc
   grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
   tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
   caps a    s    d    f    g    h    j    k    l    ;    '    ret
@@ -23,7 +24,12 @@
 ;; - caps  :: (@nav) tap: ecs | hold: navigation layer
 ;; - space :: (@spctl) tap: space | hold: lctl
 ;; - alt   :: (@alt) tap: bspc | hold: lalt
+;; - esc   :: F14, so Ghostel/Emacs can send a real Esc to terminal apps
+;;            (Esc itself lives on CapsLock and always means "switch to Hel").
+;;            F14 -> keysym XF86Launch5 under GNOME/xkb, which is unbound.
+;;            (F13 maps to XF86Tools, which GNOME grabs for Settings.)
 (deflayer qwerty
+  f14
   @grl 1    2    3    4    5    6    7    8    9    0    -    =    bspc
   tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
   @alt a    s    d    f    g    h    j    k    l    ;    '    ret
@@ -32,6 +38,7 @@
 
 ;; Colemak-DH
 (deflayer colemak-dh
+  f14
   @grl  1    2    3    4    5    6    7    8    9    0    -    =    bspc
   tab   q    w    f    p    b    j    l    u    y    ;    [    ]    \
   @alt  a    r    s    t    g    m    n    e    i    o    '    ret
@@ -44,6 +51,7 @@
 ;; except for linux-dev, meaning you cannot live reload and switch keyboard
 ;; devices.
 (deflayer layers
+  _
   _    @qwrt @clmk lrld _    _    _    _    _    _    _    _    _    _
   _    _    _    _    _    _    _    _    _    _    _    _    _    _
   _    _    _    _    _    _    _    _    _    _    _    _    _
@@ -71,6 +79,7 @@
 ;;------------------------------------------------------------------------------
 
 (deflayer navigation
+  _
   XX   F1   F2   F3   F4   F5   F6   F7   F8   F9   F10  F11 F12 XX
   _    XX   XX   XX   XX   XX   home pgdn pgup end  XX   XX  XX  XX
   _    lalt lmet lsft lctl XX   left down up   rght del  XX  XX
@@ -116,6 +125,7 @@
   )
 
 (deflayer mouse
+    _
     _    _    _    _    _    _    _    _    _    _    _    _    _    _
     _    _    _    _    _    _    _    _    @msu _    _    _    _    _
     _    _    _    _    _    _    _    @msl @msd @msr _    _    _
