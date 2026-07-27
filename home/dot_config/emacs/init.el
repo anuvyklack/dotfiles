@@ -18,8 +18,13 @@
 ;; Press "<F1> k ga" to find out which command is bound to "ga".
 
 ;; `face-font-family-alternatives'
-(let* ((font "PragmataPro Liga")
+;; The Mono variant, not the duospace "PragmataPro Liga": the latter draws
+;; horizontal arrows (→ ← ⇒) double-width while `char-width' still reports 1,
+;; which silently shifts every column after them in an ASCII diagram.
+(let* ((font "PragmataPro Mono Liga")
        (spec (font-spec :family font :size 13.9 :weight 'normal))
+       ;; (font "PragmataPro Liga")
+       ;; (spec (font-spec :family font :size 13.9 :weight 'normal))
        ;; (font "Hack")
        ;; (spec (font-spec :family "Hack" :size 13.0))
        ;; (font "Cascadia Code")
@@ -44,6 +49,25 @@
 ;; (setq nerd-icons-scale-factor 0.9)
 (setq nerd-icons-default-adjust 0.1)
 
+;; PragmataPro draws a good part of the Nerd Fonts icon set itself, in its
+;; own flatter, heavier style — but not all of it.  Of the 10464 code points
+;; claimed below it covers 7206 (measured with `hb-shape' against
+;; "PragmataPro Mono Liga Regular.ttf" v0.9), and the gaps are uneven: all
+;; of Weather, Octicons, Pomicons and Font Awesome Extension are there, but
+;; only 198 of 496 Devicons, 691 of 1536 Font Awesome and 4883 of 6896
+;; Material Design Icons.
+;;
+;; Hence `append' rather than a replacement.  The "Main font" block above
+;; has already prepended PragmataPro to every range of the default fontset,
+;; so appending here leaves it first in line and installs Symbols Nerd Font
+;; Mono behind it as the fallback for the 3258 icons it lacks.  Emacs walks
+;; that list per character, so each icon comes from PragmataPro when the
+;; font has one and from the Nerd font otherwise.
+;;
+;; The two styles do therefore mix — `nerd-icons' picks a code point per
+;; file type, so one dired listing can show both.  To go back to a uniform
+;; Nerd Fonts look, drop the `:add' argument below: without it the ranges
+;; are set rather than extended, and PragmataPro drops out.
 (helheim-set-fontset-font "Symbols Nerd Font Mono"
   '((#xe5fa . #xe6b7) ;; Seti-UI + Custom  
     (#xe700 . #xe8ef) ;; Devicons  
@@ -57,10 +81,16 @@
     (#xea60 . #xec1e) ;; Codicons  
     (#x276c . #x2771) ;; Heavy Angle Brackets ❬ ❱
     (#xee00 . #xee0b) ;; Progress  
-    (#xf0001 . #xf1af0))) ;; Material Design Icons 󰀁 󱫰
+    (#xf0001 . #xf1af0)) ;; Material Design Icons 󰀁 󱫰
+  :add 'append)
 
 ;; In the modeline, we’re not restricted by a rigid grid, and non-monospace
 ;; Powerline symbols look better.
+;;
+;; No `:add' here: this one really is an override.  The Mono builds of
+;; PragmataPro ship no Powerline glyphs at all (#xe0a0..#xe0a2 and
+;; #xe0b0..#xe0b3 are .notdef), and only 17 of the 33 Extra Symbols — which
+;; would otherwise leak into the modeline drawn to a rigid cell width.
 (helheim-set-fontset-font "Symbols Nerd Font" ;; "Symbols Nerd Font"
   `(;; Powerline Symbols
     (#xe0a0 . #xe0a2) ;;  
@@ -70,12 +100,10 @@
     (#xe0cc . #xe0d7) ;;  
     #xe0a3 #xe0ca))   ;;  
 
-;; Restore some icons.
-(helheim-set-fontset-font "PragmataPro"
-  ;; Font Awesome
-  `(#xf0c5   ;; 
-    #xf114   ;; 
-    #xf115)) ;; 
+;; The "Restore some icons" block that used to sit here pinned #xf0c5
+;; #xf114 #xf115 to the non-Mono "PragmataPro", which draws an icon two
+;; cells wide.  PragmataPro now wins those code points on its own, at one
+;; cell, so the block is gone.
 
 ;;;;; Unicode
 
@@ -99,6 +127,47 @@
 ;;   (set-fontset-font t (cons ?🬀 ?🯊) "LegacyComputing")
 ;;   (set-fontset-font t (cons ?🯰 ?🯹) "LegacyComputing"))
 
+;;;;; Box drawing
+
+;; Box-drawing rules and arrowheads are drawn on two different vertical axes:
+;; ─ is centred on the box grid, ► and → on the text/math axis.  Naively they
+;; are ~1.3px apart, so the head of ───► hangs below its shaft.
+;;
+;; PragmataPro corrects this itself with a GPOS rule (upstream issue #159,
+;; shipped in v0.829).  Since v0.9 the rule is *unconditional*: a pointer is
+;; raised 149 font units whenever it is shaped, not only when a box-drawing
+;; character sits next to it.  The outlines themselves were never moved, so
+;; the raise is still what does the aligning — `hb-shape --show-extents'
+;; puts the ink of ─ at 689..833 (centre 761) and of ► at 235..988 (centre
+;; 611); only after +149 does ►'s centre land on 760.
+;;
+;; HarfBuzz applies the rule happily — but Emacs only hands a run to
+;; HarfBuzz when `composition-function-table' has an entry for the run's
+;; leading character, and box drawing has none.  So the two glyphs are
+;; shaped in isolation and the correction never fires.
+;;
+;; A side effect of the rule becoming unconditional: a pointer with no
+;; box-drawing character beside it is never composed here, so it stays 1px
+;; lower in Emacs than in a HarfBuzz terminal.  Composing lone pointers too
+;; would fix that; it is not done, since the diagrams are what matter.
+;;
+;; Teaching Emacs to shape these pairs is all that is needed.  It is a no-op
+;; on fonts that lack the GPOS rule (Liberation Mono, Adwaita Mono, Noto Sans
+;; Mono were checked — none of them correct it), so this is safe to keep even
+;; if the default font changes.
+(let* ((rules "─━╌╍┄┅┈┉│┃╎╏┆┇┊┋═║┌┐└┘├┤┬┴┼")
+       (heads "►◄▶◀▸◂→←⇒⇐▼▲▾▿▴▵↓↑⇣⇡")
+       (rule-rx (concat "[" rules "]"))
+       (head-rx (concat "[" heads "]")))
+  ;; rule, then head:  ───►
+  (dolist (c (string-to-list rules))
+    (set-char-table-range composition-function-table c
+                          `([,(concat rule-rx "+" head-rx) 0 font-shape-gstring])))
+  ;; head, then rule:  ◄───
+  (dolist (c (string-to-list heads))
+    (set-char-table-range composition-function-table c
+                          `([,(concat head-rx rule-rx "+") 0 font-shape-gstring]))))
+
 ;;;; Helheim core
 
 ;; In case you use VPN. Also Emacs populates `url-proxy-services' variable
@@ -114,13 +183,32 @@
 
 (setopt custom-safe-themes t)
 
+;; Helheim's own themes live next to their configuration rather than in
+;; `var/themes', so `load-theme' has to be told where to look.
+;; Note: `user-emacs-directory' has been redirected to var/ by this point,
+;; so the path is built from `user-lisp-directory' instead.
+(add-to-list 'custom-theme-load-path
+             (expand-file-name "helheim/color-themes/" user-lisp-directory))
+
 ;; (setup helheim-modus-themes
 ;;   (:require t)
 ;;   ;; (load-theme 'modus-operandi t)
 ;;   (load-theme 'modus-vivendi t)
 ;;   )
 
-(require 'helheim-ef-light)
+(setup helheim-ef-light
+  (:require t)
+  (load-theme 'ef-light t))
+
+;; ;; Self-contained: pulls in neither ef-themes nor modus-themes.  The palette
+;; ;; lives in color-themes/blasphemous-source/ -- the theme file itself is
+;; ;; generated and should not be edited by hand.
+;; (load-theme 'blasphemous-light t)
+
+;; Was `(require 'helheim-ef-light)'.  That file both installs and configures
+;; ef-themes and ends by enabling `ef-light', so requiring it here would
+;; enable a second theme underneath this one.  To go back to `ef-light',
+;; restore the require in place of the `load-theme' above.
 
 ;; I can recommend `leuven' theme for org-mode work. It has so many nice little
 ;; touches to spruce up org-mode elements that some users switch to it from
@@ -145,6 +233,136 @@
 (require 'helheim-embark)   ; Context-aware action menus
 (require 'helheim-outline)  ; See "Outline Mode" in Emacs manual
 (require 'helheim-tab-bar)  ; Each tab represents a set of windows, as in Vim
+
+;;;;; Ligatures
+
+;; PragmataPro's ligatures are width-preserving — each character of a
+;; ligature maps to a private-use glyph that still advances exactly one cell
+;; — so they cannot disturb the alignment of an ASCII diagram or an org
+;; table.
+;;
+;; They are not fixed-length pairs, though.  The font's `calt' chain
+;; rewrites a whole run of operator characters at once — "=|<$" is one
+;; substitution, not "=|" followed by "<$" — so enumerating them is
+;; hopeless: over the 28 characters involved, v0.9 has 59 ligatures two
+;; characters long, 155 of three, 41 of four and 146 of five (brute-forced
+;; with `hb-shape' against every sequence over those characters).  Hence a
+;; regexp per starting character rather than a list of literals.  This is
+;; the whole ligature set of the font, not a sample of it.
+;;
+;; What it still does not buy: the font caps plain arrows at three
+;; characters, so "-->" ligates and "--->" does not.
+;;
+;; A different font would want a different rule — Fira Code and friends do
+;; use fixed-length ligatures, and for those the literal-string form is the
+;; right one:
+;;
+;;   (ligature-set-ligatures t '("->" "-->" "=>" "!=" ...))
+;;
+;; `ligature-generate-ligatures' installs a buffer-local
+;; `composition-function-table' whose *parent* is the global one, so the box
+;; drawing rules under "Fonts" keep working here through inheritance.
+
+(defconst helheim-ligature-characters "!\"#$%&()*+-./:<=>?@[\\]^_{|}~"
+  "Characters the main font can draw as part of a ligature.")
+
+(defconst helheim-ligature-starting-characters "!#$%&(*+-./:<=>?[\\]^_{|~"
+  "Characters that can begin a ligature.
+The rest of `helheim-ligature-characters' only ever continue one.")
+
+;; The display engine picks the characters of a run without consulting the
+;; `invisible' property, so a run that begins on a visible character and reaches
+;; into hidden text eats the first character past the hidden part.  With
+;; `org-hide-emphasis-markers' the "*" of "(*VPN*)" is hidden, "(*" is a run,
+;; and the "V" is never drawn:
+;;
+;;   buffer   ( * V P N        buffer   ( ) = ,
+;;   screen   ( *   P N        screen   ( ) =
+;;
+;; Both ends of an emphasis are hidden, and the closing one is the harder half:
+;; it only needs a non-blank character before it, so every "=mmap()=" or
+;; "~arr[i]~" puts a hidden marker straight after punctuation, where a run is
+;; already in progress.
+;;
+;; This cannot be fixed from `auto-composition-function': Emacs looks the run up
+;; in a cache keyed by font and characters *before* calling it, so once "(*" has
+;; been shaped anywhere — any buffer, any position — every later "(*" composes
+;; without asking.  The fix has to be the pattern itself, which is consulted
+;; first and per buffer.
+;;
+;; Hence the blunt rule: in org, a run may not contain a marker after its first
+;; character.  Nothing else is decidable from a regexp — the character before a
+;; hidden closing marker can be anything, so "!=" and "=foo!=" are the same two
+;; characters and only one of them may compose.
+;;
+;; A marker may still *begin* a run, which is what keeps "=>" and "~>"; the
+;; price is that a hidden *opening* marker still draws its half of the ligature,
+;; the long-known "=>" that shows up as a bare arrowhead.
+;;
+;; Emphasis markers are not the only text org hides: with `org-link-descriptive'
+;; a descriptive link hides "[[URL][" and the closing "]]", and "]]" is itself a
+;; ligature in this font ("[[" "]]" "[|" "|]" "#[" are the bracket ligatures,
+;; per `hb-shape').  So the closing brackets get pulled into a run started by
+;; the last characters of the description, and are drawn along with it.  Below,
+;; the tail of "…C++]]" and of "…/Instruction tables/]]":
+;;
+;;   buffer   C + + ] ]        buffer   s / ] ]
+;;   drawn    C + + ] ]        drawn    s / ] ]
+;;   wanted   C + +            wanted   s
+;;                  ▲ ▲                   ▲ ▲ ▲
+;;
+;; On the left the run is "+]]", begun by the visible "+"; on the right it is
+;; "/]]", begun by the hidden closing emphasis marker, which is why that "/"
+;; shows up too.
+;;
+;; Brackets therefore have to be treated exactly like markers.  They stay in the
+;; *starting* character list even though nothing can follow them any more: a
+;; character absent from org's rule falls through to the global one (see
+;; `ligature-generate-ligatures' — it fills one char-table from every matching
+;; entry), which would put the unrestricted run back for "[" and "]".
+;;
+;; What this costs, per `hb-shape': in org buffers only, "<=" ">=" "!=" "=="
+;; "+=" "-=" "/=" "~=" "<~", "=/=", and the five bracket ligatures above stop
+;; ligating.  Kept: "->" "-->" "<-" "<->" "|->" "=>" "(|" "{|" "&&" "##" "?."
+;; and everything else with no marker or bracket past its first character;
+;; "//" and "**" were never ligatures in this font.
+(defun helheim-ligature-restrict-org ()
+  "Keep org's hidden text out of ligature runs.
+In org buffers a ligature run may not contain an emphasis marker or a
+link bracket after its first character."
+  (let* ((hidden (append (-map (lambda (e) (string-to-char (car e)))
+                               org-emphasis-alist)
+                         (list ?\[ ?\])))
+         (run (concat (regexp-opt-charset
+                       (-difference (string-to-list helheim-ligature-characters)
+                                    hidden))
+                      "+")))
+    (ligature-set-ligatures
+     'org-mode
+     (mapcar (lambda (c) (list (string c) run))
+             (string-to-list helheim-ligature-starting-characters)))
+    ;; `ligature-generate-ligatures' walks `ligature-composition-table' letting
+    ;; later entries win, while `ligature-set-ligatures' pushes each new mode
+    ;; onto the front — so move org's entry to the end rather than depending on
+    ;; the order the two calls happened to run in.
+    (when-let* ((entry (assq 'org-mode ligature-composition-table)))
+      (setq ligature-composition-table
+            (append (delq entry ligature-composition-table) (list entry))))))
+
+(setup ligature
+  (:install t)
+  ;; A run is any of these characters followed by one or more of them.
+  (let ((run (concat (regexp-opt-charset
+                      (string-to-list helheim-ligature-characters))
+                     "+")))
+    (ligature-set-ligatures
+     t (mapcar (lambda (c) (list (string c) run))
+               (string-to-list helheim-ligature-starting-characters))))
+  ;; Must run before `global-ligature-mode' builds any buffer's table below;
+  ;; org buffers created later are safe because loading org runs this first.
+  (with-eval-after-load 'org
+    (helheim-ligature-restrict-org))
+  (global-ligature-mode t))
 
 ;;;;; Modeline
 
@@ -196,7 +414,17 @@
 
 ; (require 'helheim-eat)   ; written in emacs-lisp
 ; (require 'helheim-vterm) ; libvterm C library
-(require 'helheim-ghostel)
+
+(setup ghostel
+  (require 'helheim-ghostel)
+  (:after-load
+    (:keymap ghostel-semi-char-mode-map
+      (:bind
+        "C-<escape>" 'hel-ghostel--send-escape
+        ;; physical Esc keys
+        ;; -> kanata translate to F14
+        ;; -> GNOME translates to X86Launch5
+        "<Launch5>" 'hel-ghostel--send-escape))))
 
 ;;;; LLM
 
@@ -237,6 +465,10 @@
 (require 'helheim-edit-indirect) ; Alternative "zn" binding
 
 (require 'helheim-chezmoi)  ; Integration with chezmoi dotfile manager
+
+(require 'helheim-latex)    ; Fast LaTeX-math entry in Org notes
+;; Needs the `typst' and `tinymist' binaries on PATH.
+;; (require 'helheim-typst)    ; Typst: tree-sitter mode, tinymist LSP, live preview
 
 ;;; My custom config
 
@@ -508,8 +740,6 @@
   ;; --- footnotes ---
   (setopt org-footnote-define-inline nil
           org-footnote-auto-adjust t)
-  ;; --- LaTeX preview ---
-  (setopt org-preview-latex-default-process 'xelatex)
   ;; --- org-attach ---
   (setopt org-file-apps '((system . "xdg-open %s")
                           ("\\.pdf\\'" . system)
@@ -641,20 +871,6 @@
 ;; (":logbook:" . ?)
 ;; (":end:" . "―")
 
-;;;; LaTeX
-
-;; LaTeX previews
-(setup org-fragtog
-  (:install t)
-  (:after org)
-  (:hook org-mode-hook org-fragtog-mode)
-  (setopt org-startup-with-latex-preview t
-          org-format-latex-options (-> org-format-latex-options
-                                       (plist-put :scale 0.8)
-                                       ;; (plist-put :foreground 'auto)
-                                       ;; (plist-put :background 'auto)
-                                       )))
-
 ;;;; org-tempo
 
 ;; Org 9.2 introduced a new template expansion mechanism, combining
@@ -701,7 +917,40 @@
    ;; currently to be done manually by calling `org-journal-invalidate-cache'.
    org-journal-file-type 'monthly
    org-extend-today-until 4
-   org-journal-date-format "%x, %A")) ;; "DATE, WEEKDAY"
+   org-journal-date-format "%x, %A") ;; "DATE, WEEKDAY"
+
+  ;; At load time org-journal unconditionally binds "j m", "j r", "j d",
+  ;; "j n", "j s ..." and "[" / "]" in `calendar-mode-map'.  Hel binds "j"
+  ;; there to `calendar-forward-week' and builds the "[ [" / "] ]" year
+  ;; motions, so loading org-journal while `calendar' is already loaded
+  ;; signals
+  ;;
+  ;;     Key sequence j m starts with non-prefix key j
+  ;;
+  ;; and aborts the load — which happens on any `M-x calendar' or org date
+  ;; prompt, since org-journal autoloads itself onto
+  ;; `calendar-today-visible-hook'.  Load it here with those keys free, then
+  ;; move the prefix map it built to "J" and restore the Hel motions.
+  (:defer
+    (require 'calendar)
+    (let* ((keys '("j" "[" "]"))
+           (saved (mapcar (lambda (key)
+                            (cons key (keymap-lookup calendar-mode-map key)))
+                          keys)))
+      (dolist (key keys)
+        (keymap-unset calendar-mode-map key t))
+      (require 'org-journal)
+      (let ((journal-map (keymap-lookup calendar-mode-map "j"))
+            (next (keymap-lookup calendar-mode-map "]"))
+            (prev (keymap-lookup calendar-mode-map "[")))
+        (dolist (key keys)
+          (keymap-unset calendar-mode-map key t))
+        (pcase-dolist (`(,key . ,def) saved)
+          (when def (keymap-set calendar-mode-map key def)))
+        (when journal-map
+          (keymap-set calendar-mode-map "J" journal-map)
+          (when next (keymap-set journal-map "]" next))
+          (when prev (keymap-set journal-map "[" prev)))))))
 
 ;;;; org-auto-tangle
 
