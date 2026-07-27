@@ -29,20 +29,32 @@ Installed plugins:
 
 | Path | Purpose |
 |---|---|
-| `config.fish` | Interactive-only settings: prompt colors, tool init (`atuin`, `zoxide`), keybindings, aliases/abbrs |
+| `config.fish` | Interactive-only settings: syntax-highlighting colors, prompt colors, tool init (`atuin`, `zoxide`), keybindings, aliases/abbrs |
 | `conf.d/` | Auto-sourced on every shell start (both interactive and non-interactive) — conda init, chezmoi completions, tide init, fzf bindings |
 | `functions/` | Auto-loaded on first call; most files here are from Fisher plugins |
 | `completions/` | Tab-completion scripts (also mostly from plugins) |
 | `fish_plugins` | Fisher plugin list — edit this then run `fisher update` |
 | `fish_variables` | Universal variables set by `set -U`, including all `tide_*` config |
-| `themes/` | `.theme` files for `fish_config theme` |
+| `themes/` | `.theme` files for `fish_config theme`; `OneDark.theme` is kept as reference only — the live colors are the `set -g fish_color_*` lines in `config.fish` |
+
+**Colors are global, not universal.** Since fish 4.3 the `fish_color_*`,
+`fish_pager_color_*` and `fish_key_bindings` variables default to global
+scope, so they must be set on every shell start from `config.fish`. Do not
+use `fish_config theme choose` / `theme save` to persist a theme — the
+former writes `conf.d/fish_frozen_theme.fish` (unmanaged by chezmoi) and
+the latter reintroduces universal variables. Edit the `set -g` block in
+`config.fish` instead. Variables left unset fall back to fish's built-in
+defaults.
 
 ## Key design points
 
 **Helix-style modal editing** is provided by `sshilovsky/fish-helix`. The
-active key binding function is stored as a universal variable — to switch
-bindings: `set -U fish_key_bindings fish_helix_key_bindings`. Cursor shapes
-are managed internally by the plugin via `fish_vi_cursor`. Tide reads
+active key binding function is set as a *global* variable near the top of
+the Keybindings section in `config.fish`: `set -g fish_key_bindings
+fish_helix_key_bindings`. It must stay ahead of every `bind` in that file —
+assigning the variable erases all bindings and re-runs the binding function
+from scratch, so anything bound earlier is lost. Cursor shapes are managed
+internally by the plugin via `fish_vi_cursor`. Tide reads
 `$fish_bind_mode` for its vi-mode indicator and is compatible with
 fish-helix's mode values (`insert`, `default`, `visual`, `replace`).
 
@@ -54,8 +66,10 @@ Interactive-only code belongs in `config.fish` inside the `if status
 is-interactive` block, not in `conf.d/`.
 
 **Running fish commands** from a Bash/zsh session (as Claude Code does):
-`fish -c "set -U fish_key_bindings fish_helix_key_bindings"`. Universal
-variable changes made this way persist across interactive shells.
+`fish -c "set -U tide_character_color dc5bfc"`. Only *universal* variable
+changes made this way persist across interactive shells; global ones
+(colors, `fish_key_bindings`) live only for that one command, so to test
+them use `fish -i -c '...'`, which sources `config.fish` first.
 
 **Tide prompt** is configured exclusively through universal variables
 (`set -U tide_*`). To reconfigure interactively: `tide configure`. Custom
