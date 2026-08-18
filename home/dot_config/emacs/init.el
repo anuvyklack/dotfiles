@@ -18,7 +18,8 @@
 ;; Press "<F1> k ga" to find out which command is bound to "ga".
 
 ;; `face-font-family-alternatives'
-;; The Mono variant, not the duospace "PragmataPro Liga": the latter draws
+
+;; Use the Mono variant, rather than "PragmataPro Liga": the latter draws
 ;; horizontal arrows (→ ← ⇒) double-width while `char-width' still reports 1,
 ;; which silently shifts every column after them in an ASCII diagram.
 (let* ((font "PragmataPro Mono Liga")
@@ -49,25 +50,13 @@
 ;; (setq nerd-icons-scale-factor 0.9)
 (setq nerd-icons-default-adjust 0.1)
 
-;; PragmataPro draws a good part of the Nerd Fonts icon set itself, in its
-;; own flatter, heavier style — but not all of it.  Of the 10464 code points
-;; claimed below it covers 7206 (measured with `hb-shape' against
-;; "PragmataPro Mono Liga Regular.ttf" v0.9), and the gaps are uneven: all
-;; of Weather, Octicons, Pomicons and Font Awesome Extension are there, but
-;; only 198 of 496 Devicons, 691 of 1536 Font Awesome and 4883 of 6896
-;; Material Design Icons.
+;; To pick PragmataPro built-in nerd icons uncomment `:add' argument.
 ;;
-;; Hence `append' rather than a replacement.  The "Main font" block above
-;; has already prepended PragmataPro to every range of the default fontset,
-;; so appending here leaves it first in line and installs Symbols Nerd Font
-;; Mono behind it as the fallback for the 3258 icons it lacks.  Emacs walks
-;; that list per character, so each icon comes from PragmataPro when the
-;; font has one and from the Nerd font otherwise.
-;;
-;; The two styles do therefore mix — `nerd-icons' picks a code point per
-;; file type, so one dired listing can show both.  To go back to a uniform
-;; Nerd Fonts look, drop the `:add' argument below: without it the ranges
-;; are set rather than extended, and PragmataPro drops out.
+;; Above we have already prepend PragmataPro to every range of the default
+;; fontset, so appending installs Symbols Nerd Font Mono behind it as the
+;; fallback for the icons PragmataPro lacks. Emacs walks that list per
+;; character, so each icon comes from PragmataPro when the font has one and
+;; from the Nerd font otherwise.
 (helheim-set-fontset-font "Symbols Nerd Font Mono"
   '((#xe5fa . #xe6b7) ;; Seti-UI + Custom  
     (#xe700 . #xe8ef) ;; Devicons  
@@ -82,15 +71,11 @@
     (#x276c . #x2771) ;; Heavy Angle Brackets ❬ ❱
     (#xee00 . #xee0b) ;; Progress  
     (#xf0001 . #xf1af0)) ;; Material Design Icons 󰀁 󱫰
-  :add 'append)
+  ;; :add 'append
+  )
 
 ;; In the modeline, we’re not restricted by a rigid grid, and non-monospace
 ;; Powerline symbols look better.
-;;
-;; No `:add' here: this one really is an override.  The Mono builds of
-;; PragmataPro ship no Powerline glyphs at all (#xe0a0..#xe0a2 and
-;; #xe0b0..#xe0b3 are .notdef), and only 17 of the 33 Extra Symbols — which
-;; would otherwise leak into the modeline drawn to a rigid cell width.
 (helheim-set-fontset-font "Symbols Nerd Font" ;; "Symbols Nerd Font"
   `(;; Powerline Symbols
     (#xe0a0 . #xe0a2) ;;  
@@ -100,10 +85,12 @@
     (#xe0cc . #xe0d7) ;;  
     #xe0a3 #xe0ca))   ;;  
 
-;; The "Restore some icons" block that used to sit here pinned #xf0c5
-;; #xf114 #xf115 to the non-Mono "PragmataPro", which draws an icon two
-;; cells wide.  PragmataPro now wins those code points on its own, at one
-;; cell, so the block is gone.
+;; Restore some icons.
+(helheim-set-fontset-font "PragmataPro"
+  ;; Font Awesome
+  `(#xf0c5   ;; 
+    #xf114   ;; 
+    #xf115)) ;; 
 
 ;;;;; Unicode
 
