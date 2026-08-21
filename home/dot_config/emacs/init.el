@@ -479,9 +479,6 @@ link bracket after its first character."
         ;; nobreak-char-display nil
         )
 
-;; ;; See also `search-invisible'
-;; (global-reveal-mode)
-
 ;; (setup imenu-list (:install t))
 
 ;;;; astroid (notmuch gui)
@@ -934,19 +931,6 @@ link bracket after its first character."
 ;;   (:install t)
 ;;   (:after org)
 ;;   (org-sliced-images-mode)) ;; global minor mode
-
-;;;; DISABLED org-supertag
-
-;; (setup posframe (:install t))
-;;
-;; (setup org-supertag
-;;   (:install org-supertag :host github :repo "yibie/org-supertag")
-;;   ;; Single vault
-;;   (setopt org-supertag-sync-directories '("~/Private/"))
-;;   ;; ;; Multiple vaults (separate DB/state per directory)
-;;   ;; (setopt org-supertag-sync-directories '("~/notes/" "~/Private/")
-;;   ;;         org-supertag-sync-directories-mode 'vaults)
-;;   )
 
 ;;; Major modes
 
