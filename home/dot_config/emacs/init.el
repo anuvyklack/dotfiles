@@ -722,6 +722,19 @@ link bracket after its first character."
           ;; Use PlantUML executable instead of `.jar' file together with Java.
           org-plantuml-exec-mode 'plantuml
           org-plantuml-jar-path (expand-file-name "~/.nix-profile/lib/plantuml.jar"))
+  (:after-load
+    ;; Elements of length one have a tab appended. Elements of length two are
+    ;; kept as is. Longer elements are truncated to length two. If an element
+    ;; cannot be made unique, an error is raised.
+    (setopt org-structure-template-alist `(("se" . "src emacs-lisp")
+                                           ("sh" . "src sh")
+                                           ("sc" . "src cpp")
+                                           ("sl" . "src common-lisp") ;; "l" for Lisp
+                                           ("sm" . "src markdown")
+                                           ("sr" . "src rust")
+                                           ("sp" . "src python")
+                                           ("su" . "src lua")
+                                           ,@org-structure-template-alist)))
   (:hook org-src-mode-hook
          (lambda ()
            (setq-local flycheck-disabled-checkers '(emacs-lisp
@@ -834,32 +847,6 @@ link bracket after its first character."
 ;; (":properties:" . ?) ;;  
 ;; (":logbook:" . ?)
 ;; (":end:" . "―")
-
-;;;; org-tempo
-
-;; Org 9.2 introduced a new template expansion mechanism, combining
-;; `org-insert-structure-template' bound to "z," (default binding "C-c C-,").
-;; The previous `easy-templates' mechanism (<s Tab) should be enabled manualy.
-;; For more information, refer to the commentary section in `org-tempo.el'.
-;;
-;; Type `<se Tab' to insert emacs-lisp source code block,
-;; type `<sh Tab' to insert bash source block and so on.
-(setup org-tempo
-  (:after org)
-  (:require t)
-  ;; Elements of length one have a tab appended. Elements of length two are
-  ;; kept as is. Longer elements are truncated to length two. If an element
-  ;; cannot be made unique, an error is raised.
-  (setopt org-structure-template-alist `(("se" . "src emacs-lisp")
-                                         ("sh" . "src sh")
-                                         ("sc" . "src cpp")
-                                         ("sf" . "src fennel")
-                                         ("sl" . "src common-lisp")
-                                         ("sm" . "src markdown")
-                                         ;; ("sr" . "src rust")
-                                         ("sp" . "src python")
-                                         ("su" . "src lua")
-                                         ,@org-structure-template-alist)))
 
 ;;;; org-node
 
