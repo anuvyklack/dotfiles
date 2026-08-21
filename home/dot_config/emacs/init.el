@@ -391,7 +391,16 @@ link bracket after its first character."
 (setup helheim-magit
   (:require t)
   (setopt magit-diff-refine-hunk 'all
-          magit-repository-directories '(("~/.config/emacs/" . 0))))
+          magit-repository-directories '(("~/.config/emacs/" . 0)))
+  (with-eval-after-load 'magit
+    (magit-add-section-hook 'magit-status-sections-hook
+                            #'magit-insert-assume-unchanged-files
+                            #'magit-insert-untracked-files
+                            :append)
+    (magit-add-section-hook 'magit-status-sections-hook
+                            #'magit-insert-skip-worktree-files
+                            #'magit-insert-untracked-files
+                            :append)))
 
 (require 'helheim-diff-hl)  ; git gutter
 (require 'helheim-ediff)
